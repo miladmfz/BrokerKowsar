@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:id="@+id/pf_detail"
+    android:background="@color/grey_40"
+    android:layoutDirection="rtl">
+
+
+    <EditText
+        android:id="@+id/pf_detail_detail"
+        android:background="@drawable/btn_corner_n"
+
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:gravity="center"
+        android:hint="@string/explain"
+        android:singleLine="true"
+        android:inputType="text"
+        android:focusable="true">
+
+
+    </EditText>
+
+
+    <Button
+        android:id="@+id/pf_detail_btn"
+        android:layout_width="250dp"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:layout_height="50dp"
+        android:text="@string/insert_prefactor"
+        android:textSize="20sp"
+        android:textColor="#ffffff"
+
+
+        app:backgroundTint="@color/green_600"
+
+
+        style="?attr/materialButtonOutlinedStyle" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

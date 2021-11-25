@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="10dp"
+    android:background="@drawable/nav_header"
+    android:layoutDirection="rtl">
+
+    <TextView
+        android:id="@+id/header_versionname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_above="@+id/header_dbname"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="10sp"
+        android:textStyle="bold"
+        tools:ignore="SmallSp" />
+
+
+    <TextView
+        android:id="@+id/header_dbname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="2dp"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/header_changedb"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/header_versionname"
+        android:text="تغییر نرم افزار"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        app:backgroundTint="@color/deep_orange_500"
+        app:iconTint="@color/white"
+        app:strokeColor="@color/grey_1000"
+        app:strokeWidth="1dp" />
+
+
+</RelativeLayout>
