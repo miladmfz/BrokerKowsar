@@ -45,13 +45,11 @@ import retrofit2.Callback;
 
 public class Replication {
 
-
     private final Context mContext;
     CallMethod callMethod;
     APIInterface apiInterface;
     Intent intent;
     Image_info image_info ;
-
 
     private SQLiteDatabase database;
     private final Integer RepRowCount = 200;
@@ -89,24 +87,17 @@ public class Replication {
 
     public void BrokerStack() {
         UserInfo userInfo = dbh.LoadPersonalInfo();
-
-        Log.e("test211=", "" + userInfo.getBrokerCode());
-        Log.e("test211=", "" + dbh.ReadConfig("BrokerStack"));
         Call<RetrofitResponse> call1 = apiInterface.BrokerStack("BrokerStack", userInfo.getBrokerCode());
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
                 if (response.isSuccessful()) {
                     assert response.body() != null;
-                    Log.e("test211=", "" +response.body().getText());
-
                     if (!response.body().getText().equals(dbh.ReadConfig("BrokerStack"))) {
                         dbh.SaveConfig("BrokerStack",response.body().getText());
-                        Log.e("brokerstack=", "" + dbh.ReadConfig("BrokerStack"));
                     }
                 }
             }
-
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
             }
@@ -123,7 +114,6 @@ public class Replication {
                     assert response.body() != null;
                     if (!response.body().getText().equals(dbh.ReadConfig("MenuBroker"))) {
                         dbh.SaveConfig("MenuBroker",response.body().getText());
-
                     }
                 }
             }
@@ -147,7 +137,6 @@ public class Replication {
                     ArrayList<Column> columns = response.body().getColumns();
                     for (Column column : columns) {
                         dbh.ReplicateGoodtype(column);
-
                     }
                 }
             }
@@ -1099,10 +1088,22 @@ public class Replication {
                                     }
                                     qCol = new StringBuilder("INSERT OR REPLACE INTO GoodGroup( GoodGroupCode " + qCol + ") VALUES(" + code + qVal + ")");
                                     database.execSQL(qCol.toString());
+                                    try {
+                                        database.execSQL(qCol.toString());
+                                    }catch (Exception e){
+                                        Log.e("test_Rep_e=",e.getMessage());
+                                    }
+
                                     break;
                                 case "D":
                                 case "d":
-                                    database.execSQL("delete from GoodGroup where GoodGroupCode = " + code);
+
+                                    try {
+                                        database.execSQL("delete from GoodGroup where GoodGroupCode = " + code);
+                                    }catch (Exception e){
+                                        Log.e("test_Rep_e=",e.getMessage());
+                                    }
+
                                     break;
                             }
                             Log.e("bklog_repstrQuery", qCol.toString());
