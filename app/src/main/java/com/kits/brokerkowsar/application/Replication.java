@@ -193,7 +193,6 @@ public class Replication {
 
 
     public void replicate_all() {
-        Log.e("test","0");
         replicateCentralChange();
     }
 
@@ -310,7 +309,6 @@ public class Replication {
                 return params;
             }
         };
-        Log.e("test","15");
 
         queue.add(stringrequste);
 
@@ -873,7 +871,6 @@ public class Replication {
                                     } else {
                                         qCol = "Update GoodStack Set Amount = " + Amount + ", ActiveStack=" + ActiveStack + ", ReservedAmount=" + ReservedAmount + " Where GoodRef=" + code + " And StackRef=" + StackRef;
                                     }
-                                    Log.e("bklog_repstrQuery11", qCol);
 
                                     try {
                                         database.execSQL(qCol);
@@ -1159,7 +1156,6 @@ public class Replication {
                 JSONObject jo = object.getJSONObject(0);
                 il = object.length();
                 String state = jo.getString("RLOpType");
-                Log.e("test", "0+"+il);
 
                 switch (state) {
                     case "n":
@@ -1171,7 +1167,6 @@ public class Replication {
 
                         tv_step.setVisibility(View.VISIBLE);
                         FinalStep = Integer.parseInt(object.getJSONObject(0).getString("RowsCount"));
-                        Log.e("test", "2+"+FinalStep);
 
                         for (int i = 0; i < il; i++) {
 
@@ -1181,10 +1176,6 @@ public class Replication {
                             String repcode = jo.getString("RepLogDataCode");
                             String code = jo.getString("KsrImageCode");
                             String qCol = "";
-                            Log.e("test", "3+"+optype);
-                            Log.e("test", "4+"+repcode);
-                            Log.e("test", "5+"+code);
-
                             switch (optype) {
                                 case "U":
                                 case "u":
@@ -1193,20 +1184,16 @@ public class Replication {
                                 case "D":
                                 case "d":
                                     String ObjectRef = jo.getString("ObjectRef");
-                                    Log.e("test", "6+"+ObjectRef);
 
                                     Cursor d = database.rawQuery("Select Count(*) AS cntRec From KsrImage Where KsrImageCode =" + code, null);
 
                                     d.moveToFirst();
                                     int nc = d.getInt(d.getColumnIndex("cntRec"));
-                                    Log.e("test", "7+"+nc);
 
                                     if (nc == 0) {
-                                        Log.e("test", "8+"+nc);
 
                                         qCol = "INSERT INTO KsrImage(KsrImageCode, ObjectRef,IsDefaultImage) Select " + code + "," + ObjectRef + ",'false'";
                                     } else {
-                                        Log.e("test-", "9+"+nc);
                                         qCol = "Delete from KsrImage Where KsrImageCode= " + code ;
                                         image_info.DeleteImage(code);
                                     }
@@ -1221,7 +1208,6 @@ public class Replication {
                                     break;
                             }
 
-                            Log.e("test","10+"+ qCol);
                             LastRepCode = repcode;
                         }
                         database.execSQL("Update Config Set DataValue = " + LastRepCode + " Where KeyValue = 'KsrImage_LastRepCode'");
@@ -1311,9 +1297,15 @@ public class Replication {
                                             }
                                         }
                                     }
+
                                     qCol = new StringBuilder("Update Good Set " + qCol + " Where GoodCode=" + code);
                                     Log.e("bklog_repstrQuery", qCol.toString());
-                                    database.execSQL(qCol.toString());
+
+                                    try {
+                                        database.execSQL(qCol.toString());
+                                    }catch (Exception e){
+                                        Log.e("test_Rep_e=",e.getMessage());
+                                    }
                                     break;
                             }
                             Log.e("bklog_repstrQuery", qCol.toString());

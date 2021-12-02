@@ -64,12 +64,9 @@ public class SplashActivity extends AppCompatActivity {
             apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
             Call<RetrofitResponse> call1 = apiInterface.BrokerStack("BrokerStack", "1");
 
-            Log.e("test_1", call1.request().url().host());
-            Log.e("test_3", call1.request().url().url().getPath());
-
 
         }catch (Exception e){
-            Log.e("test_7",e.getMessage());
+            Log.e("test_e",e.getMessage());
         }
 
     }

@@ -61,9 +61,7 @@ public class CallMethod extends Application {
 
         Gson gson = new Gson();
         String json = gson.toJson(list);
-        Log.e("test", json);
-        Log.e("test", key);
-        EditString(key, json);
+                EditString(key, json);
     }
 
     public ArrayList<String> getArrayList(String key) {

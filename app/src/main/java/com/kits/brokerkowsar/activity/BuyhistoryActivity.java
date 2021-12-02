@@ -133,7 +133,6 @@ public class BuyhistoryActivity extends AppCompatActivity {
         });
 
         goods = dbh.getAllPreFactorRows(srch, callMethod.ReadString("PreFactorGood"));
-        Log.e("test_!", "" + goods.size());
 
         adapter = new GoodBuyHistoryAdapter(goods, Itemposition, BuyhistoryActivity.this);
         gridLayoutManager = new GridLayoutManager(BuyhistoryActivity.this, 1);

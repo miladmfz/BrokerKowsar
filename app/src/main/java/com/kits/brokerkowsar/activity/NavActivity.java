@@ -59,16 +59,6 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         dbh = new DatabaseHelper(this, callMethod.ReadString("UseSQLiteURL"));
         menugrp = dbh.getmenuGroups();
 
-//        if (callMethod.ReadBoolan("auto_rep")) {
-//            Constraints conster = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
-//            PeriodicWorkRequest req = new PeriodicWorkRequest.Builder(WManager.class, 15, TimeUnit.MINUTES)
-//                    .setConstraints(conster)
-//                    .build();
-//            workManager = WorkManager.getInstance(NavActivity.this);
-//            workManager.enqueue(req);
-//        }
-
-
         Toolbar toolbar = findViewById(R.id.NavActivity_toolbar);
 
         setSupportActionBar(toolbar);
@@ -95,27 +85,25 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             callMethod.EditString("UseSQLiteURL", "");
             intent = new Intent(this, SplashActivity.class);
             finish();
-            //System.exit(0);
             startActivity(intent);
         });
 
         noti();
 
-        TextView customer = findViewById(R.id.MainActivity_customer);
-        TextView sumfac = findViewById(R.id.MainActivity_sum_factor);
+        TextView customer      = findViewById(R.id.MainActivity_customer);
+        TextView sumfac        = findViewById(R.id.MainActivity_sum_factor);
         TextView customer_code = findViewById(R.id.MainActivity_customer_code);
-        Button create_factor = findViewById(R.id.mainactivity_create_factor);
-        Button good_search = findViewById(R.id.mainactivity_good_search);
-        Button open_factor = findViewById(R.id.mainactivity_open_factor);
-        Button all_factor = findViewById(R.id.mainactivity_all_factor);
-        Button test = findViewById(R.id.mainactivity_test);
 
+        Button create_factor   = findViewById(R.id.mainactivity_create_factor);
+        Button good_search     = findViewById(R.id.mainactivity_good_search);
+        Button open_factor     = findViewById(R.id.mainactivity_open_factor);
+        Button all_factor      = findViewById(R.id.mainactivity_all_factor);
+        Button test            = findViewById(R.id.mainactivity_test);
 
         navigationView.getMenu().clear();
 
         for (GoodGroup goodGroup : menugrp) {
             navigationView.getMenu().add(goodGroup.getGoodGroupFieldValue("Name")).setIcon(R.drawable.grpmenu).setOnMenuItemClickListener(item -> {
-
                 intent = new Intent(NavActivity.this, SearchActivity.class);
                 intent.putExtra("scan", "");
                 intent.putExtra("id", goodGroup.getGoodGroupFieldValue("GroupCode"));
@@ -124,6 +112,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
                 return false;
             });
         }
+
         navigationView.inflateMenu(R.menu.activity_navigation_drawer);
 
         if (callMethod.ReadString("PreFactorCode").equals("0")) {
@@ -269,22 +258,8 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     }
 
 
-    private void noti() {
-
-
-
-
-    }
-
-
-    public void test_fun(View v) {
-
-
-
-
-    }
-
-
+    private void noti() {  }
+    public void test_fun(View v) {    }
 
 }
 

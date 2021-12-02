@@ -83,21 +83,10 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
     @Override
     public void onBindViewHolder(@NonNull final gooddetailHolder holder, final int position) {
         final Good gooddetail = goods.get(position);
-
-//        if (callMethod.ReadBoolan("RealAmount")) {
-//            holder.good_prosearch_amount.setText(NumberFunctions.PerisanNumber(
-//                    String.valueOf(Integer.parseInt(gooddetail.getGoodFieldValue("Amount"))
-//                            - Integer.parseInt(gooddetail.getGoodFieldValue("ReservedAmount")))
-//            ));
-//        } else {
-//            holder.good_prosearch_amount.setText(NumberFunctions.PerisanNumber(gooddetail.getGoodFieldValue("Amount")));
-//        }
         holder.mainline.removeAllViews();
 
         for (Column Column : Columns) {
-
             if (Integer.parseInt(Column.getSortOrder()) > 0) {
-
                 TextView extra_TextView = new TextView(mContext);
                 extra_TextView.setText(NumberFunctions.PerisanNumber(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))));
                 extra_TextView.setBackgroundResource(R.color.white);
@@ -130,7 +119,6 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
             Bitmap myBitmap = BitmapFactory.decodeFile(imagefile.getAbsolutePath());
             holder.img.setImageBitmap(myBitmap);
 
-
         } else {
 
             byte[] imageByteArray1;
@@ -145,15 +133,18 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
                     if (response.isSuccessful()) {
                         assert response.body() != null;
                         if (response.body().getText().equals("no_photo")) {
+
                             byte[] imageByteArray1;
                             imageByteArray1 = Base64.decode(mContext.getString(R.string.no_photo), Base64.DEFAULT);
                             holder.img.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length), BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getWidth() * 2, BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getHeight() * 2, false));
 
                         } else {
+
                             byte[] imageByteArray1;
                             imageByteArray1 = Base64.decode(response.body().getText(), Base64.DEFAULT);
                             holder.img.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length), BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getWidth() * 2, BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getHeight() * 2, false));
                             image_info.SaveImage(BitmapFactory.decodeByteArray(Base64.decode(response.body().getText(), Base64.DEFAULT), 0, Base64.decode(response.body().getText(), Base64.DEFAULT).length), gooddetail.getGoodFieldValue("KsrImageCode"));
+
                         }
                     }
                 }

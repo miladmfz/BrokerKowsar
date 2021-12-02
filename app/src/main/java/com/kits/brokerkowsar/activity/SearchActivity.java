@@ -153,7 +153,6 @@ public class SearchActivity extends AppCompatActivity {
         });
 
         ArrayList<GoodGroup> goodGroups = dbh.getAllGroups(id);
-        Log.e("test1",goodGroups.size()+"");
         Grp_Vlist_detail_Adapter adapter4 = new Grp_Vlist_detail_Adapter(goodGroups, this);
         recyclerView_grp.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false));
         recyclerView_grp.setAdapter(adapter4);

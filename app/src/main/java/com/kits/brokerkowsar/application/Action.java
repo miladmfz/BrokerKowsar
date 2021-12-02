@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -27,6 +28,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.activity.BuyActivity;
 import com.kits.brokerkowsar.activity.CustomerActivity;
@@ -41,6 +43,7 @@ import com.kits.brokerkowsar.model.UserInfo;
 import com.kits.brokerkowsar.model.Utilities;
 import com.kits.brokerkowsar.webService.APIClient_kowsar;
 import com.kits.brokerkowsar.webService.APIInterface;
+import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -454,10 +457,10 @@ public class Action {
 
         @SuppressLint("HardwareIds") String android_id = Settings.Secure.getString(mContext
                 .getContentResolver(), Settings.Secure.ANDROID_ID);
-        String Date = Utilities.getCurrentShamsidate();
-        Calendar calendar = Calendar.getInstance();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        String strDate = sdf.format(calendar.getTime());
+
+
+        PersianCalendar calendar1 = new PersianCalendar();
+        String version=BuildConfig.VERSION_NAME;
 
 
         UserInfo auser = dbh.LoadPersonalInfo();
@@ -468,14 +471,17 @@ public class Action {
                 , url
                 , callMethod.ReadString("PersianCompanyNameUse")
                 , callMethod.ReadString("PreFactorCode")
-                , Date + "--" + strDate
+                , calendar1.getPersianShortDateTime()
                 , auser.getBrokerCode()
-                , "");
+                , version);
+
         cl.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
                 assert response.body() != null;
             }
+
+
 
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {

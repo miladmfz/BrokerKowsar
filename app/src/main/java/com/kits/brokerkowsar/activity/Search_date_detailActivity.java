@@ -18,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -55,6 +56,27 @@ public class Search_date_detailActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     int pastVisiblesItems = 0;
     Menu item_multi;
+    String year;
+    String mount;
+    String day;
+    PersianCalendar calendar1;
+
+    public static String scan = "";
+    public String title = "";
+    Dialog dialog1;
+    private RecyclerView recyclerView_good;
+    private EditText edtsearch;
+    Intent intent;
+    Handler handler;
+    String srch = "";
+
+    public String proSearchCondition;
+    TextView customer;
+    TextView sumfac;
+    TextView customer_code;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,17 +114,28 @@ public class Search_date_detailActivity extends AppCompatActivity {
         final TextView customer = findViewById(R.id.Search_date_detailActivity_customer);
         final TextView sumfac = findViewById(R.id.Search_date_detailActivity_sum_factor);
         final TextView customer_code = findViewById(R.id.Search_date_detailActivity_customer_code);
+
+        Toolbar toolbar = findViewById(R.id.search_date_toolbar);
+        setSupportActionBar(toolbar);
         Button ref_fac = findViewById(R.id.Search_date_detailActivity_refresh_fac);
         fab = findViewById(R.id.search_date_fab);
 
-        PersianCalendar calendar = new PersianCalendar();
+        calendar1 = new PersianCalendar();
 
-        calendar.setPersianDate(
-                calendar.getPersianYear(),
-                calendar.getPersianMonth(),
-                calendar.getPersianDay() - Integer.parseInt(date)
+        calendar1.setPersianDate(
+                calendar1.getPersianYear(),
+                calendar1.getPersianMonth()+1,
+                calendar1.getPersianDay()  - Integer.parseInt(date)
         );
-        lastDate = calendar.getPersianShortDate();
+        year="";
+        mount="0";
+        day="0";
+        year=year+calendar1.getPersianYear();
+        mount=mount+calendar1.getPersianMonth();
+        day=day+(calendar1.getPersianDay());
+        lastDate = year+"/"+mount.substring(mount.length()-2)+"/"+day.substring(day.length()-2);
+
+        Log.e("test",lastDate);
         grid = Integer.parseInt(callMethod.ReadString("Grid"));
 
 
@@ -118,14 +151,23 @@ public class Search_date_detailActivity extends AppCompatActivity {
             } else {
                 date = "7";
             }
-            PersianCalendar calendar1 = new PersianCalendar();
+
+            calendar1 = new PersianCalendar();
 
             calendar1.setPersianDate(
                     calendar1.getPersianYear(),
-                    calendar1.getPersianMonth(),
-                    calendar1.getPersianDay() - Integer.parseInt(date)
+                    calendar1.getPersianMonth()+1,
+                    calendar1.getPersianDay()  - Integer.parseInt(date)
             );
-            lastDate = calendar1.getPersianShortDate();
+            year="";
+            mount="0";
+            day="0";
+            year=year+calendar1.getPersianYear();
+            mount=mount+calendar1.getPersianMonth();
+            day=day+(calendar1.getPersianDay());
+            lastDate = year+"/"+mount.substring(mount.length()-2)+"/"+day.substring(day.length()-2);
+
+            Log.e("test",lastDate);
 
             CallGoodView();
 

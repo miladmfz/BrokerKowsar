@@ -120,7 +120,6 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
             call2.enqueue(new Callback<RetrofitResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<RetrofitResponse> call2, @NonNull Response<RetrofitResponse> response) {
-                    Log.e("test1",gooddetail.getGoodFieldValue("KsrImageCode"));
 
                     if (response.isSuccessful()) {
                         assert response.body() != null;

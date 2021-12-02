@@ -97,7 +97,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void GetLimitColumn(String AppType) {
 
-       // try {
+        try {
             query = "select Count(*) count from GoodType ";
 
             cursor = getWritableDatabase().rawQuery(query, null);
@@ -111,10 +111,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String columnscount = cursor.getString(cursor.getColumnIndex("count"));
             cursor.close();
             limitcolumn = Integer.parseInt(columnscount) / Integer.parseInt(goodtypecount);
-//        }catch (Exception e){
-//            callMethod.showToast( "تنظیم جدول مشکل دارد");
-//            Log.e("test",e.getMessage());
-//        }
+        }catch (Exception e){
+            callMethod.showToast( "تنظیم جدول مشکل دارد");
+            Log.e("test",e.getMessage());
+        }
     }
 
     public void GetPreference() {
@@ -206,7 +206,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public String GetColumnscount() {
-        Log.e("test1","3");
 
         query = "Select Count(*) result from BrokerColumn " ;
         cursor = getWritableDatabase().rawQuery(query, null);
@@ -543,7 +542,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         }
         goods = new ArrayList<>();
-        Log.e("test11",query);
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -763,7 +761,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Where (GoodName Like '%" + name + "%' and PreFactorRef = " + aPreFactorCode + ") order by GoodCode DESC ";
 
 
-        Log.e("test_!", query);
 
         cursor = getWritableDatabase().rawQuery(query, null);
 
@@ -771,7 +768,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
                 for (Column column : columns) {
-                    Log.e("test_c", column.getColumnName());
 
                     switch (column.getColumnType()) {
                         case "0":
@@ -1187,7 +1183,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void UpdateSearchColumn(Column column) {
         query = "update BrokerColumn set condition = '" + column.getCondition() + "' where ColumnCode= " + column.getColumnCode();
-        Log.e("test11", query);
         getWritableDatabase().execSQL(query);
     }
 
@@ -1204,7 +1199,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "','" + column.getColumnFieldValue("Condition") +
                 "','" + column.getColumnFieldValue("OrderIndex") +
                 "'," + Apptype + "); ";
-        Log.e("test11",query);
         getWritableDatabase().execSQL(query);
     }
 
