@@ -53,6 +53,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, 1);
         this.callMethod = new CallMethod(context);
         this.goods = new ArrayList<>();
+
     }
 
     public void DatabaseCreate() {
@@ -85,12 +86,59 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         getWritableDatabase().execSQL("Create Index IF Not Exists IX_GoodGroup_GoodRef on GoodGroup (GoodRef)");
         getWritableDatabase().execSQL("Create Index IF Not Exists IX_GoodGroup_GroupRef on GoodGroup (GoodGroupRef)");
+
+        getWritableDatabase().execSQL("Create Index IF Not Exists IX_Prefactor_CustomerRef on Prefactor (CustomerRef)");
+
         getWritableDatabase().execSQL("Create Index IF Not Exists IX_PreFactorRow_GoodRef on PreFactorRow (GoodRef)");
         getWritableDatabase().execSQL("Create Index IF Not Exists IX_PreFactorRow_PreFactorRef on PreFactorRow (PreFactorRef)");
-        getWritableDatabase().execSQL("Create Index IF Not Exists IX_Good_GoodUnitRef on Good (GoodUnitRef)");
+
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_GoodRef ON GoodStack (GoodRef, StackRef)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodName ON Good (GoodName)");
+
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_KsrImage_ObjectRef ON KsrImage (ObjectRef)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_KsrImage_IsDefaultImage ON KsrImage (IsDefaultImage)");
+
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Customer_PriceTip ON Customer (PriceTip)");
+
+
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodName ON Good (GoodName)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain1 ON Good (GoodExplain1)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain2 ON Good (GoodExplain2)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain3 ON Good (GoodExplain3)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain4 ON Good (GoodExplain4)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain5 ON Good (GoodExplain5)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain6 ON Good (GoodExplain6)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_SellPriceType ON Good (SellPriceType)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_MaxPriceType ON Good (MaxPriceType)");
+        getWritableDatabase().execSQL("Create Index IF Not Exists IX_Good_GoodUnitRef on Good (GoodUnitRef)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar1 ON Good (Nvarchar1)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar2 ON Good (Nvarchar2)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar3 ON Good (Nvarchar3)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar4 ON Good (Nvarchar4)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar5 ON Good (Nvarchar5)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar6 ON Good (Nvarchar6)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar7 ON Good (Nvarchar7)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar8 ON Good (Nvarchar8)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar9 ON Good (Nvarchar9)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar10 ON Good (Nvarchar10)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar11 ON Good (Nvarchar11)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar12 ON Good (Nvarchar12)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar13 ON Good (Nvarchar13)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar14 ON Good (Nvarchar14)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar15 ON Good (Nvarchar15)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar16 ON Good (Nvarchar16)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar17 ON Good (Nvarchar17)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar18 ON Good (Nvarchar18)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar19 ON Good (Nvarchar19)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar20 ON Good (Nvarchar20)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Float1 ON Good (Float1)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Float2 ON Good (Float2)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Float3 ON Good (Float3)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Float4 ON Good (Float4)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Float5 ON Good (Float5)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Date1 ON Good (Date1)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Date2 ON Good (Date2)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Text1 ON Good (Text1)");
+
 
     }
 
@@ -1063,7 +1111,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ArrayList<GoodGroup> groups = new ArrayList<>();
         Log.e("test", query);
-        cursor = getWritableDatabase().rawQuery(query, null);
+        try {
+            cursor = getWritableDatabase().rawQuery(query, null);
+        }catch (Exception e){
+            query = "SELECT * FROM GoodsGrp Where Groupcode in (9999)";
+            cursor = getWritableDatabase().rawQuery(query, null);
+        }
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 GoodGroup grp = new GoodGroup();

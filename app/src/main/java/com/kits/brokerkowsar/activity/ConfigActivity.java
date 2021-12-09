@@ -97,6 +97,7 @@ public class ConfigActivity extends AppCompatActivity {
             replication.GoodTypeReplication();
             replication.MenuBroker();
             replication.BrokerStack();
+            dbh.DatabaseCreate();
         });
 
     }

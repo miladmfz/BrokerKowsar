@@ -10,7 +10,7 @@ public class APIClient_kowsar {
 
     private static Retrofit t = null;
 
-    private static final String BASE_URL_log = "http://5.201.142.69:60005/login/";
+    private static final String BASE_URL_log = "http://87.107.78.234:60005/login/";
 
     public static Retrofit getCleint_log() {
         if (t == null) {

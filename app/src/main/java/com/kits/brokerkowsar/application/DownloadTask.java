@@ -27,17 +27,19 @@ public class DownloadTask {
     private ProgressDialog progressDialog;
 
     public DownloadTask(Context context, String downloadUrl) {
+        Log.e("test=","1");
         this.context = context;
 
         this.downloadUrl = downloadUrl;
         callMethod = new CallMethod(context);
-
+        Log.e("test=","2");
         downloadFileName = downloadUrl.substring(downloadUrl.lastIndexOf('/'), downloadUrl.length());//Create file name by picking download file name from URL
         Log.e(TAG, downloadFileName);
         Log.e(TAG, downloadUrl);
-
+        Log.e("test=","3");
         //Start Downloading Task
         new DownloadingTask().execute();
+        Log.e("test=","4");
     }
 
     private class DownloadingTask extends AsyncTask<Void, Void, Void> {
@@ -50,19 +52,23 @@ public class DownloadTask {
 
         @Override
         protected void onPreExecute() {
+            Log.e("test=","5");
             super.onPreExecute();
             progressDialog = new ProgressDialog(context);
             progressDialog.setMessage("در حال بارگیری...");
             progressDialog.setCancelable(false);
             progressDialog.show();
+            Log.e("test=","6");
         }
 
         @Override
         protected void onPostExecute(Void result) {
+            Log.e("test=","7");
             try {
+                Log.e("test=","8");
                 if (outputFile != null) {
                     progressDialog.dismiss();
-
+                    Log.e("test=","9");
 
                     callMethod.EditString("UseSQLiteURL", "/data/data/com.kits.brokerkowsar/databases/" + callMethod.ReadString("EnglishCompanyNameUse") + "/KowsarDb.sqlite");
                     DatabaseHelper dbh = new DatabaseHelper(context, callMethod.ReadString("UseSQLiteURL"));
@@ -70,21 +76,23 @@ public class DownloadTask {
                     Intent intent = new Intent(context, SplashActivity.class);
                     context.startActivity(intent);
                     ((Activity) context).finish();
+                    Log.e("test=","10");
                 } else {
-
+                    Log.e("test=","11");
                     new Handler().postDelayed(() -> {
-
+                        Log.e("test=","12");
                     }, 3000);
-
+                    Log.e("test=","13");
                     Log.e(TAG, "لطفا با مرکز تماس بگیرید");
 
                 }
             } catch (Exception e) {
+                Log.e("test=","14");
                 e.printStackTrace();
 
 
                 new Handler().postDelayed(() -> {
-
+                    Log.e("test=","15");
                 }, 3000);
                 Log.e(TAG, "لطفا با مرکز تماس بگیرید" + e.getLocalizedMessage());
 
@@ -99,8 +107,11 @@ public class DownloadTask {
             try {
                 URL url = new URL(downloadUrl);//Create Download URl
                 HttpURLConnection c = (HttpURLConnection) url.openConnection();//Open Url Connection
+
                 c.setRequestMethod("GET");//Set Request Method to "GET" since we are grtting data
+                Log.e("test=","1");
                 c.connect();//connect the URL Connection
+                Log.e("test=","2");
 
                 //If Connection response is not OK then show Logs
                 if (c.getResponseCode() != HttpURLConnection.HTTP_OK) {
@@ -145,12 +156,18 @@ public class DownloadTask {
 
                 InputStream is = c.getInputStream();//Get InputStream for connection
 
-                byte[] buffer = new byte[1024];//Set buffer type
+
+
+                Log.e("test=","3");
+
+                byte[] buffer = new byte[10240];//Set buffer type
                 int len1 = 0;//init length
+                Log.e("test=","4");
                 while ((len1 = is.read(buffer)) != -1) {
+                    Log.e("test=","5");
                     fos.write(buffer, 0, len1);//Write new file
                 }
-
+                Log.e("test=","6");
                 //Close all connection after doing task
                 fos.close();
                 is.close();
