@@ -86,6 +86,8 @@ public class Replication {
 
 
     public void BrokerStack() {
+        Log.e("test_+","BrokerStack");
+
         UserInfo userInfo = dbh.LoadPersonalInfo();
         Call<RetrofitResponse> call1 = apiInterface.BrokerStack("BrokerStack", userInfo.getBrokerCode());
         call1.enqueue(new Callback<RetrofitResponse>() {
@@ -93,6 +95,8 @@ public class Replication {
             public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
                 if (response.isSuccessful()) {
                     assert response.body() != null;
+                    Log.e("test_+",dbh.ReadConfig("BrokerStack"));
+                    Log.e("test_+",response.body().getText());
                     if (!response.body().getText().equals(dbh.ReadConfig("BrokerStack"))) {
                         dbh.SaveConfig("BrokerStack",response.body().getText());
                     }
@@ -100,6 +104,7 @@ public class Replication {
             }
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+                Log.e("test_+",t.getMessage());
             }
         });
         MenuBroker();
@@ -252,7 +257,7 @@ public class Replication {
 
                                     String CentralPrivateCode = jo.getString("CentralPrivateCode");
                                     String CentralName = (jo.getString("Title") + jo.getString("FName") + jo.getString("Name")).trim();
-                                    CentralName = CentralName.replaceAll("'", "''");
+                                    CentralName = CentralName.replaceAll("'", " ");
 
                                     String Manager = jo.getString("Manager");
                                     String Delegacy = jo.getString("Delegacy");
@@ -409,12 +414,11 @@ public class Replication {
     public void replicateCacheGroupChange() {
         tv_rep.setText(NumberFunctions.PerisanNumber("در حال بروز رسانی 10/2"));
         FinalStep = 0;
-        RepTable = "CacheGroup";
+        RepTable = "CacheGoodGroup";
         if (LastRepCode.equals("0")) {
             cursor = database.rawQuery("Select DataValue From Config Where KeyValue ='CacheGroup_LastRepCode'", null);
             cursor.moveToFirst();
             LastRepCode = cursor.getString(0);
-
             cursor.close();
         }
         RequestQueue queue = Volley.newRequestQueue(mContext);
@@ -423,46 +427,57 @@ public class Replication {
             int il = 0;
             try {
                 JSONArray object = new JSONArray(response);
+
                 JSONObject jo = object.getJSONObject(0);
                 il = object.length();
                 String state = jo.getString("RLOpType");
+
                 switch (state) {
+
                     case "n":
                     case "N":
+
                         break;
                     default:
+
                         tv_step.setVisibility(View.VISIBLE);
                         FinalStep = Integer.parseInt(object.getJSONObject(0).getString("RowsCount"));
                         for (int i = 0; i < il; i++) {
 
                             tv_step.setText(NumberFunctions.PerisanNumber(FinalStep + "تعداد"));
+
                             jo = object.getJSONObject(i);
                             String optype = jo.getString("RLOpType");
                             String repcode = jo.getString("RepLogDataCode");
-                            String code = jo.getString("CacheGoodGroupCode");
+                            String code = jo.getString("GoodRef");
                             String qCol = "";
+
 
                             switch (optype) {
                                 case "U":
                                 case "u":
                                 case "I":
                                 case "i":
+
                                     String GroupsWhitoutCode = jo.getString("GroupsWhitoutCode");
 
-                                    Cursor d = database.rawQuery("Select Count(*) AS cntRec From CacheGoodGroup Where CacheGoodGroupCode =" + code, null);
+                                    Cursor d = database.rawQuery("Select Count(*) AS cntRec From CacheGoodGroup Where GoodRef =" + code, null);
                                     d.moveToFirst();
                                     int nc = d.getInt(d.getColumnIndex("cntRec"));
                                     if (nc == 0) {
-                                        qCol = "INSERT INTO CacheGoodGroup(CacheGoodGroupCode, GroupsWhitoutCode) Select " + code + ",'" + GroupsWhitoutCode + "'";
+                                        qCol = "INSERT INTO CacheGoodGroup(GoodRef, GroupsWhitoutCode) Select " + code + ",'" + GroupsWhitoutCode + "'";
                                     } else {
-                                        qCol = "Update CacheGoodGroup Set GroupsWhitoutCode='" + GroupsWhitoutCode + "' Where CacheGoodGroupCode=" + code;
+                                        qCol = "Update CacheGoodGroup Set GroupsWhitoutCode='" + GroupsWhitoutCode + "' Where GoodRef=" + code;
                                     }
 
 
                                     try {
                                         database.execSQL(qCol);
+
                                     }catch (Exception e){
                                         Log.e("test_Rep_e=",e.getMessage());
+
+
                                     }
                                     d.close();
                                     break;
@@ -543,7 +558,7 @@ public class Replication {
                                     String CentralRef = jo.getString("CentralRef");
                                     String CityCode = jo.getString("CityCode");
                                     String Address = jo.getString("Address");
-                                    Address = Address.replaceAll("'", "''");
+                                    Address = Address.replaceAll("'", " ");
 
                                     String Phone = jo.getString("Phone");
                                     String Mobile = jo.getString("Mobile");
@@ -747,7 +762,7 @@ public class Replication {
                                             try {
                                                 Object value = jo.get(key);
 
-                                                value = value.toString().replaceAll("'", "''");
+                                                value = value.toString().replaceAll("'", " ");
                                                 if (!key.equals("RLClassName")) {
                                                     if (!key.equals("RowsCount")) {
                                                         qCol.append(",").append(key);
@@ -973,7 +988,7 @@ public class Replication {
                                         if ((!key.equals("RLOpType")) & (!key.equals("RepLogDataCode")) & (!key.equals("GroupCode"))) {
                                             try {
                                                 Object value = jo.get(key);
-                                                value = value.toString().replaceAll("'", "''");
+                                                value = value.toString().replaceAll("'", " ");
                                                 if (!key.equals("RLClassName")) {
                                                     if (!key.equals("RowsCount")) {
                                                         qCol.append(",").append(key);
@@ -1146,43 +1161,32 @@ public class Replication {
 
 
     public void replicateGoodImageChange() {
-        Log.e("test_Rep_e=","1");
         tv_rep.setText(NumberFunctions.PerisanNumber("در حال بروز رسانی 10/9"));
-        Log.e("test_Rep_e=","2");
         FinalStep = 0;
         RepTable = "KsrImage";
         if (LastRepCode.equals("0")) {
-            Log.e("test_Rep_e=","3");
             cursor = database.rawQuery("Select DataValue From Config Where KeyValue ='KsrImage_LastRepCode'", null);
             cursor.moveToFirst();
             LastRepCode = cursor.getString(0);
             cursor.close();
-            Log.e("test_Rep_e=","4");
         }
         RequestQueue queue = Volley.newRequestQueue(mContext);
-        Log.e("test_Rep_e=","5");
         StringRequest stringrequste = new StringRequest(Request.Method.POST, url, response -> {
             int il = 0;
             try {
-                Log.e("test_Rep_e=","6");
                 JSONArray object = new JSONArray(response);
                 JSONObject jo = object.getJSONObject(0);
                 il = object.length();
                 String state = jo.getString("RLOpType");
-                Log.e("test_Rep_e=","7");
                 switch (state) {
                     case "n":
                     case "N":
-                        Log.e("test", "1+"+state);
 
                         break;
                     default:
-                        Log.e("test_Rep_e=","8");
                         tv_step.setVisibility(View.VISIBLE);
                         FinalStep = Integer.parseInt(object.getJSONObject(0).getString("RowsCount"));
-                        Log.e("test_Rep_e=","9");
                         for (int i = 0; i < il; i++) {
-                            Log.e("test_Rep_e=","10");
                             tv_step.setText(NumberFunctions.PerisanNumber(FinalStep + "تعداد"));
                             jo = object.getJSONObject(i);
                             String optype = jo.getString("RLOpType");
@@ -1196,7 +1200,6 @@ public class Replication {
                                 case "i":
                                 case "D":
                                 case "d":
-                                    Log.e("test_Rep_e=","11");
                                     String ObjectRef = jo.getString("ObjectRef");
 
                                     Cursor d = database.rawQuery("Select Count(*) AS cntRec From KsrImage Where KsrImageCode =" + code, null);
@@ -1212,34 +1215,27 @@ public class Replication {
                                         image_info.DeleteImage(code);
                                     }
 
-                                    Log.e("test_Rep_e=","12");
                                     try {
                                         database.execSQL(qCol);
                                         Log.e("test_Rep_e=",qCol);
                                     }catch (Exception e){
                                         Log.e("test_Rep_e=",e.getMessage());
-                                        Log.e("test_Rep_e=","13");
                                     }
                                     d.close();
                                     break;
                             }
-                            Log.e("test_Rep_e=","14");
                             LastRepCode = repcode;
                         }
-                        Log.e("test_Rep_e=","15");
                         database.execSQL("Update Config Set DataValue = " + LastRepCode + " Where KeyValue = 'KsrImage_LastRepCode'");
                         break;
                 }
             } catch (JSONException e) {
-                Log.e("test_Rep_e=","16");
                 Log.e("test_Rep_e=",e.getMessage());
                 e.printStackTrace();
             }
             if (il >= RepRowCount) {
-                Log.e("test_Rep_e=","17");
                 replicateGoodImageChange();
             } else {
-                Log.e("test_Rep_e=","18");
                 tv_step.setVisibility(View.GONE);
                 LastRepCode = "0";
                 replicateGoodPropertyValueChange();
@@ -1304,7 +1300,7 @@ public class Replication {
                                         if ((!key.equals("RLOpType")) & (!key.equals("RepLogDataCode")) & (!key.equals("ObjectRef"))) {
                                             try {
                                                 Object value = jo.get(key);
-                                                value = value.toString().replaceAll("'", "''");
+                                                value = value.toString().replaceAll("'", " ");
                                                 if (!key.equals("RLClassName")) {
                                                     if (!key.equals("RowsCount")) {
                                                         if (qCol.toString().equals("")) {
@@ -1410,7 +1406,7 @@ public class Replication {
                                 case "i":
                                     String CentralPrivateCode = jo.getString("CentralPrivateCode");
                                     String CentralName = (jo.getString("Title") + jo.getString("FName") + jo.getString("Name")).trim();
-                                    CentralName = CentralName.replaceAll("'", "''");
+                                    CentralName = CentralName.replaceAll("'", " ");
 
                                     String Manager = jo.getString("Manager");
                                     String Delegacy = jo.getString("Delegacy");
@@ -1590,7 +1586,7 @@ public class Replication {
                                     String CentralRef = jo.getString("CentralRef");
                                     String CityCode = jo.getString("CityCode");
                                     String Address = jo.getString("Address");
-                                    Address = Address.replaceAll("'", "''");
+                                    Address = Address.replaceAll("'", " ");
 
                                     String Phone = jo.getString("Phone");
                                     String Mobile = jo.getString("Mobile");

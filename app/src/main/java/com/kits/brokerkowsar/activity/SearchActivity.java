@@ -3,6 +3,7 @@ package com.kits.brokerkowsar.activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -189,7 +190,9 @@ public class SearchActivity extends AppCompatActivity {
 
 
         //try {
+
             goods = dbh.getAllGood(scan, id);
+
 //        }catch (Exception e ){
 //            Toast.makeText(this,  "تنظیم جدول مشکل دارد", Toast.LENGTH_SHORT).show();
 //            dialog1.dismiss();
@@ -280,9 +283,15 @@ public class SearchActivity extends AppCompatActivity {
             boxbuy.setOnClickListener(view -> {
                 String AmountMulti = amount_mlti.getText().toString();
                 if (!AmountMulti.equals("")) {
+
+
+
+
+
+
+
                     if (Integer.parseInt(AmountMulti) != 0) {
                         for (String[] GoodMulti : Multi_buy) {
-                            if (GoodMulti[1].equals("")) GoodMulti[1] = "-1";
                             dbh.InsertPreFactor(callMethod.ReadString("PreFactorCode"),
                                     GoodMulti[0],
                                     AmountMulti,
@@ -308,6 +317,9 @@ public class SearchActivity extends AppCompatActivity {
                     } else {
                         Toast.makeText(SearchActivity.this, "تعداد مورد نظر صحیح نمی باشد.", Toast.LENGTH_SHORT).show();
                     }
+
+
+
                 } else {
                     Toast.makeText(SearchActivity.this, "تعداد مورد نظر صحیح نمی باشد.", Toast.LENGTH_SHORT).show();
                 }
@@ -392,11 +404,12 @@ public class SearchActivity extends AppCompatActivity {
     }
 
 
-    public void good_select_function(String price_fun, String code_fun, String flag) {
+    public void good_select_function(String code_fun, String price_fun, String flag) {
 
         if (flag.equals("1")) {
             fab.setVisibility(View.VISIBLE);
             Multi_buy.add(new String[]{code_fun, price_fun});
+
             item_multi.findItem(R.id.menu_multi).setVisible(true);
 
         } else {

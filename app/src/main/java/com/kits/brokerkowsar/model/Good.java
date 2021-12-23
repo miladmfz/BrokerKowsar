@@ -1,6 +1,8 @@
 package com.kits.brokerkowsar.model;
 
 
+import android.util.Log;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -36,7 +38,7 @@ public class Good implements Serializable {
     @SerializedName("MinSellPrice")
     private Integer MinSellPrice;
     @SerializedName("SellPrice")
-    private Float SellPrice;
+    private String SellPrice;
     @SerializedName("SellPrice1")
     private Float SellPrice1;
     @SerializedName("SellPrice2")
@@ -198,6 +200,8 @@ public class Good implements Serializable {
     private String GoodType;
     @SerializedName("Itam_Show")
     private String Itam_Show;
+    @SerializedName("GroupsWhitoutCode")
+    private String GroupsWhitoutCode;
 
     @SerializedName("KsrImageCode")
     private Integer KsrImageCode;
@@ -274,7 +278,7 @@ public class Good implements Serializable {
                 break;
             case "sellpricetype":
                 if (SellPriceType == null) Res = "";
-                else Res = SellPriceType.toString();
+                else Res = SellPriceType+"";
                 break;
             case "maxsellprice":
                 if (MaxSellPrice == null) Res = "";
@@ -286,7 +290,7 @@ public class Good implements Serializable {
                 break;
             case "sellprice":
                 if (SellPrice == null) Res = "";
-                else Res = SellPrice.toString().substring(0, SellPrice.toString().length() - 2);
+                else Res = SellPrice;
                 break;
             case "sellprice1":
                 if (SellPrice1 == null) Res = "";
@@ -608,6 +612,10 @@ public class Good implements Serializable {
                 if (Itam_Show == null) Res = "";
                 else Res = Itam_Show;
                 break;
+            case "groupswhitoutcode":
+                if (GroupsWhitoutCode == null) Res = "";
+                else Res = GroupsWhitoutCode;
+                break;
         }
         return Res;
 
@@ -662,7 +670,7 @@ public class Good implements Serializable {
                 MinSellPrice = Integer.parseInt(Res);
                 break;
             case "sellprice":
-                SellPrice = Float.parseFloat(Res);
+                SellPrice = Res;
                 break;
             case "sellprice1":
                 SellPrice1 = Float.parseFloat(Res);
@@ -903,6 +911,9 @@ public class Good implements Serializable {
                 break;
             case "itam_show":
                 Itam_Show = Res;
+                break;
+            case "groupswhitoutcode":
+                GroupsWhitoutCode = Res;
                 break;
         }
     }

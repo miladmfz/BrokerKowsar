@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.Image_info;
+import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.RetrofitResponse;
@@ -40,6 +43,12 @@ public class GoodBuyHistoryAdapter extends RecyclerView.Adapter<GoodBuyHistoryAd
     private final String itemposition;
     APIInterface apiInterface;
     private final Image_info image_info;
+    private long sum = 0;
+    private final DatabaseHelper dbh;
+    Action action;
+
+
+
 
     public GoodBuyHistoryAdapter(ArrayList<Good> goods, String Itemposition, Context mContext) {
         this.mContext = mContext;
@@ -47,8 +56,11 @@ public class GoodBuyHistoryAdapter extends RecyclerView.Adapter<GoodBuyHistoryAd
         this.itemposition = Itemposition;
         this.callMethod = new CallMethod(mContext);
         this.image_info = new Image_info(mContext);
-
+        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("UseSQLiteURL"));
+        
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
+        action = new Action(mContext);
+
     }
 
     @NonNull
@@ -89,50 +101,19 @@ public class GoodBuyHistoryAdapter extends RecyclerView.Adapter<GoodBuyHistoryAd
             holder.maxsellpriceTextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(gooddetail.getGoodFieldValue("MaxSellPrice")))));
             holder.maxtotal.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt("" + maxprice))));
 
-            if (image_info.Image_exist(gooddetail.getGoodFieldValue("KsrImageCode"))) {
-                String root = Environment.getExternalStorageDirectory().getAbsolutePath();
-                File imagefile = new File(root + "/Kowsar/" + callMethod.ReadString("EnglishCompanyNameUse") + "/" + gooddetail.getGoodFieldValue("GoodCode") + ".jpg");
-                Bitmap myBitmap = BitmapFactory.decodeFile(imagefile.getAbsolutePath());
-                holder.img.setImageBitmap(myBitmap);
-            } else {
-                Call<RetrofitResponse> call2 = apiInterface.GetImageFromKsr("GetImageFromKsr", gooddetail.getGoodFieldValue("KsrImageCode"));
-                call2.enqueue(new Callback<RetrofitResponse>() {
-                    @Override
-                    public void onResponse(@NonNull Call<RetrofitResponse> call2, @NonNull Response<RetrofitResponse> response) {
-                        if (response.isSuccessful()) {
-                            assert response.body() != null;
-                            if (response.body().getText().equals("no_photo")) {
-                                byte[] imageByteArray1;
-                                imageByteArray1 = Base64.decode(mContext.getString(R.string.no_photo), Base64.DEFAULT);
-                                holder.img.setImageBitmap(
-                                        Bitmap.createScaledBitmap(
-                                                BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length),
-                                                BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getWidth() * 2,
-                                                BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getHeight() * 2,
-                                                false)
-                                );
-                            } else {
-                                byte[] imageByteArray1;
-                                imageByteArray1 = Base64.decode(response.body().getText(), Base64.DEFAULT);
-                                holder.img.setImageBitmap(
-                                        Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length),
-                                                BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getWidth() * 2,
-                                                BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getHeight() * 2,
-                                                false)
-                                );
-                                image_info.SaveImage(
-                                        BitmapFactory.decodeByteArray(Base64.decode(response.body().getText(), Base64.DEFAULT), 0, Base64.decode(response.body().getText(), Base64.DEFAULT).length), gooddetail.getGoodFieldValue("KsrImageCode"));
-                            }
-                        }
-                    }
 
-                    @Override
-                    public void onFailure(@NonNull Call<RetrofitResponse> call2, @NonNull Throwable t) {
-                    }
-                });
-
-            }
         }
+
+        if (image_info.Image_exist(gooddetail.getGoodFieldValue("KsrImageCode"))) {
+            String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+            File imagefile = new File(root + "/Kowsar/" +
+                    callMethod.ReadString("EnglishCompanyNameUse") + "/" +
+                    gooddetail.getGoodFieldValue("KsrImageCode") + ".jpg");
+            Bitmap myBitmap = BitmapFactory.decodeFile(imagefile.getAbsolutePath());
+            holder.img.setImageBitmap(myBitmap);
+
+        }
+
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -31,7 +32,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     int limitcolumn;
     String query = "";
-    String joinquery;
+    String searchquery;
     String result = "";
     String SH_firstStart;
     String SH_selloff;
@@ -46,7 +47,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     boolean SH_real_amount;
     boolean SH_goodamount;
     int k = 0;
-
+    String sc;
+    String stack_Condition;
+    String joinDetail;
+    String joinbasket;
     //Replace(Replace(Cast(_______ as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705))
 
     public DatabaseHelper(Context context, String DATABASE_NAME) {
@@ -84,15 +88,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'VersionInfo', '" + BuildConfig.VERSION_NAME + "' Where Not Exists(Select * From Config Where KeyValue = 'VersionInfo')");
 
 
-        getWritableDatabase().execSQL("Create Index IF Not Exists IX_GoodGroup_GoodRef on GoodGroup (GoodRef)");
-        getWritableDatabase().execSQL("Create Index IF Not Exists IX_GoodGroup_GroupRef on GoodGroup (GoodGroupRef)");
+        getWritableDatabase().execSQL("Create Index IF Not Exists IX_GoodGroup_GoodRef on GoodGroup (GoodRef,GoodGroupRef)");
 
         getWritableDatabase().execSQL("Create Index IF Not Exists IX_Prefactor_CustomerRef on Prefactor (CustomerRef)");
 
-        getWritableDatabase().execSQL("Create Index IF Not Exists IX_PreFactorRow_GoodRef on PreFactorRow (GoodRef)");
+        getWritableDatabase().execSQL("Create Index IF Not Exists IX_PreFactorRow_GoodRef on PreFactorRow (GoodRef,PreFactorRef)");
         getWritableDatabase().execSQL("Create Index IF Not Exists IX_PreFactorRow_PreFactorRef on PreFactorRow (PreFactorRef)");
 
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_GoodRef ON GoodStack (GoodRef, StackRef)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_GoodRef_stackref ON GoodStack (GoodRef,StackRef)");
 
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_KsrImage_ObjectRef ON KsrImage (ObjectRef)");
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_KsrImage_IsDefaultImage ON KsrImage (IsDefaultImage)");
@@ -108,7 +111,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain5 ON Good (GoodExplain5)");
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain6 ON Good (GoodExplain6)");
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_SellPriceType ON Good (SellPriceType)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_MaxPriceType ON Good (MaxPriceType)");
         getWritableDatabase().execSQL("Create Index IF Not Exists IX_Good_GoodUnitRef on Good (GoodUnitRef)");
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar1 ON Good (Nvarchar1)");
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar2 ON Good (Nvarchar2)");
@@ -181,19 +183,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.SH_real_amount = callMethod.ReadBoolan("RealAmount");
         this.SH_goodamount = callMethod.ReadBoolan("GoodAmount");
 
-        String stackCondition = "Where StackRef in (" + SH_brokerstack + ")";
-        if (SH_activestack) {
-            stackCondition = stackCondition + " And ActiveStack = 1";
-        }
-        joinquery = " , (Select ki.KsrImageCode From KsrImage ki Where ki.ObjectRef=g.GoodCode Order By ki.IsDefaultImage DESC, ki.KsrImageCode LIMIT 1) As KsrImageCode " +
-                "FROM Good g ,FilterTable Join Units u on u.UnitCode = g.GoodUnitRef " +
-                " Join (Select GoodRef, Sum(Amount) as StackAmount, Sum(ReservedAmount) as ReservedAmount,ActiveStack" +
-                " From GoodStack " + stackCondition + " Group By GoodRef) gs on gs.GoodRef = g.GoodCode " +
-                " Left Join (Select GoodRef, Sum(FactorAmount) FactorAmount , Sum(FactorAmount*Price) Price From PreFactorRow" +
-                " Where PreFactorRef =" + SH_prefactor_code + " Group BY GoodRef) pf on pf.GoodRef = g.GoodCode " +
-                " Left Join PreFactor h on h.PreFactorCode = " + SH_prefactor_code +
-                " Left Join Customer c on c.CustomerCode=h.CustomerRef " +
-                " Left Join CacheGoodGroup cgg on cgg.GoodRef = g.Goodcode ";
+        sc = "Where StackRef in (" + SH_brokerstack + ")";
+//        if (SH_activestack) {
+//            stackCondition = stackCondition + " And Active = 1";
+//        }
+//        joinquery = " , (Select ki.KsrImageCode From KsrImage ki Where ki.ObjectRef=g.GoodCode Order By ki.IsDefaultImage DESC, ki.KsrImageCode LIMIT 1) As KsrImageCode " +
+//                "FROM Good g ,FilterTable Join Units u on u.UnitCode = g.GoodUnitRef " +
+//                " Join (Select GoodRef, Sum(Amount) as StackAmount, Sum(ReservedAmount) as ReservedAmount,ActiveStack" +
+//                " From GoodStack " + stackCondition + " Group By GoodRef) gs on gs.GoodRef = g.GoodCode " +
+//                " Left Join (Select GoodRef, Sum(FactorAmount) FactorAmount , Sum(FactorAmount*Price) Price From PreFactorRow" +
+//                " Where PreFactorRef =" + SH_prefactor_code + " Group BY GoodRef) pf on pf.GoodRef = g.GoodCode " +
+//                " Left Join PreFactor h on h.PreFactorCode = " + SH_prefactor_code +
+//                " Left Join Customer c on c.CustomerCode=h.CustomerRef " +
+//                " Left Join CacheGoodGroup cgg on cgg.GoodRef = g.Goodcode ";
+
+
+
+
+        joinbasket =" FROM Good g " +
+                " Join Units on UnitCode =GoodUnitRef " +
+                " Left Join (Select GoodRef, Sum(FactorAmount) FactorAmount , Sum(FactorAmount*Price) Price " +
+                " From PreFactorRow Where PreFactorRef = "+SH_prefactor_code+" Group BY GoodRef) pf on pf.GoodRef = g.GoodCode  " +
+                " Left Join PreFactor h on h.PreFactorCode = "+SH_prefactor_code+
+                " Left Join Customer c on c.CustomerCode=h.CustomerRef " ;
+
+        joinDetail = " FROM Good g ,FilterTable Join Units u on u.UnitCode = g.GoodUnitRef " +
+                " Left Join CacheGoodGroup cgg on cgg.GoodRef = g.Goodcode " ;
+
+
+//        searchquery=" FROM Good g ,FilterTable " +
+//                " Join (Select GoodRef, Sum(Amount) as StackAmount, Sum(ReservedAmount) as ReservedAmount,ActiveStack From GoodStack Where StackRef in (1) Group By GoodRef)" +
+//                " gs on gs.GoodRef = g.GoodCode ";
+
 
 
     }
@@ -264,6 +285,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return String.valueOf(result);
     }
 
+    public String GetGoodTypeDefault() {
+
+        query = "select GoodType from goodtype where isdefault =1 " ;
+        cursor = getWritableDatabase().rawQuery(query, null);
+        cursor.moveToFirst();
+        String GoodType = cursor.getString(cursor.getColumnIndex("GoodType"));
+        cursor.close();
+
+        return GoodType;
+    }
+
 
     public ArrayList<Column> GetAllGoodType() {
         query = "Select * from GoodType ";
@@ -282,16 +314,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return columns;
     }
 
+    @SuppressLint("Recycle")
     public ArrayList<Good> getAllGood(String search, String aGroupCode) {
 
         GetPreference();
 
-        columns_search = GetColumns("", "كتاب", "3");
         columns = GetColumns("", "", "1");
 
         search = search.replaceAll(" ", "%");
+        search = search.replaceAll("'", "%");
 
-        query = "With FilterTable As (Select 0 as SecondField) SELECT ";
+        query = " With FilterTable As (Select 0 as SecondField) SELECT ";
         k = 0;
 
         for (Column column : columns) {
@@ -299,36 +332,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 query = query + " , ";
             }
             if (!column.getColumnDefinition().equals("")) {
-                query = query + column.getColumnDefinition() + " as " + column.getColumnName();
+                stack_Condition=column.getColumnDefinition().replace("stackCondition",sc);
+                query = query + stack_Condition + " as " + column.getColumnName();
             } else {
                 query = query + column.getColumnName();
             }
             k++;
         }
 
-        query = query + joinquery ;
+        query = query + " FROM Good g , FilterTable " ;
         k = 0;
+        boolean digitsOnly = TextUtils.isDigitsOnly(search);
         if(!search.equals("")) {
-            for (Column column : columns_search) {
-                if (k == 0) {
-                    query = query + " Where (";
-                }else{
-                    query = query + " or ";
+            for (Column column : columns) {
+                if (!(!column.getColumnType().equals("0") && !digitsOnly)) {
+                    if (k == 0) {
+                        query = query + " Where (";
+                    } else {
+                        query = query + " or ";
+                    }
+                    query = query + column.getColumnName() + " Like '%" + search + "%' ";
+                    k++;
                 }
-                query = query + column.getColumnName() + " Like '%" + search + "%' ";
-                k++;
             }
             query = query + " )";
-        }else
-        query = query + "where 1=1 ";
+        }else{
+            query = query + "where 1=1 ";
+        }
 
-            if (SH_goodamount) {
-                if (SH_real_amount) {
-                    query = query + " And gs.StackAmount-gs.ReservedAmount > 0 ";
-                } else {
-                    query = query + " And gs.StackAmount > 0 ";
-                }
-            }
+
+
+
+        if (SH_goodamount) {
+            query = query + " And StackAmount > 0 ";
+        }
 
 
         if (Integer.parseInt(aGroupCode) > 0) {
@@ -353,10 +390,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 k++;
             }
         }
-        query = query + " LIMIT " + SH_itemamount;
+        query = query + " LIMIT " + SH_itemamount + " ";
 
-        Log.e("test",query);
         cursor = getWritableDatabase().rawQuery(query, null);
+
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
@@ -412,19 +449,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             k++;
         }
-        query = query + joinquery;
 
+
+        query = query + " FROM Good g , FilterTable " ;
 
         query = query + " Where  1=1 ";
 
         query = query + searchbox_result;
 
+        query=query.replace("stackCondition",sc);
+
         if (SH_goodamount) {
-            if (SH_real_amount) {
-                query = query + " And gs.StackAmount-gs.ReservedAmount > 0 ";
-            } else {
-                query = query + " And gs.StackAmount > 0 ";
-            }
+            query = query + " And StackAmount > 0 ";
         }
 
         if (Integer.parseInt(aGroupCode) > 0) {
@@ -454,6 +490,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         query = query + " LIMIT " + SH_itemamount;
+        Log.e("test_",query);
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -492,6 +529,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+
+
     public Good getGoodByCode(String code) {
         GetPreference();
         columns = GetColumns(code, "", "0");
@@ -509,7 +548,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             k++;
         }
-        query = query + joinquery;
+        query = query + joinDetail ;
+        query=query.replace("stackCondition",sc);
         query = query + " WHERE GoodCode = " + code;
 
         Log.e("test",query);
@@ -517,7 +557,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-
             for (Column column : columns) {
 
                 switch (column.getColumnType()) {
@@ -547,6 +586,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return gooddetail;
     }
 
+
+    public Good getGoodBuyBox(String code) {
+        GetPreference();
+
+        query = " SELECT IfNull(pf.FactorAmount,0) as FactorAmount ,  UnitName ," +
+                " IfNull(pf.Price,0) as Price , MaxSellPrice ," +
+                " Case c.PriceTip When 1 Then  SellPrice1 When 2 Then SellPrice2 When 3 Then SellPrice3 " +
+                " When 4 Then SellPrice4 When 5 Then SellPrice5 When 6 Then SellPrice6 Else " +
+                " Case When g.SellPriceType = 0 Then MaxSellPrice Else 100 End End *  " +
+                " Case When g.SellPriceType = 0 Then 1 Else MaxSellPrice/100 End as SellPrice " +
+                " FROM Good g " +
+                " Join Units on UnitCode =GoodUnitRef " +
+                " Left Join (Select GoodRef, Sum(FactorAmount) FactorAmount , Sum(FactorAmount*Price) Price " +
+                " From PreFactorRow Where PreFactorRef = "+SH_prefactor_code+" Group BY GoodRef) pf on pf.GoodRef = g.GoodCode  " +
+                " Left Join PreFactor h on h.PreFactorCode = "+SH_prefactor_code+
+                " Left Join Customer c on c.CustomerCode=h.CustomerRef " +
+                " WHERE GoodCode = "+code;
+
+
+        Log.e("test",query);
+        gooddetail = new Good();
+        cursor = getWritableDatabase().rawQuery(query, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            gooddetail.setGoodFieldValue("FactorAmount",cursor.getString(cursor.getColumnIndex("FactorAmount")));
+            gooddetail.setGoodFieldValue("UnitName",cursor.getString(cursor.getColumnIndex("UnitName")));
+            gooddetail.setGoodFieldValue("Price",cursor.getString(cursor.getColumnIndex("Price")));
+            gooddetail.setGoodFieldValue("MaxSellPrice",cursor.getLong(cursor.getColumnIndex("MaxSellPrice"))+"");
+            gooddetail.setGoodFieldValue("SellPrice",cursor.getLong(cursor.getColumnIndex("SellPrice"))+"");
+
+        }
+        cursor.close();
+        Log.e("test",gooddetail.getGoodFieldValue("SellPrice"));
+        return gooddetail;
+    }
+
     public ArrayList<Good> getAllGood_ByDate(String xDayAgo) {
         GetPreference();
         columns = GetColumns("", "", "1");
@@ -564,15 +639,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             k++;
         }
-        query = query + joinquery + " Where Date>='" + xDayAgo + "' ";
+        query = query + " FROM Good g , FilterTable Where Date>='" + xDayAgo + "' ";
+        query=query.replace("stackCondition",sc);
 
 
         if (SH_goodamount) {
-            if (SH_real_amount) {
-                query = query + " And gs.StackAmount-gs.ReservedAmount > 0 ";
-            } else {
-                query = query + " And gs.StackAmount > 0 ";
-            }
+
+                query = query + " And StackAmount > 0 ";
         }
         query = query + " order by ";
         k = 0;
@@ -628,7 +701,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public ArrayList<Good> getAllGood_pfcode() {
         GetPreference();
-        columns = GetColumns("", "", "2");
         query = "SELECT * from PrefactorRow  Where ifnull(PreFactorRef,0)= " + SH_prefactor_code;
         goods = new ArrayList<>();
         cursor = getWritableDatabase().rawQuery(query, null);
@@ -696,13 +768,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 cursor.moveToFirst();
                 getWritableDatabase().execSQL("Update PreFactorRow set FactorAmount = FactorAmount +" + FactorAmount + " Where PreFactorRowCode=" + cursor.getString(cursor.getColumnIndex("PreFactorRowCode")) + ";");
             } else {
-
-                query = "INSERT INTO PreFactorRow(PreFactorRef, GoodRef, FactorAmount, Price) Select " + pfcode + "," + goodcode + ", " + FactorAmount + "," +
-                        "Case When " + price + ">=0 Then " + price + " Else Case PriceTip When 1 Then SellPrice1 When 2 Then SellPrice2 When 3 Then SellPrice3 When 4 Then SellPrice4 When 5 Then SellPrice5 When 6 Then SellPrice6 End" +
-                        "* Case When SellPriceType = 1 Then MaxSellPrice/100 Else 1 End End " +
-                        "From Good g Join PreFactor h on 1=1 Join Customer c on h.CustomerRef=c.CustomerCode " +
-                        "Where h.PreFactorCode =" + pfcode + " And GoodCode = " + goodcode;
-
+                query="INSERT INTO PreFactorRow(PreFactorRef, GoodRef, FactorAmount, Price) Select " + pfcode + "," + goodcode + ", " + FactorAmount + "," +price;
+//                query = "INSERT INTO PreFactorRow(PreFactorRef, GoodRef, FactorAmount, Price) Select " + pfcode + "," + goodcode + ", " + FactorAmount + "," +
+//                        "Case When " + price + ">=0 Then " + price + " Else Case PriceTip When 1 Then SellPrice1 When 2 Then SellPrice2 When 3 Then SellPrice3 When 4 Then SellPrice4 When 5 Then SellPrice5 When 6 Then SellPrice6 End" +
+//                        "* Case When SellPriceType = 1 Then MaxSellPrice/100 Else 1 End End " +
+//                        "From Good g Join PreFactor h on 1=1 Join Customer c on h.CustomerRef=c.CustomerCode " +
+//                        "Where h.PreFactorCode =" + pfcode + " And GoodCode = " + goodcode;
+                Log.e("test_",query);
                 getWritableDatabase().execSQL(query);
             }
             cursor.close();
@@ -788,7 +860,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         columns = GetColumns("", "", "2");
 
 
-        query = "With FilterTable As (Select 0 as SecondField) SELECT ";
+        query = "SELECT ";
 
         k = 0;
         for (Column column : columns) {
@@ -803,10 +875,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             k++;
         }
 
-        query = query + " FROM Good g ,FilterTable " +
+        query = query + " FROM Good g  " +
                 "Join PreFactorRow pf on GoodRef = GoodCode " +
                 "Join Units u on u.UnitCode = g.GoodUnitRef  " +
-                "Where (GoodName Like '%" + name + "%' and PreFactorRef = " + aPreFactorCode + ") order by GoodCode DESC ";
+                "Where (GoodName Like '%" + name + "%' and PreFactorRef = " + aPreFactorCode + ") order by PreFactorRowCode DESC ";
 
 
 
@@ -851,14 +923,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         query = "Update Prefactor set CustomerRef='" + Customer + "' where PreFactorCode = " + pfcode;
         getWritableDatabase().execSQL(query);
         query = "Select * From ( Select Case PriceTip " +
-                " When 1 Then SellPrice1 When 2 Then SellPrice2 When 3 Then SellPrice3 " +
-                " When 4 Then SellPrice4 When 5 Then SellPrice5 When 6 Then SellPrice6 " +
-                "End * Case When SellPriceType = 1 Then MaxSellPrice/100 Else 1 End as NewPrice," +
-                " Price, GoodCode From PreFactorRow p " +
+                "When 1 Then  SellPrice1 When 2 Then SellPrice2 When 3 Then SellPrice3  " +
+                "When 4 Then   SellPrice4 When 5 Then SellPrice5 When 6 Then SellPrice6 " +
+                "Else  Case When g.SellPriceType = 0 Then MaxSellPrice Else 100 End End * " +
+                " Case When g.SellPriceType = 0 Then 1 Else MaxSellPrice/100 End as " +
+                "NewPrice, Price, GoodCode From PreFactorRow p " +
                 "Join PreFactor h on h.PreFactorCode = p.PreFactorRef " +
                 "Join Customer on CustomerCode = CustomerRef " +
                 "Join Good g on GoodRef = GoodCode Where h.PreFactorCode = " + pfcode + ") ss " +
                 "Where Price<> NewPrice";
+
+
         cursor = getWritableDatabase().rawQuery(query, null);
 
 

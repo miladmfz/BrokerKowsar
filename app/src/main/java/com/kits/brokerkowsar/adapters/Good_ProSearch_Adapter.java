@@ -102,7 +102,7 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
                 if (Column.getSortOrder().equals("2")) {
                     extra_TextView.setTextSize(14);
                 }
-                if (Column.getColumnName().equals("SellPrice")) {
+                if (Column.getColumnName().equals("MaxSellPrice")) {
                     extra_TextView.setTextColor(mContext.getResources().getColor(R.color.red_800));
                 }
 
@@ -161,27 +161,25 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
             if (multi_select) {
                 holder.rltv.setChecked(!holder.rltv.isChecked());
                 goods.get(position).setCheck(!goods.get(position).isCheck());
-                String pri_multi;
-                pri_multi = gooddetail.getGoodFieldValue("SellPrice");
-
                 if (goods.get(position).isCheck()) {
+
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
                         SearchActivity activity = (SearchActivity) mContext;
-                        activity.good_select_function(pri_multi, gooddetail.getGoodFieldValue("GoodCode"), "1");
+                        activity.good_select_function(goods.get(position).getGoodFieldValue("GoodCode"), goods.get(position).getGoodFieldValue("MaxSellPrice"), "1");
                     }
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
                         Search_date_detailActivity activity = (Search_date_detailActivity) mContext;
-                        activity.good_select_function(pri_multi, gooddetail.getGoodFieldValue("GoodCode"), "1");
+                        activity.good_select_function(goods.get(position).getGoodFieldValue("GoodCode"), goods.get(position).getGoodFieldValue("MaxSellPrice"), "1");
                     }
 
                 } else {
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
                         SearchActivity activity = (SearchActivity) mContext;
-                        activity.good_select_function(pri_multi, gooddetail.getGoodFieldValue("GoodCode"), "0");
+                        activity.good_select_function(goods.get(position).getGoodFieldValue("GoodCode"), goods.get(position).getGoodFieldValue("MaxSellPrice"), "0");
                     }
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
                         Search_date_detailActivity activity = (Search_date_detailActivity) mContext;
-                        activity.good_select_function(pri_multi, gooddetail.getGoodFieldValue("GoodCode"), "0");
+                        activity.good_select_function(goods.get(position).getGoodFieldValue("GoodCode"), goods.get(position).getGoodFieldValue("MaxSellPrice"), "0");
                     }
 
 
@@ -205,27 +203,25 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
 
                 holder.rltv.setChecked(!holder.rltv.isChecked());
                 goods.get(position).setCheck(!goods.get(position).isCheck());
-                String pri_multi;
-                pri_multi = gooddetail.getGoodFieldValue("SellPrice");
 
                 if (goods.get(position).isCheck()) {
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
                         SearchActivity activity = (SearchActivity) mContext;
-                        activity.good_select_function(pri_multi, gooddetail.getGoodFieldValue("GoodCode"), "1");
+                        activity.good_select_function(goods.get(position).getGoodFieldValue("GoodCode"), goods.get(position).getGoodFieldValue("MaxSellPrice"), "1");
                     }
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
                         Search_date_detailActivity activity = (Search_date_detailActivity) mContext;
-                        activity.good_select_function(pri_multi, gooddetail.getGoodFieldValue("GoodCode"), "1");
+                        activity.good_select_function(goods.get(position).getGoodFieldValue("GoodCode"), goods.get(position).getGoodFieldValue("MaxSellPrice"), "1");
                     }
 
                 } else {
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
                         SearchActivity activity = (SearchActivity) mContext;
-                        activity.good_select_function(pri_multi, gooddetail.getGoodFieldValue("GoodCode"), "0");
+                        activity.good_select_function(goods.get(position).getGoodFieldValue("GoodCode"), goods.get(position).getGoodFieldValue("MaxSellPrice"), "0");
                     }
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
                         Search_date_detailActivity activity = (Search_date_detailActivity) mContext;
-                        activity.good_select_function(pri_multi, gooddetail.getGoodFieldValue("GoodCode"), "0");
+                        activity.good_select_function(goods.get(position).getGoodFieldValue("GoodCode"), goods.get(position).getGoodFieldValue("MaxSellPrice"), "0");
                     }
 
 

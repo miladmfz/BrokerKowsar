@@ -338,7 +338,7 @@ public class Search_date_detailActivity extends AppCompatActivity {
 
     }
 
-    public void good_select_function(String price_fun, String code_fun, String flag) {
+    public void good_select_function(String code_fun, String price_fun, String flag) {
         if (flag.equals("1")) {
             fab.setVisibility(View.VISIBLE);
             Multi_buy.add(new String[]{code_fun, price_fun});

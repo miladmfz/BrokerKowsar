@@ -89,7 +89,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                 .build();
         PRDownloader.initialize(getApplicationContext(), config1);
 
-        int downloadId = PRDownloader.download(url, databasedir.getPath(), databasefile.getName())
+        PRDownloader.download(url, databasedir.getPath(), databasefile.getName())
                 .build()
                 .setOnStartOrResumeListener(() -> {
                     dialog.show();
@@ -144,10 +144,12 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         tv_rep = dialog.findViewById(R.id.rep_prog_text);
         tv_step = dialog.findViewById(R.id.rep_prog_step);
         int i = 0;
-        //if (companynames.size()>0){
+
+//if (companynames.size()>0){
         if (!callMethod.ReadString("PersianCompanyNames").equals("[]")) {
 
             for (String string : callMethod.getArrayList("PersianCompanyNames")) {
+
                 MaterialButton Button = new MaterialButton(this);
                 Button.setText(string);
                 Button.setBackgroundResource(R.color.white);
@@ -155,14 +157,19 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                         LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
                 layoutParams.setMargins(30, 10, 30, 10);
 
+
+
+
+
                 Button.setTextSize(30);
                 Button.setGravity(Gravity.CENTER);
                 finalI = i;
                 Button.setOnClickListener(v -> {
-                    callMethod.EditString("PersianCompanyNameUse", persiancompanynames.get(finalI));
-                    callMethod.EditString("EnglishCompanyNameUse", englishcompanynames.get(finalI));
-                    callMethod.EditString("ServerURLUse", servers.get(finalI));
+                    int count=persiancompanynames.indexOf(string);
 
+                    callMethod.EditString("PersianCompanyNameUse", persiancompanynames.get(count));
+                    callMethod.EditString("EnglishCompanyNameUse", englishcompanynames.get(count));
+                    callMethod.EditString("ServerURLUse", servers.get(count));
 
                     File databasedir = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse"));
                     File databasefile = new File(databasedir, "/KowsarDb.sqlite");//Create Output file in Main File

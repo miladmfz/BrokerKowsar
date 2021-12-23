@@ -95,7 +95,10 @@ public class Action {
 
 
         String customer_price;
-        Good good = dbh.getGoodByCode(goodcode);
+        Log.e("1","1");
+        Log.e("1",goodcode);
+        Log.e("1","1");
+        Good good = dbh.getGoodBuyBox(goodcode);
 
 
         if (Basketflag.equals("0")) {
@@ -136,8 +139,8 @@ public class Action {
             @Override
             public void afterTextChanged(Editable editable) {
                 try {
-                    float iPrice = Float.parseFloat(price.getText().toString());
-                    int iAmount = Integer.parseInt(amount.getText().toString());
+                    long iPrice = Long.parseLong(price.getText().toString());
+                    long iAmount = Integer.parseInt(amount.getText().toString());
                     sumprice.setText(String.valueOf(iPrice * iAmount));
                 } catch (Exception e) {
                     sumprice.setText("");
@@ -158,8 +161,8 @@ public class Action {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (percent.hasFocus()) {
-                    int iPercent;
-                    int iAmount;
+                    long iPercent;
+                    long iAmount;
                     try {
                         iPercent = Integer.parseInt(percent.getText().toString());
                         if (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) > 0) {
@@ -177,7 +180,7 @@ public class Action {
 
                     try {
                         iAmount = Integer.parseInt(amount.getText().toString());
-                        sumprice.setText(String.valueOf(iAmount * Float.parseFloat(price.getText().toString())));
+                        sumprice.setText(String.valueOf(iAmount * Long.parseLong(price.getText().toString())));
                     } catch (Exception e) {
                         sumprice.setText("");
                     }
@@ -196,7 +199,7 @@ public class Action {
             public void afterTextChanged(Editable editable) {
                 if (price.hasFocus()) {
                     try {
-                        float iPrice = Float.parseFloat(price.getText().toString());
+                        long iPrice = Long.parseLong(price.getText().toString());
                         if (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) > 0) {
                             percent.setText("" + (100 - (100 * iPrice / Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")))));
                         } else
@@ -223,7 +226,7 @@ public class Action {
             if (!amo.equals("")) {
                 if (Integer.parseInt(amo) != 0) {
                     if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
-                        dbh.InsertPreFactor(callMethod.ReadString("PreFactorCode"), good.getGoodFieldValue("GoodCode"), amo, pr, Basketflag);
+                        dbh.InsertPreFactor(callMethod.ReadString("PreFactorCode"), goodcode, amo, pr, Basketflag);
 
                         Toast.makeText(mContext, "به سبد کالا اضافه شد", Toast.LENGTH_SHORT).show();
                         if (!Basketflag.equals("0")) {
