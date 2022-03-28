@@ -17,6 +17,8 @@ public class RetrofitResponse {
     private ArrayList<PreFactor> PreFactors;
     @SerializedName("Activations")
     private ArrayList<Activation> Activations;
+    @SerializedName("Locations")
+    private ArrayList<Location> Locations;
 
 
     @SerializedName("Good")
@@ -29,6 +31,8 @@ public class RetrofitResponse {
     private PreFactor preFactor;
     @SerializedName("Activation")
     private Activation activation;
+    @SerializedName("Location")
+    private Good Location;
 
     @SerializedName("value")
     private String value;
@@ -152,5 +156,21 @@ public class RetrofitResponse {
 
     public void setActivations(ArrayList<Activation> activations) {
         Activations = activations;
+    }
+
+    public ArrayList<com.kits.brokerkowsar.model.Location> getLocations() {
+        return Locations;
+    }
+
+    public void setLocations(ArrayList<com.kits.brokerkowsar.model.Location> locations) {
+        Locations = locations;
+    }
+
+    public Good getLocation() {
+        return Location;
+    }
+
+    public void setLocation(Good location) {
+        Location = location;
     }
 }

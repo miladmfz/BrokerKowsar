@@ -11,14 +11,12 @@
 
     <include
         layout="@layout/activity_main"
-
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/NavActivity_nav"
-
         app:headerLayout="@layout/header"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

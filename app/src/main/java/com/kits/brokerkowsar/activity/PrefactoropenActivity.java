@@ -14,8 +14,10 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.adapters.Prefactor_Header_Box_adapter;
 import com.kits.brokerkowsar.adapters.Prefactor_Header_adapter;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.NumberFunctions;
@@ -34,8 +36,11 @@ public class PrefactoropenActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     GridLayoutManager gridLayoutManager;
     CallMethod callMethod;
-
-
+    ArrayList<PreFactor> preFactors;
+    Button btn_addfactor;
+    Button btn_refresh;
+    Button btn_dltempty;
+    TextView tv_prefactorcount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,58 +55,70 @@ public class PrefactoropenActivity extends AppCompatActivity {
         TextView repw = dialog1.findViewById(R.id.rep_prog_text);
         repw.setText("در حال خواندن اطلاعات");
         dialog1.show();
+
         intent();
+        Config();
+        try {
+            Handler handler = new Handler();
+            handler.postDelayed(this::init, 100);
+            handler.postDelayed(dialog1::dismiss, 1000);
+        }catch (Exception e){
+            callMethod.showToast(e.getMessage());
+        }
 
-        Handler handler = new Handler();
-        handler.postDelayed(this::init, 100);
-
-        handler.postDelayed(dialog1::dismiss, 1000);
 
     }
 
     //*********************************************
 
-    public void init() {
 
+
+    public void Config() {
         callMethod = new CallMethod(this);
-        dbh = new DatabaseHelper(this, callMethod.ReadString("UseSQLiteURL"));
-        Button addfactor = findViewById(R.id.PrefactoropenActivity_btn);
-        Button refresh = findViewById(R.id.PrefactoropenActivity_refresh);
-        Button dltempty = findViewById(R.id.PrefactoropenActivity_deleteempty);
-        TextView tv = findViewById(R.id.PrefactoropenActivity_amount);
+        dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
+        btn_addfactor = findViewById(R.id.PrefactoropenActivity_btn);
+        btn_refresh = findViewById(R.id.PrefactoropenActivity_refresh);
+        btn_dltempty = findViewById(R.id.PrefactoropenActivity_deleteempty);
+        tv_prefactorcount = findViewById(R.id.PrefactoropenActivity_amount);
         recyclerView = findViewById(R.id.PrefactoropenActivity_recyclerView);
 
+    }
 
-        ArrayList<PreFactor> preFactors;
+    public void init() {
+
+
+
         preFactors = dbh.getAllPrefactorHeaderopen();
-        gridLayoutManager = new GridLayoutManager(PrefactoropenActivity.this, 1);
+        tv_prefactorcount.setText((NumberFunctions.PerisanNumber("" + preFactors.size())));
+
+
+        gridLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(gridLayoutManager);
         if (Integer.parseInt(fac) != 0) {
-            Prefactor_Header_adapter adapter = new Prefactor_Header_adapter(preFactors, PrefactoropenActivity.this);
+            Prefactor_Header_adapter adapter = new Prefactor_Header_adapter(preFactors, this);
             recyclerView.setAdapter(adapter);
         } else {
-            Prefactor_Header_Box_adapter adapter = new Prefactor_Header_Box_adapter(preFactors, PrefactoropenActivity.this);
+            Prefactor_Header_Box_adapter adapter = new Prefactor_Header_Box_adapter(preFactors, this);
             recyclerView.setAdapter(adapter);
         }
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        tv.setText((NumberFunctions.PerisanNumber("" + preFactors.size())));
-        refresh.setOnClickListener(view -> {
 
+
+
+        btn_refresh.setOnClickListener(view -> {
             finish();
             startActivity(getIntent());
-
         });
 
-        dltempty.setOnClickListener(view -> {
+        btn_dltempty.setOnClickListener(view -> {
             dbh.DeleteEmptyPreFactor();
             finish();
             startActivity(getIntent());
-
         });
 
 
-        addfactor.setOnClickListener(view -> {
-            intent = new Intent(PrefactoropenActivity.this, CustomerActivity.class);
+        btn_addfactor.setOnClickListener(view -> {
+            intent = new Intent(this, CustomerActivity.class);
             intent.putExtra("edit", "0");
             intent.putExtra("factor_code", "0");
             intent.putExtra("id", "0");

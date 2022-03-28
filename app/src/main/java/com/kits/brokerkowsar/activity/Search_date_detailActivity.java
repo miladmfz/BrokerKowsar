@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.adapters.Good_ProSearch_Adapter;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.model.DatabaseHelper;
@@ -43,7 +44,7 @@ public class Search_date_detailActivity extends AppCompatActivity {
 
     private final Integer conter = 0;
     private Integer grid;
-    private String date, id;
+    private String date;
 
     private String lastDate;
     ArrayList<String[]> Multi_buy = new ArrayList<>();
@@ -63,20 +64,16 @@ public class Search_date_detailActivity extends AppCompatActivity {
 
     public static String scan = "";
     public String title = "";
-    Dialog dialog1;
-    private RecyclerView recyclerView_good;
-    private EditText edtsearch;
     Intent intent;
-    Handler handler;
-    String srch = "";
 
-    public String proSearchCondition;
-    TextView customer;
-    TextView sumfac;
-    TextView customer_code;
-
-
-
+    Button btn_refresh;
+    Toolbar toolbar;
+    TextView tv_customer;
+    TextView tv_sumfac;
+    TextView tv_customer_code;
+    SwitchMaterial sm_goodamount;
+    Button btn_search;
+    EditText ed_search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,16 +89,44 @@ public class Search_date_detailActivity extends AppCompatActivity {
         TextView repw = dialog1.findViewById(R.id.rep_prog_text);
         repw.setText("در حال خواندن اطلاعات");
         dialog1.show();
+
         intent();
+        Config();
+        try {
+            Handler handler = new Handler();
+            handler.postDelayed(this::init, 100);
 
-        Handler handler = new Handler();
-        handler.postDelayed(this::init, 100);
+            handler.postDelayed(dialog1::dismiss, 1000);
+        }catch (Exception e){
+            callMethod.showToast(e.getMessage());
+        }
 
-        handler.postDelayed(dialog1::dismiss, 1000);
 
     }
 
     //***************************************************
+
+
+    public void Config() {
+        callMethod = new CallMethod(this);
+        dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
+        tv_customer = findViewById(R.id.Search_date_detailActivity_customer);
+        tv_sumfac = findViewById(R.id.Search_date_detailActivity_sum_factor);
+        tv_customer_code = findViewById(R.id.Search_date_detailActivity_customer_code);
+
+        toolbar = findViewById(R.id.search_date_toolbar);
+        btn_refresh = findViewById(R.id.Search_date_detailActivity_refresh_fac);
+        fab = findViewById(R.id.search_date_fab);
+        calendar1 = new PersianCalendar();
+        recyclerView = findViewById(R.id.search_date_recycler);
+        btn_search = findViewById(R.id.search_date_btn);
+        ed_search = findViewById(R.id.search_date);
+        sm_goodamount = findViewById(R.id.search_date_switch_amount);
+        setSupportActionBar(toolbar);
+
+    }
+
+
     public void intent() {
         Bundle data = getIntent().getExtras();
         assert data != null;
@@ -109,118 +134,108 @@ public class Search_date_detailActivity extends AppCompatActivity {
     }
 
     public void init() {
-        callMethod = new CallMethod(this);
-        dbh = new DatabaseHelper(this, callMethod.ReadString("UseSQLiteURL"));
-        final TextView customer = findViewById(R.id.Search_date_detailActivity_customer);
-        final TextView sumfac = findViewById(R.id.Search_date_detailActivity_sum_factor);
-        final TextView customer_code = findViewById(R.id.Search_date_detailActivity_customer_code);
 
-        Toolbar toolbar = findViewById(R.id.search_date_toolbar);
-        setSupportActionBar(toolbar);
-        Button ref_fac = findViewById(R.id.Search_date_detailActivity_refresh_fac);
-        fab = findViewById(R.id.search_date_fab);
 
-        calendar1 = new PersianCalendar();
 
         calendar1.setPersianDate(
                 calendar1.getPersianYear(),
-                calendar1.getPersianMonth()+1,
+                calendar1.getPersianMonth(),
                 calendar1.getPersianDay()  - Integer.parseInt(date)
         );
+
         year="";
         mount="0";
         day="0";
+
         year=year+calendar1.getPersianYear();
-        mount=mount+calendar1.getPersianMonth();
+
+        if(String.valueOf(calendar1.getPersianMonth()).equals("11")){
+            mount="12";
+        }else if(String.valueOf(calendar1.getPersianMonth()).equals("00")){
+            mount="01";
+        }else{
+            mount=mount+(calendar1.getPersianMonth()+1);
+        }
         day=day+(calendar1.getPersianDay());
         lastDate = year+"/"+mount.substring(mount.length()-2)+"/"+day.substring(day.length()-2);
 
-        Log.e("test",lastDate);
+
         grid = Integer.parseInt(callMethod.ReadString("Grid"));
-
-
-        Button btn_search = findViewById(R.id.search_date_btn);
-        EditText ed_search = findViewById(R.id.search_date);
-
         ed_search.setText(date);
+        CallGoodView();
+
+
 
         btn_search.setOnClickListener(view -> {
-
+            calendar1=new PersianCalendar();
             if (!ed_search.getText().toString().equals("")) {
                 date = ed_search.getText().toString();
             } else {
                 date = "7";
             }
 
-            calendar1 = new PersianCalendar();
-
             calendar1.setPersianDate(
                     calendar1.getPersianYear(),
-                    calendar1.getPersianMonth()+1,
+                    calendar1.getPersianMonth(),
                     calendar1.getPersianDay()  - Integer.parseInt(date)
             );
+
             year="";
             mount="0";
             day="0";
+
             year=year+calendar1.getPersianYear();
-            mount=mount+calendar1.getPersianMonth();
+
+            if(String.valueOf(calendar1.getPersianMonth()).equals("11")){
+                mount="12";
+            }else if(String.valueOf(calendar1.getPersianMonth()).equals("00")){
+                mount="01";
+            }else{
+                mount=mount+(calendar1.getPersianMonth()+1);
+            }
             day=day+(calendar1.getPersianDay());
             lastDate = year+"/"+mount.substring(mount.length()-2)+"/"+day.substring(day.length()-2);
-
-            Log.e("test",lastDate);
-
             CallGoodView();
 
         });
 
 
-        ref_fac.setOnClickListener(view -> {
-
+        btn_refresh.setOnClickListener(view -> {
             if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
-                customer.setText("فاکتوری انتخاب نشده");
-                sumfac.setText("0");
+                tv_customer.setText("فاکتوری انتخاب نشده");
+                tv_sumfac.setText("0");
             } else {
-                customer.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
-                sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(dbh.getFactorSum(callMethod.ReadString("PreFactorCode")))));
-                customer_code.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PreFactorCode")));
+                tv_customer.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
+                tv_sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(dbh.getFactorSum(callMethod.ReadString("PreFactorCode")))));
+                tv_customer_code.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PreFactorCode")));
             }
         });
 
         if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
-            customer.setText("فاکتوری انتخاب نشده");
-            sumfac.setText("0");
-
+            tv_customer.setText("فاکتوری انتخاب نشده");
+            tv_sumfac.setText("0");
         } else {
-            customer.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
-            sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorCode"))))));
-            customer_code.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PreFactorCode")));
-
+            tv_customer.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
+            tv_sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorCode"))))));
+            tv_customer_code.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PreFactorCode")));
         }
 
 
-        recyclerView = findViewById(R.id.search_date_recycler);
-
-        CallGoodView();
-
-
-        final SwitchMaterial mySwitch_goodamount = findViewById(R.id.search_date_switch_amount);
 
         if (callMethod.ReadBoolan("GoodAmount")) {
-            mySwitch_goodamount.setChecked(true);
-            mySwitch_goodamount.setText("موجود");
-
+            sm_goodamount.setChecked(true);
+            sm_goodamount.setText("موجود");
         } else {
-            mySwitch_goodamount.setChecked(false);
-            mySwitch_goodamount.setText("هردو");
-
+            sm_goodamount.setChecked(false);
+            sm_goodamount.setText("هردو");
         }
 
-        mySwitch_goodamount.setOnCheckedChangeListener((compoundButton, b) -> {
+        sm_goodamount.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
-                mySwitch_goodamount.setText("موجود");
+                sm_goodamount.setText("موجود");
                 callMethod.EditBoolan("GoodAmount", true);
             } else {
-                mySwitch_goodamount.setText("هردو");
+                sm_goodamount.setText("هردو");
                 callMethod.EditBoolan("GoodAmount", false);
             }
             if (conter == 0) {
@@ -229,7 +244,7 @@ public class Search_date_detailActivity extends AppCompatActivity {
         });
 
         fab.setOnClickListener(v -> {
-            final Dialog dialog = new Dialog(Search_date_detailActivity.this);
+            final Dialog dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.box_multi_buy);
             Button boxbuy = dialog.findViewById(R.id.box_multi_buy_btn);
@@ -247,33 +262,32 @@ public class Search_date_detailActivity extends AppCompatActivity {
                 String amo = amount_mlti.getText().toString();
                 if (!amo.equals("")) {
                     if (Integer.parseInt(amo) != 0) {
-                        for (String[] s : Multi_buy) {
-                            if (s[1].equals("")) s[1] = "-1";
+                        for (String[] singlebuy : Multi_buy) {
+                            if (singlebuy[1].equals("")) singlebuy[1] = "-1";
                             String pf = callMethod.ReadString("PreFactorCode");
-                            dbh.InsertPreFactor(pf, s[0], amo, s[1], "0");
+                            dbh.InsertPreFactor(pf, singlebuy[0], amo, "0", "0");
                         }
-                        Toast toast = Toast.makeText(Search_date_detailActivity.this, "به سبد خرید اضافه شد", Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.CENTER, 10, 10);
-                        toast.show();
+                        callMethod.showToast("به سبد خرید اضافه شد");
+
                         dialog.dismiss();
                         item_multi.findItem(R.id.menu_multi).setVisible(false);
                         for (Good good : goods) {
                             good.setCheck(false);
                         }
                         Multi_buy.clear();
-                        adapter = new Good_ProSearch_Adapter(goods, Search_date_detailActivity.this);
+                        adapter = new Good_ProSearch_Adapter(goods,this);
                         adapter.multi_select = false;
-                        gridLayoutManager = new GridLayoutManager(Search_date_detailActivity.this, grid);
+                        gridLayoutManager = new GridLayoutManager(this, grid);
                         gridLayoutManager.scrollToPosition(pastVisiblesItems + 2);
                         recyclerView.setLayoutManager(gridLayoutManager);
                         recyclerView.setAdapter(adapter);
                         recyclerView.setItemAnimator(new DefaultItemAnimator());
                         fab.setVisibility(View.GONE);
                     } else {
-                        Toast.makeText(Search_date_detailActivity.this, "تعداد مورد نظر صحیح نمی باشد.", Toast.LENGTH_SHORT).show();
+                        callMethod.showToast("تعداد مورد نظر صحیح نمی باشد.");
                     }
                 } else {
-                    Toast.makeText(Search_date_detailActivity.this, "تعداد مورد نظر صحیح نمی باشد.", Toast.LENGTH_SHORT).show();
+                    callMethod.showToast("تعداد مورد نظر صحیح نمی باشد.");
                 }
             });
         });
@@ -296,13 +310,13 @@ public class Search_date_detailActivity extends AppCompatActivity {
 
         if (item.getItemId() == R.id.bag_shop) {
             if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
-                Intent intent = new Intent(Search_date_detailActivity.this, BuyActivity.class);
+                intent = new Intent(this, BuyActivity.class);
                 intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
                 intent.putExtra("showflag", "2");
                 startActivity(intent);
 
             } else {
-                Toast.makeText(this, "فاکتوری انتخاب نشده است", Toast.LENGTH_SHORT).show();
+                callMethod.showToast( "فاکتوری انتخاب نشده است");
             }
             return true;
         }
@@ -312,10 +326,10 @@ public class Search_date_detailActivity extends AppCompatActivity {
                 good.setCheck(false);
             }
             Multi_buy.clear();
-            adapter = new Good_ProSearch_Adapter(goods, Search_date_detailActivity.this);
+            adapter = new Good_ProSearch_Adapter(goods,this);
             adapter.multi_select = false;
 
-            gridLayoutManager = new GridLayoutManager(Search_date_detailActivity.this, grid);
+            gridLayoutManager = new GridLayoutManager(this, grid);
             gridLayoutManager.scrollToPosition(pastVisiblesItems + 2);
             recyclerView.setLayoutManager(gridLayoutManager);
             recyclerView.setAdapter(adapter);
@@ -330,8 +344,8 @@ public class Search_date_detailActivity extends AppCompatActivity {
 
         goods.clear();
         goods = dbh.getAllGood_ByDate(lastDate);
-        adapter = new Good_ProSearch_Adapter(goods, Search_date_detailActivity.this);
-        gridLayoutManager = new GridLayoutManager(Search_date_detailActivity.this, grid);
+        adapter = new Good_ProSearch_Adapter(goods,this);
+        gridLayoutManager = new GridLayoutManager(this, grid);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

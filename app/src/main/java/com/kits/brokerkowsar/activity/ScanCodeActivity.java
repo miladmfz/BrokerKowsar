@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.zxing.Result;
+import com.kits.brokerkowsar.application.App;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
@@ -26,7 +27,7 @@ public class ScanCodeActivity extends AppCompatActivity implements ZXingScannerV
     public void handleResult(Result result) {
         String scan_result = result.getText();
 
-        intent = new Intent(ScanCodeActivity.this, SearchActivity.class);
+        intent = new Intent(this, SearchActivity.class);
         intent.putExtra("scan", scan_result);
         intent.putExtra("title", "جستجوی کالا");
         intent.putExtra("id", "0");

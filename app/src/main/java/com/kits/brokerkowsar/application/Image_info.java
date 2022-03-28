@@ -3,6 +3,7 @@ package com.kits.brokerkowsar.application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,18 +45,21 @@ public class Image_info {
     }
 
     public void SaveImage_factor(Bitmap finalBitmap, String code) {
-        String root = Environment.getExternalStorageDirectory().getAbsolutePath();
-        File myDir = new File(root + "/Kowsar/factor_image/");
-        myDir.mkdirs();
-
-        String fname = code + ".jpg";
-        File file = new File(myDir, fname);
+        File dir = new File(Environment.getExternalStorageDirectory() + "/Kowsar/factorimage/");
         try {
-            FileOutputStream out = new FileOutputStream(file);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+        } catch (Exception e) {
+        }
+        String fname = code + ".jpg";
+        File file = new File(dir, fname);
+        file.setWritable(true);
+        try {
+            FileOutputStream out = new FileOutputStream(file, true);
             finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
             out.flush();
             out.close();
-
         } catch (Exception e) {
             e.printStackTrace();
         }

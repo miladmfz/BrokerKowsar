@@ -22,6 +22,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.activity.DetailActivity;
 import com.kits.brokerkowsar.activity.PrefactoropenActivity;
 import com.kits.brokerkowsar.activity.SearchActivity;
@@ -65,9 +66,9 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
     public Good_ProSearch_Adapter(ArrayList<Good> goods, Context context) {
         this.mContext = context;
         this.goods = goods;
-        this.callMethod = new CallMethod(context);
+        this.callMethod = new CallMethod(mContext);
         this.image_info = new Image_info(mContext);
-        dbh = new DatabaseHelper(mContext, callMethod.ReadString("UseSQLiteURL"));
+        dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
         action = new Action(mContext);
         Columns = dbh.GetColumns("id", "", "1");
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
@@ -139,11 +140,8 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
                             holder.img.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length), BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getWidth() * 2, BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getHeight() * 2, false));
 
                         } else {
-
-                            byte[] imageByteArray1;
-                            imageByteArray1 = Base64.decode(response.body().getText(), Base64.DEFAULT);
-                            holder.img.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length), BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getWidth() * 2, BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getHeight() * 2, false));
                             image_info.SaveImage(BitmapFactory.decodeByteArray(Base64.decode(response.body().getText(), Base64.DEFAULT), 0, Base64.decode(response.body().getText(), Base64.DEFAULT).length), gooddetail.getGoodFieldValue("KsrImageCode"));
+                            notifyItemChanged(position);
 
                         }
                     }

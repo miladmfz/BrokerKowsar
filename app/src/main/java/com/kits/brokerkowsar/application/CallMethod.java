@@ -14,6 +14,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 
+
 public class CallMethod extends Application {
     private final SharedPreferences shPref;
     private SharedPreferences.Editor sEdit;

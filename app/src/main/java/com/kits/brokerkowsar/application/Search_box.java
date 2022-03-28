@@ -16,6 +16,7 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.activity.SearchActivity;
 import com.kits.brokerkowsar.model.Column;
 import com.kits.brokerkowsar.model.DatabaseHelper;
@@ -48,7 +49,7 @@ public class Search_box {
         this.Where = "";
         callMethod = new CallMethod(mContext);
 
-        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("UseSQLiteURL"));
+        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
 
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
 

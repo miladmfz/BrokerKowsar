@@ -30,6 +30,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.activity.BuyActivity;
 import com.kits.brokerkowsar.activity.CustomerActivity;
 import com.kits.brokerkowsar.activity.NavActivity;
@@ -73,7 +74,7 @@ public class Action {
         this.mContext = mContext;
         this.il = 0;
         this.callMethod = new CallMethod(mContext);
-        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("UseSQLiteURL"));
+        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
         url = callMethod.ReadString("ServerURLUse");
 
     }
@@ -95,9 +96,6 @@ public class Action {
 
 
         String customer_price;
-        Log.e("1","1");
-        Log.e("1",goodcode);
-        Log.e("1","1");
         Good good = dbh.getGoodBuyBox(goodcode);
 
 
@@ -228,9 +226,9 @@ public class Action {
                     if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
                         dbh.InsertPreFactor(callMethod.ReadString("PreFactorCode"), goodcode, amo, pr, Basketflag);
 
-                        Toast.makeText(mContext, "به سبد کالا اضافه شد", Toast.LENGTH_SHORT).show();
+                        callMethod.showToast( "به سبد کالا اضافه شد");
                         if (!Basketflag.equals("0")) {
-                            Intent intent = new Intent(mContext, BuyActivity.class);
+                            intent = new Intent(mContext, BuyActivity.class);
                             intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
                             ((Activity) mContext).finish();
                             ((Activity) mContext).overridePendingTransition(0, 0);
@@ -246,10 +244,10 @@ public class Action {
                     }
                     dialog.dismiss();
                 } else {
-                    Toast.makeText(mContext, "تعداد مورد نظر صحیح نمی باشد.", Toast.LENGTH_SHORT).show();
+                    callMethod.showToast( "تعداد مورد نظر صحیح نمی باشد.");
                 }
             } else {
-                Toast.makeText(mContext, "تعداد مورد نظر صحیح نمی باشد.", Toast.LENGTH_SHORT).show();
+                callMethod.showToast( "تعداد مورد نظر صحیح نمی باشد.");
             }
         });
 
@@ -276,10 +274,6 @@ public class Action {
                 if (code == 0) {
                     int kowsarcode = jo.getInt("PreFactorCode");
                     if (kowsarcode > 0) {
-//                        Toast toast = Toast.makeText(mContext, "پیش فاکتور با موفقیت ارسال شد", Toast.LENGTH_SHORT);
-//                        toast.setGravity(Gravity.CENTER, 10, 10);
-//                        toast.show();
-
                         String factorDate = jo.getString("PreFactorDate");
                         dbh.UpdatePreFactor(factor_code, String.valueOf(kowsarcode), factorDate);
                         callMethod.EditString("PreFactorCode", "0");
@@ -287,20 +281,18 @@ public class Action {
 
 
                     } else {
-                        Toast toast = Toast.makeText(mContext, "خطا در ارتباط با سرور", Toast.LENGTH_SHORT);
-                        toast.setGravity(Gravity.CENTER, 10, 10);
-                        toast.show();
+                       callMethod.showToast( "خطا در ارتباط با سرور");
                     }
 
                 } else {
-                    SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("UseSQLiteURL"), Context.MODE_PRIVATE, null);
+                    SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
                     for (int i = 0; i < il; i++) {
                         jo = object.getJSONObject(i);
                         code = jo.getInt("GoodCode");
                         int flag = jo.getInt("Flag");
                         dtb.execSQL("Update PreFactorRow set Shortage = " + flag + " Where IfNull(PreFactorCode,0)=" + factor_code + " And GoodRef = " + code);
                     }
-                    Toast.makeText(mContext, "کالاهای مورد نظر کسر موجودی دارند!", Toast.LENGTH_SHORT).show();
+                    callMethod.showToast( "کالاهای مورد نظر کسر موجودی دارند!");
                     intent = new Intent(mContext, BuyActivity.class);
                     intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
                     ((Activity) mContext).finish();
@@ -310,20 +302,20 @@ public class Action {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                Toast.makeText(mContext, "بروز خطا در اطلاعات", Toast.LENGTH_SHORT).show();
+                callMethod.showToast( "بروز خطا در اطلاعات");
                 Log.e("bklog_prin", e.toString());
             }
         }, volleyError -> {
             volleyError.printStackTrace();
-            Toast.makeText(mContext, "ارتباط با سرور میسر نمی باشد.", Toast.LENGTH_SHORT).show();
+            callMethod.showToast( "ارتباط با سرور میسر نمی باشد.");
             Log.e("bklog_prin", volleyError.toString());
         }) {
             @Override
             protected Map<String, String> getParams() {
                 HashMap<String, String> params = new HashMap<>();
                 params.put("tag", "PFQASWED");
-                SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("UseSQLiteURL"), Context.MODE_PRIVATE, null);
-                cursor = dtb.rawQuery("Select PreFactorCode, PreFactorDate, PreFactorExplain, CustomerRef, BrokerRef, (Select count(*) From PreFactorRow r Where r.PrefactorRef=h.PrefactorCode) As rwCount From PreFactor h Where PreFactorCode = " + factor_code, null);
+                SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
+                cursor = dtb.rawQuery("Select PreFactorCode, PreFactorDate, PreFactorExplain, CustomerRef, BrokerRef, (Select sum(FactorAmount) From PreFactorRow r Where r.PrefactorRef=h.PrefactorCode) As rwCount From PreFactor h Where PreFactorCode = " + factor_code, null);
                 String pr1 = CursorToJson(cursor);
                 cursor.close();
                 Log.e("bklog_reqqqq", pr1);
@@ -386,7 +378,7 @@ public class Action {
         }, 500);
 
         pf_detail_btn.setOnClickListener(view -> {
-            DatabaseHelper dbh = new DatabaseHelper(mContext, callMethod.ReadString("UseSQLiteURL"));
+            DatabaseHelper dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
             String detail = pf_detail_detail.getText().toString();
             dbh.InsertPreFactorHeader(detail, String.valueOf(customer_code));
             String prefactor_code = "PreFactorCode";

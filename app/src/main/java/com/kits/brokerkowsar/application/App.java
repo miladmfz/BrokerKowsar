@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 
 import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
 

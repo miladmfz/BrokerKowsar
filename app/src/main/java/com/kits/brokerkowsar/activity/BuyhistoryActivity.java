@@ -18,7 +18,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.adapters.GoodBuyHistoryAdapter;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
@@ -31,7 +33,6 @@ import java.util.Objects;
 
 public class BuyhistoryActivity extends AppCompatActivity {
 
-    private String PreFac = "0";
     private String Itemposition = "0";
     private String srch = "";
 
@@ -58,10 +59,14 @@ public class BuyhistoryActivity extends AppCompatActivity {
         dialog.show();
 
 
+        try {
+            Handler handler = new Handler();
+            handler.postDelayed(this::init, 100);
+            handler.postDelayed(dialog::dismiss, 1000);
+        }catch (Exception e){
+            callMethod.showToast(e.getMessage());
+        }
 
-        Handler handler = new Handler();
-        handler.postDelayed(this::init, 100);
-        handler.postDelayed(dialog::dismiss, 1000);
 
     }
 
@@ -70,7 +75,7 @@ public class BuyhistoryActivity extends AppCompatActivity {
 
         decimalFormat = new DecimalFormat("0,000");
         callMethod = new CallMethod(this);
-        dbh = new DatabaseHelper(this, callMethod.ReadString("UseSQLiteURL"));
+        dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
 
         handler = new Handler();
 
@@ -100,15 +105,15 @@ public class BuyhistoryActivity extends AppCompatActivity {
                     goods = dbh.getAllPreFactorRows(srch, callMethod.ReadString("PreFactorGood"));
 
                     if (Itemposition.equals("1")) {
-                        history_row.setBackground(ContextCompat.getDrawable(BuyhistoryActivity.this,
+                        history_row.setBackground(ContextCompat.getDrawable(App.getContext(),
                                 R.drawable.bg_round_green_history_line));
                     } else {
-                        history_row.setBackground(ContextCompat.getDrawable(BuyhistoryActivity.this,
+                        history_row.setBackground(ContextCompat.getDrawable(App.getContext(),
                                 R.drawable.bg_round_green_history));
                     }
 
-                    adapter = new GoodBuyHistoryAdapter(goods, Itemposition, BuyhistoryActivity.this);
-                    gridLayoutManager = new GridLayoutManager(BuyhistoryActivity.this, 1);
+                    adapter = new GoodBuyHistoryAdapter(goods, Itemposition, App.getContext());
+                    gridLayoutManager = new GridLayoutManager(App.getContext(), 1);
                     recyclerView.setLayoutManager(gridLayoutManager);
                     recyclerView.setAdapter(adapter);
                     recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -118,31 +123,31 @@ public class BuyhistoryActivity extends AppCompatActivity {
 
         history_row.setOnClickListener(view -> {
 
-            adapter = new GoodBuyHistoryAdapter(goods, Itemposition, BuyhistoryActivity.this);
-            gridLayoutManager = new GridLayoutManager(BuyhistoryActivity.this, 1);
+            adapter = new GoodBuyHistoryAdapter(goods, Itemposition, this);
+            gridLayoutManager = new GridLayoutManager(this, 1);
             recyclerView.setLayoutManager(gridLayoutManager);
             recyclerView.setAdapter(adapter);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
             if (Itemposition.equals("1")) {
                 Itemposition = "0";
-                history_row.setBackground(ContextCompat.getDrawable(BuyhistoryActivity.this, R.drawable.bg_round_green_history_line));
+                history_row.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_round_green_history_line));
             } else {
                 Itemposition = "1";
-                history_row.setBackground(ContextCompat.getDrawable(BuyhistoryActivity.this, R.drawable.bg_round_green_history));
+                history_row.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_round_green_history));
             }
         });
 
         goods = dbh.getAllPreFactorRows(srch, callMethod.ReadString("PreFactorGood"));
 
-        adapter = new GoodBuyHistoryAdapter(goods, Itemposition, BuyhistoryActivity.this);
-        gridLayoutManager = new GridLayoutManager(BuyhistoryActivity.this, 1);
+        adapter = new GoodBuyHistoryAdapter(goods, Itemposition, this);
+        gridLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
-        price.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(String.valueOf(dbh.getFactorSum(callMethod.ReadString("PreFactorGood")))))));
-        amount.setText(NumberFunctions.PerisanNumber("" + dbh.getFactorSumAmount(callMethod.ReadString("PreFactorGood"))));
-        row.setText(NumberFunctions.PerisanNumber("" + goods.size()));
+        price.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorGood"))))));
+        amount.setText(NumberFunctions.PerisanNumber(dbh.getFactorSumAmount(callMethod.ReadString("PreFactorGood"))));
+        row.setText(NumberFunctions.PerisanNumber(String.valueOf(goods.size())));
 
 
     }

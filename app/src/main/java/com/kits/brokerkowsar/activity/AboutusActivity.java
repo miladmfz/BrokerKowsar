@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 
 
 public class AboutusActivity extends AppCompatActivity {

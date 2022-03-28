@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.Image_info;
@@ -56,7 +57,7 @@ public class GoodBuyHistoryAdapter extends RecyclerView.Adapter<GoodBuyHistoryAd
         this.itemposition = Itemposition;
         this.callMethod = new CallMethod(mContext);
         this.image_info = new Image_info(mContext);
-        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("UseSQLiteURL"));
+        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
         
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
         action = new Action(mContext);

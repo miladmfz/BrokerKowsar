@@ -29,6 +29,7 @@ import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.activity.DetailActivity;
 import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.model.Good;
@@ -50,20 +51,12 @@ import retrofit2.Response;
 
 public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolder> {
     APIInterface apiInterface;
-
     private final ArrayList<Good> goods;
     private final Context mcontext;
-    private Good goodView;
-    private String objectref;
     private final Boolean image_zoom;
     private final Image_info image_info;
-
     CallMethod callMethod;
 
-    private final DatabaseHelper dbh;
-    private Intent intent;
-    Cursor cursor;
-    private Integer il;
     String url;
 
     public SliderAdapter(ArrayList<Good> Goods, boolean zoom, Context context) {
@@ -72,7 +65,6 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
         this.goods=Goods;
         this.image_zoom=zoom;
         this.callMethod = new CallMethod(mcontext);
-        this.dbh = new DatabaseHelper(mcontext, callMethod.ReadString("UseSQLiteURL"));
         image_info = new Image_info(mcontext);
         url = callMethod.ReadString("ServerURLUse");
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);

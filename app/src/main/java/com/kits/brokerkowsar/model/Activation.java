@@ -3,6 +3,7 @@ package com.kits.brokerkowsar.model;
 import com.google.gson.annotations.SerializedName;
 
 public class Activation {
+
     @SerializedName("AppBrokerCustomerCode")
     private String AppBrokerCustomerCode;
     @SerializedName("ActivationCode")

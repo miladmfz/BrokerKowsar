@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.activity.ConfigActivity;
 import com.kits.brokerkowsar.activity.PrefactorActivity;
 import com.kits.brokerkowsar.application.Action;
@@ -46,7 +47,7 @@ public class Customer_Adapter extends RecyclerView.Adapter<Customer_Adapter.facV
         this.edit = edit;
         this.factor_target = factor_target;
         this.callMethod = new CallMethod(mContext);
-        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("UseSQLiteURL"));
+        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
         this.action = new Action(mContext);
 
     }
@@ -98,9 +99,8 @@ public class Customer_Adapter extends RecyclerView.Adapter<Customer_Adapter.facV
                     action.addfactordialog(Customerdetail.getCustomerFieldValue("CustomerCode"));
                 } else {
                     intent = new Intent(mContext, ConfigActivity.class);
-                    Toast toast = Toast.makeText(mContext, "کد بازاریاب را وارد کنید", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER, 10, 10);
-                    toast.show();
+                    callMethod.showToast( "کد بازاریاب را وارد کنید");
+
                     mContext.startActivity(intent);
                 }
 

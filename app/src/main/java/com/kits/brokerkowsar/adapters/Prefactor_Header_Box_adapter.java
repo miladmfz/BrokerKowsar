@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.PreFactor;
@@ -60,13 +61,9 @@ public class Prefactor_Header_Box_adapter extends RecyclerView.Adapter<Prefactor
 
         holder.fac_rltv.setOnClickListener(v -> {
 
-
             final String prefactor_code = "PreFactorCode";
-
-
             callMethod.EditString(prefactor_code, preFactordetail.getPreFactorFieldValue("PreFactorCode"));
-
-            Toast.makeText(mContext, "فاکتور مورد نظر انتخاب شد", Toast.LENGTH_SHORT).show();
+            callMethod.showToast( "فاکتور مورد نظر انتخاب شد");
             ((Activity) mContext).overridePendingTransition(0, 0);
             ((Activity) mContext).finish();
             ((Activity) mContext).overridePendingTransition(0, 0);

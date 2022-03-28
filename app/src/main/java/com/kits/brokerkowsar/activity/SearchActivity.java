@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.adapters.Good_ProSearch_Adapter;
 import com.kits.brokerkowsar.adapters.Grp_Vlist_detail_Adapter;
 import com.kits.brokerkowsar.application.CallMethod;
@@ -57,7 +58,6 @@ public class SearchActivity extends AppCompatActivity {
     Intent intent;
     DatabaseHelper dbh;
     Handler handler;
-    String srch = "";
     ArrayList<String[]> Multi_buy = new ArrayList<>();
     DecimalFormat decimalFormat = new DecimalFormat("0,000");
     FloatingActionButton fab;
@@ -67,9 +67,21 @@ public class SearchActivity extends AppCompatActivity {
     Menu item_multi;
     CallMethod callMethod;
     public String proSearchCondition;
-    TextView customer;
-    TextView sumfac;
-    TextView customer_code;
+    TextView tv_customer;
+    TextView tv_sumfac;
+    TextView tv_customer_code;
+    ArrayList<GoodGroup> goodGroups;
+    SwitchMaterial sm_activestack;
+    SwitchMaterial sm_goodamount;
+    Button btn_pro_search;
+    Button btn_grp_button;
+    Button btn_ref_fac;
+    Button btn_scan;
+    Toolbar toolbar;
+    RecyclerView recyclerView_grp;
+    Grp_Vlist_detail_Adapter grp_adapter;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +96,17 @@ public class SearchActivity extends AppCompatActivity {
         TextView repw = dialog1.findViewById(R.id.rep_prog_text);
         repw.setText("در حال خواندن اطلاعات");
         dialog1.show();
-        intent();
 
-        Handler handler = new Handler();
-        handler.postDelayed(this::init, 100);
-        handler.postDelayed(dialog1::dismiss, 1000);
+        intent();
+        Config();
+        try {
+            Handler handler = new Handler();
+            handler.postDelayed(this::init, 100);
+            handler.postDelayed(dialog1::dismiss, 1000);
+        }catch (Exception e){
+            callMethod.showToast(e.getMessage());
+        }
+
 
 
     }
@@ -97,6 +115,33 @@ public class SearchActivity extends AppCompatActivity {
     //*************************************************
 
 
+    public void Config() {
+
+        callMethod = new CallMethod(this);
+        dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
+        handler = new Handler();
+        grid = Integer.parseInt(callMethod.ReadString("Grid"));
+
+        sm_activestack = findViewById(R.id.SearchActivityswitch);
+        sm_goodamount = findViewById(R.id.SearchActivityswitch_amount);
+        btn_pro_search = findViewById(R.id.SearchActivity_pro_search);
+        btn_grp_button = findViewById(R.id.SearchActivity_grp);
+        btn_ref_fac = findViewById(R.id.SearchActivity_refresh_fac);
+        toolbar = findViewById(R.id.SearchActivity_toolbar);
+        recyclerView_grp = findViewById(R.id.SearchActivity_grp_recy);
+        btn_scan = findViewById(R.id.SearchActivity_scan);
+
+
+        tv_customer = findViewById(R.id.SearchActivity_customer);
+        tv_sumfac = findViewById(R.id.SearchActivity_sum_factor);
+        tv_customer_code = findViewById(R.id.SearchActivity_customer_code);
+        recyclerView_good = findViewById(R.id.SearchActivity_allgood);
+        fab = findViewById(R.id.SearchActivity_fab);
+        edtsearch = findViewById(R.id.SearchActivity_edtsearch);
+
+
+
+    }
     public void intent() {
         Bundle data = getIntent().getExtras();
         assert data != null;
@@ -109,12 +154,12 @@ public class SearchActivity extends AppCompatActivity {
 
     public void factorState() {
         if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
-            customer.setText("فاکتوری انتخاب نشده");
-            sumfac.setText("0");
+            tv_customer.setText("فاکتوری انتخاب نشده");
+            tv_sumfac.setText("0");
         } else {
-            customer.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
-            sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorCode"))))));
-            customer_code.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PreFactorCode")));
+            tv_customer.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
+            tv_sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorCode"))))));
+            tv_customer_code.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PreFactorCode")));
         }
     }
 
@@ -122,44 +167,21 @@ public class SearchActivity extends AppCompatActivity {
     public void init() {
 
 
-        callMethod = new CallMethod(this);
-        dbh = new DatabaseHelper(this, callMethod.ReadString("UseSQLiteURL"));
-        handler = new Handler();
-        grid = Integer.parseInt(callMethod.ReadString("Grid"));
-
-        final SwitchMaterial mySwitch_activestack = findViewById(R.id.SearchActivityswitch);
-        final SwitchMaterial mySwitch_goodamount = findViewById(R.id.SearchActivityswitch_amount);
-        final Button pro_search = findViewById(R.id.SearchActivity_pro_search);
-        final Button grp_button = findViewById(R.id.SearchActivity_grp);
-        final Button ref_fac = findViewById(R.id.SearchActivity_refresh_fac);
-        Toolbar toolbar = findViewById(R.id.SearchActivity_toolbar);
-        RecyclerView recyclerView_grp = findViewById(R.id.SearchActivity_grp_recy);
-        Button btn_scan = findViewById(R.id.SearchActivity_scan);
-
-
-        customer = findViewById(R.id.SearchActivity_customer);
-        sumfac = findViewById(R.id.SearchActivity_sum_factor);
-        customer_code = findViewById(R.id.SearchActivity_customer_code);
-        recyclerView_good = findViewById(R.id.SearchActivity_allgood);
-        fab = findViewById(R.id.SearchActivity_fab);
-        edtsearch = findViewById(R.id.SearchActivity_edtsearch);
-
 
         toolbar.setTitle(title);
-
         factorState();
 
-        ref_fac.setOnClickListener(view -> {
+        btn_ref_fac.setOnClickListener(view -> {
             factorState();
         });
 
-        ArrayList<GoodGroup> goodGroups = dbh.getAllGroups(id);
-        Grp_Vlist_detail_Adapter adapter4 = new Grp_Vlist_detail_Adapter(goodGroups, this);
+        goodGroups = dbh.getAllGroups(id);
+        grp_adapter = new Grp_Vlist_detail_Adapter(goodGroups, this);
         recyclerView_grp.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false));
-        recyclerView_grp.setAdapter(adapter4);
+        recyclerView_grp.setAdapter(grp_adapter);
         if (goodGroups.size() == 0) {
             recyclerView_grp.getLayoutParams().height = 0;
-            grp_button.setVisibility(View.GONE);
+            btn_grp_button.setVisibility(View.GONE);
         }
 
         setSupportActionBar(toolbar);
@@ -168,13 +190,9 @@ public class SearchActivity extends AppCompatActivity {
         edtsearch.addTextChangedListener(
                 new TextWatcher() {
                     @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    }
-
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
                     @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    }
-
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
                     @Override
                     public void afterTextChanged(final Editable editable) {
                         handler.removeCallbacksAndMessages(null);
@@ -189,24 +207,23 @@ public class SearchActivity extends AppCompatActivity {
                 });
 
 
-        //try {
-
+        try {
             goods = dbh.getAllGood(scan, id);
+        }catch (Exception e ){
+            callMethod.showToast(  "تنظیم جدول مشکل دارد");
+            dialog1.dismiss();
+            finish();
+        }
 
-//        }catch (Exception e ){
-//            Toast.makeText(this,  "تنظیم جدول مشکل دارد", Toast.LENGTH_SHORT).show();
-//            dialog1.dismiss();
-//            finish();
-//        }
         CallGoodView();
 
         btn_scan.setOnClickListener(view -> {
-            intent = new Intent(SearchActivity.this, ScanCodeActivity.class);
+            intent = new Intent(this, ScanCodeActivity.class);
             startActivity(intent);
             finish();
         });
 
-        grp_button.setOnClickListener(view -> {
+        btn_grp_button.setOnClickListener(view -> {
             if (recyclerView_grp.getVisibility() == View.GONE) {
                 recyclerView_grp.setVisibility(View.VISIBLE);
             } else {
@@ -215,35 +232,36 @@ public class SearchActivity extends AppCompatActivity {
         });
 
 
-        pro_search.setOnClickListener(view -> {
+        btn_pro_search.setOnClickListener(view -> {
             Search_box search_box = new Search_box(this);
             search_box.search_pro();
         });
 
 
         if (callMethod.ReadBoolan("ActiveStack")) {
-            mySwitch_activestack.setChecked(true);
-            mySwitch_activestack.setText("فعال");
+            sm_activestack.setChecked(true);
+            sm_activestack.setText("فعال");
         } else {
-            mySwitch_activestack.setChecked(false);
-            mySwitch_activestack.setText("فعال -غیرفعال");
+            sm_activestack.setChecked(false);
+            sm_activestack.setText("فعال -غیرفعال");
         }
 
         if (callMethod.ReadBoolan("GoodAmount")) {
-            mySwitch_goodamount.setChecked(true);
-            mySwitch_goodamount.setText("موجود");
+            sm_goodamount.setChecked(true);
+            sm_goodamount.setText("موجود");
         } else {
-            mySwitch_goodamount.setChecked(false);
-            mySwitch_goodamount.setText("هردو");
+            sm_goodamount.setChecked(false);
+            sm_goodamount.setText("هردو");
         }
 
-        mySwitch_activestack.setOnCheckedChangeListener((compoundButton, b) -> {
+
+        sm_activestack.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
-                mySwitch_activestack.setText("فعال");
+                sm_activestack.setText("فعال");
                 callMethod.EditBoolan("ActiveStack", true);
             } else {
 
-                mySwitch_activestack.setText("فعال -غیرفعال");
+                sm_activestack.setText("فعال -غیرفعال");
                 callMethod.EditBoolan("ActiveStack", false);
             }
             goods.clear();
@@ -251,12 +269,12 @@ public class SearchActivity extends AppCompatActivity {
             CallGoodView();
         });
 
-        mySwitch_goodamount.setOnCheckedChangeListener((compoundButton, b) -> {
+        sm_goodamount.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
-                mySwitch_goodamount.setText("موجود");
+                sm_goodamount.setText("موجود");
                 callMethod.EditBoolan("GoodAmount", true);
             } else {
-                mySwitch_goodamount.setText("هردو");
+                sm_goodamount.setText("هردو");
                 callMethod.EditBoolan("GoodAmount", false);
             }
             goods.clear();
@@ -266,7 +284,7 @@ public class SearchActivity extends AppCompatActivity {
 
         fab.setOnClickListener(v -> {
 
-            final Dialog dialog = new Dialog(SearchActivity.this);
+            final Dialog dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.box_multi_buy);
             Button boxbuy = dialog.findViewById(R.id.box_multi_buy_btn);
@@ -284,21 +302,15 @@ public class SearchActivity extends AppCompatActivity {
                 String AmountMulti = amount_mlti.getText().toString();
                 if (!AmountMulti.equals("")) {
 
-
-
-
-
-
-
                     if (Integer.parseInt(AmountMulti) != 0) {
-                        for (String[] GoodMulti : Multi_buy) {
+                        for (String[] singlebuy : Multi_buy) {
                             dbh.InsertPreFactor(callMethod.ReadString("PreFactorCode"),
-                                    GoodMulti[0],
+                                    singlebuy[0],
                                     AmountMulti,
-                                    GoodMulti[1],
+                                    "0",
                                     "0");
                         }
-                        Toast.makeText(this, "به سبد خرید اضافه شد", Toast.LENGTH_SHORT).show();
+                        callMethod.showToast( "به سبد خرید اضافه شد");
 
                         dialog.dismiss();
                         item_multi.findItem(R.id.menu_multi).setVisible(false);
@@ -306,22 +318,19 @@ public class SearchActivity extends AppCompatActivity {
                             good.setCheck(false);
                         }
                         Multi_buy.clear();
-                        adapter = new Good_ProSearch_Adapter(goods, SearchActivity.this);
+                        adapter = new Good_ProSearch_Adapter(goods,this);
                         adapter.multi_select = false;
-                        gridLayoutManager = new GridLayoutManager(SearchActivity.this, grid);
+                        gridLayoutManager = new GridLayoutManager(this, grid);
                         gridLayoutManager.scrollToPosition(pastVisiblesItems + 2);
                         recyclerView_good.setLayoutManager(gridLayoutManager);
                         recyclerView_good.setAdapter(adapter);
                         recyclerView_good.setItemAnimator(new DefaultItemAnimator());
                         fab.setVisibility(View.GONE);
                     } else {
-                        Toast.makeText(SearchActivity.this, "تعداد مورد نظر صحیح نمی باشد.", Toast.LENGTH_SHORT).show();
+                        callMethod.showToast("تعداد مورد نظر صحیح نمی باشد.");
                     }
-
-
-
                 } else {
-                    Toast.makeText(SearchActivity.this, "تعداد مورد نظر صحیح نمی باشد.", Toast.LENGTH_SHORT).show();
+                    callMethod.showToast("تعداد مورد نظر صحیح نمی باشد.");
                 }
             });
 
@@ -333,7 +342,7 @@ public class SearchActivity extends AppCompatActivity {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
                     visibleItemCount = gridLayoutManager.getChildCount();
-                    totalItemCount = gridLayoutManager.getItemCount();
+                    visibleItemCount = gridLayoutManager.getItemCount();
                     pastVisiblesItems = gridLayoutManager.findFirstVisibleItemPosition();
                 }
             }
@@ -343,7 +352,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
 
-    //
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         item_multi = menu;
@@ -359,11 +368,11 @@ public class SearchActivity extends AppCompatActivity {
 
         if (item.getItemId() == R.id.bag_shop) {
             if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
-                intent = new Intent(SearchActivity.this, BuyActivity.class);
+                intent = new Intent(this, BuyActivity.class);
                 intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
                 startActivity(intent);
             } else {
-                Toast.makeText(this, "فاکتوری انتخاب نشده است", Toast.LENGTH_SHORT).show();
+                callMethod.showToast( "فاکتوری انتخاب نشده است");
             }
             return true;
         }
@@ -375,8 +384,8 @@ public class SearchActivity extends AppCompatActivity {
             Multi_buy.clear();
             adapter.multi_select = false;
 
-            adapter = new Good_ProSearch_Adapter(goods, SearchActivity.this);
-            gridLayoutManager = new GridLayoutManager(SearchActivity.this, grid);
+            adapter = new Good_ProSearch_Adapter(goods,this);
+            gridLayoutManager = new GridLayoutManager(this, grid);
             gridLayoutManager.scrollToPosition(pastVisiblesItems + 2);
             recyclerView_good.setLayoutManager(gridLayoutManager);
             recyclerView_good.setAdapter(adapter);
@@ -395,9 +404,9 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void CallGoodView() {
-        adapter = new Good_ProSearch_Adapter(goods, SearchActivity.this);
+        adapter = new Good_ProSearch_Adapter(goods,this);
         adapter.notifyDataSetChanged();
-        gridLayoutManager = new GridLayoutManager(SearchActivity.this, grid);
+        gridLayoutManager = new GridLayoutManager(this, grid);
         recyclerView_good.setLayoutManager(gridLayoutManager);
         recyclerView_good.setAdapter(adapter);
         recyclerView_good.setItemAnimator(new DefaultItemAnimator());
@@ -413,13 +422,13 @@ public class SearchActivity extends AppCompatActivity {
             item_multi.findItem(R.id.menu_multi).setVisible(true);
 
         } else {
-            int b = 0, c = 0;
-            for (String[] s : Multi_buy) {
-                if (s[0].equals(code_fun))
-                    b = c;
-                c++;
+            int objectrow = 0, conter = 0;
+            for (String[] singlebuy : Multi_buy) {
+                if (singlebuy[0].equals(code_fun))
+                    objectrow = conter;
+                conter++;
             }
-            Multi_buy.remove(b);
+            Multi_buy.remove(objectrow);
             if (Multi_buy.size() < 1) {
                 fab.setVisibility(View.GONE);
                 adapter.multi_select = false;

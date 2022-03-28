@@ -13,8 +13,12 @@ public class BluetoothUtil {
 
     public static void startBluetooth() {
         BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        if (!bluetoothAdapter.isEnabled()) {
-            bluetoothAdapter.enable();
+        try {
+            if (!bluetoothAdapter.isEnabled()) {
+                bluetoothAdapter.enable();
+            }
+        }catch (Exception e){
+            Log.e("test_ ",e.getMessage());
         }
     }
 

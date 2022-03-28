@@ -20,6 +20,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.activity.NavActivity;
 import com.kits.brokerkowsar.model.Column;
 import com.kits.brokerkowsar.model.DatabaseHelper;
@@ -59,6 +60,7 @@ public class Replication {
     private String RepTable = "";
     private final Dialog dialog;
     private final DatabaseHelper dbh;
+
     String url;
     Cursor cursor;
 
@@ -67,26 +69,24 @@ public class Replication {
     public Replication(Context context) {
         this.mContext = context;
         this.callMethod = new CallMethod(mContext);
-        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("UseSQLiteURL"));
+        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
         this.dialog = new Dialog(mContext);
         this.image_info = new Image_info(mContext);
         url = callMethod.ReadString("ServerURLUse");
-        database = mContext.openOrCreateDatabase(callMethod.ReadString("UseSQLiteURL"), Context.MODE_PRIVATE, null);
+        database = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
 
     }
-
 
     public void dialog() {
         dialog.setContentView(R.layout.rep_prog);
         tv_rep = dialog.findViewById(R.id.rep_prog_text);
         tv_step = dialog.findViewById(R.id.rep_prog_step);
+        tv_step.setVisibility(View.GONE);
         dialog.show();
     }
 
-
     public void BrokerStack() {
-        Log.e("test_+","BrokerStack");
 
         UserInfo userInfo = dbh.LoadPersonalInfo();
         Call<RetrofitResponse> call1 = apiInterface.BrokerStack("BrokerStack", userInfo.getBrokerCode());
@@ -95,8 +95,7 @@ public class Replication {
             public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
                 if (response.isSuccessful()) {
                     assert response.body() != null;
-                    Log.e("test_+",dbh.ReadConfig("BrokerStack"));
-                    Log.e("test_+",response.body().getText());
+                    Log.e("test_BrokerStack",response.body().getText());
                     if (!response.body().getText().equals(dbh.ReadConfig("BrokerStack"))) {
                         dbh.SaveConfig("BrokerStack",response.body().getText());
                     }
@@ -104,7 +103,7 @@ public class Replication {
             }
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                Log.e("test_+",t.getMessage());
+                Log.e("test_Retrofitbroker",t.getMessage());
             }
         });
         MenuBroker();
@@ -129,7 +128,6 @@ public class Replication {
         });
 
     }
-
 
     public void GoodTypeReplication() {
 
@@ -196,11 +194,9 @@ public class Replication {
         }
     }
 
-
     public void replicate_all() {
         replicateCentralChange();
     }
-
 
     public void replicate_customer() {
         replicateCentralChange_customer();
@@ -210,6 +206,7 @@ public class Replication {
 
         dialog();
         tv_rep.setText(NumberFunctions.PerisanNumber("در حال بروز رسانی 10/1"));
+
         RepTable = "Central";
 
         if (LastRepCode.equals("0")) {
@@ -238,10 +235,10 @@ public class Replication {
                         break;
                     default:
 
-                        tv_step.setVisibility(View.VISIBLE);
+
                         FinalStep = Integer.parseInt(object.getJSONObject(0).getString("RowsCount"));
                         for (int i = 0; i < il; i++) {
-
+                            tv_step.setVisibility(View.VISIBLE);
                             tv_step.setText(NumberFunctions.PerisanNumber(FinalStep + "تعداد"));
                             jo = object.getJSONObject(i);
                             String optype = jo.getString("RLOpType");
@@ -514,7 +511,6 @@ public class Replication {
 
     }
 
-
     public void replicateAddressChange() {
         tv_rep.setText(NumberFunctions.PerisanNumber("در حال بروز رسانی 10/3"));
         FinalStep = 0;
@@ -698,7 +694,7 @@ public class Replication {
                 tv_step.setVisibility(View.GONE);
                 LastRepCode = "0";
                 replicateGoodChange();
-            }
+     }
         }, Throwable::printStackTrace) {
             @Override
             protected Map<String, String> getParams() {
@@ -717,13 +713,16 @@ public class Replication {
         tv_rep.setText(NumberFunctions.PerisanNumber("در حال بروز رسانی 10/5"));
         FinalStep = 0;
         RepTable = "Good";
+        Log.e("test_0", LastRepCode);
+
         if (LastRepCode.equals("0")) {
             cursor = database.rawQuery(" Select DataValue From Config Where KeyValue = 'Good_LastRepCode' ", null);
             cursor.moveToFirst();
             LastRepCode = cursor.getString(cursor.getColumnIndex("DataValue"));
             cursor.close();
+            Log.e("test_1", LastRepCode);
         }
-
+        Log.e("test_2", LastRepCode);
         RequestQueue queue = Volley.newRequestQueue(mContext);
 
         StringRequest stringrequste = new StringRequest(Request.Method.POST, url, response -> {
@@ -805,6 +804,8 @@ public class Replication {
                             }
                             Log.e("bklog_repstrQuery", qCol.toString());
                             Log.e("bklog_repstrQuery", LastRepCode);
+                            Log.e("test", qCol.toString());
+                            Log.e("test", LastRepCode);
 
                             LastRepCode = repcode;
                         }
@@ -1159,7 +1160,6 @@ public class Replication {
         queue.add(stringrequste);
     }
 
-
     public void replicateGoodImageChange() {
         tv_rep.setText(NumberFunctions.PerisanNumber("در حال بروز رسانی 10/9"));
         FinalStep = 0;
@@ -1349,7 +1349,7 @@ public class Replication {
                 }catch (Exception e){
 
                 }
-                Toast.makeText(mContext, "بروز رسانی انجام شد", Toast.LENGTH_SHORT).show();
+                callMethod.showToast( "بروز رسانی انجام شد");
             }
         }, Throwable::printStackTrace) {
             @Override
@@ -1364,7 +1364,6 @@ public class Replication {
         };
         queue.add(stringrequste);
     }
-
 
     public void replicateCentralChange_customer() {
 

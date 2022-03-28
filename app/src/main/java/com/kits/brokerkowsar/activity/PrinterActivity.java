@@ -24,6 +24,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bixolon.printer.BixolonPrinter;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.Image_info;
 import com.kits.brokerkowsar.model.BluetoothUtil;
@@ -39,10 +40,10 @@ import java.util.Set;
 
 public class PrinterActivity extends AppCompatActivity {
     CallMethod callMethod;
-
+    ArrayList<Good> goods=new ArrayList<>();
 
     //The columns of your printer. We only tried the Bixolon 300 and the Bixolon 200II, so there are the values.
-    //    private final int LINE_CHARS = 42 + 22; // Bixolon 300
+    //private final int LINE_CHARS = 42 + 22; // Bixolon 300
     private final int LINE_CHARS = 42; // Bixolon 200II
 
 
@@ -83,8 +84,9 @@ public class PrinterActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_printer);
+
         callMethod = new CallMethod(this);
-        dbh = new DatabaseHelper(this, callMethod.ReadString("UseSQLiteURL"));
+        dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
         if (rotation == null) {
             rotation = AnimationUtils.loadAnimation(this, R.anim.rotation);
         }
@@ -122,15 +124,16 @@ public class PrinterActivity extends AppCompatActivity {
                             Thread.sleep(PRINTING_SLEEP_TIME); // Don't strees the printer while printing the Bitmap... it don't like it.
 
                             intent();
-                            ArrayList<Good> goods = dbh.getAllPreFactorRows("", PreFac);
-                            main_layout = new LinearLayoutCompat(PrinterActivity.this);
-                            title_layout = new LinearLayoutCompat(PrinterActivity.this);
-                            boby_good_layout = new LinearLayoutCompat(PrinterActivity.this);
-                            good_layout = new LinearLayoutCompat(PrinterActivity.this);
-                            total_layout = new LinearLayoutCompat(PrinterActivity.this);
-                            ViewPager = new ViewPager(PrinterActivity.this);
-                            ViewPager_rast = new ViewPager(PrinterActivity.this);
-                            ViewPager_chap = new ViewPager(PrinterActivity.this);
+                            goods.clear();
+                            goods = dbh.getAllPreFactorRows("", PreFac);
+                            main_layout = new LinearLayoutCompat(App.getContext());
+                            title_layout = new LinearLayoutCompat(App.getContext());
+                            boby_good_layout = new LinearLayoutCompat(App.getContext());
+                            good_layout = new LinearLayoutCompat(App.getContext());
+                            total_layout = new LinearLayoutCompat(App.getContext());
+                            ViewPager = new ViewPager(App.getContext());
+                            ViewPager_rast = new ViewPager(App.getContext());
+                            ViewPager_chap = new ViewPager(App.getContext());
 
 
                             main_layout.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT));
@@ -162,7 +165,7 @@ public class PrinterActivity extends AppCompatActivity {
                             ViewPager_chap.setBackgroundResource(R.color.colorPrimaryDark);
 
 
-                            TextView company_tv = new TextView(PrinterActivity.this);
+                            TextView company_tv = new TextView(App.getContext());
                             company_tv.setText(NumberFunctions.PerisanNumber("فاکتور فروش"));
                             company_tv.setLayoutParams(new LinearLayoutCompat.LayoutParams(350, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
                             company_tv.setTextSize(16);
@@ -171,7 +174,7 @@ public class PrinterActivity extends AppCompatActivity {
                             company_tv.setPadding(0, 0, 0, 20);
 
 
-                            TextView customername_tv = new TextView(PrinterActivity.this);
+                            TextView customername_tv = new TextView(App.getContext());
                             customername_tv.setText(NumberFunctions.PerisanNumber(" نام مشتری :   " + dbh.getFactorCustomer(PreFac)));
                             customername_tv.setLayoutParams(new LinearLayoutCompat.LayoutParams(350, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
                             customername_tv.setTextSize(10);
@@ -179,7 +182,7 @@ public class PrinterActivity extends AppCompatActivity {
                             customername_tv.setGravity(Gravity.RIGHT);
                             customername_tv.setPadding(0, 0, 0, 15);
 
-                            TextView factorcode_tv = new TextView(PrinterActivity.this);
+                            TextView factorcode_tv = new TextView(App.getContext());
                             factorcode_tv.setText(NumberFunctions.PerisanNumber(" کد فاکتور :   " + PreFac));
                             factorcode_tv.setLayoutParams(new LinearLayoutCompat.LayoutParams(350, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
                             factorcode_tv.setTextSize(10);
@@ -187,7 +190,7 @@ public class PrinterActivity extends AppCompatActivity {
                             factorcode_tv.setGravity(Gravity.RIGHT);
                             factorcode_tv.setPadding(0, 0, 0, 15);
 
-                            TextView factordate_tv = new TextView(PrinterActivity.this);
+                            TextView factordate_tv = new TextView(App.getContext());
                             factordate_tv.setText(NumberFunctions.PerisanNumber(" تارخ فاکتور :   " + dbh.getFactordate(PreFac)));
                             factordate_tv.setLayoutParams(new LinearLayoutCompat.LayoutParams(350, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
                             factordate_tv.setTextSize(10);
@@ -201,7 +204,7 @@ public class PrinterActivity extends AppCompatActivity {
                             title_layout.addView(factordate_tv);
                             title_layout.addView(ViewPager);
 
-                            TextView total_amount_tv = new TextView(PrinterActivity.this);
+                            TextView total_amount_tv = new TextView(App.getContext());
                             total_amount_tv.setText(NumberFunctions.PerisanNumber(" تعداد کل:   " + dbh.getFactorSumAmount(PreFac)));
                             total_amount_tv.setLayoutParams(new LinearLayoutCompat.LayoutParams(350, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
                             total_amount_tv.setTextSize(14);
@@ -209,24 +212,22 @@ public class PrinterActivity extends AppCompatActivity {
                             total_amount_tv.setGravity(Gravity.RIGHT);
                             total_amount_tv.setPadding(0, 20, 0, 10);
 
-
-                            TextView total_price_tv = new TextView(PrinterActivity.this);
-                            total_price_tv.setText(NumberFunctions.PerisanNumber(" قیمت کل : " + decimalFormat.format(dbh.getFactorSum(PreFac)) + " ریال"));
+                            TextView total_price_tv = new TextView(App.getContext());
+                            total_price_tv.setText(NumberFunctions.PerisanNumber(" قیمت کل : " + decimalFormat.format(Integer.parseInt(dbh.getFactorSum(PreFac))) + " ریال"));
                             total_price_tv.setLayoutParams(new LinearLayoutCompat.LayoutParams(350, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
                             total_price_tv.setTextSize(12);
                             total_price_tv.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                             total_price_tv.setGravity(Gravity.RIGHT);
 
-                            TextView phone_tv = new TextView(PrinterActivity.this);
-                            phone_tv.setText(NumberFunctions.PerisanNumber("۰۹۰۱۹۹۹۹۹۸۷\n تلفن سفارشات"));
+                            TextView phone_tv = new TextView(App.getContext());
+                            phone_tv.setText(NumberFunctions.PerisanNumber( callMethod.ReadString("PhoneNumber")+"\n تلفن سفارشات"));
                             phone_tv.setLayoutParams(new LinearLayoutCompat.LayoutParams(350, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
                             phone_tv.setTextSize(16);
                             phone_tv.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                             phone_tv.setGravity(Gravity.CENTER);
                             phone_tv.setPadding(0, 35, 0, 35);
 
-
-                            TextView kowsar_tv = new TextView(PrinterActivity.this);
+                            TextView kowsar_tv = new TextView(App.getContext());
                             kowsar_tv.setText(NumberFunctions.PerisanNumber("گروه نرم افزاری کوثر\n شماره تماس3–66569320"));
                             kowsar_tv.setLayoutParams(new LinearLayoutCompat.LayoutParams(350, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
                             kowsar_tv.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -239,22 +240,21 @@ public class PrinterActivity extends AppCompatActivity {
                             total_layout.addView(total_price_tv);
                             total_layout.addView(phone_tv);
                             total_layout.addView(kowsar_tv);
-
                             good_layout.addView(ViewPager_rast);
                             int j = 0;
                             for (Good gooddetail : goods) {
                                 j++;
-                                LinearLayoutCompat first_layout = new LinearLayoutCompat(PrinterActivity.this);
+                                LinearLayoutCompat first_layout = new LinearLayoutCompat(App.getContext());
                                 first_layout.setLayoutParams(new LinearLayoutCompat.LayoutParams(356, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
                                 first_layout.setOrientation(LinearLayoutCompat.VERTICAL);
 
-                                LinearLayoutCompat name_detail = new LinearLayoutCompat(PrinterActivity.this);
+                                LinearLayoutCompat name_detail = new LinearLayoutCompat(App.getContext());
                                 name_detail.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
                                 name_detail.setOrientation(LinearLayoutCompat.HORIZONTAL);
                                 name_detail.setWeightSum(6);
                                 name_detail.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-                                TextView radif = new TextView(PrinterActivity.this);
+                                TextView radif = new TextView(App.getContext());
                                 radif.setText(NumberFunctions.PerisanNumber(String.valueOf(j)));
                                 radif.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT, 5));
                                 radif.setTextSize(10);
@@ -262,11 +262,10 @@ public class PrinterActivity extends AppCompatActivity {
                                 radif.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                                 radif.setPadding(0, 10, 0, 10);
 
-                                ViewPager ViewPager_goodname = new ViewPager(PrinterActivity.this);
+                                ViewPager ViewPager_goodname = new ViewPager(App.getContext());
                                 ViewPager_goodname.setLayoutParams(new LinearLayoutCompat.LayoutParams(2, LinearLayoutCompat.LayoutParams.MATCH_PARENT));
-                                ViewPager_goodname.setBackgroundResource(R.color.colorPrimaryDark);
-                                TextView good_name_tv = new TextView(PrinterActivity.this);
-
+                                ViewPager_goodname.setBackgroundResource(R.color.colorPrimary);
+                                TextView good_name_tv = new TextView(App.getContext());
                                 good_name_tv.setText(NumberFunctions.PerisanNumber(gooddetail.getGoodFieldValue("GoodName")));
                                 good_name_tv.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT, 1));
                                 good_name_tv.setTextSize(10);
@@ -278,38 +277,40 @@ public class PrinterActivity extends AppCompatActivity {
                                 name_detail.addView(ViewPager_goodname);
                                 name_detail.addView(good_name_tv);
 
-                                LinearLayoutCompat detail = new LinearLayoutCompat(PrinterActivity.this);
+                                LinearLayoutCompat detail = new LinearLayoutCompat(App.getContext());
                                 detail.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
                                 detail.setOrientation(LinearLayoutCompat.HORIZONTAL);
                                 detail.setWeightSum(9);
                                 detail.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
-                                TextView good_price_tv = new TextView(PrinterActivity.this);
-                                good_price_tv.setText(NumberFunctions.PerisanNumber(decimalFormat.format(gooddetail.getGoodFieldValue("Price"))));
+                                TextView good_price_tv = new TextView(App.getContext());
+                                good_price_tv.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(gooddetail.getGoodFieldValue("Price")))));
                                 good_price_tv.setLayoutParams(new LinearLayoutCompat.LayoutParams(350, LinearLayoutCompat.LayoutParams.WRAP_CONTENT, 3));
                                 good_price_tv.setTextSize(9);
                                 good_price_tv.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                                 good_price_tv.setGravity(Gravity.CENTER);
-
-                                TextView good_amount_tv = new TextView(PrinterActivity.this);
-                                good_amount_tv.setText(NumberFunctions.PerisanNumber(String.valueOf(gooddetail.getGoodFieldValue("Amount"))));
+                                TextView good_amount_tv = new TextView(App.getContext());
+                                good_amount_tv.setText(NumberFunctions.PerisanNumber(gooddetail.getGoodFieldValue("FactorAmount")));
                                 good_amount_tv.setLayoutParams(new LinearLayoutCompat.LayoutParams(350, LinearLayoutCompat.LayoutParams.WRAP_CONTENT, 3));
                                 good_amount_tv.setTextSize(10);
                                 good_amount_tv.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                                 good_amount_tv.setGravity(Gravity.CENTER);
 
-                                TextView good_totalprice_tv = new TextView(PrinterActivity.this);
-                                good_totalprice_tv.setText(NumberFunctions.PerisanNumber(decimalFormat.format(String.valueOf(Integer.parseInt(gooddetail.getGoodFieldValue("Amount")) * Integer.parseInt(gooddetail.getGoodFieldValue("Price"))))));
+                                long tprice=  Integer.parseInt(gooddetail.getGoodFieldValue("FactorAmount")) * Integer.parseInt(gooddetail.getGoodFieldValue("Price"));
+
+
+                                TextView good_totalprice_tv = new TextView(App.getContext());
+                                good_totalprice_tv.setText(NumberFunctions.PerisanNumber(decimalFormat.format(tprice)));
                                 good_totalprice_tv.setLayoutParams(new LinearLayoutCompat.LayoutParams(350, LinearLayoutCompat.LayoutParams.WRAP_CONTENT, 3));
                                 good_totalprice_tv.setTextSize(9);
                                 good_totalprice_tv.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                                 good_totalprice_tv.setPadding(0, 0, 0, 10);
                                 good_totalprice_tv.setGravity(Gravity.CENTER);
 
-                                ViewPager ViewPager_sell1 = new ViewPager(PrinterActivity.this);
+                                ViewPager ViewPager_sell1 = new ViewPager(App.getContext());
                                 ViewPager_sell1.setLayoutParams(new LinearLayoutCompat.LayoutParams(2, LinearLayoutCompat.LayoutParams.MATCH_PARENT));
                                 ViewPager_sell1.setBackgroundResource(R.color.colorPrimaryDark);
-                                ViewPager ViewPager_sell2 = new ViewPager(PrinterActivity.this);
+                                ViewPager ViewPager_sell2 = new ViewPager(App.getContext());
                                 ViewPager_sell2.setLayoutParams(new LinearLayoutCompat.LayoutParams(2, LinearLayoutCompat.LayoutParams.MATCH_PARENT));
                                 ViewPager_sell2.setBackgroundResource(R.color.colorPrimaryDark);
 
@@ -319,11 +320,11 @@ public class PrinterActivity extends AppCompatActivity {
                                 detail.addView(ViewPager_sell2);
                                 detail.addView(good_totalprice_tv);
 
-                                ViewPager extra_ViewPager = new ViewPager(PrinterActivity.this);
+                                ViewPager extra_ViewPager = new ViewPager(App.getContext());
                                 extra_ViewPager.setLayoutParams(new LinearLayoutCompat.LayoutParams(350, 2));
                                 extra_ViewPager.setBackgroundResource(R.color.colorPrimaryDark);
 
-                                ViewPager extra_ViewPager1 = new ViewPager(PrinterActivity.this);
+                                ViewPager extra_ViewPager1 = new ViewPager(App.getContext());
                                 extra_ViewPager1.setLayoutParams(new LinearLayoutCompat.LayoutParams(350, 2));
                                 extra_ViewPager1.setBackgroundResource(R.color.colorPrimaryDark);
 
@@ -335,7 +336,6 @@ public class PrinterActivity extends AppCompatActivity {
 
                                 boby_good_layout.addView(first_layout);
 
-
                             }
                             good_layout.addView(boby_good_layout);
                             good_layout.addView(ViewPager_chap);
@@ -345,16 +345,22 @@ public class PrinterActivity extends AppCompatActivity {
                             main_layout.addView(good_layout);
                             main_layout.addView(total_layout);
 
+                            int i=(loadBitmapFromView(main_layout).getHeight()/500)+1;
 
-                            bixolonPrinterApi.printBitmap(loadBitmapFromView(main_layout)
-                                    , BixolonPrinter.ALIGNMENT_CENTER
-                                    , 400
-                                    , 70
-                                    , false);
-                            Image_info image_info = new Image_info(PrinterActivity.this);
+                            for(int g =0; g < i; g++){
+                                Bitmap btm=Bitmap.createBitmap(loadBitmapFromView(main_layout), 0,g*500,loadBitmapFromView(main_layout).getWidth(), 500);
+                                bixolonPrinterApi.printBitmap(btm
+                                        , BixolonPrinter.ALIGNMENT_CENTER
+                                        , 400
+                                        , 70
+                                        , true);
+                            }
+
+                            Image_info image_info = new Image_info(App.getContext());
                             image_info.SaveImage_factor(loadBitmapFromView(main_layout), PreFac);
 
                         } catch (Exception e) {
+                            Log.e("test1",e.getMessage());
                         }
                     }
                 };
@@ -378,7 +384,8 @@ public class PrinterActivity extends AppCompatActivity {
     public void intent() {
         Bundle data = getIntent().getExtras();
         assert data != null;
-        PreFac = String.valueOf(data.getInt("PreFac"));
+        PreFac = data.getString("PreFac");
+        Log.e("test_PreFac",PreFac);
     }
 
     private void updateScreenStatus(View viewToShow) {
@@ -410,7 +417,7 @@ public class PrinterActivity extends AppCompatActivity {
         super.onResume();
 
         bixolonPrinterApi = new BixolonPrinter(this, handler, null);
-        task = new PairWithPrinterTask();
+        task = new PrinterActivity.PairWithPrinterTask();
         task.execute();
         updatePrintButtonState();
         BluetoothUtil.startBluetooth();
@@ -440,7 +447,7 @@ public class PrinterActivity extends AppCompatActivity {
         @SuppressWarnings("unchecked")
         @Override
         public void handleMessage(Message msg) {
-            // Log.i("Handler", msg.what + " " + msg.arg1 + " " + msg.arg2);
+            //Log.e("test_Handler", msg.what + " " + msg.arg1 + " " + msg.arg2);
             switch (msg.what) {
                 case BixolonPrinter.MESSAGE_STATE_CHANGE:
                     Log.i("Handler", "BixolonPrinter.MESSAGE_STATE_CHANGE");
@@ -491,7 +498,7 @@ public class PrinterActivity extends AppCompatActivity {
                     break;
                 case BixolonPrinter.MESSAGE_TOAST:
                     Log.i("Handler", "BixolonPrinter.MESSAGE_TOAST - " + msg.getData().getString("toast"));
-                    // Toast.makeText(getApplicationContext(), msg.getData().getString("toast"), Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(getApplicationContext(), msg.getData().getString("toast"));
                     break;
                 // The list of paired printers
                 case BixolonPrinter.MESSAGE_BLUETOOTH_DEVICE_SET:
@@ -525,15 +532,14 @@ public class PrinterActivity extends AppCompatActivity {
                 case BixolonPrinter.MESSAGE_USB_DEVICE_SET:
                     Log.i("Handler", "BixolonPrinter.MESSAGE_USB_DEVICE_SET");
                     if (msg.obj == null) {
-                        Toast.makeText(getApplicationContext(), "No connected device", Toast.LENGTH_SHORT).show();
-                    }  // DialogManager.showUsbDialog(MainActivity.this,
-                    // (Set<UsbDevice>) msg.obj, mUsbReceiver);
+                        callMethod.showToast("No connected device");
+                    }
 
                     break;
                 case BixolonPrinter.MESSAGE_NETWORK_DEVICE_SET:
                     Log.i("Handler", "BixolonPrinter.MESSAGE_NETWORK_DEVICE_SET");
                     if (msg.obj == null) {
-                        Toast.makeText(getApplicationContext(), "No connectable device", Toast.LENGTH_SHORT).show();
+                        callMethod.showToast("No connectable device");
                     }
                     // DialogManager.showNetworkDialog(PrintingActivity.this, (Set<String>) msg.obj);
                     break;
@@ -561,7 +567,7 @@ public class PrinterActivity extends AppCompatActivity {
                     publishProgress();
                 }
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(2000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -680,7 +686,9 @@ public class PrinterActivity extends AppCompatActivity {
 
     public Bitmap loadBitmapFromView(View v) {
         v.measure(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
-        Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+        int x=500-(v.getMeasuredHeight()%500);
+
+        Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight()+x, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
         v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
         v.draw(c);

@@ -23,7 +23,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     CallMethod callMethod;
     ArrayList<Column> columns;
-    ArrayList<Column> columns_search;
     ArrayList<Good> goods;
 
     Cursor cursor;
@@ -32,9 +31,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     int limitcolumn;
     String query = "";
-    String searchquery;
     String result = "";
-    String SH_firstStart;
     String SH_selloff;
     String SH_grid;
     String SH_delay;
@@ -48,6 +45,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     boolean SH_goodamount;
     int k = 0;
     String sc;
+    String st;
     String stack_Condition;
     String joinDetail;
     String joinbasket;
@@ -60,12 +58,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    public void CreateActivationDb() {
+        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS Activation (" +
+                "AppBrokerCustomerCode TEXT," +
+                "ActivationCode TEXT," +
+                "PersianCompanyName TEXT," +
+                "EnglishCompanyName TEXT," +
+                "ServerURL TEXT," +
+                "SQLiteURL TEXT," +
+                "MaxDevice TEXT)");
+    }
+
     public void DatabaseCreate() {
         getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS PreFactorRow (PreFactorRowCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE ,PreFactorRef INTEGER, GoodRef INTEGER, FactorAmount INTEGER, Shortage INTEGER, PreFactorDate TEXT,  Price INTEGER)");
         getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS Prefactor ( PreFactorCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, PreFactorDate TEXT," +
                 " PreFactorTime TEXT, PreFactorKowsarCode INTEGER, PreFactorKowsarDate TEXT, PreFactorExplain TEXT, CustomerRef INTEGER, BrokerRef INTEGER)");
-        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS Favorites ( GoodRef INTEGER )");
-        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS Customer ( CustomerCode INTEGER, CustomerName TEXT, CustomerAddress TEXT, CustomerSum INTEGER )");
         getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS Config ( KeyValue TEXT Primary Key, DataValue TEXT)");
         getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS Units ( UnitCode INTEGER PRIMARY KEY, UnitName TEXT)");
         getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS BrokerColumn ( ColumnCode INTEGER PRIMARY KEY, SortOrder TEXT, ColumnName TEXT, ColumnDesc TEXT, GoodType TEXT, ColumnDefinition TEXT, ColumnType TEXT, Condition TEXT, OrderIndex TEXT, AppType INTEGER)");
@@ -184,6 +191,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.SH_goodamount = callMethod.ReadBoolan("GoodAmount");
 
         sc = "Where StackRef in (" + SH_brokerstack + ")";
+
+        st="";
 //        if (SH_activestack) {
 //            stackCondition = stackCondition + " And Active = 1";
 //        }
@@ -325,6 +334,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         search = search.replaceAll("'", "%");
 
         query = " With FilterTable As (Select 0 as SecondField) SELECT ";
+
         k = 0;
 
         for (Column column : columns) {
@@ -332,7 +342,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 query = query + " , ";
             }
             if (!column.getColumnDefinition().equals("")) {
-                stack_Condition=column.getColumnDefinition().replace("stackCondition",sc);
+                stack_Condition=column.getColumnDefinition();
                 query = query + stack_Condition + " as " + column.getColumnName();
             } else {
                 query = query + column.getColumnName();
@@ -361,12 +371,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
 
+        if (SH_activestack) {
+            st = sc+ " And ActiveStack = 1 ";
+        }else{
+            st = sc;
+        }
 
+        query=query.replaceAll("stackCondition",st);
 
         if (SH_goodamount) {
             query = query + " And StackAmount > 0 ";
         }
 
+        if (SH_activestack) {
+            query = query + " And ActiveStack > 0 ";
+        }
 
         if (Integer.parseInt(aGroupCode) > 0) {
             query = query + " And GoodCode in(Select GoodRef From GoodGroup p "
@@ -394,6 +413,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         cursor = getWritableDatabase().rawQuery(query, null);
 
+        Log.e("test_",query);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
@@ -457,11 +477,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         query = query + searchbox_result;
 
-        query=query.replace("stackCondition",sc);
+
+
+        if (SH_activestack) {
+            st = sc+ " And ActiveStack = 1 ";
+        }else{
+            st = sc;
+        }
+
+        query=query.replaceAll("stackCondition",st);
 
         if (SH_goodamount) {
             query = query + " And StackAmount > 0 ";
         }
+
+        if (SH_activestack) {
+            query = query + " And ActiveStack > 0 ";
+        }
+
 
         if (Integer.parseInt(aGroupCode) > 0) {
             query = query + " And GoodCode in(Select GoodRef From GoodGroup p "
@@ -549,7 +582,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             k++;
         }
         query = query + joinDetail ;
-        query=query.replace("stackCondition",sc);
+
+        if (SH_activestack) {
+            st = sc+ " And ActiveStack = 1 ";
+        }else{
+            st = sc;
+        }
+
+        query=query.replaceAll("stackCondition",st);
+
         query = query + " WHERE GoodCode = " + code;
 
         Log.e("test",query);
@@ -584,6 +625,56 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return gooddetail;
+    }
+
+    public void InsertActivation(Activation activation) {
+
+        query="select * from Activation Where ActivationCode= '"+activation.getActivationCode()+"'";
+        cursor = getWritableDatabase().rawQuery(query, null);
+        if (cursor.getCount() > 0) {
+            getWritableDatabase().execSQL("Update Activation set " +
+                    "ServerURL = '" + activation.getServerURL() + "' " +
+                    "Where ActivationCode= '"+activation.getActivationCode()+"'");
+
+            getWritableDatabase().execSQL("Update Activation set " +
+                    "SQLiteURL = '" + activation.getSQLiteURL() + "' " +
+                    "Where ActivationCode= '"+activation.getActivationCode()+"'");
+
+        } else {
+            getWritableDatabase().execSQL(" Insert Into Activation(AppBrokerCustomerCode,ActivationCode,PersianCompanyName, EnglishCompanyName,ServerURL,SQLiteURL,MaxDevice)" +
+                    " Select '" + activation.getAppBrokerCustomerCode() + "','" + activation.getActivationCode() + "','" +
+                    activation.getPersianCompanyName() + "','" + activation.getEnglishCompanyName() + "','" +
+                    activation.getServerURL() + "','" + activation.getSQLiteURL() + "','" + activation.getMaxDevice() + "'");
+
+        }
+
+
+
+    }
+
+    public ArrayList<Activation> getActivation() {
+
+        query="Select * From Activation";
+        cursor = getWritableDatabase().rawQuery(query, null);
+        ArrayList<Activation> activations = new ArrayList<>();
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Activation activation = new Activation();
+                activation.setAppBrokerCustomerCode(cursor.getString(cursor.getColumnIndex("AppBrokerCustomerCode")));
+                activation.setActivationCode(cursor.getString(cursor.getColumnIndex("ActivationCode")));
+                activation.setPersianCompanyName(cursor.getString(cursor.getColumnIndex("PersianCompanyName")));
+                activation.setEnglishCompanyName(cursor.getString(cursor.getColumnIndex("EnglishCompanyName")));
+                activation.setServerURL(cursor.getString(cursor.getColumnIndex("ServerURL")));
+                activation.setSQLiteURL(cursor.getString(cursor.getColumnIndex("SQLiteURL")));
+                activation.setMaxDevice(cursor.getString(cursor.getColumnIndex("MaxDevice")));
+                activations.add(activation);
+
+            }
+        }
+        assert cursor != null;
+        cursor.close();
+        return activations;
     }
 
 
@@ -640,14 +731,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             k++;
         }
         query = query + " FROM Good g , FilterTable Where Date>='" + xDayAgo + "' ";
-        query=query.replace("stackCondition",sc);
 
+
+
+        if (SH_activestack) {
+            st = sc+ " And ActiveStack = 1 ";
+        }else{
+            st = sc;
+        }
+
+        query=query.replaceAll("stackCondition",st);
 
         if (SH_goodamount) {
-
-                query = query + " And StackAmount > 0 ";
+            query = query + " And StackAmount > 0 ";
         }
+
+        if (SH_activestack) {
+            query = query + " And ActiveStack > 0 ";
+        }
+
+
         query = query + " order by ";
+
         k = 0;
         for (Column column : columns) {
             if (!column.getOrderIndex().equals("0")) {
@@ -662,6 +767,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 k++;
             }
         }
+        Log.e("test",query);
         goods = new ArrayList<>();
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor != null) {
@@ -768,7 +874,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 cursor.moveToFirst();
                 getWritableDatabase().execSQL("Update PreFactorRow set FactorAmount = FactorAmount +" + FactorAmount + " Where PreFactorRowCode=" + cursor.getString(cursor.getColumnIndex("PreFactorRowCode")) + ";");
             } else {
-                query="INSERT INTO PreFactorRow(PreFactorRef, GoodRef, FactorAmount, Price) Select " + pfcode + "," + goodcode + ", " + FactorAmount + "," +price;
+                query="INSERT INTO PreFactorRow(PreFactorRef, GoodRef, FactorAmount, Price) "
+                        //Select " + pfcode + "," + goodcode + ", " + FactorAmount + "," +price
+                        + "select PreFactorCode ,GoodCode," + FactorAmount + ", Case When "+price+">0 Then "+price
+                        +" When g.SellPrice1>0 And c.PriceTip= 1 Then Case When g.SellPriceType = 0 Then g.SellPrice1 Else g.SellPrice1 * g.MaxSellPrice /100 End "
+                        +" When g.SellPrice2>0 And c.PriceTip= 2 Then Case When g.SellPriceType = 0 Then g.SellPrice2 Else g.SellPrice2 * g.MaxSellPrice /100 End "
+                        +" When g.SellPrice3>0 And c.PriceTip= 3 Then Case When g.SellPriceType = 0 Then g.SellPrice3 Else g.SellPrice3 * g.MaxSellPrice /100 End "
+                        +" When g.SellPrice4>0 And c.PriceTip= 4 Then Case When g.SellPriceType = 0 Then g.SellPrice4 Else g.SellPrice4 * g.MaxSellPrice /100 End "
+                        +" When g.SellPrice5>0 And c.PriceTip= 5 Then Case When g.SellPriceType = 0 Then g.SellPrice5 Else g.SellPrice5 * g.MaxSellPrice /100 End "
+                        +" When g.SellPrice6>0 And c.PriceTip= 6 Then Case When g.SellPriceType = 0 Then g.SellPrice6 Else g.SellPrice6 * g.MaxSellPrice /100 End "
+                        +" Else MaxSellPrice End "
+                        +" From PreFactor p Join Customer c on p.CustomerRef = c.CustomerCode "
+                        +" Join Good g on GoodCode="+ goodcode
+                        +" Where PreFactorCode="+pfcode+" Limit 1 ";
+
 //                query = "INSERT INTO PreFactorRow(PreFactorRef, GoodRef, FactorAmount, Price) Select " + pfcode + "," + goodcode + ", " + FactorAmount + "," +
 //                        "Case When " + price + ">=0 Then " + price + " Else Case PriceTip When 1 Then SellPrice1 When 2 Then SellPrice2 When 3 Then SellPrice3 When 4 Then SellPrice4 When 5 Then SellPrice5 When 6 Then SellPrice6 End" +
 //                        "* Case When SellPriceType = 1 Then MaxSellPrice/100 Else 1 End End " +
@@ -883,7 +1002,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         cursor = getWritableDatabase().rawQuery(query, null);
-
+        Log.e("test_1",query);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
@@ -989,6 +1108,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String getFactorSum(String pfcode) {
         query = " select sum(FactorAmount*price*DefaultUnitValue) as result From PreFactorRow join Good on GoodRef=GoodCode Where IfNull(PreFactorRef,0)=" + pfcode;
+        Log.e("test",query);
         cursor = getWritableDatabase().rawQuery(query, null);
         cursor.moveToFirst();
         long result = cursor.getLong(cursor.getColumnIndex("result"));

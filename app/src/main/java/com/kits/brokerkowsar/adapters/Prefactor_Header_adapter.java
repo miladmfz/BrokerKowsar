@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.activity.BuyActivity;
 import com.kits.brokerkowsar.activity.BuyhistoryActivity;
 import com.kits.brokerkowsar.activity.CustomerActivity;
@@ -51,7 +52,7 @@ public class Prefactor_Header_adapter extends RecyclerView.Adapter<Prefactor_Hea
         this.mContext = mContext;
         this.PreFactors = PreFactors;
         this.callMethod = new CallMethod(mContext);
-        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("UseSQLiteURL"));
+        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
         this.action = new Action(mContext);
 
     }
@@ -96,64 +97,8 @@ public class Prefactor_Header_adapter extends RecyclerView.Adapter<Prefactor_Hea
 
         holder.fac_excel.setOnClickListener(view -> {
 
-//            int kcf = Integer.parseInt(preFactordetail.getPreFactorFieldValue("PreFactorCode"));
-//            String kdf = preFactordetail.getPreFactorFieldValue("PreFactorDate");
-//            String cn = preFactordetail.getPreFactorFieldValue("Customer");
-//            if (kcf > 0) {
-//                int I = 0;
-//                StringBuilder filebody;
-//                filebody = new StringBuilder(",[کد اصلی]" +
-//                        ",[کد سیستمی]" +
-//                        ",[نام کتاب]" +
-//                        ",[تعداد]" +
-//                        ",[فی]" +
-//                        "[ناخالص]" +
-//                        "\n");
-//                ArrayList<Good> goodsecxel;
-//                goodsecxel = dbh.getAllPreFactorRows("", preFactordetail.getPreFactorFieldValue("PreFactorCode"));
-//                for (Good gooddetail : goodsecxel) {
-//                    filebody.append(gooddetail.getGoodFieldValue("GoodMainCode"))
-//                            .append(",")
-//                            .append(gooddetail.getGoodFieldValue("GoodCode"))
-//                            .append(",")
-//                            .append(gooddetail.getGoodFieldValue("GoodName"))
-//                            .append(",")
-//                            .append(gooddetail.getGoodFieldValue("FactorAmount"))
-//                            .append(",")
-//                            .append(gooddetail.getGoodFieldValue("Price"))
-//                            .append(",")
-//                            .append(gooddetail.getGoodFieldValue("MaxSellPrice"))
-//                            .append("\n");
-//                }
-//                Toast.makeText(mContext, "فایل ذخیره شد", Toast.LENGTH_SHORT).show();
-//                File myFile;
-//                String baseDir = Environment.getExternalStorageDirectory() + "/Kowsar/PreFactor_Excels";
-//                String fileName = "PreFactor_" + kcf + "_" + cn + "_" + kdf + ".xlsx";
-//                String filePath = baseDir + File.separator + fileName;
-//                myFile = new File(filePath);
-//                if (!myFile.exists()) {
-//                    if (!Objects.requireNonNull(myFile.getParentFile()).exists()) {
-//                        myFile.getParentFile().mkdirs();
-//                    }
-//                    if (!myFile.exists()) {
-//                        try {
-//                            myFile.createNewFile();
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                }
-//                try {
-//                    FileOutputStream fOut = new FileOutputStream(myFile);
-//                    OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-//                    myOutWriter.append(filebody.toString());
-//                    myOutWriter.close();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
             intent = new Intent(mContext, PrinterActivity.class);
-            intent.putExtra("PreFac", preFactordetail.getPreFactorFieldValue("PreFactorCode"));
+            intent.putExtra("PreFac", PreFactors.get(position).getPreFactorFieldValue("PreFactorCode"));
             mContext.startActivity(intent);
         });
 
@@ -161,7 +106,7 @@ public class Prefactor_Header_adapter extends RecyclerView.Adapter<Prefactor_Hea
         holder.fac_dlt.setOnClickListener(view -> {
 
             if (Integer.parseInt(preFactordetail.getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
-                Toast.makeText(mContext, "فاکتور بسته می باشد", Toast.LENGTH_SHORT).show();
+                callMethod.showToast( "فاکتور بسته می باشد");
             } else {
 
                 callMethod.EditString("PreFactorCode", preFactordetail.getPreFactorFieldValue("PreFactorCode"));
@@ -172,7 +117,7 @@ public class Prefactor_Header_adapter extends RecyclerView.Adapter<Prefactor_Hea
                             .setTitle("توجه")
                             .setMessage("فاکتور دارای کالا می باشد،کالاها حذف شود؟")
                             .setPositiveButton("بله", (dialogInterface, i) -> {
-                                Intent intent = new Intent(mContext, BuyActivity.class);
+                                intent = new Intent(mContext, BuyActivity.class);
                                 intent.putExtra("PreFac", preFactordetail.getPreFactorFieldValue("PreFactorCode"));
                                 mContext.startActivity(intent);
                             })
@@ -181,7 +126,7 @@ public class Prefactor_Header_adapter extends RecyclerView.Adapter<Prefactor_Hea
                             .show();
                 } else {
                     dbh.DeletePreFactor(String.valueOf(preFactordetail.getPreFactorFieldValue("PreFactorCode")));
-                    Toast.makeText(mContext, "فاکتور حذف گردید", Toast.LENGTH_SHORT).show();
+                    callMethod.showToast( "فاکتور حذف گردید");
                     goods.size();
 
                     callMethod.EditString("PreFactorCode", "0");
@@ -203,12 +148,12 @@ public class Prefactor_Header_adapter extends RecyclerView.Adapter<Prefactor_Hea
         holder.fac_good_edit.setOnClickListener(view -> {
 
             if (Integer.parseInt(preFactordetail.getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
-                Toast.makeText(mContext, "فاکتور بسته می باشد", Toast.LENGTH_SHORT).show();
+                callMethod.showToast( "فاکتور بسته می باشد");
             } else {
 
                 callMethod.EditString("PreFactorCode", preFactordetail.getPreFactorFieldValue("PreFactorCode"));
 
-                Intent intent = new Intent(mContext, BuyActivity.class);
+                intent = new Intent(mContext, BuyActivity.class);
                 intent.putExtra("PreFac", preFactordetail.getPreFactorFieldValue("PreFactorCode"));
 
                 mContext.startActivity(intent);
@@ -228,7 +173,7 @@ public class Prefactor_Header_adapter extends RecyclerView.Adapter<Prefactor_Hea
                         })
                         .show();
             } else {
-                Toast.makeText(mContext, "فاکتور خالی می باشد", Toast.LENGTH_SHORT).show();
+                callMethod.showToast( "فاکتور خالی می باشد");
                 goods.size();
             }
 
@@ -237,7 +182,7 @@ public class Prefactor_Header_adapter extends RecyclerView.Adapter<Prefactor_Hea
 
         holder.fac_customer_edit.setOnClickListener(view -> {
             if (Integer.parseInt(preFactordetail.getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
-                Toast.makeText(mContext, "فاکتور بسته می باشد", Toast.LENGTH_SHORT).show();
+                callMethod.showToast( "فاکتور بسته می باشد");
             } else {
                 new AlertDialog.Builder(mContext)
                         .setTitle("توجه")
@@ -263,7 +208,7 @@ public class Prefactor_Header_adapter extends RecyclerView.Adapter<Prefactor_Hea
 
         holder.fac_explain_edit.setOnClickListener(view -> {
             if (Integer.parseInt(preFactordetail.getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
-                Toast.makeText(mContext, "فاکتور بسته می باشد", Toast.LENGTH_SHORT).show();
+                callMethod.showToast( "فاکتور بسته می باشد");
             } else {
                 new AlertDialog.Builder(mContext)
                         .setTitle("توجه")
@@ -280,12 +225,12 @@ public class Prefactor_Header_adapter extends RecyclerView.Adapter<Prefactor_Hea
 
 
             if (Integer.parseInt(preFactordetail.getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
-                Toast.makeText(mContext, "فاکتور بسته می باشد", Toast.LENGTH_SHORT).show();
+                callMethod.showToast( "فاکتور بسته می باشد");
             } else {
                 callMethod.EditString("PreFactorCode", preFactordetail.getPreFactorFieldValue("PreFactorCode"));
 
-                Toast.makeText(mContext, "فاکتور مورد نظر انتخاب شد", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(mContext, SearchActivity.class);
+                callMethod.showToast( "فاکتور مورد نظر انتخاب شد");
+                intent = new Intent(mContext, SearchActivity.class);
                 intent.putExtra("scan", "");
                 intent.putExtra("id", "0");
                 intent.putExtra("title", "جستجوی کالا");

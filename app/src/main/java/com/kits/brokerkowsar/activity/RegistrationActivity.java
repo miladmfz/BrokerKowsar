@@ -1,116 +1,163 @@
 package com.kits.brokerkowsar.activity;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.LinearLayoutCompat;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
+import com.kits.brokerkowsar.application.Replication;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.UserInfo;
+
+import java.io.File;
+import java.io.IOException;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class RegistrationActivity extends AppCompatActivity {
 
     DatabaseHelper dbh;
     CallMethod callMethod;
+    Replication replication;
+    SwitchMaterial sm_regselloff;
+    Button btn_register;
+    UserInfo auser;
 
-    private EditText regborker, reggrid, regdelay, regitemamount,regtitlesize,regbodysize;
 
+    private EditText ed_reg_borker;
+    private EditText ed_reg_grid;
+    private EditText ed_reg_delay;
+    private EditText ed_reg_itemamount;
+    private EditText ed_reg_titlesize;
+    private EditText ed_reg_bodysize;
+    private EditText ed_reg_phonenumber;
+    private TextView tv_dbname;
+    private Button btn_deletedb;
+    private Button btn_repcol;
+    private LinearLayoutCompat ll_dbname;
+    boolean doubletouchdbanme = false;
+    Intent intent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
 
+        Config();
+        try {
+            init();
+        }catch (Exception e){
+            callMethod.showToast(e.getMessage());
+        }
 
-        init();
 
     }
+//*******************************************************
 
+    public void Config() {
+
+        callMethod = new CallMethod(this);
+        dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
+        replication = new Replication(this);
+
+        btn_register = findViewById(R.id.registr_btn);
+        btn_deletedb = findViewById(R.id.registr_deletdb);
+        btn_repcol = findViewById(R.id.registr_replicationcolumn);
+
+        ed_reg_borker = findViewById(R.id.registr_borker);
+        ed_reg_grid = findViewById(R.id.registr_grid);
+        ed_reg_delay = findViewById(R.id.registr_delay);
+        ed_reg_titlesize = findViewById(R.id.registr_titlesize);
+        ed_reg_bodysize = findViewById(R.id.registr_bodysize);
+        ed_reg_itemamount = findViewById(R.id.registr_itemamount);
+        ed_reg_phonenumber = findViewById(R.id.registr_phonenumber);
+
+        tv_dbname = findViewById(R.id.registr_dbname);
+        ll_dbname = findViewById(R.id.registr_line_manage);
+
+        sm_regselloff = findViewById(R.id.registr_selloff);
+    }
 
     public void init() {
-        callMethod = new CallMethod(this);
-        dbh = new DatabaseHelper(this, callMethod.ReadString("UseSQLiteURL"));
+
+        auser = dbh.LoadPersonalInfo();
+
+        ed_reg_borker.setText(NumberFunctions.PerisanNumber(auser.getBrokerCode()));
+        ed_reg_grid.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Grid")));
+        ed_reg_delay.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Delay")));
+        ed_reg_itemamount.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("ItemAmount")));
+        ed_reg_titlesize.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("TitleSize")));
+        ed_reg_bodysize.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("BodySize")));
+        ed_reg_phonenumber.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PhoneNumber")));
+        tv_dbname.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PersianCompanyNameUse")));
+
+        tv_dbname.setOnClickListener(v -> {
+            if(doubletouchdbanme){
+                ll_dbname.setVisibility(View.VISIBLE);
+            }
+            doubletouchdbanme = true;
+            new Handler().postDelayed(() -> doubletouchdbanme = false, 1000);
+        });
+
+        btn_deletedb.setOnClickListener(v -> {
+            new android.app.AlertDialog.Builder(this)
+                    .setTitle("توجه")
+                    .setMessage("آیا دیتابیس حذف شود؟")
+                    .setPositiveButton("بله", (dialogInterface, i) -> {
+                        File databasedir = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse"));
+                        deleteRecursive(databasedir);
+                    })
+                    .setNegativeButton("خیر", (dialogInterface, i) -> {})
+                    .show();
+        });
+
+        btn_repcol.setOnClickListener(v -> {
+            dbh.deleteColumn();
+            replication.GoodTypeReplication();
+            replication.MenuBroker();
+            replication.BrokerStack();
+            dbh.DatabaseCreate();
+        });
 
 
-        Button regbtn = findViewById(R.id.Registr_btn);
-
-        regborker = findViewById(R.id.Registr_borker);
-        reggrid = findViewById(R.id.Registr_grid);
-        regdelay = findViewById(R.id.Registr_delay);
-        regtitlesize = findViewById(R.id.Registr_titlesize);
-        regbodysize = findViewById(R.id.Registr_bodysize);
-        regitemamount = findViewById(R.id.Registr_itemamount);
+        sm_regselloff.setChecked(Integer.parseInt(callMethod.ReadString("SellOff")) != 0);
 
 
-        SwitchMaterial regselloff = findViewById(R.id.Registr_selloff);
-        SwitchMaterial real_amount = findViewById(R.id.Registr_real_amount);
-        SwitchMaterial auto_rep = findViewById(R.id.Registr_autorep);
-
-
-        UserInfo auser = dbh.LoadPersonalInfo();
-
-        regborker.setText(NumberFunctions.PerisanNumber(auser.getBrokerCode()));
-        reggrid.setText(NumberFunctions.PerisanNumber(String.valueOf(Integer.parseInt(callMethod.ReadString("Grid")))));
-        regdelay.setText(NumberFunctions.PerisanNumber(String.valueOf(Integer.parseInt(callMethod.ReadString("Delay")))));
-        regitemamount.setText(NumberFunctions.PerisanNumber(String.valueOf(Integer.parseInt(callMethod.ReadString("ItemAmount")))));
-        regtitlesize.setText(NumberFunctions.PerisanNumber(String.valueOf(Integer.parseInt(callMethod.ReadString("TitleSize")))));
-        regbodysize.setText(NumberFunctions.PerisanNumber(String.valueOf(Integer.parseInt(callMethod.ReadString("BodySize")))));
-
-
-        regselloff.setChecked(Integer.parseInt(callMethod.ReadString("SellOff")) != 0);
-
-        real_amount.setChecked(callMethod.ReadBoolan("RealAmount"));
-
-        auto_rep.setChecked(callMethod.ReadBoolan("auto_rep"));
-
-
-        regselloff.setOnCheckedChangeListener((compoundButton, b) -> {
+        sm_regselloff.setOnCheckedChangeListener((compoundButton, b) -> {
             if (Integer.parseInt(callMethod.ReadString("SellOff")) == 0) {
-                Toast.makeText(RegistrationActivity.this, "بله", Toast.LENGTH_SHORT).show();
+                callMethod.showToast( "بله");
                 callMethod.EditString("SellOff", "1");
             } else {
                 callMethod.EditString("SellOff", "0");
-                Toast.makeText(RegistrationActivity.this, "خیر", Toast.LENGTH_SHORT).show();
-
-
+                callMethod.showToast( "خیر");
             }
         });
 
 
-        real_amount.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b) {
-                callMethod.EditBoolan("RealAmount", true);
-                Toast.makeText(RegistrationActivity.this, "بله", Toast.LENGTH_SHORT).show();
-            } else {
-                callMethod.EditBoolan("RealAmount", false);
-                Toast.makeText(RegistrationActivity.this, "خیر", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        auto_rep.setOnCheckedChangeListener((compoundButton, b) -> {
-            if (b) {
-                callMethod.EditBoolan("auto_rep", true);
-                Toast.makeText(RegistrationActivity.this, "بله", Toast.LENGTH_SHORT).show();
-            } else {
-                callMethod.EditBoolan("auto_rep", false);
-                Toast.makeText(RegistrationActivity.this, "خیر", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-
-        regbtn.setOnClickListener(view -> {
+        btn_register.setOnClickListener(view -> {
             Registration();
-            callMethod.EditString("Grid", NumberFunctions.EnglishNumber(reggrid.getText().toString()));
-            callMethod.EditString("Delay", NumberFunctions.EnglishNumber(regdelay.getText().toString()));
-            callMethod.EditString("ItemAmount", NumberFunctions.EnglishNumber(regitemamount.getText().toString()));
-            callMethod.EditString("TitleSize", NumberFunctions.EnglishNumber(regtitlesize.getText().toString()));
-            callMethod.EditString("BodySize", NumberFunctions.EnglishNumber(regbodysize.getText().toString()));
+            callMethod.EditString("Grid", NumberFunctions.EnglishNumber(ed_reg_grid.getText().toString()));
+            callMethod.EditString("Delay", NumberFunctions.EnglishNumber(ed_reg_delay.getText().toString()));
+            callMethod.EditString("ItemAmount", NumberFunctions.EnglishNumber(ed_reg_itemamount.getText().toString()));
+            callMethod.EditString("TitleSize", NumberFunctions.EnglishNumber(ed_reg_titlesize.getText().toString()));
+            callMethod.EditString("BodySize", NumberFunctions.EnglishNumber(ed_reg_bodysize.getText().toString()));
+            callMethod.EditString("PhoneNumber", NumberFunctions.EnglishNumber(ed_reg_phonenumber.getText().toString()));
             finish();
         });
 
@@ -120,10 +167,25 @@ public class RegistrationActivity extends AppCompatActivity {
 
     public void Registration() {
         UserInfo auser = new UserInfo();
-        auser.setBrokerCode(NumberFunctions.EnglishNumber(regborker.getText().toString()));
+        auser.setBrokerCode(NumberFunctions.EnglishNumber(ed_reg_borker.getText().toString()));
 
         dbh.SavePersonalInfo(auser);
     }
 
+    void deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles())
+                deleteRecursive(child);
 
+        fileOrDirectory.delete();
+        callMethod.EditString("PersianCompanyNameUse", "");
+        callMethod.EditString("EnglishCompanyNameUse", "");
+        callMethod.EditString("ServerURLUse", "");
+        //callMethod.EditString("DatabaseName", "");
+        callMethod.EditString("DatabaseName", "");
+        intent = new Intent(this, SplashActivity.class);
+        finish();
+        startActivity(intent);
+
+    }
 }

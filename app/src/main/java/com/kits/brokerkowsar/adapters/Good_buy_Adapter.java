@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.activity.BuyActivity;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
@@ -52,7 +53,7 @@ public class Good_buy_Adapter extends RecyclerView.Adapter<Good_buy_Adapter.Good
     private final ArrayList<Good> goods;
     private long sum = 0;
     private final DatabaseHelper dbh;
-
+    Intent intent;
     Action action;
 
     public Good_buy_Adapter(ArrayList<Good> goods, Context mContext) {
@@ -60,7 +61,7 @@ public class Good_buy_Adapter extends RecyclerView.Adapter<Good_buy_Adapter.Good
         this.goods = goods;
         this.callMethod = new CallMethod(mContext);
         this.image_info = new Image_info(mContext);
-        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("UseSQLiteURL"));
+        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
         action = new Action(mContext);
     }
@@ -125,10 +126,8 @@ public class Good_buy_Adapter extends RecyclerView.Adapter<Good_buy_Adapter.Good
                             holder.img.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length), BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getWidth() * 2, BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getHeight() * 2, false));
 
                         } else {
-                            byte[] imageByteArray1;
-                            imageByteArray1 = Base64.decode(response.body().getText(), Base64.DEFAULT);
-                            holder.img.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length), BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getWidth() * 2, BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getHeight() * 2, false));
-                            image_info.SaveImage(BitmapFactory.decodeByteArray(Base64.decode(response.body().getText(), Base64.DEFAULT), 0, Base64.decode(response.body().getText(), Base64.DEFAULT).length), gooddetail.getGoodFieldValue("KsrImageCode"));
+                           image_info.SaveImage(BitmapFactory.decodeByteArray(Base64.decode(response.body().getText(), Base64.DEFAULT), 0, Base64.decode(response.body().getText(), Base64.DEFAULT).length), gooddetail.getGoodFieldValue("KsrImageCode"));
+                            notifyItemChanged(position);
                         }
                     }
                 }
@@ -163,8 +162,8 @@ public class Good_buy_Adapter extends RecyclerView.Adapter<Good_buy_Adapter.Good
                 .setPositiveButton("بله", (dialogInterface, i) -> {
 
                     dbh.DeletePreFactorRow(callMethod.ReadString("PreFactorCode"), gooddetail.getGoodFieldValue("PreFactorRowCode"));
-                    Toast.makeText(mContext, "از سبد خرید حذف گردید", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(mContext, BuyActivity.class);
+                    callMethod.showToast( "از سبد خرید حذف گردید");
+                    intent = new Intent(mContext, BuyActivity.class);
                     intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
                     intent.putExtra("showflag", "2");
                     ((Activity) mContext).finish();

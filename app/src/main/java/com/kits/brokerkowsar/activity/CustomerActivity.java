@@ -24,7 +24,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.adapters.Customer_Adapter;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.Replication;
 import com.kits.brokerkowsar.model.Customer;
@@ -80,23 +82,28 @@ public class CustomerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_customer);
+
         intent();
-        init();
+        Config();
+        try {
+            init();
+        }catch (Exception e){
+            callMethod.showToast(e.getMessage());
+        }
+
 
     }
 
 //*****************************************************************************************
 
 
-    public void init() {
+    public void Config() {
         callMethod = new CallMethod(this);
-
         replication = new Replication(this);
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
-        dbh = new DatabaseHelper(this, callMethod.ReadString("UseSQLiteURL"));
 
-        Toolbar toolbar = findViewById(R.id.CustomerActivity_toolbar);
-        setSupportActionBar(toolbar);
+        dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
+
         rc_customer = findViewById(R.id.Customer_R1);
         edtsearch = findViewById(R.id.Customer_edtsearch);
         Customer_new = findViewById(R.id.Customer_new_btn);
@@ -118,13 +125,20 @@ public class CustomerActivity extends AppCompatActivity {
         ezipcode = findViewById(R.id.customer_new_zipcode);
         customer_reg_btn = findViewById(R.id.customer_new_register_btn);
 
+        Toolbar toolbar = findViewById(R.id.CustomerActivity_toolbar);
+        setSupportActionBar(toolbar);
 
-        if (id.equals("0")) {
-            Customer_search();
-        }
+    }
 
-        if (id.equals("1")) {
-            Customer_new();
+    public void init() {
+
+        switch (id){
+            case "0":
+                Customer_search();
+                break;
+            case "1":
+                Customer_new();
+                break;
         }
 
     }
@@ -142,12 +156,10 @@ public class CustomerActivity extends AppCompatActivity {
         li_search.setVisibility(View.VISIBLE);
         edtsearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -158,7 +170,7 @@ public class CustomerActivity extends AppCompatActivity {
 
 
         Customer_new.setOnClickListener(v -> {
-            intent = new Intent(CustomerActivity.this, CustomerActivity.class);
+            intent = new Intent(this, CustomerActivity.class);
             intent.putExtra("edit", "0");
             intent.putExtra("factor_code", "0");
             intent.putExtra("id", "1");
@@ -193,7 +205,7 @@ public class CustomerActivity extends AppCompatActivity {
             city_array.add(citycustomer.getCustomerFieldValue("CityName"));
         }
 
-        ArrayAdapter<String> spinner_adapter = new ArrayAdapter<>(CustomerActivity.this,
+        ArrayAdapter<String> spinner_adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, city_array);
         spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinner_adapter);
@@ -253,8 +265,8 @@ public class CustomerActivity extends AppCompatActivity {
                             if (response.isSuccessful()) {
                                 assert response.body() != null;
                                 ArrayList<Customer> Customes = response.body().getCustomers();
-                                Toast.makeText(CustomerActivity.this, Customes.get(0).getCustomerFieldValue("ErrDesc"), Toast.LENGTH_SHORT).show();
-                                intent = new Intent(CustomerActivity.this, CustomerActivity.class);
+                                callMethod.showToast(Customes.get(0).getCustomerFieldValue("ErrDesc"));
+                                intent = new Intent(App.getContext(), CustomerActivity.class);
                                 intent.putExtra("edit", "0");
                                 intent.putExtra("factor_code", "0");
                                 intent.putExtra("id", "0");
@@ -271,10 +283,8 @@ public class CustomerActivity extends AppCompatActivity {
                     });
 
                 } else {
-                    intent = new Intent(CustomerActivity.this, ConfigActivity.class);
-                    Toast toast = Toast.makeText(CustomerActivity.this, "کد بازاریاب را وارد کنید", Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER, 10, 10);
-                    toast.show();
+                    intent = new Intent(this, ConfigActivity.class);
+                    callMethod.showToast("کد بازاریاب را وارد کنید");
                     startActivity(intent);
 
                 }
@@ -288,8 +298,8 @@ public class CustomerActivity extends AppCompatActivity {
 
     public void allCustomer() {
         customers = dbh.AllCustomer(srch, activecustomer);
-        adapter = new Customer_Adapter(customers, CustomerActivity.this, edit, factor_target);
-        gridLayoutManager = new GridLayoutManager(CustomerActivity.this, 1);
+        adapter = new Customer_Adapter(customers, this, edit, factor_target);
+        gridLayoutManager = new GridLayoutManager(this, 1);
         rc_customer.setLayoutManager(gridLayoutManager);
         rc_customer.setAdapter(adapter);
         rc_customer.setItemAnimator(new DefaultItemAnimator());
