@@ -71,7 +71,7 @@ public class PrefactorActivity extends AppCompatActivity {
             handler.postDelayed(this::init, 100);
             handler.postDelayed(dialog1::dismiss, 1000);
         }catch (Exception e){
-            callMethod.showToast(e.getMessage());
+            callMethod.ErrorLog(e.getMessage());
         }
 
 

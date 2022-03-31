@@ -1,30 +1,43 @@
 package com.kits.brokerkowsar.application;
 
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.provider.Settings;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.kits.brokerkowsar.BuildConfig;
+import com.kits.brokerkowsar.model.DatabaseHelper;
+import com.kits.brokerkowsar.model.RetrofitResponse;
+import com.kits.brokerkowsar.model.UserInfo;
+import com.kits.brokerkowsar.webService.APIClient_kowsar;
+import com.kits.brokerkowsar.webService.APIInterface;
+import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
 
 
 public class CallMethod extends Application {
     private final SharedPreferences shPref;
     private SharedPreferences.Editor sEdit;
     Context context;
-
+    DatabaseHelper dbh;
 
     public CallMethod(Context mContext) {
         this.context = mContext;
         this.shPref = context.getSharedPreferences("profile", Context.MODE_PRIVATE);
-
+        this.dbh = new DatabaseHelper(mContext, ReadString("DatabaseName"));
     }
 
     public void EditString(String Key, String Value) {
@@ -77,6 +90,40 @@ public class CallMethod extends Application {
         sEdit.putBoolean("FirstStart", false);
         EditString("ItemsShow", "3");
         sEdit.apply();
+    }
+
+    public void ErrorLog(String ErrorStr) {
+
+        showToast(ErrorStr);
+        @SuppressLint("HardwareIds") String android_id = Settings.Secure.getString(context
+                .getContentResolver(), Settings.Secure.ANDROID_ID);
+
+
+        PersianCalendar calendar1 = new PersianCalendar();
+        String version= BuildConfig.VERSION_NAME;
+
+
+        UserInfo auser = dbh.LoadPersonalInfo();
+
+        APIInterface apiInterface = APIClient_kowsar.getCleint_log().create(APIInterface.class);
+        Call<RetrofitResponse> cl = apiInterface.Errorlog("Errorlog"
+                , ErrorStr
+                , auser.getBrokerCode()
+                , android_id
+                , ReadString("PersianCompanyNameUse")
+                , calendar1.getPersianShortDateTime()
+                , version);
+        cl.enqueue(new Callback<RetrofitResponse>() {@Override
+            public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
+                assert response.body() != null; }
+
+
+
+            @Override
+            public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+        }
+        });
+
     }
 }
 

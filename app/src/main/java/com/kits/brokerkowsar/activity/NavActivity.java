@@ -104,7 +104,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             Handler handler = new Handler();
             handler.postDelayed(this::init, 100);
         }catch (Exception e){
-            callMethod.showToast(e.getMessage());
+            callMethod.ErrorLog(e.getMessage());
         }
 
     }

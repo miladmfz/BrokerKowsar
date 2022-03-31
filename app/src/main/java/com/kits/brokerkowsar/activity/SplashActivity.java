@@ -54,7 +54,7 @@ public class SplashActivity extends AppCompatActivity {
             init();
 
         }catch (Exception e){
-            callMethod.showToast(e.getMessage());
+            callMethod.ErrorLog(e.getMessage());
         }
 
     }

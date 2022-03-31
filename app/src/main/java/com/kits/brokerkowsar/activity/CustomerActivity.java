@@ -88,7 +88,7 @@ public class CustomerActivity extends AppCompatActivity {
         try {
             init();
         }catch (Exception e){
-            callMethod.showToast(e.getMessage());
+            callMethod.ErrorLog(e.getMessage());
         }
 
 

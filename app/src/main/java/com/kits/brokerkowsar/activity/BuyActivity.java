@@ -73,7 +73,7 @@ public class BuyActivity extends AppCompatActivity {
             handler.postDelayed(this::init, 100);
             handler.postDelayed(dialog::dismiss, 1000);
         }catch (Exception e){
-            callMethod.showToast(e.getMessage());
+            callMethod.ErrorLog(e.getMessage());
         }
 
 
