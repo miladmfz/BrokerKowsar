@@ -32,12 +32,10 @@ public class CallMethod extends Application {
     private final SharedPreferences shPref;
     private SharedPreferences.Editor sEdit;
     Context context;
-    DatabaseHelper dbh;
 
     public CallMethod(Context mContext) {
         this.context = mContext;
         this.shPref = context.getSharedPreferences("profile", Context.MODE_PRIVATE);
-        this.dbh = new DatabaseHelper(mContext, ReadString("DatabaseName"));
     }
 
     public void EditString(String Key, String Value) {
@@ -102,7 +100,7 @@ public class CallMethod extends Application {
         PersianCalendar calendar1 = new PersianCalendar();
         String version= BuildConfig.VERSION_NAME;
 
-
+        DatabaseHelper dbh = new DatabaseHelper(context, ReadString("DatabaseName"));
         UserInfo auser = dbh.LoadPersonalInfo();
 
         APIInterface apiInterface = APIClient_kowsar.getCleint_log().create(APIInterface.class);
