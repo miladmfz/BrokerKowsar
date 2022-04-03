@@ -301,14 +301,12 @@ public class Action {
                     ((Activity) mContext).overridePendingTransition(0, 0);
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
+                callMethod.ErrorLog(e.getMessage());
                 callMethod.showToast( "بروز خطا در اطلاعات");
-                Log.e("bklog_prin", e.toString());
             }
         }, volleyError -> {
-            volleyError.printStackTrace();
+            callMethod.ErrorLog(volleyError.getMessage());
             callMethod.showToast( "ارتباط با سرور میسر نمی باشد.");
-            Log.e("bklog_prin", volleyError.toString());
         }) {
             @Override
             protected Map<String, String> getParams() {
@@ -480,6 +478,7 @@ public class Action {
 
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+                callMethod.ErrorLog(t.getMessage());
             }
         });
 

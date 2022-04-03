@@ -108,7 +108,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                    Log.e("test",t.getMessage());
+                    callMethod.ErrorLog(t.getMessage());
                 }
             });
 
@@ -158,7 +158,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Error error) {
-                        Log.e("testdl_",error.toString());
+                        callMethod.ErrorLog(error.toString());
                     }
 
                 });
@@ -274,7 +274,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                 }
                 @Override
                 public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                    Log.e("test",t.getMessage());
+                    callMethod.ErrorLog(t.getMessage());
                 }
             });
         });

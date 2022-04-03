@@ -126,7 +126,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
             @Override
             public void onFailure(Call<RetrofitResponse> call, Throwable t) {
-
+                callMethod.ErrorLog(t.getMessage());
             }
         });
 
@@ -153,7 +153,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
                 @Override
                 public void onFailure(Call<RetrofitResponse> call, Throwable t) {
-
+                    callMethod.ErrorLog(t.getMessage());
                 }
             });
 

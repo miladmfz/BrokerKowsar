@@ -98,8 +98,8 @@ public class SplashActivity extends AppCompatActivity {
             try {
                 dbh.SaveConfig("BrokerStack","0");
                 dbh.SaveConfig("MenuBroker","");
-            }catch (Exception ignored){
-
+            }catch (Exception e){
+                callMethod.ErrorLog(e.getMessage());
             }
 
         }

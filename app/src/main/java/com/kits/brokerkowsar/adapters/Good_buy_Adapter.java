@@ -134,7 +134,8 @@ public class Good_buy_Adapter extends RecyclerView.Adapter<Good_buy_Adapter.Good
 
                 @Override
                 public void onFailure(@NonNull Call<RetrofitResponse> call2, @NonNull Throwable t) {
-                    Log.e("bklog_onFailure", "" + t.toString());
+                    callMethod.ErrorLog(t.getMessage());
+
                 }
             });
 

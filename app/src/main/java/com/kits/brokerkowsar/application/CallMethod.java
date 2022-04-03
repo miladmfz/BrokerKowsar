@@ -119,9 +119,11 @@ public class CallMethod extends Application {
 
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+               ErrorLog(t.getMessage());
         }
         });
 
     }
+
 }
 

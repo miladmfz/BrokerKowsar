@@ -95,7 +95,6 @@ public class Search_date_detailActivity extends AppCompatActivity {
         try {
             Handler handler = new Handler();
             handler.postDelayed(this::init, 100);
-
             handler.postDelayed(dialog1::dismiss, 1000);
         }catch (Exception e){
             callMethod.ErrorLog(e.getMessage());

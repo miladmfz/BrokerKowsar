@@ -149,7 +149,7 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
 
                 @Override
                 public void onFailure(@NonNull Call<RetrofitResponse> call2, @NonNull Throwable t) {
-                    Log.e("test", "" + t.toString());
+                    callMethod.ErrorLog(t.getMessage());
 
                 }
             });
