@@ -56,14 +56,6 @@ public class BuyActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy);
 
-        Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.setContentView(R.layout.rep_prog);
-        TextView repw = dialog.findViewById(R.id.rep_prog_text);
-        repw.setText("در حال خواندن اطلاعات");
-        dialog.show();
-
 
         intent();
         Config();
@@ -71,7 +63,6 @@ public class BuyActivity extends AppCompatActivity {
         try {
             Handler handler =  new Handler();
             handler.postDelayed(this::init, 100);
-            handler.postDelayed(dialog::dismiss, 1000);
         }catch (Exception e){
             callMethod.ErrorLog(e.getMessage());
         }

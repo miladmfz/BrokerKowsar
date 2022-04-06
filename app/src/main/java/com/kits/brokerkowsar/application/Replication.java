@@ -103,7 +103,7 @@ public class Replication {
             }
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                callMethod.ErrorLog(t.getMessage());
+                Log.e("test_Retrofitbroker",t.getMessage());
             }
         });
         MenuBroker();
@@ -124,7 +124,6 @@ public class Replication {
 
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                callMethod.ErrorLog(t.getMessage());
             }
         });
 
@@ -147,7 +146,7 @@ public class Replication {
 
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                callMethod.ErrorLog(t.getMessage());
+                Log.e("onFailure_t", t.getMessage());
             }
         });
         final Dialog dialog1;
@@ -185,7 +184,8 @@ public class Replication {
 
                 @Override
                 public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                    callMethod.ErrorLog(t.getMessage());
+                    Log.e("onFailure_t2", t.getMessage());
+                    Log.e("onFailure", t.toString());
                 }
             });
         } else {
@@ -273,7 +273,7 @@ public class Replication {
                                     try {
                                         database.execSQL(qCol);
                                     }catch (Exception e){
-                                        callMethod.ErrorLog(e.getMessage());
+                                        Log.e("test_Rep_e=",e.getMessage());
                                     }
 
                                     d.close();
@@ -289,7 +289,7 @@ public class Replication {
                         break;
                 }
             } catch (JSONException e) {
-                callMethod.ErrorLog(e.getMessage());
+                e.printStackTrace();
 
             }
             if (il >= RepRowCount) {
@@ -372,7 +372,7 @@ public class Replication {
                                     try {
                                         database.execSQL(qCol);
                                     }catch (Exception e){
-                                        callMethod.ErrorLog(e.getMessage());
+                                        Log.e("test_Rep_e=",e.getMessage());
                                     }
                                     d.close();
                                     break;
@@ -385,7 +385,7 @@ public class Replication {
                         break;
                 }
             } catch (JSONException e) {
-                callMethod.ErrorLog(e.getMessage());
+                e.printStackTrace();
             }
             if (il >= RepRowCount) {
                 replicateCityChange();
@@ -467,11 +467,15 @@ public class Replication {
                                     } else {
                                         qCol = "Update CacheGoodGroup Set GroupsWhitoutCode='" + GroupsWhitoutCode + "' Where GoodRef=" + code;
                                     }
+
+
                                     try {
                                         database.execSQL(qCol);
 
                                     }catch (Exception e){
-                                        callMethod.ErrorLog(e.getMessage());
+                                        Log.e("test_Rep_e=",e.getMessage());
+
+
                                     }
                                     d.close();
                                     break;
@@ -484,7 +488,7 @@ public class Replication {
                         break;
                 }
             } catch (JSONException e) {
-                callMethod.ErrorLog(e.getMessage());
+                e.printStackTrace();
             }
             if (il >= RepRowCount) {
                 replicateCacheGroupChange();
@@ -574,7 +578,7 @@ public class Replication {
                                     try {
                                         database.execSQL(qCol);
                                     }catch (Exception e){
-                                        callMethod.ErrorLog(e.getMessage());
+                                        Log.e("test_Rep_e=",e.getMessage());
                                     }
                                     d.close();
                                     break;
@@ -587,7 +591,7 @@ public class Replication {
                         break;
                 }
             } catch (JSONException e) {
-                callMethod.ErrorLog(e.getMessage());
+                e.printStackTrace();
             }
             if (il >= RepRowCount) {
                 replicateAddressChange();
@@ -671,7 +675,7 @@ public class Replication {
                                     try {
                                         database.execSQL(qCol);
                                     }catch (Exception e){
-                                        callMethod.ErrorLog(e.getMessage());
+                                        Log.e("test_Rep_e=",e.getMessage());
                                     }
                                     d.close();
                                     break;
@@ -683,7 +687,7 @@ public class Replication {
                         break;
                 }
             } catch (JSONException e) {
-                callMethod.ErrorLog(e.getMessage());
+                e.printStackTrace();
             }
             if (il >= RepRowCount) {
                 replicateCustomerChange();
@@ -771,8 +775,7 @@ public class Replication {
                                                         }
                                                     }
                                                 }
-                                            } catch (JSONException e) {
-                                                callMethod.ErrorLog(e.getMessage());
+                                            } catch (JSONException ignored) {
                                             }
                                         }
                                     }
@@ -787,7 +790,7 @@ public class Replication {
                                     try {
                                         database.execSQL(qCol.toString());
                                     }catch (Exception e){
-                                        callMethod.ErrorLog(e.getMessage());
+                                        Log.e("test_Rep_e=",e.getMessage());
                                     }
                                     d.close();
                                     break;
@@ -796,7 +799,7 @@ public class Replication {
                                     try {
                                         database.execSQL("delete from good where goodcode = " + code + " and not exists (select 1 From PreFactorRow Where GoodRef =" + code + ")");
                                     }catch (Exception e){
-                                        callMethod.ErrorLog(e.getMessage());
+                                        Log.e("test_Rep_e=",e.getMessage());
                                     }
                                     break;
                             }
@@ -812,7 +815,7 @@ public class Replication {
                 }
             } catch (JSONException e) {
 
-                callMethod.ErrorLog(e.getMessage());
+                e.printStackTrace();
             }
             if (il >= RepRowCount) {
                 replicateGoodChange();
@@ -897,7 +900,7 @@ public class Replication {
                                     try {
                                         database.execSQL(qCol);
                                     }catch (Exception e){
-                                        callMethod.ErrorLog(e.getMessage());
+                                        Log.e("test_Rep_e=",e.getMessage());
                                     }
                                     d.close();
 
@@ -915,7 +918,7 @@ public class Replication {
 
 
             } catch (JSONException e) {
-                callMethod.ErrorLog(e.getMessage());
+                e.printStackTrace();
             }
             if (il >= RepRowCount) {
                 replicateGoodStackChange();
@@ -999,8 +1002,7 @@ public class Replication {
                                                         }
                                                     }
                                                 }
-                                            } catch (JSONException e) {
-                                                callMethod.ErrorLog(e.getMessage());
+                                            } catch (JSONException ignored) {
                                             }
                                         }
                                     }
@@ -1025,7 +1027,7 @@ public class Replication {
                         break;
                 }
             } catch (JSONException e) {
-                callMethod.ErrorLog(e.getMessage());
+                e.printStackTrace();
             }
             if (il >= RepRowCount) {
                 replicateGoodsGrpChange();
@@ -1102,8 +1104,7 @@ public class Replication {
                                                         qVal.append(",'").append(value).append("'");
                                                     }
                                                 }
-                                            } catch (JSONException e) {
-                                                callMethod.ErrorLog(e.getMessage());
+                                            } catch (JSONException ignored) {
                                             }
                                         }
                                     }
@@ -1112,7 +1113,7 @@ public class Replication {
                                     try {
                                         database.execSQL(qCol.toString());
                                     }catch (Exception e){
-                                        callMethod.ErrorLog(e.getMessage());
+                                        Log.e("test_Rep_e=",e.getMessage());
                                     }
 
                                     break;
@@ -1122,7 +1123,7 @@ public class Replication {
                                     try {
                                         database.execSQL("delete from GoodGroup where GoodGroupCode = " + code);
                                     }catch (Exception e){
-                                        callMethod.ErrorLog(e.getMessage());
+                                        Log.e("test_Rep_e=",e.getMessage());
                                     }
 
                                     break;
@@ -1135,7 +1136,7 @@ public class Replication {
                         break;
                 }
             } catch (JSONException e) {
-                callMethod.ErrorLog(e.getMessage());
+                e.printStackTrace();
             }
             if (il >= RepRowCount) {
                 replicateGoodGroupChange();
@@ -1219,7 +1220,7 @@ public class Replication {
                                         database.execSQL(qCol);
                                         Log.e("test_Rep_e=",qCol);
                                     }catch (Exception e){
-                                        callMethod.ErrorLog(e.getMessage());
+                                        Log.e("test_Rep_e=",e.getMessage());
                                     }
                                     d.close();
                                     break;
@@ -1230,7 +1231,8 @@ public class Replication {
                         break;
                 }
             } catch (JSONException e) {
-                callMethod.ErrorLog(e.getMessage());
+                Log.e("test_Rep_e=",e.getMessage());
+                e.printStackTrace();
             }
             if (il >= RepRowCount) {
                 replicateGoodImageChange();
@@ -1309,8 +1311,7 @@ public class Replication {
                                                         }
                                                     }
                                                 }
-                                            } catch (JSONException e) {
-                                                callMethod.ErrorLog(e.getMessage());
+                                            } catch (JSONException ignored) {
                                             }
                                         }
                                     }
@@ -1321,7 +1322,7 @@ public class Replication {
                                     try {
                                         database.execSQL(qCol.toString());
                                     }catch (Exception e){
-                                        callMethod.ErrorLog(e.getMessage());
+                                        Log.e("test_Rep_e=",e.getMessage());
                                     }
                                     break;
                             }
@@ -1333,7 +1334,7 @@ public class Replication {
                         break;
                 }
             } catch (JSONException e) {
-                callMethod.ErrorLog(e.getMessage());
+                e.printStackTrace();
             }
             if (il >= RepRowCount) {
                 replicateGoodPropertyValueChange();
@@ -1347,7 +1348,7 @@ public class Replication {
                         dialog.dismiss();
 
                 }catch (Exception e){
-                    callMethod.ErrorLog(e.getMessage());
+
                 }
                 callMethod.showToast( "بروز رسانی انجام شد");
             }
@@ -1423,7 +1424,7 @@ public class Replication {
                                     try {
                                         database.execSQL(qCol);
                                     }catch (Exception e){
-                                        callMethod.ErrorLog(e.getMessage());
+                                        Log.e("test_Rep_e=",e.getMessage());
                                     }
                                     d.close();
                                     break;
@@ -1437,7 +1438,7 @@ public class Replication {
                         break;
                 }
             } catch (JSONException e) {
-                callMethod.ErrorLog(e.getMessage());
+                e.printStackTrace();
             }
             if (il >= RepRowCount) {
                 replicateCentralChange_customer();
@@ -1510,7 +1511,7 @@ public class Replication {
                                     try {
                                         database.execSQL(qCol);
                                     }catch (Exception e){
-                                        callMethod.ErrorLog(e.getMessage());
+                                        Log.e("test_Rep_e=",e.getMessage());
                                     }
                                     d.close();
                                     break;
@@ -1524,7 +1525,7 @@ public class Replication {
                         break;
                 }
             } catch (JSONException e) {
-                callMethod.ErrorLog(e.getMessage());
+                e.printStackTrace();
             }
             if (il >= RepRowCount) {
                 replicateCityChange_customer();
@@ -1608,7 +1609,7 @@ public class Replication {
                                     try {
                                         database.execSQL(qCol);
                                     }catch (Exception e){
-                                        callMethod.ErrorLog(e.getMessage());
+                                        Log.e("test_Rep_e=",e.getMessage());
                                     }
                                     d.close();
                                     break;
@@ -1622,7 +1623,7 @@ public class Replication {
                         break;
                 }
             } catch (JSONException e) {
-                callMethod.ErrorLog(e.getMessage());
+                e.printStackTrace();
             }
             if (il >= RepRowCount) {
                 replicateAddressChange_customer();
@@ -1698,7 +1699,7 @@ public class Replication {
                                     try {
                                         database.execSQL(qCol);
                                     }catch (Exception e){
-                                        callMethod.ErrorLog(e.getMessage());
+                                        Log.e("test_Rep_e=",e.getMessage());
                                     }
                                     d.close();
                                     break;
@@ -1711,7 +1712,7 @@ public class Replication {
                         break;
                 }
             } catch (JSONException e) {
-                callMethod.ErrorLog(e.getMessage());
+                e.printStackTrace();
             }
             if (il >= RepRowCount) {
                 replicateCustomerChange_customer();

@@ -369,7 +369,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }else{
             query = query + "where 1=1 ";
         }
-
+        query=query+" And Exists(Select 1 From GoodStack stackCondition And GoodRef=GoodCode )";
 
         if (SH_activestack) {
             st = sc+ " And ActiveStack = 1 ";
@@ -477,6 +477,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         query = query + searchbox_result;
 
+        query=query+" And Exists(Select 1 From GoodStack stackCondition And GoodRef=GoodCode )";
 
 
         if (SH_activestack) {
@@ -1251,6 +1252,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<Good> GetksrImageCodes(String code) {
         query = "SELECT ksrImageCode from KsrImage where ObjectRef = " + code;
         ArrayList<Good> Goods = new ArrayList<>();
+        Log.e("test11",query);
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {

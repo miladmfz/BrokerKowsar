@@ -478,7 +478,7 @@ public class Action {
 
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                callMethod.ErrorLog(t.getMessage());
+                //callMethod.ErrorLog(t.getMessage());
             }
         });
 

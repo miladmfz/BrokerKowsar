@@ -107,6 +107,11 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
                     extra_TextView.setTextColor(mContext.getResources().getColor(R.color.red_800));
                 }
 
+                if (Column.getColumnName().contains("Price")){
+                    extra_TextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))))));
+                }
+
+
                 holder.mainline.addView(extra_TextView);
 
             }

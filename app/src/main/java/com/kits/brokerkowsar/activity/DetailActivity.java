@@ -82,6 +82,7 @@ public class DetailActivity extends AppCompatActivity {
         intent();
         Config();
         try {
+
             Handler handler = new Handler();
             handler.postDelayed(this::init, 100);
         }catch (Exception e){
@@ -147,7 +148,6 @@ public class DetailActivity extends AppCompatActivity {
 
         prog.setVisibility(View.GONE);
         imagelists=dbh.GetksrImageCodes(gooddetail.getGoodFieldValue("GoodCode"));
-
         SliderView();
         btnbuy.setOnClickListener(view -> {
 
@@ -177,6 +177,7 @@ public class DetailActivity extends AppCompatActivity {
         extra_TextView1.setPadding(2, 5, 2, 5);
         extra_TextView1.setGravity(Gravity.CENTER);
         extra_TextView1.setTextColor(getResources().getColor(R.color.grey_800));
+
         ll_1.addView(extra_TextView1);
 
         TextView extra_TextView2 = new TextView(this);

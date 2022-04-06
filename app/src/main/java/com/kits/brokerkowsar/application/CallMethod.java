@@ -101,7 +101,14 @@ public class CallMethod extends Application {
         String version= BuildConfig.VERSION_NAME;
 
         DatabaseHelper dbh = new DatabaseHelper(context, ReadString("DatabaseName"));
-        UserInfo auser = dbh.LoadPersonalInfo();
+        UserInfo auser = null;
+        try{
+            auser= dbh.LoadPersonalInfo();
+        }catch (Exception e)
+        {
+            auser.setBrokerCode("0");
+        }
+        
 
         APIInterface apiInterface = APIClient_kowsar.getCleint_log().create(APIInterface.class);
         Call<RetrofitResponse> cl = apiInterface.Errorlog("Errorlog"
@@ -119,7 +126,7 @@ public class CallMethod extends Application {
 
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-               ErrorLog(t.getMessage());
+               //ErrorLog(t.getMessage());
         }
         });
 
