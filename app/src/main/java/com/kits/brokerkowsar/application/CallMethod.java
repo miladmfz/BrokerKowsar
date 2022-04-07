@@ -92,7 +92,6 @@ public class CallMethod extends Application {
 
     public void ErrorLog(String ErrorStr) {
 
-        showToast(ErrorStr);
         @SuppressLint("HardwareIds") String android_id = Settings.Secure.getString(context
                 .getContentResolver(), Settings.Secure.ANDROID_ID);
 
