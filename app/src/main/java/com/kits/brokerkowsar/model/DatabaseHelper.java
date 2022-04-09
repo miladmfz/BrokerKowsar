@@ -355,15 +355,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         boolean digitsOnly = TextUtils.isDigitsOnly(search);
         if(!search.equals("")) {
             for (Column column : columns) {
+
                 if (!(!column.getColumnType().equals("0") && !digitsOnly)) {
-                    if (k == 0) {
-                        query = query + " Where (";
-                    } else {
-                        query = query + " or ";
+                    if((Integer.parseInt(column.getColumnFieldValue("SortOrder")) > 0)) {
+                        if (k == 0) {
+                            query = query + " Where (";
+                        } else {
+                            query = query + " or ";
+                        }
+                        query = query + column.getColumnName() + " Like '%" + search + "%' ";
+                        k++;
                     }
-                    query = query + column.getColumnName() + " Like '%" + search + "%' ";
-                    k++;
                 }
+
             }
             query = query + " )";
         }else{

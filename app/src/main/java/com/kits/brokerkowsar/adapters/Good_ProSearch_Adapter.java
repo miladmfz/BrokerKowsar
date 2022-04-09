@@ -87,7 +87,7 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
         holder.mainline.removeAllViews();
 
         for (Column Column : Columns) {
-            if (Integer.parseInt(Column.getSortOrder()) > 0) {
+            if (Integer.parseInt(Column.getSortOrder()) > 1) {
                 TextView extra_TextView = new TextView(mContext);
                 extra_TextView.setText(NumberFunctions.PerisanNumber(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))));
                 extra_TextView.setBackgroundResource(R.color.white);
