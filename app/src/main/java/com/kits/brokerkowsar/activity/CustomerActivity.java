@@ -197,7 +197,7 @@ public class CustomerActivity extends AppCompatActivity {
 
     public void Customer_new() {
         li_new.setVisibility(View.VISIBLE);
-        replication.replicate_customer();
+       // replication.replicate_customer();
 
 
         citys = dbh.city();

@@ -100,7 +100,7 @@ public class CallMethod extends Application {
         String version= BuildConfig.VERSION_NAME;
 
         DatabaseHelper dbh = new DatabaseHelper(context, ReadString("DatabaseName"));
-        UserInfo auser = null;
+        UserInfo auser = new UserInfo();
         try{
             auser= dbh.LoadPersonalInfo();
         }catch (Exception e)

@@ -25,6 +25,7 @@ import com.kits.brokerkowsar.model.UserInfo;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,7 +50,8 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText ed_reg_bodysize;
     private EditText ed_reg_phonenumber;
     private TextView tv_dbname;
-    private Button btn_deletedb;
+    private Button btn_totaldelete;
+    private Button btn_basedelete;
     private Button btn_repcol;
     private LinearLayoutCompat ll_dbname;
     boolean doubletouchdbanme = false;
@@ -77,7 +79,8 @@ public class RegistrationActivity extends AppCompatActivity {
         replication = new Replication(this);
 
         btn_register = findViewById(R.id.registr_btn);
-        btn_deletedb = findViewById(R.id.registr_deletdb);
+        btn_totaldelete = findViewById(R.id.registr_totaldelete);
+        btn_basedelete = findViewById(R.id.registr_basedelete);
         btn_repcol = findViewById(R.id.registr_replicationcolumn);
 
         ed_reg_borker = findViewById(R.id.registr_borker);
@@ -115,13 +118,38 @@ public class RegistrationActivity extends AppCompatActivity {
             new Handler().postDelayed(() -> doubletouchdbanme = false, 1000);
         });
 
-        btn_deletedb.setOnClickListener(v -> {
+        btn_totaldelete.setOnClickListener(v -> {
             new android.app.AlertDialog.Builder(this)
                     .setTitle("توجه")
-                    .setMessage("آیا دیتابیس حذف شود؟")
+                    .setMessage("آیا اطلاعات نرم افزار به صورت کلی حذف شود؟")
                     .setPositiveButton("بله", (dialogInterface, i) -> {
                         File databasedir = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse"));
                         deleteRecursive(databasedir);
+                    })
+                    .setNegativeButton("خیر", (dialogInterface, i) -> {})
+                    .show();
+        });
+
+        btn_basedelete.setOnClickListener(v -> {
+            new android.app.AlertDialog.Builder(this)
+                    .setTitle("توجه")
+                    .setMessage("آیا نیازمند بارگیری مجدد اطلاعات هستید؟")
+                    .setPositiveButton("بله", (dialogInterface, i) -> {
+
+                        File currentFile = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse")+"/KowsarDb.sqlite");
+                        File newFile = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse")+"/tempDb");
+
+                        if (rename(currentFile, newFile)) {
+                            callMethod.EditString("PersianCompanyNameUse", "");
+                            callMethod.EditString("EnglishCompanyNameUse", "");
+                            callMethod.EditString("ServerURLUse", "");
+                            callMethod.EditString("DatabaseName", "");
+                            intent = new Intent(this, SplashActivity.class);
+                            finish();
+                            startActivity(intent);
+                            Log.i("test", "Success");
+                        }
+
                     })
                     .setNegativeButton("خیر", (dialogInterface, i) -> {})
                     .show();
@@ -187,5 +215,8 @@ public class RegistrationActivity extends AppCompatActivity {
         finish();
         startActivity(intent);
 
+    }
+    private boolean rename(File from, File to) {
+        return Objects.requireNonNull(from.getParentFile()).exists() && from.exists() && from.renameTo(to);
     }
 }

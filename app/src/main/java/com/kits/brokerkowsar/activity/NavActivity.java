@@ -51,9 +51,11 @@ import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import retrofit2.Call;
@@ -111,24 +113,55 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
     //************************************************************
 
+
+
     public void test_fun(View v) {
-        Call<RetrofitResponse> call1 = apiInterface.GetLocation(
-                "GetLocation"
-        );
-        call1.enqueue(new Callback<RetrofitResponse>() {
-            @Override
-            public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
-                ArrayList<Location> locations=response.body().getLocations();
-                tv_test.setText(locations.size()+"");
 
-                // TODO Polylines and Polygons
-            }
 
-            @Override
-            public void onFailure(Call<RetrofitResponse> call, Throwable t) {
-                //callMethod.ErrorLog(t.getMessage());
-            }
-        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+        //replication.DoingReplicate();
+
+//        String testdbnew ="/data/data/com.kits.brokerkowsar/databases/asli/new.sqlite";
+//        String testdbold ="/data/data/com.kits.brokerkowsar/databases/asli/old.sqlite";
+//        DatabaseHelper dbhnew = new DatabaseHelper(this,testdbnew);
+//        DatabaseHelper dbhold = new DatabaseHelper(this,testdbold);
+//
+//        dbhnew.Createtestnew();
+//        dbhold.Createtestold();
+//
+//        //dbhnew.testquery();
+//        dbhnew.testquery();
+
+
+//        Call<RetrofitResponse> call1 = apiInterface.GetLocation(
+//                "GetLocation"
+//        );
+//        call1.enqueue(new Callback<RetrofitResponse>() {
+//            @Override
+//            public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
+//                ArrayList<Location> locations=response.body().getLocations();
+//                tv_test.setText(locations.size()+"");
+//
+//                // TODO Polylines and Polygons
+//            }
+//
+//            @Override
+//            public void onFailure(Call<RetrofitResponse> call, Throwable t) {
+//                //callMethod.ErrorLog(t.getMessage());
+//            }
+//        });
 
     }
 
@@ -331,7 +364,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
             replication.BrokerStack();
             action.app_info();
-            replication.replicate_all();
+            replication.DoingReplicate();
 
         } else if (id == R.id.nav_buy) {
             if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) > 0) {

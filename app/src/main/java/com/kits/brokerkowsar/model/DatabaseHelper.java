@@ -53,8 +53,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public DatabaseHelper(Context context, String DATABASE_NAME) {
         super(context, DATABASE_NAME, null, 1);
+        Log.e("test_1",DATABASE_NAME);
+
         this.callMethod = new CallMethod(context);
         this.goods = new ArrayList<>();
+
+    }
+
+
+    public void GetLastDataFromOldDataBase(String tempDbPath) {
+
+        getWritableDatabase().execSQL("ATTACH DATABASE '" + tempDbPath + "' AS tempDb");
+
+        getWritableDatabase().execSQL("INSERT INTO main.Prefactor SELECT * FROM tempDb.Prefactor " );
+        getWritableDatabase().execSQL("INSERT INTO main.PreFactorRow SELECT * FROM tempDb.PreFactorRow " );
+        getWritableDatabase().execSQL("INSERT INTO main.Config SELECT * FROM tempDb.Config " );
+        getWritableDatabase().execSQL("INSERT INTO main.BrokerColumn SELECT * FROM tempDb.BrokerColumn " );
+        getWritableDatabase().execSQL("INSERT INTO main.GoodType SELECT * FROM tempDb.GoodType " );
+
+        getWritableDatabase().execSQL("DETACH DATABASE 'tempDb' ");
 
     }
 
@@ -69,30 +86,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "MaxDevice TEXT)");
     }
 
-    public void DatabaseCreate() {
-        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS PreFactorRow (PreFactorRowCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE ,PreFactorRef INTEGER, GoodRef INTEGER, FactorAmount INTEGER, Shortage INTEGER, PreFactorDate TEXT,  Price INTEGER)");
-        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS Prefactor ( PreFactorCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, PreFactorDate TEXT," +
-                " PreFactorTime TEXT, PreFactorKowsarCode INTEGER, PreFactorKowsarDate TEXT, PreFactorExplain TEXT, CustomerRef INTEGER, BrokerRef INTEGER)");
-        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS Config ( KeyValue TEXT Primary Key, DataValue TEXT)");
-        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS Units ( UnitCode INTEGER PRIMARY KEY, UnitName TEXT)");
-        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS BrokerColumn ( ColumnCode INTEGER PRIMARY KEY, SortOrder TEXT, ColumnName TEXT, ColumnDesc TEXT, GoodType TEXT, ColumnDefinition TEXT, ColumnType TEXT, Condition TEXT, OrderIndex TEXT, AppType INTEGER)");
-        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS GoodType ( GoodTypeCode INTEGER PRIMARY KEY, GoodType TEXT, IsDefault TEXT)");
+    public void InitialConfigInsert() {
 
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'Good_LastRepCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'Good_LastRepCode')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'GoodStack_LastRepCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'GoodStack_LastRepCode')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'GoodsGrp_LastRepCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'GoodsGrp_LastRepCode')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'GoodGroup_LastRepCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'GoodGroup_LastRepCode')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'PropertyValue_LastRepCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'PropertyValue_LastRepCode')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'City_LastRepCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'City_LastRepCode')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'Address_LastRepCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'Address_LastRepCode')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'Central_LastRepCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'Central_LastRepCode')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'Customer_LastRepCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'Customer_LastRepCode')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'CacheGroup_LastRepCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'CacheGroup_LastRepCode')");
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'BrokerCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'BrokerCode')");
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'BrokerStack', '0' Where Not Exists(Select * From Config Where KeyValue = 'BrokerStack')");
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'MenuBroker', '0' Where Not Exists(Select * From Config Where KeyValue = 'MenuBroker')");
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'KsrImage_LastRepCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'KsrImage_LastRepCode')");
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'VersionInfo', '" + BuildConfig.VERSION_NAME + "' Where Not Exists(Select * From Config Where KeyValue = 'VersionInfo')");
+
+    }
+
+    public void DatabaseCreate() {
+        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS PreFactorRow (PreFactorRowCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE ,PreFactorRef INTEGER, GoodRef INTEGER, FactorAmount INTEGER, Shortage INTEGER, PreFactorDate TEXT,  Price INTEGER)");
+        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS Prefactor ( PreFactorCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, PreFactorDate TEXT," +
+                " PreFactorTime TEXT, PreFactorKowsarCode INTEGER, PreFactorKowsarDate TEXT, PreFactorExplain TEXT, CustomerRef INTEGER, BrokerRef INTEGER)");
+        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS Config (ConfigCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, KeyValue TEXT , DataValue TEXT)");
+        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS BrokerColumn ( ColumnCode INTEGER PRIMARY KEY, SortOrder TEXT, ColumnName TEXT, ColumnDesc TEXT, GoodType TEXT, ColumnDefinition TEXT, ColumnType TEXT, Condition TEXT, OrderIndex TEXT, AppType INTEGER)");
+        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS GoodType ( GoodTypeCode INTEGER PRIMARY KEY, GoodType TEXT, IsDefault TEXT)");
 
 
         getWritableDatabase().execSQL("Create Index IF Not Exists IX_GoodGroup_GoodRef on GoodGroup (GoodRef,GoodGroupRef)");
@@ -152,6 +162,102 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+
+
+
+
+    public ArrayList<ReplicationModel> GetReplicationTable() {
+        query = "SELECT * from ReplicationTable";
+        ArrayList<ReplicationModel> replicationModels = new ArrayList<>();
+
+        cursor = getWritableDatabase().rawQuery(query, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                ReplicationModel ReplicationModel = new ReplicationModel();
+                try {
+
+                    ReplicationModel.setReplicationCode(cursor.getInt(cursor.getColumnIndex("ReplicationCode")));
+                    ReplicationModel.setServerTable(cursor.getString(cursor.getColumnIndex("ServerTable")));
+                    ReplicationModel.setClientTable(cursor.getString(cursor.getColumnIndex("ClientTable")));
+                    ReplicationModel.setServerPrimaryKey(cursor.getString(cursor.getColumnIndex("ServerPrimaryKey")));
+                    ReplicationModel.setClientPrimaryKey(cursor.getString(cursor.getColumnIndex("ClientPrimaryKey")));
+                    ReplicationModel.setCondition(cursor.getString(cursor.getColumnIndex("Condition")));
+                    ReplicationModel.setConditionDelete(cursor.getString(cursor.getColumnIndex("ConditionDelete")));
+                    ReplicationModel.setLastRepLogCode(cursor.getInt(cursor.getColumnIndex("LastRepLogCode")));
+                    ReplicationModel.setLastRepLogCodeDelete(cursor.getInt(cursor.getColumnIndex("LastRepLogCodeDelete")));
+
+
+                }catch (Exception ignored) {}
+                replicationModels.add(ReplicationModel);
+            }
+        }
+        assert cursor != null;
+        cursor.close();
+        return replicationModels;
+    }
+
+
+    public ArrayList<TableDetail> GetTableDetail(String TableName) {
+        query = "PRAGMA table_info( " + TableName + " )";
+        ArrayList<TableDetail> tableDetails = new ArrayList<>();
+
+        cursor = getWritableDatabase().rawQuery(query, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                TableDetail tableDetail = new TableDetail();
+                try{
+                    tableDetail.setCid(cursor.getInt(cursor.getColumnIndex("cid")));
+                    tableDetail.setName(cursor.getString(cursor.getColumnIndex("name")));
+                    tableDetail.setType(cursor.getString(cursor.getColumnIndex("type")));
+                    tableDetail.setText(null);
+                }catch (Exception ignored) {}
+                tableDetails.add(tableDetail);
+            }
+        }
+        assert cursor != null;
+        cursor.close();
+        return tableDetails;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public void GetLimitColumn(String AppType) {
 
         try {
@@ -169,7 +275,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor.close();
             limitcolumn = Integer.parseInt(columnscount) / Integer.parseInt(goodtypecount);
         }catch (Exception e){
-            callMethod.showToast( "تنظیم جدول مشکل دارد");
+            callMethod.showToast( "تنظیم۴۵۶ جدول مشکل دارد");
             Log.e("test",e.getMessage());
         }
     }
@@ -266,15 +372,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 Column column = new Column();
-                column.setColumnCode(cursor.getString(cursor.getColumnIndex("ColumnCode")));
-                column.setSortOrder(cursor.getString(cursor.getColumnIndex("SortOrder")));
-                column.setColumnName(cursor.getString(cursor.getColumnIndex("ColumnName")));
-                column.setColumnDesc(cursor.getString(cursor.getColumnIndex("ColumnDesc")));
-                column.setGoodType(cursor.getString(cursor.getColumnIndex("GoodType")));
-                column.setColumnType(cursor.getString(cursor.getColumnIndex("ColumnType")));
-                column.setColumnDefinition(cursor.getString(cursor.getColumnIndex("ColumnDefinition")));
-                column.setCondition(cursor.getString(cursor.getColumnIndex("Condition")));
-                column.setOrderIndex(cursor.getString(cursor.getColumnIndex("OrderIndex")));
+                try{
+                    column.setColumnCode(cursor.getString(cursor.getColumnIndex("ColumnCode")));
+                    column.setSortOrder(cursor.getString(cursor.getColumnIndex("SortOrder")));
+                    column.setColumnName(cursor.getString(cursor.getColumnIndex("ColumnName")));
+                    column.setColumnDesc(cursor.getString(cursor.getColumnIndex("ColumnDesc")));
+                    column.setGoodType(cursor.getString(cursor.getColumnIndex("GoodType")));
+                    column.setColumnType(cursor.getString(cursor.getColumnIndex("ColumnType")));
+                    column.setColumnDefinition(cursor.getString(cursor.getColumnIndex("ColumnDefinition")));
+                    column.setCondition(cursor.getString(cursor.getColumnIndex("Condition")));
+                    column.setOrderIndex(cursor.getString(cursor.getColumnIndex("OrderIndex")));
+                }catch (Exception ignored) {}
                 columns.add(column);
             }
         }
@@ -313,8 +421,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 column = new Column();
-                column.setGoodType(cursor.getString(cursor.getColumnIndex("GoodType")));
-                column.setIsDefault(cursor.getString(cursor.getColumnIndex("IsDefault")));
+                try{
+                    column.setGoodType(cursor.getString(cursor.getColumnIndex("GoodType")));
+                    column.setIsDefault(cursor.getString(cursor.getColumnIndex("IsDefault")));
+                }catch (Exception ignored) {}
                 columns.add(column);
             }
         }
@@ -422,28 +532,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
                 for (Column column : columns) {
-                    switch (column.getColumnType()) {
-                        case "0":
-                            gooddetail.setGoodFieldValue(
-                                    column.getColumnName(),
-                                    cursor.getString(cursor.getColumnIndex(column.getColumnName()))
-                            );
-                            break;
-                        case "1":
-                            gooddetail.setGoodFieldValue(
-                                    column.getColumnName(),
-                                    String.valueOf(cursor.getInt(cursor.getColumnIndex(column.getColumnName())))
-                            );
-                            break;
-                        case "2":
-                            gooddetail.setGoodFieldValue(
-                                    column.getColumnName(),
-                                    String.valueOf(cursor.getFloat(cursor.getColumnIndex(column.getColumnName())))
-                            );
-                            break;
-                    }
+                    try{
+                        switch (column.getColumnType()) {
+                            case "0":
+                                gooddetail.setGoodFieldValue(
+                                        column.getColumnName(),
+                                        cursor.getString(cursor.getColumnIndex(column.getColumnName()))
+                                );
+                                break;
+                            case "1":
+                                gooddetail.setGoodFieldValue(
+                                        column.getColumnName(),
+                                        String.valueOf(cursor.getInt(cursor.getColumnIndex(column.getColumnName())))
+                                );
+                                break;
+                            case "2":
+                                gooddetail.setGoodFieldValue(
+                                        column.getColumnName(),
+                                        String.valueOf(cursor.getFloat(cursor.getColumnIndex(column.getColumnName())))
+                                );
+                                break;
+                        }
+                    }catch (Exception ignored) {}
                 }
                 gooddetail.setCheck(false);
+
                 goods.add(gooddetail);
             }
         }
@@ -533,31 +646,33 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
+                try{
+                    for (Column column : columns) {
+                        switch (column.getColumnType()) {
+                            case "0":
+                                gooddetail.setGoodFieldValue(
+                                        column.getColumnName(),
+                                        cursor.getString(cursor.getColumnIndex(column.getColumnName()))
+                                );
+                                break;
+                            case "1":
+                                gooddetail.setGoodFieldValue(
+                                        column.getColumnName(),
+                                        String.valueOf(cursor.getInt(cursor.getColumnIndex(column.getColumnName())))
+                                );
+                                break;
+                            case "2":
+                                gooddetail.setGoodFieldValue(
+                                        column.getColumnName(),
+                                        String.valueOf(cursor.getFloat(cursor.getColumnIndex(column.getColumnName())))
+                                );
+                                break;
+                        }
 
-                for (Column column : columns) {
-                    switch (column.getColumnType()) {
-                        case "0":
-                            gooddetail.setGoodFieldValue(
-                                    column.getColumnName(),
-                                    cursor.getString(cursor.getColumnIndex(column.getColumnName()))
-                            );
-                            break;
-                        case "1":
-                            gooddetail.setGoodFieldValue(
-                                    column.getColumnName(),
-                                    String.valueOf(cursor.getInt(cursor.getColumnIndex(column.getColumnName())))
-                            );
-                            break;
-                        case "2":
-                            gooddetail.setGoodFieldValue(
-                                    column.getColumnName(),
-                                    String.valueOf(cursor.getFloat(cursor.getColumnIndex(column.getColumnName())))
-                            );
-                            break;
                     }
-                }
 
-                gooddetail.setCheck(false);
+                    gooddetail.setCheck(false);
+                }catch (Exception ignored) {}
                 goods.add(gooddetail);
             }
         }
@@ -604,27 +719,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             for (Column column : columns) {
-
-                switch (column.getColumnType()) {
-                    case "0":
-                        gooddetail.setGoodFieldValue(
-                                column.getColumnName(),
-                                cursor.getString(cursor.getColumnIndex(column.getColumnName()))
-                        );
-                        break;
-                    case "1":
-                        gooddetail.setGoodFieldValue(
-                                column.getColumnName(),
-                                String.valueOf(cursor.getInt(cursor.getColumnIndex(column.getColumnName())))
-                        );
-                        break;
-                    case "2":
-                        gooddetail.setGoodFieldValue(
-                                column.getColumnName(),
-                                String.valueOf(cursor.getFloat(cursor.getColumnIndex(column.getColumnName())))
-                        );
-                        break;
-                }
+                try {
+                    switch (column.getColumnType()) {
+                        case "0":
+                            Log.e("test", column.getColumnName());
+                            gooddetail.setGoodFieldValue(
+                                    column.getColumnName(),
+                                    cursor.getString(cursor.getColumnIndex(column.getColumnName()))
+                            );
+                            break;
+                        case "1":
+                            gooddetail.setGoodFieldValue(
+                                    column.getColumnName(),
+                                    String.valueOf(cursor.getInt(cursor.getColumnIndex(column.getColumnName())))
+                            );
+                            break;
+                        case "2":
+                            gooddetail.setGoodFieldValue(
+                                    column.getColumnName(),
+                                    String.valueOf(cursor.getFloat(cursor.getColumnIndex(column.getColumnName())))
+                            );
+                            break;
+                    }
+                }catch (Exception ignored){ }
             }
             gooddetail.setCheck(false);
         }
@@ -666,13 +783,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 Activation activation = new Activation();
-                activation.setAppBrokerCustomerCode(cursor.getString(cursor.getColumnIndex("AppBrokerCustomerCode")));
-                activation.setActivationCode(cursor.getString(cursor.getColumnIndex("ActivationCode")));
-                activation.setPersianCompanyName(cursor.getString(cursor.getColumnIndex("PersianCompanyName")));
-                activation.setEnglishCompanyName(cursor.getString(cursor.getColumnIndex("EnglishCompanyName")));
-                activation.setServerURL(cursor.getString(cursor.getColumnIndex("ServerURL")));
-                activation.setSQLiteURL(cursor.getString(cursor.getColumnIndex("SQLiteURL")));
-                activation.setMaxDevice(cursor.getString(cursor.getColumnIndex("MaxDevice")));
+                try{
+                    activation.setAppBrokerCustomerCode(cursor.getString(cursor.getColumnIndex("AppBrokerCustomerCode")));
+                    activation.setActivationCode(cursor.getString(cursor.getColumnIndex("ActivationCode")));
+                    activation.setPersianCompanyName(cursor.getString(cursor.getColumnIndex("PersianCompanyName")));
+                    activation.setEnglishCompanyName(cursor.getString(cursor.getColumnIndex("EnglishCompanyName")));
+                    activation.setServerURL(cursor.getString(cursor.getColumnIndex("ServerURL")));
+                    activation.setSQLiteURL(cursor.getString(cursor.getColumnIndex("SQLiteURL")));
+                    activation.setMaxDevice(cursor.getString(cursor.getColumnIndex("MaxDevice")));
+                }catch (Exception ignored) {}
                 activations.add(activation);
 
             }
@@ -706,12 +825,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            gooddetail.setGoodFieldValue("FactorAmount",cursor.getString(cursor.getColumnIndex("FactorAmount")));
-            gooddetail.setGoodFieldValue("UnitName",cursor.getString(cursor.getColumnIndex("UnitName")));
-            gooddetail.setGoodFieldValue("Price",cursor.getString(cursor.getColumnIndex("Price")));
-            gooddetail.setGoodFieldValue("MaxSellPrice",cursor.getLong(cursor.getColumnIndex("MaxSellPrice"))+"");
-            gooddetail.setGoodFieldValue("SellPrice",cursor.getLong(cursor.getColumnIndex("SellPrice"))+"");
-
+            try{
+                gooddetail.setGoodFieldValue("FactorAmount",cursor.getString(cursor.getColumnIndex("FactorAmount")));
+                gooddetail.setGoodFieldValue("UnitName",cursor.getString(cursor.getColumnIndex("UnitName")));
+                gooddetail.setGoodFieldValue("Price",cursor.getString(cursor.getColumnIndex("Price")));
+                gooddetail.setGoodFieldValue("MaxSellPrice",cursor.getLong(cursor.getColumnIndex("MaxSellPrice"))+"");
+                gooddetail.setGoodFieldValue("SellPrice",cursor.getLong(cursor.getColumnIndex("SellPrice"))+"");
+            }catch (Exception ignored) {}
         }
         cursor.close();
         Log.e("test",gooddetail.getGoodFieldValue("SellPrice"));
@@ -779,28 +899,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
                 for (Column column : columns) {
-                    switch (column.getColumnType()) {
-                        case "0":
-                            gooddetail.setGoodFieldValue(
-                                    column.getColumnName(),
-                                    cursor.getString(cursor.getColumnIndex(column.getColumnName()))
-                            );
-                            break;
-                        case "1":
-                            gooddetail.setGoodFieldValue(
-                                    column.getColumnName(),
-                                    String.valueOf(cursor.getInt(cursor.getColumnIndex(column.getColumnName())))
-                            );
-                            break;
-                        case "2":
-                            gooddetail.setGoodFieldValue(
-                                    column.getColumnName(),
-                                    String.valueOf(cursor.getFloat(cursor.getColumnIndex(column.getColumnName())))
-                            );
-                            break;
-                    }
+                    try{
+                        switch (column.getColumnType()) {
+                            case "0":
+                                gooddetail.setGoodFieldValue(
+                                        column.getColumnName(),
+                                        cursor.getString(cursor.getColumnIndex(column.getColumnName()))
+                                );
+                                break;
+                            case "1":
+                                gooddetail.setGoodFieldValue(
+                                        column.getColumnName(),
+                                        String.valueOf(cursor.getInt(cursor.getColumnIndex(column.getColumnName())))
+                                );
+                                break;
+                            case "2":
+                                gooddetail.setGoodFieldValue(
+                                        column.getColumnName(),
+                                        String.valueOf(cursor.getFloat(cursor.getColumnIndex(column.getColumnName())))
+                                );
+                                break;
+                        }
+                    }catch (Exception ignored) {}
                 }
+
                 gooddetail.setCheck(false);
+
                 goods.add(gooddetail);
             }
         }
@@ -908,12 +1032,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<PreFactor> getAllPrefactorHeader(String name) {
 
 
-        query = " SELECT h.*, s.SumAmount , s.SumPrice , s.RowCount ,n.CentralName CustomerName FROM PreFactor h Join Customer c  on c.CustomerCode = h.CustomerRef " +
+        query = " SELECT h.*, s.SumAmount , s.SumPrice , s.RowCount ,n.Title || ' ' || n.FName|| ' ' || n.Name CustomerName FROM PreFactor h Join Customer c  on c.CustomerCode = h.CustomerRef " +
                 " join Central n on c.CentralRef=n.CentralCode "
                 + " Left Join (SELECT P.PreFactorRef, sum(p.FactorAmount) as SumAmount , sum(p.FactorAmount * p.Price*g.DefaultUnitValue) as SumPrice, count(*) as RowCount "
                 + " From Good g Join Units on UnitCode = GoodUnitRef  Join PreFactorRow p on GoodRef = GoodCode  Where IfNull(PreFactorRef, 0)>0 "
                 + " Group BY PreFactorRef ) s on h.PreFactorCode = s.PreFactorRef "
-                + " Where n.CentralName Like '%" + name + "%'"
+                + " Where n.Title || ' ' || n.FName|| ' ' || n.Name Like '%" + name + "%'"
                 + " Order By h.PreFactorCode DESC";
 
         ArrayList<PreFactor> prefactor_header = new ArrayList<>();
@@ -923,17 +1047,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 PreFactor prefactor = new PreFactor();
-                prefactor.setPreFactorCode(cursor.getInt(cursor.getColumnIndex("PreFactorCode")));
-                prefactor.setPreFactorDate(cursor.getString(cursor.getColumnIndex("PreFactorDate")));
-                prefactor.setPreFactorTime(cursor.getString(cursor.getColumnIndex("PreFactorTime")));
-                prefactor.setPreFactorkowsarDate(cursor.getString(cursor.getColumnIndex("PreFactorKowsarDate")));
-                prefactor.setPreFactorKowsarCode(cursor.getInt(cursor.getColumnIndex("PreFactorKowsarCode")));
-                prefactor.setPreFactorExplain(cursor.getString(cursor.getColumnIndex("PreFactorExplain")));
-                prefactor.setCustomer(cursor.getString(cursor.getColumnIndex("CustomerName")));
-                prefactor.setSumAmount(cursor.getInt(cursor.getColumnIndex("SumAmount")));
-                prefactor.setSumPrice(cursor.getInt(cursor.getColumnIndex("SumPrice")));
-                prefactor.setRowCount(cursor.getInt(cursor.getColumnIndex("RowCount")));
-
+                try{
+                    prefactor.setPreFactorCode(cursor.getInt(cursor.getColumnIndex("PreFactorCode")));
+                    prefactor.setPreFactorDate(cursor.getString(cursor.getColumnIndex("PreFactorDate")));
+                    prefactor.setPreFactorTime(cursor.getString(cursor.getColumnIndex("PreFactorTime")));
+                    prefactor.setPreFactorkowsarDate(cursor.getString(cursor.getColumnIndex("PreFactorKowsarDate")));
+                    prefactor.setPreFactorKowsarCode(cursor.getInt(cursor.getColumnIndex("PreFactorKowsarCode")));
+                    prefactor.setPreFactorExplain(cursor.getString(cursor.getColumnIndex("PreFactorExplain")));
+                    prefactor.setCustomer(cursor.getString(cursor.getColumnIndex("CustomerName")));
+                    prefactor.setSumAmount(cursor.getInt(cursor.getColumnIndex("SumAmount")));
+                    prefactor.setSumPrice(cursor.getInt(cursor.getColumnIndex("SumPrice")));
+                    prefactor.setRowCount(cursor.getInt(cursor.getColumnIndex("RowCount")));
+                }catch (Exception ignored) {}
                 prefactor_header.add(prefactor);
             }
         }
@@ -943,7 +1068,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<PreFactor> getAllPrefactorHeaderopen() {
-        query = "SELECT h.*, s.SumAmount , s.SumPrice, s.RowCount ,n.CentralName CustomerName  " +
+        query = "SELECT h.*, s.SumAmount , s.SumPrice, s.RowCount ,n.Title || ' ' || n.FName|| ' ' || n.Name CustomerName  " +
                 "FROM PreFactor h Join Customer c  on c.CustomerCode = h.CustomerRef "
                 + " join Central n on c.CentralRef=n.CentralCode "
                 + "Left Join (SELECT P.PreFactorRef, sum(p.FactorAmount) as SumAmount , sum(p.FactorAmount * p.Price*g.DefaultUnitValue) as SumPrice, count(*) as RowCount "
@@ -958,17 +1083,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 PreFactor prefactor = new PreFactor();
-                prefactor.setPreFactorCode(cursor.getInt(cursor.getColumnIndex("PreFactorCode")));
-                prefactor.setPreFactorDate(cursor.getString(cursor.getColumnIndex("PreFactorDate")));
-                prefactor.setPreFactorTime(cursor.getString(cursor.getColumnIndex("PreFactorTime")));
-                prefactor.setPreFactorkowsarDate(cursor.getString(cursor.getColumnIndex("PreFactorKowsarDate")));
-                prefactor.setPreFactorKowsarCode(cursor.getInt(cursor.getColumnIndex("PreFactorKowsarCode")));
-                prefactor.setPreFactorExplain(cursor.getString(cursor.getColumnIndex("PreFactorExplain")));
-                prefactor.setCustomer(cursor.getString(cursor.getColumnIndex("CustomerName")));
-                prefactor.setSumAmount(cursor.getInt(cursor.getColumnIndex("SumAmount")));
-                prefactor.setSumPrice(cursor.getInt(cursor.getColumnIndex("SumPrice")));
-                prefactor.setRowCount(cursor.getInt(cursor.getColumnIndex("RowCount")));
+                try {
 
+
+                    prefactor.setPreFactorCode(cursor.getInt(cursor.getColumnIndex("PreFactorCode")));
+                    prefactor.setPreFactorDate(cursor.getString(cursor.getColumnIndex("PreFactorDate")));
+                    prefactor.setPreFactorTime(cursor.getString(cursor.getColumnIndex("PreFactorTime")));
+                    prefactor.setPreFactorkowsarDate(cursor.getString(cursor.getColumnIndex("PreFactorKowsarDate")));
+                    prefactor.setPreFactorKowsarCode(cursor.getInt(cursor.getColumnIndex("PreFactorKowsarCode")));
+                    prefactor.setPreFactorExplain(cursor.getString(cursor.getColumnIndex("PreFactorExplain")));
+                    prefactor.setCustomer(cursor.getString(cursor.getColumnIndex("CustomerName")));
+                    prefactor.setSumAmount(cursor.getInt(cursor.getColumnIndex("SumAmount")));
+                    prefactor.setSumPrice(cursor.getInt(cursor.getColumnIndex("SumPrice")));
+                    prefactor.setRowCount(cursor.getInt(cursor.getColumnIndex("RowCount")));
+                }catch (Exception ignored) {}
                 prefactor_header.add(prefactor);
             }
         }
@@ -1012,28 +1140,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
                 for (Column column : columns) {
-
-                    switch (column.getColumnType()) {
-                        case "0":
-                            gooddetail.setGoodFieldValue(
-                                    column.getColumnName(),
-                                    cursor.getString(cursor.getColumnIndex(column.getColumnName()))
-                            );
-                            break;
-                        case "1":
-                            gooddetail.setGoodFieldValue(
-                                    column.getColumnName(),
-                                    String.valueOf(cursor.getInt(cursor.getColumnIndex(column.getColumnName())))
-                            );
-                            break;
-                        case "2":
-                            gooddetail.setGoodFieldValue(
-                                    column.getColumnName(),
-                                    String.valueOf(cursor.getFloat(cursor.getColumnIndex(column.getColumnName())))
-                            );
-                            break;
-                    }
+                    try{
+                        switch (column.getColumnType()) {
+                            case "0":
+                                gooddetail.setGoodFieldValue(
+                                        column.getColumnName(),
+                                        cursor.getString(cursor.getColumnIndex(column.getColumnName()))
+                                );
+                                break;
+                            case "1":
+                                gooddetail.setGoodFieldValue(
+                                        column.getColumnName(),
+                                        String.valueOf(cursor.getInt(cursor.getColumnIndex(column.getColumnName())))
+                                );
+                                break;
+                            case "2":
+                                gooddetail.setGoodFieldValue(
+                                        column.getColumnName(),
+                                        String.valueOf(cursor.getFloat(cursor.getColumnIndex(column.getColumnName())))
+                                );
+                                break;
+                        }
+                    }catch (Exception ignored) {}
                 }
+
                 goods.add(gooddetail);
 
             }
@@ -1143,7 +1273,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public String getFactorCustomer(String pfcode) {
 
-        query = "SELECT n.CentralName CustomerName  FROM PreFactor h " +
+        query = "SELECT n.Title || ' ' || n.FName|| ' ' || n.Name CustomerName  FROM PreFactor h " +
                 " Join Customer c  on c.CustomerCode = h.CustomerRef " +
                 " join Central n on c.CentralRef=n.CentralCode " +
                 " Where IfNull(PreFactorCode,0)= " + pfcode;
@@ -1175,31 +1305,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<Customer> AllCustomer(String name, boolean aOnlyActive) {
 
         name = name.replaceAll(" ", "%");
-        query = "SELECT u.CustomerCode,u.PriceTip,CentralName,Address,Manager,Mobile,Phone,Delegacy, CityName, Bestankar, Active, CentralPrivateCode, EtebarNaghd" +
+        query = "SELECT u.CustomerCode,u.PriceTip,c.Title || ' ' || c.FName|| ' ' || c.Name CentralName,Address,Manager,Mobile,Phone,Delegacy,y.Name CityName, CustomerBestankar - CustomerBedehkar Bestankar, Active, CentralPrivateCode, EtebarNaghd" +
                 ",EtebarCheck, Takhfif, MobileName, Email, Fax, ZipCode, PostCode FROM Customer u " +
                 "join Central c on u.CentralRef= c.CentralCode " +
                 "Left join Address d on u.AddressRef=d.AddressCode " +
                 "Left join City y on d.CityCode=y.CityCode" +
-                " Where (CentralName Like '%" + name + "%' or CustomerCode Like '%" + name + "%' or  Manager Like '%" + name + "%')";
+                " Where (c.Title || ' ' || c.FName|| ' ' || c.Name Like '%" + name + "%' or CustomerCode Like '%" + name + "%' or  Manager Like '%" + name + "%')";
         if (aOnlyActive) {
             query = query + " And Active = 0";
         }
 
         query = query + " order by CustomerCode DESC  LIMIT 200";
         ArrayList<Customer> Customers = new ArrayList<>();
-
+        Log.e("test",query);
         cursor = getWritableDatabase().rawQuery(query, null);
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 Customer customerdetail = new Customer();
-                customerdetail.setCustomerCode(cursor.getInt(cursor.getColumnIndex("CustomerCode")));
-                customerdetail.setCustomerName(cursor.getString(cursor.getColumnIndex("CentralName")));
-                customerdetail.setManager(cursor.getString(cursor.getColumnIndex("Manager")));
-                customerdetail.setAddress(cursor.getString(cursor.getColumnIndex("Address")));
-                customerdetail.setPhone(cursor.getString(cursor.getColumnIndex("Phone")));
-                customerdetail.setBestankar(cursor.getInt(cursor.getColumnIndex("Bestankar")));
-
+                try{
+                    customerdetail.setCustomerCode(cursor.getInt(cursor.getColumnIndex("CustomerCode")));
+                    customerdetail.setCustomerName(cursor.getString(cursor.getColumnIndex("CentralName")));
+                    customerdetail.setManager(cursor.getString(cursor.getColumnIndex("Manager")));
+                    customerdetail.setAddress(cursor.getString(cursor.getColumnIndex("Address")));
+                    customerdetail.setPhone(cursor.getString(cursor.getColumnIndex("Phone")));
+                    customerdetail.setBestankar(cursor.getInt(cursor.getColumnIndex("Bestankar")));
+                }catch (Exception ignored) {}
 
                 Customers.add(customerdetail);
             }
@@ -1233,8 +1364,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 Customer customerdetail = new Customer();
-                customerdetail.setCityName(cursor.getString(cursor.getColumnIndex("CityName")));
-                customerdetail.setCityCode(cursor.getString(cursor.getColumnIndex("CityCode")));
+                try{
+                    customerdetail.setCityName(cursor.getString(cursor.getColumnIndex("CityName")));
+                    customerdetail.setCityCode(cursor.getString(cursor.getColumnIndex("CityCode")));
+                }catch (Exception ignored) {}
                 city.add(customerdetail);
             }
         }
@@ -1261,7 +1394,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 Good gooddetail = new Good();
-                gooddetail.setGoodFieldValue("KsrImageCode",cursor.getString(cursor.getColumnIndex("KsrImageCode")));
+                try{
+                    gooddetail.setGoodFieldValue("KsrImageCode",cursor.getString(cursor.getColumnIndex("KsrImageCode")));
+                }catch (Exception ignored) {}
                 Goods.add(gooddetail);
             }
         }
@@ -1287,13 +1422,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 GoodGroup grp = new GoodGroup();
-                grp.setGroupCode(cursor.getInt(cursor.getColumnIndex("GroupCode")));
-                grp.setName(cursor.getString(cursor.getColumnIndex("Name")));
-                grp.setL1(cursor.getInt(cursor.getColumnIndex("L1")));
-                grp.setL2(cursor.getInt(cursor.getColumnIndex("L2")));
-                grp.setL3(cursor.getInt(cursor.getColumnIndex("L3")));
-                grp.setL4(cursor.getInt(cursor.getColumnIndex("L4")));
-                grp.setL5(cursor.getInt(cursor.getColumnIndex("L5")));
+                try{
+                    grp.setGroupCode(cursor.getInt(cursor.getColumnIndex("GroupCode")));
+                    grp.setName(cursor.getString(cursor.getColumnIndex("Name")));
+                    grp.setL1(cursor.getInt(cursor.getColumnIndex("L1")));
+                    grp.setL2(cursor.getInt(cursor.getColumnIndex("L2")));
+                    grp.setL3(cursor.getInt(cursor.getColumnIndex("L3")));
+                    grp.setL4(cursor.getInt(cursor.getColumnIndex("L4")));
+                    grp.setL5(cursor.getInt(cursor.getColumnIndex("L5")));
+                }catch (Exception ignored) {}
                 groups.add(grp);
 
             }
@@ -1321,13 +1458,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 GoodGroup grp = new GoodGroup();
-                grp.setGroupCode(cursor.getInt(cursor.getColumnIndex("GroupCode")));
-                grp.setName(cursor.getString(cursor.getColumnIndex("Name")));
-                grp.setL1(cursor.getInt(cursor.getColumnIndex("L1")));
-                grp.setL2(cursor.getInt(cursor.getColumnIndex("L2")));
-                grp.setL3(cursor.getInt(cursor.getColumnIndex("L3")));
-                grp.setL4(cursor.getInt(cursor.getColumnIndex("L4")));
-                grp.setL5(cursor.getInt(cursor.getColumnIndex("L5")));
+                try{
+                    grp.setGroupCode(cursor.getInt(cursor.getColumnIndex("GroupCode")));
+
+                    grp.setName(cursor.getString(cursor.getColumnIndex("Name")));
+                    grp.setL1(cursor.getInt(cursor.getColumnIndex("L1")));
+                    grp.setL2(cursor.getInt(cursor.getColumnIndex("L2")));
+                    grp.setL3(cursor.getInt(cursor.getColumnIndex("L3")));
+                    grp.setL4(cursor.getInt(cursor.getColumnIndex("L4")));
+                    grp.setL5(cursor.getInt(cursor.getColumnIndex("L5")));
+                }catch (Exception ignored) {}
                 groups.add(grp);
 
             }

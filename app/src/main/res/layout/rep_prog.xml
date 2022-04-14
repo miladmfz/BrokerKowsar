@@ -23,7 +23,7 @@
         />
 
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/rep_prog_text"
         android:layout_width="wrap_content"
         android:layout_margin="5dp"
@@ -36,7 +36,7 @@
 
         />
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <TextView
         android:id="@+id/rep_prog_step"
         android:layout_width="match_parent"
         android:layout_margin="5dp"

@@ -2,6 +2,8 @@ package com.kits.brokerkowsar.webService;
 
 import com.kits.brokerkowsar.model.RetrofitResponse;
 
+import org.json.JSONArray;
+
 import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
@@ -115,6 +117,18 @@ public interface APIInterface {
             , @Field("AppType")     String AppType
             , @Field("IncludeZero") String IncludeZero
     );
+
+
+    @POST("index.php")
+    @FormUrlEncoded
+    Call<RetrofitResponse> RetrofitReplicate(
+              @Field("tag")     String tag
+            , @Field("code")    String code
+            , @Field("table")   String table
+            , @Field("reptype") String reptype
+            , @Field("Reprow") String Reprow
+    );
+
 
 }
 

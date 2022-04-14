@@ -151,6 +151,17 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                         callMethod.EditString("DatabaseName", "/data/data/com.kits.brokerkowsar/databases/" + dbname + "/KowsarDb.sqlite");
                         dbh = new DatabaseHelper(App.getContext(), callMethod.ReadString("DatabaseName"));
                         dbh.DatabaseCreate();
+                        File tempdb = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse")+"/tempDb");
+
+                        if (tempdb.exists()){
+                            String tempdbpath= getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse")+"/tempDb";
+                            dbh.GetLastDataFromOldDataBase(tempdbpath);
+                            dbh.InitialConfigInsert();
+                            tempdb.delete();
+                        }else{
+                            dbh.InitialConfigInsert();
+                        }
+
                         intent = new Intent(App.getContext(), SplashActivity.class);
                         startActivity(intent);
                         finish();
