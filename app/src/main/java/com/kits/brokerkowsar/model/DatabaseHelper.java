@@ -368,6 +368,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return String.valueOf(result);
     }
     public String GetRegionText(String String) {
+        GetPreference();
         if(SH_ArabicText) {
             //arabic
             query = "Select Replace(Replace(Cast('" + String + "' as nvarchar(500)),char(1740),char(1610)),char(1705),char(1603)) result  ";
@@ -1291,7 +1292,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<Customer> AllCustomer(String search_target, boolean aOnlyActive) {
+        Log.e("test",search_target);
         String name= GetRegionText(search_target);
+        Log.e("test",name);
+
         name = name.replaceAll(" ", "%");
         query = "SELECT u.CustomerCode,u.PriceTip,c.Title || ' ' || c.FName|| ' ' || c.Name CentralName,Address,Manager,Mobile,Phone,Delegacy,y.Name CityName, CustomerBestankar - CustomerBedehkar Bestankar, Active, CentralPrivateCode, EtebarNaghd" +
                 ",EtebarCheck, Takhfif, MobileName, Email, Fax, ZipCode, PostCode FROM Customer u " +
