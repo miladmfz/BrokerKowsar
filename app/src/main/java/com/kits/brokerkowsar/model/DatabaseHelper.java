@@ -43,6 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     boolean SH_activestack;
     boolean SH_real_amount;
     boolean SH_goodamount;
+    boolean SH_ArabicText;
     int k = 0;
     String sc;
     String st;
@@ -50,11 +51,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     String joinDetail;
     String joinbasket;
     //Replace(Replace(Cast(_______ as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705))
+    //Replace(Replace(Cast('" + goodtype + "' as nvarchar(500)),char(1740),char(1610)),char(1705),char(1603))
 
     public DatabaseHelper(Context context, String DATABASE_NAME) {
         super(context, DATABASE_NAME, null, 1);
-        Log.e("test_1",DATABASE_NAME);
-
         this.callMethod = new CallMethod(context);
         this.goods = new ArrayList<>();
 
@@ -68,8 +68,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL("INSERT INTO main.Prefactor SELECT * FROM tempDb.Prefactor " );
         getWritableDatabase().execSQL("INSERT INTO main.PreFactorRow SELECT * FROM tempDb.PreFactorRow " );
         getWritableDatabase().execSQL("INSERT INTO main.Config SELECT * FROM tempDb.Config " );
-        getWritableDatabase().execSQL("INSERT INTO main.BrokerColumn SELECT * FROM tempDb.BrokerColumn " );
-        getWritableDatabase().execSQL("INSERT INTO main.GoodType SELECT * FROM tempDb.GoodType " );
 
         getWritableDatabase().execSQL("DETACH DATABASE 'tempDb' ");
 
@@ -220,44 +218,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public void GetLimitColumn(String AppType) {
 
         try {
@@ -295,6 +255,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.SH_activestack = callMethod.ReadBoolan("ActiveStack");
         this.SH_real_amount = callMethod.ReadBoolan("RealAmount");
         this.SH_goodamount = callMethod.ReadBoolan("GoodAmount");
+        this.SH_ArabicText = callMethod.ReadBoolan("ArabicText");
 
         sc = "Where StackRef in (" + SH_brokerstack + ")";
 
@@ -345,12 +306,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public ArrayList<Column> GetColumns(String code, String goodtype, String AppType) {
 
+        String goodtype_target="";
 
         switch (AppType) {
             case "0"://        0-detail
+                goodtype_target=GetGoodTypeFromGood(code).replaceAll(" ", "");
+                goodtype_target=goodtype_target.replaceAll("'", "");
                 query = "Select * from BrokerColumn where " +
                         "Replace(Replace(Cast(GoodType as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705)) = " +
-                        "Replace(Replace(Cast('" + GetGoodTypeFromGood(code) + "' as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705)) " +
+                        "Replace(Replace(Cast('" + goodtype_target+ "' as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705)) " +
                         "And AppType = 0";
                 break;
             case "1"://        1-list
@@ -359,9 +323,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 query = "Select * from BrokerColumn where AppType = " + AppType + " limit " + limitcolumn;
                 break;
             case "3"://        3-search
+                goodtype_target=goodtype.replaceAll(" ", "");
+                goodtype_target=goodtype_target.replaceAll("'", "");
                 query = "Select * from BrokerColumn where " +
                         "Replace(Replace(Cast(GoodType as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705)) = " +
-                        "Replace(Replace(Cast('" + goodtype + "' as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705)) " +
+                        "Replace(Replace(Cast('" + goodtype_target+ "' as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705)) " +
                         "And AppType = 3";
                 break;
         }
@@ -401,6 +367,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return String.valueOf(result);
     }
+    public String GetRegionText(String String) {
+        if(SH_ArabicText) {
+            //arabic
+            query = "Select Replace(Replace(Cast('" + String + "' as nvarchar(500)),char(1740),char(1610)),char(1705),char(1603)) result  ";
+        }else{
+            //Persian
+            query = "Select Replace(Replace(Cast('" + String + "' as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705)) result  " ;
+        }
+
+        cursor = getWritableDatabase().rawQuery(query, null);
+        cursor.moveToFirst();
+        String result = cursor.getString(cursor.getColumnIndex("result"));
+        cursor.close();
+
+        return result;
+    }
+
 
     public String GetGoodTypeDefault() {
 
@@ -434,7 +417,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Recycle")
-    public ArrayList<Good> getAllGood(String search, String aGroupCode) {
+    public ArrayList<Good> getAllGood(String search_target, String aGroupCode) {
+        String search=GetRegionText(search_target);
 
         GetPreference();
 
@@ -566,8 +550,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<Good> getAllGood_Extended(String searchbox_result, String aGroupCode) {
-
+    public ArrayList<Good> getAllGood_Extended(String searchbox_target, String aGroupCode) {
+        String searchbox_result=GetRegionText(searchbox_target);
 
         GetPreference();
         columns = GetColumns("", "", "1");
@@ -951,8 +935,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return goods;
     }
 
-    public void InsertPreFactorHeader(String Customer, String CustomerRef) {
-
+    public void InsertPreFactorHeader(String Search_target, String CustomerRef) {
+        String Customer=GetRegionText(Search_target);
 
         String Date = Utilities.getCurrentShamsidate();
         Calendar calendar = Calendar.getInstance();
@@ -1029,8 +1013,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public ArrayList<PreFactor> getAllPrefactorHeader(String name) {
-
+    public ArrayList<PreFactor> getAllPrefactorHeader(String Search_target) {
+        String name=GetRegionText(Search_target);
 
         query = " SELECT h.*, s.SumAmount , s.SumPrice , s.RowCount ,n.Title || ' ' || n.FName|| ' ' || n.Name CustomerName FROM PreFactor h Join Customer c  on c.CustomerCode = h.CustomerRef " +
                 " join Central n on c.CentralRef=n.CentralCode "
@@ -1106,7 +1090,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<Good> getAllPreFactorRows(String name, String aPreFactorCode) {
+    public ArrayList<Good> getAllPreFactorRows(String Search_target, String aPreFactorCode) {
+        String name=GetRegionText(Search_target);
         name = name.replaceAll(" ", "%");
         GetPreference();
         columns = GetColumns("", "", "2");
@@ -1173,7 +1158,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return goods;
     }
 
-    public void UpdatePreFactorHeader_Customer(String pfcode, String Customer) {
+    public void UpdatePreFactorHeader_Customer(String pfcode, String Search_target) {
+        String Customer=GetRegionText(Search_target);
+
         query = "Update Prefactor set CustomerRef='" + Customer + "' where PreFactorCode = " + pfcode;
         getWritableDatabase().execSQL(query);
         query = "Select * From ( Select Case PriceTip " +
@@ -1217,6 +1204,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void update_explain(String pfcode, String explain) {
+
         query = "Update PreFactor set PreFactorExplain = '" + explain + "' Where IfNull(PreFactorCode,0)=" + pfcode;
         getWritableDatabase().execSQL(query);
     }
@@ -1302,8 +1290,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return Res;
     }
 
-    public ArrayList<Customer> AllCustomer(String name, boolean aOnlyActive) {
-
+    public ArrayList<Customer> AllCustomer(String search_target, boolean aOnlyActive) {
+        String name= GetRegionText(search_target);
         name = name.replaceAll(" ", "%");
         query = "SELECT u.CustomerCode,u.PriceTip,c.Title || ' ' || c.FName|| ' ' || c.Name CentralName,Address,Manager,Mobile,Phone,Delegacy,y.Name CityName, CustomerBestankar - CustomerBedehkar Bestankar, Active, CentralPrivateCode, EtebarNaghd" +
                 ",EtebarCheck, Takhfif, MobileName, Email, Fax, ZipCode, PostCode FROM Customer u " +
@@ -1375,6 +1363,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return city;
     }
+
     public String GetksrImage(String code) {
         query = "select ksrImageCode from ksrImage where ObjectRef = " + code+ " limit 1";
         cursor = getWritableDatabase().rawQuery(query, null);

@@ -83,6 +83,7 @@ public class SplashActivity extends AppCompatActivity {
             callMethod.EditBoolan("RealAmount", false);
             callMethod.EditBoolan("ActiveStack", false);
             callMethod.EditBoolan("GoodAmount", false);
+            callMethod.EditBoolan("ArabicText", true);
 
             callMethod.EditString("ServerURLUse", "");
             callMethod.EditString("SQLiteURLUse", "");

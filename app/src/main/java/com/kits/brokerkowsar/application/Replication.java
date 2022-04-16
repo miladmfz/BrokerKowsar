@@ -101,8 +101,13 @@ public class Replication {
 
             FinalStep = 0;
             LastRepCode=String.valueOf(replicatedetail.getLastRepLogCode());
+            Log.e("test_1","");
+            Log.e("test_1",LastRepCode);
+            Log.e("test_1",replicatedetail.getServerTable());
+            Log.e("test_1","1");
+            Log.e("test_1",String.valueOf(400));
             Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
-                    "repinfotest",
+                    "repinfo",
                     LastRepCode,
                     replicatedetail.getServerTable(),
                     "1"
@@ -161,7 +166,7 @@ public class Replication {
 
                                                     qCol = new StringBuilder("INSERT INTO " + replicatedetail.getClientTable() + " ( ");
                                                     int QueryConditionCount=0;
-                                                    for (int z = 1; z < columnDetail; z++) {
+                                                    for (int z = 0; z < columnDetail; z++) {
                                                         if (tableDetails.get(z).getText() != null) {
                                                             if (QueryConditionCount>0)
                                                                 qCol.append(" , ");
@@ -172,7 +177,7 @@ public class Replication {
                                                     qCol.append(" ) Select  ");
                                                     QueryConditionCount=0;
 
-                                                    for (int z = 1; z < columnDetail; z++) {
+                                                    for (int z = 0; z < columnDetail; z++) {
                                                         if (tableDetails.get(z).getText() != null) {
                                                             if (QueryConditionCount>0)
                                                                 qCol.append(" , ");
@@ -262,8 +267,13 @@ public class Replication {
         cursor.moveToFirst();
         LastRepCode = cursor.getString(0);
         cursor.close();
+        Log.e("test_1","");
+        Log.e("test_1",LastRepCode);
+        Log.e("test_1",RepTable);
+        Log.e("test_1","1");
+        Log.e("test_1",String.valueOf(400));
         Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
-                "repinfotest"
+                "repinfo"
                 , LastRepCode
                 , RepTable
                 , "1"
