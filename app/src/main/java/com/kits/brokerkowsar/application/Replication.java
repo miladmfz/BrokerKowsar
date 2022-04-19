@@ -305,27 +305,45 @@ public class Replication {
                                     String repcode = singleobject.getString("RepLogDataCode");
                                     String code = singleobject.getString("KsrImageCode");
                                     String qCol = "";
+                                    String ObjectRef = singleobject.getString("ObjectRef");
+                                    Cursor d = database.rawQuery("Select Count(*) AS cntRec From KsrImage Where KsrImageCode =" + code, null);
+
+                                    d.moveToFirst();
+                                    int nc = d.getInt(d.getColumnIndex("cntRec"));
+
                                     switch (optype) {
                                         case "U":
                                         case "u":
                                         case "I":
                                         case "i":
-                                        case "D":
-                                        case "d":
-                                            String ObjectRef = singleobject.getString("ObjectRef");
-
-                                            Cursor d = database.rawQuery("Select Count(*) AS cntRec From KsrImage Where KsrImageCode =" + code, null);
-
-                                            d.moveToFirst();
-                                            int nc = d.getInt(d.getColumnIndex("cntRec"));
-
-                                            if (nc == 0) {
-
-                                                qCol = "INSERT INTO KsrImage(KsrImageCode, ObjectRef,IsDefaultImage) Select " + code + "," + ObjectRef + ",'false'";
-                                            } else {
-                                                qCol = "Delete from KsrImage Where KsrImageCode= " + code ;
+                                            if (nc != 0) {
+                                                qCol = "Delete from KsrImage Where KsrImageCode= " + code;
+                                                try {
+                                                    database.execSQL(qCol);
+                                                    Log.e("test_qCol=", qCol);
+                                                } catch (Exception e) {
+                                                    Log.e("test_qCol=", e.getMessage());
+                                                }
                                                 image_info.DeleteImage(code);
                                             }
+
+                                            qCol = "INSERT INTO KsrImage(KsrImageCode, ObjectRef,IsDefaultImage) Select " + code + "," + ObjectRef + ",'false'";
+
+                                            try {
+                                                database.execSQL(qCol);
+                                                Log.e("test_qCol=",qCol);
+                                            }catch (Exception e){
+                                                Log.e("test_qCol=",e.getMessage());
+                                            }
+                                            d.close();
+                                            break;
+
+                                        case "D":
+                                        case "d":
+
+                                                qCol = "Delete from KsrImage Where KsrImageCode= " + code ;
+                                                image_info.DeleteImage(code);
+
 
                                             try {
                                                 database.execSQL(qCol);

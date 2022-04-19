@@ -50,8 +50,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     String stack_Condition;
     String joinDetail;
     String joinbasket;
-    //Replace(Replace(Cast(_______ as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705))
-    //Replace(Replace(Cast('" + goodtype + "' as nvarchar(500)),char(1740),char(1610)),char(1705),char(1603))
 
     public DatabaseHelper(Context context, String DATABASE_NAME) {
         super(context, DATABASE_NAME, null, 1);
@@ -312,10 +310,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             case "0"://        0-detail
                 goodtype_target=GetGoodTypeFromGood(code).replaceAll(" ", "");
                 goodtype_target=goodtype_target.replaceAll("'", "");
-                query = "Select * from BrokerColumn where " +
-                        "Replace(Replace(Cast(GoodType as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705)) = " +
-                        "Replace(Replace(Cast('" + goodtype_target+ "' as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705)) " +
-                        "And AppType = 0";
+                query = "Select * from BrokerColumn where GoodType = '"+GetRegionText(goodtype_target)+"' And AppType = 0";
+
                 break;
             case "1"://        1-list
             case "2"://        2-basket
@@ -325,10 +321,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             case "3"://        3-search
                 goodtype_target=goodtype.replaceAll(" ", "");
                 goodtype_target=goodtype_target.replaceAll("'", "");
-                query = "Select * from BrokerColumn where " +
-                        "Replace(Replace(Cast(GoodType as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705)) = " +
-                        "Replace(Replace(Cast('" + goodtype_target+ "' as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705)) " +
-                        "And AppType = 3";
+                query = "Select * from BrokerColumn where GoodType = '"+GetRegionText(goodtype_target)+"' And AppType = 3";
+
                 break;
         }
 
@@ -551,8 +545,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<Good> getAllGood_Extended(String searchbox_target, String aGroupCode) {
-        String searchbox_result=GetRegionText(searchbox_target);
+    public ArrayList<Good> getAllGood_Extended(String searchbox_result, String aGroupCode) {
 
         GetPreference();
         columns = GetColumns("", "", "1");

@@ -182,9 +182,9 @@ public class Search_box {
             for (Column Column : Columns) {
                 if (!Column.getColumnFieldValue("search").equals("")) {
                     if (!Column.getColumnFieldValue("columndefinition").equals(""))
-                        Where = Where + " And " + Column.getColumnFieldValue("columndefinition") + " Like Replace(Replace(Cast('%" + Column.getColumnFieldValue("search") + "%' as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705)) ";
+                        Where = Where + " And " + Column.getColumnFieldValue("columndefinition") + " Like '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%'  ";
                     else
-                        Where = Where + " And " + Column.getColumnFieldValue("ColumnName") + " Like Replace(Replace(Cast('%" + Column.getColumnFieldValue("search") + "%' as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705)) ";
+                        Where = Where + " And " + Column.getColumnFieldValue("ColumnName") + " Like '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%' ";
                 }
             }
 
