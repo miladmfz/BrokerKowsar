@@ -304,13 +304,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public ArrayList<Column> GetColumns(String code, String goodtype, String AppType) {
 
-        String goodtype_target="";
 
         switch (AppType) {
             case "0"://        0-detail
-                goodtype_target=GetGoodTypeFromGood(code).replaceAll(" ", "");
-                goodtype_target=goodtype_target.replaceAll("'", "");
-                query = "Select * from BrokerColumn where GoodType = '"+GetRegionText(goodtype_target)+"' And AppType = 0";
+
+                query = "Select * from BrokerColumn where GoodType = '"+GetRegionText(GetGoodTypeFromGood(code))+"' And AppType = 0";
 
                 break;
             case "1"://        1-list
@@ -319,9 +317,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 query = "Select * from BrokerColumn where AppType = " + AppType + " limit " + limitcolumn;
                 break;
             case "3"://        3-search
-                goodtype_target=goodtype.replaceAll(" ", "");
-                goodtype_target=goodtype_target.replaceAll("'", "");
-                query = "Select * from BrokerColumn where GoodType = '"+GetRegionText(goodtype_target)+"' And AppType = 3";
+
+                query = "Select * from BrokerColumn where GoodType = '"+GetRegionText(goodtype)+"' And AppType = 3";
 
                 break;
         }

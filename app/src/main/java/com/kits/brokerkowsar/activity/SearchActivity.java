@@ -206,9 +206,9 @@ public class SearchActivity extends AppCompatActivity {
                     }
                 });
 
-        goods = dbh.getAllGood(scan, id);
-        try {
 
+        try {
+            goods = dbh.getAllGood(scan, id);
         }catch (Exception e ){
             callMethod.showToast(  "تنظیم۱۲۳ جدول مشکل دارد");
             dialog1.dismiss();

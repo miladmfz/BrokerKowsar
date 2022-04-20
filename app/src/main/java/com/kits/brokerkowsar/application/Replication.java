@@ -184,7 +184,7 @@ public class Replication {
                                                             String valuetype = tableDetails.get(z).getType().substring(0, 2);
                                                             if (!tableDetails.get(z).getText().equals("null")) {
                                                                 if (valuetype.equals("CH")) {
-                                                                    qCol.append(" ' ").append(tableDetails.get(z).getText()).append(" ' ");
+                                                                    qCol.append(" '").append(tableDetails.get(z).getText()).append("' ");
                                                                 } else {
                                                                     qCol.append(" ").append(tableDetails.get(z).getText());
                                                                 }
