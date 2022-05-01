@@ -126,7 +126,7 @@ public class Search_box {
                 extra_TextView1.setTextSize(14);
                 extra_TextView1.setPadding(2, 2, 2, 2);
                 extra_TextView1.setGravity(Gravity.CENTER);
-                extra_TextView1.setTextColor(mContext.getResources().getColor(R.color.grey_1000));
+                extra_TextView1.setTextColor(mContext.getColor(R.color.grey_1000));
                 layout_view_child.addView(extra_TextView1);
 
                 EditText extra_EditText = new EditText(mContext);
@@ -135,11 +135,11 @@ public class Search_box {
                 extra_EditText.setId(Integer.parseInt(Column.getColumnFieldValue("sortorder")));
                 extra_EditText.setHint(Column.getColumnFieldValue("ColumnName"));
                 extra_EditText.setText(Column.getColumnFieldValue("Condition"));
-                extra_EditText.setHintTextColor(mContext.getResources().getColor(R.color.white));
+                extra_EditText.setHintTextColor(mContext.getColor(R.color.white));
                 extra_EditText.setId(View.generateViewId());
                 extra_EditText.setPadding(2, 2, 2, 2);
                 extra_EditText.setGravity(Gravity.CENTER);
-                extra_EditText.setTextColor(mContext.getResources().getColor(R.color.grey_1000));
+                extra_EditText.setTextColor(mContext.getColor(R.color.grey_1000));
                 layout_view_child.addView(extra_EditText);
 
 
@@ -155,10 +155,10 @@ public class Search_box {
         btn_search.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT));
         btn_search.setText(NumberFunctions.PerisanNumber("اعمال فیلتر ها"));
         btn_search.setTextSize(12);
-        btn_search.setTextColor(mContext.getResources().getColor(R.color.grey_1000));
-        btn_search.setStrokeColor(ColorStateList.valueOf(mContext.getResources().getColor(R.color.grey_1000)));
+        btn_search.setTextColor(mContext.getColor(R.color.grey_1000));
+        btn_search.setStrokeColor(ColorStateList.valueOf(mContext.getColor(R.color.grey_1000)));
         btn_search.setStrokeWidth(2);
-        btn_search.setBackgroundTintList(ColorStateList.valueOf(mContext.getResources().getColor(R.color.white)));
+        btn_search.setBackgroundTintList(ColorStateList.valueOf(mContext.getColor(R.color.white)));
         btn_search.setOnClickListener(v -> {
             for (int i = 0; i < layout_view.getChildCount(); i++) {
                 if (layout_view.getChildAt(i) instanceof LinearLayoutCompat) {

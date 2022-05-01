@@ -51,6 +51,8 @@ import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -150,7 +152,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 //        );
 //        call1.enqueue(new Callback<RetrofitResponse>() {
 //            @Override
-//            public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
+//            public void onResponse(@NotNull Call<RetrofitResponse> call, @NotNull Response<RetrofitResponse> response) {
 //                ArrayList<Location> locations=response.body().getLocations();
 //                tv_test.setText(locations.size()+"");
 //
@@ -158,7 +160,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 //            }
 //
 //            @Override
-//            public void onFailure(Call<RetrofitResponse> call, Throwable t) {
+//            public void onFailure(@NotNull Call<RetrofitResponse> call, @NotNull Throwable t) {
 //                //callMethod.ErrorLog(t.getMessage());
 //            }
 //        });
@@ -180,12 +182,12 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             );
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
-                public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
+                public void onResponse(@NotNull Call<RetrofitResponse> call, @NotNull Response<RetrofitResponse> response) {
 
                 }
 
                 @Override
-                public void onFailure(Call<RetrofitResponse> call, Throwable t) {
+                public void onFailure(@NotNull Call<RetrofitResponse> call, @NotNull Throwable t) {
                    // callMethod.ErrorLog(t.getMessage());
                 }
             });

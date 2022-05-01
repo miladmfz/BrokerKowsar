@@ -28,11 +28,13 @@ import com.kits.brokerkowsar.model.NumberFunctions;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Objects;
 
 public class BuyActivity extends AppCompatActivity {
 
+    private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
 
     private Action action;
     private String PreFac = "0";
@@ -107,7 +109,7 @@ public class BuyActivity extends AppCompatActivity {
                 }
             }
         });
-        tv_price.setText(NumberFunctions.PerisanNumber(dbh.getFactorSum(PreFac)));
+        tv_price.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(PreFac)))));
         tv_amount.setText(NumberFunctions.PerisanNumber(dbh.getFactorSumAmount(PreFac)));
         tv_customer.setText(NumberFunctions.PerisanNumber(dbh.getFactorCustomer(PreFac)));
         tv_row.setText(NumberFunctions.PerisanNumber(String.valueOf(goods.size())));

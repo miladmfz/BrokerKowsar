@@ -94,7 +94,7 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
                 extra_TextView.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT));
                 extra_TextView.setTextSize(Integer.parseInt(callMethod.ReadString("BodySize")));
                 extra_TextView.setGravity(Gravity.CENTER);
-                extra_TextView.setTextColor(mContext.getResources().getColor(R.color.grey_1000));
+                extra_TextView.setTextColor(mContext.getColor(R.color.grey_1000));
 
                 if (Column.getSortOrder().equals("1")) {
                     extra_TextView.setMaxLines(2);
@@ -104,8 +104,9 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
                     extra_TextView.setTextSize(14);
                 }
                 if (Column.getColumnName().equals("MaxSellPrice")) {
-                    extra_TextView.setTextColor(mContext.getResources().getColor(R.color.red_800));
+                    extra_TextView.setTextColor(getcolorresource("3"));
                 }
+
 
                 if (Column.getColumnName().contains("Price")){
                     extra_TextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))))));
@@ -257,6 +258,53 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
         });
     }
 
+    public int getcolorresource(String colortarget) {
+        int intcolor=0;
+        switch(colortarget)
+        {
+            case ("2"):
+                intcolor=mContext.getColor(R.color.colorAccent);
+                break;
+            case ("3"):
+                intcolor=mContext.getColor(R.color.color_red);
+                break;
+            case ("4"):
+                intcolor=mContext.getColor(R.color.color_sky);
+                break;
+            case ("5"):
+                intcolor=mContext.getColor(R.color.color_green);
+                break;
+            case ("6"):
+                intcolor=mContext.getColor(R.color.color_yellow);
+                break;
+            case ("7"):
+                intcolor=mContext.getColor(R.color.color_pink);
+                break;
+            case ("8"):
+                intcolor=mContext.getColor(R.color.color_indigo);
+                break;
+            case ("9"):
+                intcolor=mContext.getColor(R.color.color_brown);
+                break;
+            case ("10"):
+                intcolor=mContext.getColor(R.color.color_purple);
+                break;
+            case ("11"):
+                intcolor=mContext.getColor(R.color.color_blue);
+                break;
+            case ("12"):
+                intcolor=mContext.getColor(R.color.color_orange);
+                break;
+
+            default:
+                intcolor=mContext.getColor(R.color.color_black);
+
+                break;
+        }
+
+
+        return intcolor;
+    }
 
     @Override
     public int getItemCount() {

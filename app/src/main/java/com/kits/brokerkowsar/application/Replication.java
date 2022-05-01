@@ -28,6 +28,7 @@ import com.kits.brokerkowsar.model.UserInfo;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -101,11 +102,8 @@ public class Replication {
 
             FinalStep = 0;
             LastRepCode=String.valueOf(replicatedetail.getLastRepLogCode());
-            Log.e("test_1","");
-            Log.e("test_1",LastRepCode);
-            Log.e("test_1",replicatedetail.getServerTable());
-            Log.e("test_1","1");
-            Log.e("test_1",String.valueOf(400));
+
+
             Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
                     "repinfo",
                     LastRepCode,
@@ -113,6 +111,8 @@ public class Replication {
                     "1"
                     ,String.valueOf(RepRowCount)
             );
+            Log.e("test_1",LastRepCode);
+            Log.e("test_1",replicatedetail.getServerTable());
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
@@ -281,7 +281,7 @@ public class Replication {
         );
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
-            public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
+            public void onResponse(@NotNull Call<RetrofitResponse> call, @NotNull Response<RetrofitResponse> response) {
                 if (response.isSuccessful()) {
                     assert response.body() != null;
                     try {
@@ -380,7 +380,7 @@ public class Replication {
                 }
             }
             @Override
-            public void onFailure(Call<RetrofitResponse> call, Throwable t) {
+            public void onFailure(@NotNull Call<RetrofitResponse> call, @NotNull Throwable t) {
 
             }
         });

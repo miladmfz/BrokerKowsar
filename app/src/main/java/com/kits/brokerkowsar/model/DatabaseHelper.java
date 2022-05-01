@@ -12,6 +12,8 @@ import android.widget.Toast;
 import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.application.CallMethod;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.security.Key;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -47,7 +49,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     int k = 0;
     String sc;
     String st;
-    String stack_Condition;
     String joinDetail;
     String joinbasket;
 
@@ -233,7 +234,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor.close();
             limitcolumn = Integer.parseInt(columnscount) / Integer.parseInt(goodtypecount);
         }catch (Exception e){
-            callMethod.showToast( "تنظیم۴۵۶ جدول مشکل دارد");
+            callMethod.showToast( "تنظیم جدول از سمت دیتابیس مشکل دارد");
             Log.e("test",e.getMessage());
         }
     }
@@ -377,17 +378,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public String GetGoodTypeDefault() {
-
-        query = "select GoodType from goodtype where isdefault =1 " ;
-        cursor = getWritableDatabase().rawQuery(query, null);
-        cursor.moveToFirst();
-        String GoodType = cursor.getString(cursor.getColumnIndex("GoodType"));
-        cursor.close();
-
-        return GoodType;
-    }
-
 
     public ArrayList<Column> GetAllGoodType() {
         query = "Select * from GoodType ";
@@ -407,6 +397,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return columns;
     }
+
 
     @SuppressLint("Recycle")
     public ArrayList<Good> getAllGood(String search_target, String aGroupCode) {
@@ -428,8 +419,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 query = query + " , ";
             }
             if (!column.getColumnDefinition().equals("")) {
-                stack_Condition=column.getColumnDefinition();
-                query = query + stack_Condition + " as " + column.getColumnName();
+                query = query + column.getColumnDefinition() + " as " + column.getColumnName();
             } else {
                 query = query + column.getColumnName();
             }
@@ -724,7 +714,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return gooddetail;
     }
 
-    public void InsertActivation(Activation activation) {
+
+    public void InsertActivation(@NotNull Activation activation) {
 
         query="select * from Activation Where ActivationCode= '"+activation.getActivationCode()+"'";
         cursor = getWritableDatabase().rawQuery(query, null);
