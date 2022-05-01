@@ -5,13 +5,13 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_gravity="center"
-    android:id="@+id/box_buy"
+    android:id="@+id/boxbuy_absolute"
     android:background="@color/grey_10"
     android:layoutDirection="rtl">
 
 
     <TextView
-        android:id="@+id/box_buy_factor"
+        android:id="@+id/boxbuy_absolute_factorname"
         android:layout_width="200dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
@@ -50,7 +50,7 @@
                 android:layout_weight="0.8" />
 
             <EditText
-                android:id="@+id/box_buy_amount"
+                android:id="@+id/boxbuy_absolute_amount"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -72,37 +72,6 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:orientation="horizontal"
-        android:layout_weight="0.5"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@string/off_for_sale"
-
-            android:gravity="center"
-            android:layout_weight="0.4" />
-
-        <EditText
-            android:id="@+id/box_buy_percent"
-            android:layout_weight="0.2"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:background="#FFFFFF"
-            android:gravity="center"
-            android:hint="@string/off_for_sale"
-            android:maxLength="5"
-            android:inputType="number" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
         android:layout_marginRight="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="5dp">
@@ -115,7 +84,7 @@
             android:layout_weight="0.95" />
 
         <EditText
-            android:id="@+id/box_buy_price"
+            android:id="@+id/boxbuy_absolute_price"
             android:layout_weight="0.05"
             android:layout_width="250dp"
             android:layout_height="50dp"
@@ -141,46 +110,13 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/boxbuy_maxprice"
-
-            android:gravity="center"
-            android:layout_weight="0.95" />
-
-        <TextView
-            android:id="@+id/box_buy_maxprice"
-            android:layout_weight="0.05"
-            android:layout_width="250dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"
-            android:background="#FFFFFF"
-            android:focusable="true"
-
-            android:gravity="center"
-            android:hint="@string/boxbuy_maxprice"
-            android:textSize="20sp"
-            android:maxLength="10" />
-
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:layout_marginRight="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="5dp">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
             android:text="@string/boxbuy_total"
 
             android:gravity="center"
             android:layout_weight="0.95" />
 
         <TextView
-            android:id="@+id/box_buy_sumprice"
+            android:id="@+id/boxbuy_absolute_sumprice"
             android:layout_weight="0.05"
             android:layout_width="250dp"
             android:layout_height="50dp"
@@ -212,7 +148,7 @@
             android:layout_weight="0.95" />
 
         <TextView
-            android:id="@+id/box_buy_facamount"
+            android:id="@+id/boxbuy_absolute_facamount"
             android:layout_weight="0.05"
             android:layout_width="250dp"
             android:layout_height="50dp"
@@ -228,7 +164,7 @@
 
 
     <Button
-        android:id="@+id/box_buy_btn"
+        android:id="@+id/boxbuy_absolute_btn"
         android:layout_width="250dp"
         android:gravity="center"
         android:layout_gravity="center"

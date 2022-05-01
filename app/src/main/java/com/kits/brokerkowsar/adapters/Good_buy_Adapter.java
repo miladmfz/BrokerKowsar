@@ -98,7 +98,12 @@ public class Good_buy_Adapter extends RecyclerView.Adapter<Good_buy_Adapter.Good
         holder.priceTextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(gooddetail.getGoodFieldValue("Price")))));
         holder.total.setText(NumberFunctions.PerisanNumber(decimalFormat.format(price)));
         holder.maxtotal.setText(NumberFunctions.PerisanNumber(decimalFormat.format(maxprice)));
-        holder.offer.setText(NumberFunctions.PerisanNumber((100 - ((sellprice * 100) / maxsellprice)) + " درصد تخفیف "));
+
+            if(gooddetail.getGoodFieldValue("SellPriceType").equals("0")) {
+                holder.offer.setText("");
+            }else {
+                holder.offer.setText(NumberFunctions.PerisanNumber((100 - ((sellprice * 100) / maxsellprice)) + " درصد تخفیف "));
+            }
 
 
         if (image_info.Image_exist(gooddetail.getGoodFieldValue("KsrImageCode"))) {

@@ -1,6 +1,7 @@
 package com.kits.brokerkowsar.adapters;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -55,8 +56,8 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
     private Intent intent;
     DatabaseHelper dbh;
 
-     APIInterface apiInterface;
-    private Image_info image_info;
+    APIInterface apiInterface;
+    private final Image_info image_info;
 
     public boolean multi_select;
     Action action;
@@ -82,7 +83,7 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final gooddetailHolder holder, final int position) {
+    public void onBindViewHolder(@NonNull final gooddetailHolder holder, @SuppressLint("RecyclerView") final int position) {
         final Good gooddetail = goods.get(position);
         holder.mainline.removeAllViews();
 
@@ -259,7 +260,7 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
     }
 
     public int getcolorresource(String colortarget) {
-        int intcolor=0;
+        int intcolor;
         switch(colortarget)
         {
             case ("2"):

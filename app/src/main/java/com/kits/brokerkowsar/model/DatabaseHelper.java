@@ -19,7 +19,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-
 public class DatabaseHelper extends SQLiteOpenHelper {
 
 
@@ -163,6 +162,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
+    @SuppressLint("Range")
     public ArrayList<ReplicationModel> GetReplicationTable() {
         query = "SELECT * from ReplicationTable";
         ArrayList<ReplicationModel> replicationModels = new ArrayList<>();
@@ -194,6 +194,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    @SuppressLint("Range")
     public ArrayList<TableDetail> GetTableDetail(String TableName) {
         query = "PRAGMA table_info( " + TableName + " )";
         ArrayList<TableDetail> tableDetails = new ArrayList<>();
@@ -216,7 +217,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return tableDetails;
     }
 
-
+    @SuppressLint("Range")
     public void GetLimitColumn(String AppType) {
 
         try {
@@ -294,6 +295,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
+    @SuppressLint("Range")
     public String GetGoodTypeFromGood(String code) {
         query = "select GoodType from good where GoodCode = " + code;
         cursor = getWritableDatabase().rawQuery(query, null);
@@ -303,6 +305,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result;
     }
 
+    @SuppressLint("Range")
     public ArrayList<Column> GetColumns(String code, String goodtype, String AppType) {
 
 
@@ -348,7 +351,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return columns;
     }
-
+    @SuppressLint("Range")
     public String GetColumnscount() {
 
         query = "Select Count(*) result from BrokerColumn " ;
@@ -359,6 +362,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return String.valueOf(result);
     }
+    @SuppressLint("Range")
     public String GetRegionText(String String) {
         GetPreference();
         if(SH_ArabicText) {
@@ -378,7 +382,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-
+    @SuppressLint("Range")
     public ArrayList<Column> GetAllGoodType() {
         query = "Select * from GoodType ";
         columns = new ArrayList<>();
@@ -399,7 +403,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    @SuppressLint("Recycle")
+    @SuppressLint({"Recycle", "Range"})
+
     public ArrayList<Good> getAllGood(String search_target, String aGroupCode) {
         String search=GetRegionText(search_target);
 
@@ -531,7 +536,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return goods;
     }
 
-
+    @SuppressLint("Range")
     public ArrayList<Good> getAllGood_Extended(String searchbox_result, String aGroupCode) {
 
         GetPreference();
@@ -648,7 +653,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
-
+    @SuppressLint("Range")
     public Good getGoodByCode(String code) {
         GetPreference();
         columns = GetColumns(code, "", "0");
@@ -739,7 +744,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     }
-
+    @SuppressLint("Range")
     public ArrayList<Activation> getActivation() {
 
         query="Select * From Activation";
@@ -767,12 +772,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return activations;
     }
 
-
+    @SuppressLint("Range")
     public Good getGoodBuyBox(String code) {
         GetPreference();
 
         query = " SELECT IfNull(pf.FactorAmount,0) as FactorAmount ,  UnitName ," +
-                " IfNull(pf.Price,0) as Price , MaxSellPrice ," +
+                " IfNull(pf.Price,0) as Price , SellPriceType, MaxSellPrice ," +
                 " Case c.PriceTip When 1 Then  SellPrice1 When 2 Then SellPrice2 When 3 Then SellPrice3 " +
                 " When 4 Then SellPrice4 When 5 Then SellPrice5 When 6 Then SellPrice6 Else " +
                 " Case When g.SellPriceType = 0 Then MaxSellPrice Else 100 End End *  " +
@@ -797,13 +802,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 gooddetail.setGoodFieldValue("Price",cursor.getString(cursor.getColumnIndex("Price")));
                 gooddetail.setGoodFieldValue("MaxSellPrice",cursor.getLong(cursor.getColumnIndex("MaxSellPrice"))+"");
                 gooddetail.setGoodFieldValue("SellPrice",cursor.getLong(cursor.getColumnIndex("SellPrice"))+"");
+                gooddetail.setGoodFieldValue("SellPriceType",cursor.getLong(cursor.getColumnIndex("SellPriceType"))+"");
             }catch (Exception ignored) {}
         }
         cursor.close();
         Log.e("test",gooddetail.getGoodFieldValue("SellPrice"));
         return gooddetail;
     }
-
+    @SuppressLint("Range")
     public ArrayList<Good> getAllGood_ByDate(String xDayAgo) {
         GetPreference();
         columns = GetColumns("", "", "1");
@@ -916,7 +922,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return goods;
     }
-
+    @SuppressLint("Range")
     public void InsertPreFactorHeader(String Search_target, String CustomerRef) {
         String Customer=GetRegionText(Search_target);
 
@@ -949,7 +955,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "(PreFactorKowsarCode,PreFactorDate ,PreFactorKowsarDate ,PreFactorTime,PreFactorExplain,CustomerRef,BrokerRef) " +
                 "VALUES(0,'" + Date + "','-----','" + strDate + "','" + Customer + "','" + CustomerRef + "','" + val + "'); ");
     }
-
+    @SuppressLint("Range")
     public void InsertPreFactor(String pfcode, String goodcode, String FactorAmount, String price, String BasketFlag) {
         if (Integer.parseInt(BasketFlag) > 0) {
             if (Float.parseFloat(price) >= 0) {
@@ -994,7 +1000,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor.close();
         }
     }
-
+    @SuppressLint("Range")
     public ArrayList<PreFactor> getAllPrefactorHeader(String Search_target) {
         String name=GetRegionText(Search_target);
 
@@ -1032,7 +1038,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return prefactor_header;
     }
-
+    @SuppressLint("Range")
     public ArrayList<PreFactor> getAllPrefactorHeaderopen() {
         query = "SELECT h.*, s.SumAmount , s.SumPrice, s.RowCount ,n.Title || ' ' || n.FName|| ' ' || n.Name CustomerName  " +
                 "FROM PreFactor h Join Customer c  on c.CustomerCode = h.CustomerRef "
@@ -1071,7 +1077,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return prefactor_header;
     }
 
-
+    @SuppressLint("Range")
     public ArrayList<Good> getAllPreFactorRows(String Search_target, String aPreFactorCode) {
         String name=GetRegionText(Search_target);
         name = name.replaceAll(" ", "%");
@@ -1139,7 +1145,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return goods;
     }
-
+    @SuppressLint("Range")
     public void UpdatePreFactorHeader_Customer(String pfcode, String Search_target) {
         String Customer=GetRegionText(Search_target);
 
@@ -1170,7 +1176,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         assert cursor != null;
         cursor.close();
     }
-
+    @SuppressLint("Range")
     public Integer GetLastPreFactorHeader() {
 
         query = "SELECT PreFactorCode FROM Prefactor Where PreFactorKowsarCode = 0 order by PreFactorCode DESC";
@@ -1210,7 +1216,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         query = "Update PreFactor Set PreFactorKowsarCode = " + PreFactorKowsarCode + ", PreFactorKowsarDate = '" + PreFactorDate + "' Where ifnull(PreFactorCode ,0)= " + PreFactorCode + ";";
         getWritableDatabase().execSQL(query);
     }
-
+    @SuppressLint("Range")
     public String getFactorSum(String pfcode) {
         query = " select sum(FactorAmount*price*DefaultUnitValue) as result From PreFactorRow join Good on GoodRef=GoodCode Where IfNull(PreFactorRef,0)=" + pfcode;
         Log.e("test",query);
@@ -1221,7 +1227,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return String.valueOf(result);
     }
-
+    @SuppressLint("Range")
     public String getFactorSumAmount(String pfcode) {
         query = "select sum(FactorAmount) as result From PreFactorRow join Good on GoodRef=GoodCode Where IfNull(PreFactorRef,0)=" + pfcode;
         cursor = getWritableDatabase().rawQuery(query, null);
@@ -1231,7 +1237,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return String.valueOf(result);
     }
 
-
+    @SuppressLint("Range")
     public String getFactordate(String pfcode) {
         query = "select PreFactorDate as result From Prefactor  Where IfNull(PreFactorCode,0)=" + pfcode;
         cursor = getWritableDatabase().rawQuery(query, null);
@@ -1240,7 +1246,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return result;
     }
-
+    @SuppressLint("Range")
     public String getFactorCustomer(String pfcode) {
 
         query = "SELECT n.Title || ' ' || n.FName|| ' ' || n.Name CustomerName  FROM PreFactor h " +
@@ -1258,7 +1264,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return result;
     }
-
+    @SuppressLint("Range")
     public long getsum_sumfactor() {
         query = "select sum(price) as sm From PreFactorRow";
 
@@ -1271,7 +1277,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return Res;
     }
-
+    @SuppressLint("Range")
     public ArrayList<Customer> AllCustomer(String search_target, boolean aOnlyActive) {
         Log.e("test",search_target);
         String name= GetRegionText(search_target);
@@ -1312,7 +1318,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return Customers;
     }
-
+    @SuppressLint("Range")
     public Integer Customer_check(String name) {
         int res = 0;
         query = "select centralcode from central where d_codemelli ='" + name + "'";
@@ -1328,7 +1334,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return res;
     }
-
+    @SuppressLint("Range")
     public ArrayList<Customer> city() {
 
         query = "SELECT * from city";
@@ -1348,7 +1354,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return city;
     }
-
+    @SuppressLint("Range")
     public String GetksrImage(String code) {
         query = "select ksrImageCode from ksrImage where ObjectRef = " + code+ " limit 1";
         cursor = getWritableDatabase().rawQuery(query, null);
@@ -1359,7 +1365,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-
+    @SuppressLint("Range")
     public ArrayList<Good> GetksrImageCodes(String code) {
         query = "SELECT ksrImageCode from KsrImage where ObjectRef = " + code;
         ArrayList<Good> Goods = new ArrayList<>();
@@ -1378,7 +1384,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return Goods;
     }
-
+    @SuppressLint("Range")
     public ArrayList<GoodGroup> getAllGroups(String GL) {
 
         query = "SELECT * FROM GoodsGrp WHERE 1=1 ";
@@ -1413,7 +1419,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return groups;
     }
-
+    @SuppressLint("Range")
     public ArrayList<GoodGroup> getmenuGroups() {
         GetPreference();
         if (!SH_MenuBroker.equals(""))
@@ -1450,7 +1456,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return groups;
     }
-
+    @SuppressLint("Range")
     public UserInfo LoadPersonalInfo() {
         UserInfo user = new UserInfo();
         query = "Select * From Config";
@@ -1521,7 +1527,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL(query);
 
     }
-
+    @SuppressLint("Range")
     public String ReadConfig(String key) {
 
         query = "SELECT DataValue  FROM Config  Where KeyValue= '"+key+"' ;";
@@ -1535,7 +1541,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result;
 
     }
-
+    @SuppressLint("Range")
     public void ReplicateGoodtype(Column column) {
         cursor = getWritableDatabase().rawQuery("Select Count(*) AS cntRec From GoodType Where GoodType = '" + column.getColumnFieldValue("GoodType") + "'", null);
         cursor.moveToFirst();
