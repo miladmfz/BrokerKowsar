@@ -139,9 +139,8 @@ public class SearchActivity extends AppCompatActivity {
         fab = findViewById(R.id.SearchActivity_fab);
         edtsearch = findViewById(R.id.SearchActivity_edtsearch);
 
-
-
     }
+
     public void intent() {
         Bundle data = getIntent().getExtras();
         assert data != null;
@@ -169,6 +168,7 @@ public class SearchActivity extends AppCompatActivity {
 
 
         toolbar.setTitle(title);
+
         factorState();
 
         btn_ref_fac.setOnClickListener(view -> {

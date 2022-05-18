@@ -106,7 +106,9 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         Config();
         try {
             Handler handler = new Handler();
-            handler.postDelayed(this::init, 100);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                handler.postDelayed(this::init, 100);
+            }
         }catch (Exception e){
             callMethod.ErrorLog(e.getMessage());
         }

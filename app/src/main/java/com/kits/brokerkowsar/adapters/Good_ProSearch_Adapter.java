@@ -105,13 +105,21 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
                     extra_TextView.setTextSize(14);
                 }
                 if (Column.getColumnName().equals("MaxSellPrice")) {
+
                     extra_TextView.setTextColor(getcolorresource("3"));
                 }
 
-
-                if (Column.getColumnName().contains("Price")){
-                    extra_TextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))))));
+                try {
+                    if(Integer.parseInt(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname")))>999) {
+                        extra_TextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))))));
+                    }else {
+                        extra_TextView.setText(NumberFunctions.PerisanNumber(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))));
+                    }
+                }catch (Exception e){
+                    extra_TextView.setText(NumberFunctions.PerisanNumber(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))));
                 }
+
+
 
 
                 holder.mainline.addView(extra_TextView);
@@ -247,7 +255,7 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
 
 
             if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
-                action.buydialog(goods.get(position).getGoodFieldValue("GoodCode"), "0");
+                    action.buydialog(goods.get(position).getGoodFieldValue("GoodCode"), "0");
 
             } else {
 

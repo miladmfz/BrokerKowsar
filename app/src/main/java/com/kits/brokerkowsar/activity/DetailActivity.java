@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -176,7 +177,17 @@ public class DetailActivity extends AppCompatActivity {
         ll_1.addView(extra_TextView1);
 
         TextView extra_TextView2 = new TextView(this);
-        extra_TextView2.setText(NumberFunctions.PerisanNumber(body));
+        try {
+            Log.e("test",body);
+            if(Integer.parseInt(body)>999) {
+                extra_TextView2.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(body))));
+            }else {
+                extra_TextView2.setText(NumberFunctions.PerisanNumber(body));
+            }
+        }catch (Exception e){
+            extra_TextView2.setText(NumberFunctions.PerisanNumber(body));
+        }
+
         extra_TextView2.setBackgroundResource(R.color.white);
         extra_TextView2.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT, (float) 0.3));
         extra_TextView2.setTextSize(Integer.parseInt(callMethod.ReadString("BodySize")));

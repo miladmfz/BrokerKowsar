@@ -776,7 +776,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public Good getGoodBuyBox(String code) {
         GetPreference();
 
-        query = " SELECT IfNull(pf.FactorAmount,0) as FactorAmount ,  UnitName ," +
+        query = " SELECT IfNull(pf.FactorAmount,0) as FactorAmount ,  DefaultUnitValue,  UnitName ," +
                 " IfNull(pf.Price,0) as Price , SellPriceType, MaxSellPrice ," +
                 " Case c.PriceTip When 1 Then  SellPrice1 When 2 Then SellPrice2 When 3 Then SellPrice3 " +
                 " When 4 Then SellPrice4 When 5 Then SellPrice5 When 6 Then SellPrice6 Else " +
@@ -803,6 +803,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 gooddetail.setGoodFieldValue("MaxSellPrice",cursor.getLong(cursor.getColumnIndex("MaxSellPrice"))+"");
                 gooddetail.setGoodFieldValue("SellPrice",cursor.getLong(cursor.getColumnIndex("SellPrice"))+"");
                 gooddetail.setGoodFieldValue("SellPriceType",cursor.getLong(cursor.getColumnIndex("SellPriceType"))+"");
+                gooddetail.setGoodFieldValue("DefaultUnitValue",cursor.getLong(cursor.getColumnIndex("DefaultUnitValue"))+"");
             }catch (Exception ignored) {}
         }
         cursor.close();

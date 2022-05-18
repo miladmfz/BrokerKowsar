@@ -3,8 +3,14 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/drawable/edittest1.xml" value="0.148" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/activity_choice_database.xml" value="0.17314814814814813" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/activity_config.xml" value="0.3255208333333333" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/activity_splash.xml" value="0.17314814814814813" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/box_buy_absolute.xml" value="0.33" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/box_buy_percent.xml" value="0.1765625" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/good_buy_history_line.xml" value="0.11458333333333333" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/header.xml" value="0.24871794871794872" />
       </map>
     </option>
   </component>
