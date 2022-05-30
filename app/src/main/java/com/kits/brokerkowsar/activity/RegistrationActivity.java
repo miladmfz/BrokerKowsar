@@ -39,6 +39,7 @@ public class RegistrationActivity extends AppCompatActivity {
     Replication replication;
     SwitchMaterial sm_regselloff;
     SwitchMaterial sm_arabictext;
+    SwitchMaterial sm_autorep;
     Button btn_register;
     UserInfo auser;
 
@@ -97,6 +98,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         sm_regselloff = findViewById(R.id.registr_selloff);
         sm_arabictext = findViewById(R.id.registr_arabictext);
+        sm_autorep = findViewById(R.id.registr_autorep);
     }
 
     public void init() {
@@ -168,6 +170,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         sm_regselloff.setChecked(Integer.parseInt(callMethod.ReadString("SellOff")) != 0);
         sm_arabictext.setChecked(callMethod.ReadBoolan("ArabicText"));
+        sm_autorep.setChecked(callMethod.ReadBoolan("AutoReplication"));
 
 
         sm_regselloff.setOnCheckedChangeListener((compoundButton, b) -> {
@@ -188,6 +191,17 @@ public class RegistrationActivity extends AppCompatActivity {
 
             } else {
                 callMethod.EditBoolan("ArabicText", true);
+                callMethod.showToast( "بله");
+            }
+        });
+
+        sm_autorep.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (callMethod.ReadBoolan("AutoReplication")) {
+                callMethod.EditBoolan("AutoReplication", false);
+                callMethod.showToast( "خیر");
+
+            } else {
+                callMethod.EditBoolan("AutoReplication", true);
                 callMethod.showToast( "بله");
             }
         });

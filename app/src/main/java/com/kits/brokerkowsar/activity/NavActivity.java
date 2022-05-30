@@ -30,6 +30,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.work.Constraints;
+import androidx.work.NetworkType;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkManager;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -40,8 +44,10 @@ import com.google.android.material.navigation.NavigationView;
 import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.Action;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.Replication;
+import com.kits.brokerkowsar.application.WManager;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.GoodGroup;
 import com.kits.brokerkowsar.model.Location;
@@ -58,6 +64,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import retrofit2.Call;
@@ -96,7 +103,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
     LocationManager locationManager;
     String latitude, longitude;
-
+    WorkManager workManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,57 +124,6 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
     //************************************************************
 
-
-
-    public void test_fun(View v) {
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        //replication.DoingReplicate();
-
-//        String testdbnew ="/data/data/com.kits.brokerkowsar/databases/asli/new.sqlite";
-//        String testdbold ="/data/data/com.kits.brokerkowsar/databases/asli/old.sqlite";
-//        DatabaseHelper dbhnew = new DatabaseHelper(this,testdbnew);
-//        DatabaseHelper dbhold = new DatabaseHelper(this,testdbold);
-//
-//        dbhnew.Createtestnew();
-//        dbhold.Createtestold();
-//
-//        //dbhnew.testquery();
-//        dbhnew.testquery();
-
-
-//        Call<RetrofitResponse> call1 = apiInterface.GetLocation(
-//                "GetLocation"
-//        );
-//        call1.enqueue(new Callback<RetrofitResponse>() {
-//            @Override
-//            public void onResponse(@NotNull Call<RetrofitResponse> call, @NotNull Response<RetrofitResponse> response) {
-//                ArrayList<Location> locations=response.body().getLocations();
-//                tv_test.setText(locations.size()+"");
-//
-//                // TODO Polylines and Polygons
-//            }
-//
-//            @Override
-//            public void onFailure(@NotNull Call<RetrofitResponse> call, @NotNull Throwable t) {
-//                //callMethod.ErrorLog(t.getMessage());
-//            }
-//        });
-
-    }
 
     public void Gpslocation() {
 
@@ -243,10 +199,36 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     }
 
 
+
+    public void test_fun(View v) {
+
+        replication.BrokerStack();
+        replication.MenuBroker();
+        replication.GoodTypeReplication();
+
+
+
+
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint({"SetTextI18n", "MissingPermission"})
     public void init() {
         noti();
+
+        if(callMethod.ReadBoolan("AutoReplication")) {
+
+            Constraints conster = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
+            PeriodicWorkRequest req = new PeriodicWorkRequest.Builder(WManager.class, 15, TimeUnit.MINUTES)
+                    .setConstraints(conster)
+                    .build();
+            workManager = WorkManager.getInstance(NavActivity.this);
+            workManager.enqueue(req);
+        }
+
+
+
+
 
         tv_versionname.setText(BuildConfig.VERSION_NAME);
         tv_dbname.setText(callMethod.ReadString("PersianCompanyNameUse"));
@@ -333,6 +315,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (doubleBackToExitPressedOnce) {
+            workManager.cancelAllWork();
             super.onBackPressed();
             return;
         }
@@ -368,7 +351,13 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
             replication.BrokerStack();
             action.app_info();
-            replication.DoingReplicate();
+            try {
+                workManager.cancelAllWork();
+                replication.DoingReplicate();
+            }catch (Exception e){
+                replication.DoingReplicate();
+
+            }
 
         } else if (id == R.id.nav_buy) {
             if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) > 0) {

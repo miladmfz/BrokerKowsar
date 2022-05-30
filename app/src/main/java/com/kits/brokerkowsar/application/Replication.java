@@ -69,30 +69,30 @@ public class Replication {
         this.mContext = context;
         this.callMethod = new CallMethod(mContext);
         this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
-        dialog = new Dialog(mContext);
         this.image_info = new Image_info(mContext);
         url = callMethod.ReadString("ServerURLUse");
         database = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
+
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
 
     }
 
 
     public void DoingReplicate() {
+        dialog = new Dialog(mContext);
         dialog();
         RetrofitReplicate(0);
     }
+
     public void dialog() {
         dialog.setContentView(R.layout.rep_prog);
         tv_rep = dialog.findViewById(R.id.rep_prog_text);
         tv_step = dialog.findViewById(R.id.rep_prog_step);
         dialog.show();
-
-
     }
 
     public void RetrofitReplicate(Integer replicatelevel) {
-
+        dbh.closedb();
         replicationModels = dbh.GetReplicationTable();
 
         if (replicatelevel < replicationModels.size()) {
@@ -160,7 +160,7 @@ public class Replication {
 
                                                 @SuppressLint("Recycle") Cursor d = database.rawQuery("Select Count(*) AS cntRec From " + replicatedetail.getClientTable() + " Where " + replicatedetail.getClientPrimaryKey() + " = " + code, null);
                                                 d.moveToFirst();
-                                                int nc = d.getInt(d.getColumnIndex("cntRec"));
+                                                @SuppressLint("Range") int nc = d.getInt(d.getColumnIndex("cntRec"));
                                                 if (nc == 0) {
 
 
@@ -259,6 +259,175 @@ public class Replication {
         }
     }
 
+    public void RetrofitReplicateAuto(Integer replicatelevel) {
+        dbh.closedb();
+
+        replicationModels = dbh.GetReplicationTable();
+        if (replicatelevel < replicationModels.size()) {
+            ReplicationModel replicatedetail = replicationModels.get(replicatelevel);
+            tableDetails = dbh.GetTableDetail(replicatedetail.getClientTable());
+
+            FinalStep = 0;
+            LastRepCode=String.valueOf(replicatedetail.getLastRepLogCode());
+
+
+            Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
+                    "repinfo",
+                    LastRepCode,
+                    replicatedetail.getServerTable(),
+                    "1"
+                    ,"100"
+            );
+
+
+            call1.enqueue(new Callback<RetrofitResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
+
+                    if (response.isSuccessful()) {
+                        new Thread(() -> {
+
+                            assert response.body() != null;
+                            try {
+                                JSONArray arrayobject = new JSONArray(response.body().getText());
+                                int ObjectSize = arrayobject.length();
+                                JSONObject singleobject = arrayobject.getJSONObject(0);
+                                String state = singleobject.getString("RLOpType");
+
+                                switch (state) {
+                                    case "n":
+                                    case "N":
+                                        break;
+                                    default:
+
+                                        for (int i = 0; i < ObjectSize; i++) {
+
+                                            singleobject = arrayobject.getJSONObject(i);
+                                            String reptype = singleobject.getString("RLOpType");
+                                            String repcode = singleobject.getString("RepLogDataCode");
+                                            String code = singleobject.getString(replicatedetail.getServerPrimaryKey());
+                                            int columnDetail = tableDetails.size();
+                                            StringBuilder qCol = new StringBuilder();
+
+                                            switch (reptype) {
+                                                case "U":
+                                                case "u":
+                                                case "I":
+                                                case "i":
+
+                                                    for (TableDetail singletabale : tableDetails) {
+
+                                                        if (singleobject.has(singletabale.getName())) {
+                                                            singletabale.setText(singleobject.getString(singletabale.getName()));
+                                                            if (singletabale.getText() != null)
+                                                                singletabale.setText(singletabale.getText().replace("'", " "));
+                                                        }
+                                                    }
+
+                                                    @SuppressLint("Recycle") Cursor d = database.rawQuery("Select Count(*) AS cntRec From " + replicatedetail.getClientTable() + " Where " + replicatedetail.getClientPrimaryKey() + " = " + code, null);
+                                                    d.moveToFirst();
+                                                    @SuppressLint("Range") int nc = d.getInt(d.getColumnIndex("cntRec"));
+                                                    if (nc == 0) {
+
+
+                                                        qCol = new StringBuilder("INSERT INTO " + replicatedetail.getClientTable() + " ( ");
+                                                        int QueryConditionCount=0;
+                                                        for (int z = 0; z < columnDetail; z++) {
+                                                            if (tableDetails.get(z).getText() != null) {
+                                                                if (QueryConditionCount>0)
+                                                                    qCol.append(" , ");
+                                                                qCol.append(" ").append(tableDetails.get(z).getName());
+                                                                QueryConditionCount++;
+                                                            }
+                                                        }
+                                                        qCol.append(" ) Select  ");
+                                                        QueryConditionCount=0;
+
+                                                        for (int z = 0; z < columnDetail; z++) {
+                                                            if (tableDetails.get(z).getText() != null) {
+                                                                if (QueryConditionCount>0)
+                                                                    qCol.append(" , ");
+                                                                String valuetype = tableDetails.get(z).getType().substring(0, 2);
+                                                                if (!tableDetails.get(z).getText().equals("null")) {
+                                                                    if (valuetype.equals("CH")) {
+                                                                        qCol.append(" '").append(tableDetails.get(z).getText()).append("' ");
+                                                                    } else {
+                                                                        qCol.append(" ").append(tableDetails.get(z).getText());
+                                                                    }
+                                                                } else {
+                                                                    qCol.append(" ").append(tableDetails.get(z).getText());
+                                                                }
+                                                                QueryConditionCount++;
+                                                            }
+
+                                                        }
+
+
+                                                    } else {
+
+                                                        qCol = new StringBuilder("Update " + replicatedetail.getClientTable() + "  Set ");
+                                                        int QueryConditionCount=0;
+                                                        for (int z = 1; z < columnDetail; z++) {
+                                                            if (tableDetails.get(z).getText() != null) {
+                                                                if (QueryConditionCount>0)
+                                                                    qCol.append(" , ");
+                                                                if (!tableDetails.get(z).getText().equals("null")) {
+                                                                    String valuetype = tableDetails.get(z).getType().substring(0, 2);
+                                                                    if (valuetype.equals("CH")) {
+                                                                        qCol.append(" ").append(tableDetails.get(z).getName()).append(" = '").append(tableDetails.get(z).getText()).append("' ");
+                                                                    } else {
+                                                                        qCol.append(" ").append(tableDetails.get(z).getName()).append(" = ").append(tableDetails.get(z).getText()).append(" ");
+                                                                    }
+                                                                } else {
+                                                                    qCol.append(" ").append(tableDetails.get(z).getName()).append(" = ").append(tableDetails.get(z).getText()).append(" ");
+                                                                }
+                                                                QueryConditionCount++;
+                                                            }
+                                                        }
+                                                        qCol.append(" Where ").append(replicatedetail.getClientPrimaryKey()).append(" = ").append(code);
+
+                                                    }
+
+                                                    try {
+                                                        Log.e("test_qCol=", repcode +" = "+qCol.toString());
+                                                        database.execSQL(qCol.toString());
+                                                        LastRepCode = repcode;
+
+                                                    } catch (Exception e) {
+                                                        Log.e("test_qCol=", e.getMessage());
+                                                    }
+
+                                                    d.close();
+                                                    break;
+                                            }
+                                        }
+                                        database.execSQL("Update ReplicationTable Set LastRepLogCode = " + LastRepCode + " Where ServerTable = '" + replicatedetail.getServerTable() + "' ");
+                                        break;
+                                }
+                                if (arrayobject.length() >= RepRowCount) {
+                                    RetrofitReplicateAuto(replicatelevel);
+                                } else {
+                                    RetrofitReplicateAuto(replicatelevel + 1);
+                                }
+                            } catch (JSONException ignored) {
+                            }
+
+                        }).start();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+                    Log.e("test_object.length", t.getMessage());
+                }
+            });
+
+        }
+
+
+
+    }
+
     public void replicateGoodImageChange() {
         tv_rep.setText(NumberFunctions.PerisanNumber("در حال بروز رسانی عکس"));
         FinalStep = 0;
@@ -309,7 +478,7 @@ public class Replication {
                                     Cursor d = database.rawQuery("Select Count(*) AS cntRec From KsrImage Where KsrImageCode =" + code, null);
 
                                     d.moveToFirst();
-                                    int nc = d.getInt(d.getColumnIndex("cntRec"));
+                                    @SuppressLint("Range") int nc = d.getInt(d.getColumnIndex("cntRec"));
 
                                     switch (optype) {
                                         case "U":

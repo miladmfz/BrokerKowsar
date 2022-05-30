@@ -162,6 +162,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
 
+    public void closedb() {
+        getWritableDatabase().close();
+    }
     @SuppressLint("Range")
     public ArrayList<ReplicationModel> GetReplicationTable() {
         query = "SELECT * from ReplicationTable";
@@ -362,6 +365,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return String.valueOf(result);
     }
+
     @SuppressLint("Range")
     public String GetRegionText(String String) {
         GetPreference();
@@ -1579,6 +1583,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void deleteColumn() {
         getWritableDatabase().execSQL("delete from BrokerColumn");
+        getWritableDatabase().execSQL("delete from GoodType");
     }
 
     public void ExecQuery(String Query) {

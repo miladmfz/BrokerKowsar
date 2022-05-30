@@ -178,7 +178,7 @@ public class Search_box {
                     }
                 }
             }
-
+            Where=" And GoodType= '"+Goodtype+"' ";
             for (Column Column : Columns) {
                 if (!Column.getColumnFieldValue("search").equals("")) {
                     if (!Column.getColumnFieldValue("columndefinition").equals(""))
