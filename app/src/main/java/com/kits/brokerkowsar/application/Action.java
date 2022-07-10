@@ -120,6 +120,7 @@ public class Action {
 
             price.setEnabled(!callMethod.ReadString("SellOff").equals("0"));
 
+            Log.e("test_",DefaultUnitValue+"");
 
             factorname.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
 

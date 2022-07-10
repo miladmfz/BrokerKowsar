@@ -140,6 +140,7 @@
     <string name="good_buy_offer">offer</string>
     <string name="good_buy_delete">حذف از سبد</string>
     <string name="Customer_new"> مشتری جدید</string>
+    <string name="UnitRadio">درصد تخفیف</string>
 
 
 </resources>

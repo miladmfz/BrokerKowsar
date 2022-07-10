@@ -21,14 +21,48 @@
         android:textColor="@color/grey_1000"
         android:focusable="true" />
 
-    <LinearLayout
-        android:layout_width="350dp"
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
 
         <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:layout_weight="0.5"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/UnitRadio"
+                android:gravity="center"
+                android:layout_weight="0.8" />
+
+            <EditText
+                android:id="@+id/box_multi_unitratio"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="#FFFFFF"
+                android:gravity="center"
+                android:hint="@string/UnitRadio"
+                android:maxLength="4"
+                android:inputType="number"
+                android:layout_weight="0.4"
+                android:focusable="true"
+                />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
             android:layout_height="50dp"
             android:orientation="horizontal"
             android:layout_weight="0.5"
@@ -55,12 +89,12 @@
                 android:inputType="number"
                 android:layout_weight="0.4"
                 android:focusable="true"
-                 />
+                />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
-    </LinearLayout>
 
 
     <Button

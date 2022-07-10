@@ -960,6 +960,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "(PreFactorKowsarCode,PreFactorDate ,PreFactorKowsarDate ,PreFactorTime,PreFactorExplain,CustomerRef,BrokerRef) " +
                 "VALUES(0,'" + Date + "','-----','" + strDate + "','" + Customer + "','" + CustomerRef + "','" + val + "'); ");
     }
+
     @SuppressLint("Range")
     public void InsertPreFactor(String pfcode, String goodcode, String FactorAmount, String price, String BasketFlag) {
         if (Integer.parseInt(BasketFlag) > 0) {

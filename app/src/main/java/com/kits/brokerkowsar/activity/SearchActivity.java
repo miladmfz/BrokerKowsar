@@ -1,5 +1,6 @@
 package com.kits.brokerkowsar.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -163,6 +164,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("SetTextI18n")
     public void init() {
 
 
@@ -179,6 +181,8 @@ public class SearchActivity extends AppCompatActivity {
         grp_adapter = new Grp_Vlist_detail_Adapter(goodGroups, this);
         recyclerView_grp.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false));
         recyclerView_grp.setAdapter(grp_adapter);
+        Log.e("test_goodGroups",goodGroups.size()+"");
+
         if (goodGroups.size() == 0) {
             recyclerView_grp.getLayoutParams().height = 0;
             btn_grp_button.setVisibility(View.GONE);
@@ -289,7 +293,12 @@ public class SearchActivity extends AppCompatActivity {
             dialog.setContentView(R.layout.box_multi_buy);
             Button boxbuy = dialog.findViewById(R.id.box_multi_buy_btn);
             final EditText amount_mlti = dialog.findViewById(R.id.box_multi_buy_amount);
+            final EditText unitratio_mlti = dialog.findViewById(R.id.box_multi_unitratio);
             final TextView tv = dialog.findViewById(R.id.box_multi_buy_factor);
+            Good goodtemp = dbh.getGoodBuyBox(Multi_buy.get(0)[0]);
+            long percent_param= (long) (100 - (100 * Float.parseFloat(goodtemp.getGoodFieldValue("SellPrice")) / Integer.parseInt(goodtemp.getGoodFieldValue("MaxSellPrice"))));
+
+            unitratio_mlti.setText(NumberFunctions.PerisanNumber(percent_param+""));
             tv.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
             dialog.show();
             amount_mlti.requestFocus();
@@ -304,6 +313,8 @@ public class SearchActivity extends AppCompatActivity {
 
                     if (Integer.parseInt(AmountMulti) != 0) {
                         for (String[] singlebuy : Multi_buy) {
+
+                            long Pricetemp=(long) (100 - (100 * Float.parseFloat(goodtemp.getGoodFieldValue("SellPrice")) / Integer.parseInt(goodtemp.getGoodFieldValue("MaxSellPrice"))));
                             dbh.InsertPreFactor(callMethod.ReadString("PreFactorCode"),
                                     singlebuy[0],
                                     AmountMulti,
