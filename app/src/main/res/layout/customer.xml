@@ -79,7 +79,8 @@
                     android:gravity="center"
                     android:text="@string/customer_credite"
                     android:textColor="@color/grey_900"
-                    android:textSize="12sp" />
+                    android:textSize="12sp"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:id="@+id/customer_bes"
@@ -88,7 +89,7 @@
                     android:layoutDirection="rtl"
                     android:text="@string/customer_credite"
                     android:layout_weight="0.25"
-
+                    android:visibility="gone"
                     android:textColor="#000000"
                     android:textSize="16sp"
 

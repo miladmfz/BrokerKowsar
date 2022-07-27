@@ -55,6 +55,12 @@ public interface APIInterface {
             @Field("tag")   String tag
     );
 
+    @POST("index.php")
+    @FormUrlEncoded
+    Call<RetrofitResponse> MaxRepLogCode(
+            @Field("tag")   String tag
+    );
+
 
     @POST("index.php")
     @FormUrlEncoded
@@ -125,6 +131,7 @@ public interface APIInterface {
               @Field("tag")     String tag
             , @Field("code")    String code
             , @Field("table")   String table
+            , @Field("Where")   String Where
             , @Field("reptype") String reptype
             , @Field("Reprow") String Reprow
     );

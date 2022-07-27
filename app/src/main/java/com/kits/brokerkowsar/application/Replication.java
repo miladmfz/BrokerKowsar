@@ -81,7 +81,40 @@ public class Replication {
     public void DoingReplicate() {
         dialog = new Dialog(mContext);
         dialog();
-        RetrofitReplicate(0);
+
+        Call<RetrofitResponse> call1 = apiInterface.MaxRepLogCode("MaxRepLogCode");
+        call1.enqueue(new Callback<RetrofitResponse>() {
+            @Override
+            public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
+                assert response.body() != null;
+                dbh.SaveConfig("MaxRepLogCode",response.body().getText());
+                RetrofitReplicate(0);
+            }
+
+            @Override
+            public void onFailure(Call<RetrofitResponse> call, Throwable t) {
+
+            }
+        });
+
+    }
+    public void DoingReplicateAuto() {
+
+        Call<RetrofitResponse> call1 = apiInterface.MaxRepLogCode("MaxRepLogCode");
+        call1.enqueue(new Callback<RetrofitResponse>() {
+            @Override
+            public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
+                assert response.body() != null;
+                dbh.SaveConfig("MaxRepLogCode",response.body().getText());
+                RetrofitReplicateAuto(0);
+            }
+
+            @Override
+            public void onFailure(Call<RetrofitResponse> call, Throwable t) {
+
+            }
+        });
+
     }
 
     public void dialog() {
@@ -103,13 +136,18 @@ public class Replication {
             FinalStep = 0;
             LastRepCode=String.valueOf(replicatedetail.getLastRepLogCode());
 
+            UserInfo userInfo=dbh.LoadPersonalInfo();
+
+            String where =replicatedetail.getCondition().replace("BrokerCondition",userInfo.getBrokerCode());
+
 
             Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
                     "repinfo",
                     LastRepCode,
                     replicatedetail.getServerTable(),
-                    "1"
-                    ,String.valueOf(RepRowCount)
+                    where,
+                    "1",
+                    String.valueOf(RepRowCount)
             );
             Log.e("test_1",LastRepCode);
             Log.e("test_1",replicatedetail.getServerTable());
@@ -240,8 +278,15 @@ public class Replication {
                             if (arrayobject.length() >= RepRowCount) {
                                 RetrofitReplicate(replicatelevel);
                             } else {
-                                tv_step.setVisibility(View.GONE);
-                                RetrofitReplicate(replicatelevel + 1);
+                                if(Integer.parseInt(LastRepCode)<0){
+
+                                    database.execSQL("Update ReplicationTable Set LastRepLogCode = " + dbh.ReadConfig("MaxRepLogCode") + " Where ServerTable = '" + replicatedetail.getServerTable() + "' ");
+
+                                    RetrofitReplicate(replicatelevel);
+                                }else {
+                                    tv_step.setVisibility(View.GONE);
+                                    RetrofitReplicate(replicatelevel + 1);
+                                }
                             }
                         } catch (JSONException ignored) {
                         }
@@ -259,6 +304,7 @@ public class Replication {
         }
     }
 
+
     public void RetrofitReplicateAuto(Integer replicatelevel) {
         dbh.closedb();
 
@@ -270,13 +316,17 @@ public class Replication {
             FinalStep = 0;
             LastRepCode=String.valueOf(replicatedetail.getLastRepLogCode());
 
+            UserInfo userInfo=dbh.LoadPersonalInfo();
+
+            String where =replicatedetail.getCondition().replace("BrokerCondition",userInfo.getBrokerCode());
 
             Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
                     "repinfo",
                     LastRepCode,
                     replicatedetail.getServerTable(),
-                    "1"
-                    ,"100"
+                    where,
+                    "1",
+                    "100"
             );
 
 
@@ -407,8 +457,14 @@ public class Replication {
                                 if (arrayobject.length() >= RepRowCount) {
                                     RetrofitReplicateAuto(replicatelevel);
                                 } else {
-                                    RetrofitReplicateAuto(replicatelevel + 1);
-                                }
+                                    if(Integer.parseInt(LastRepCode)<0){
+
+                                        database.execSQL("Update ReplicationTable Set LastRepLogCode = " + dbh.ReadConfig("MaxRepLogCode") + " Where ServerTable = '" + replicatedetail.getServerTable() + "' ");
+
+                                        RetrofitReplicateAuto(replicatelevel);
+                                    }else {
+                                        RetrofitReplicateAuto(replicatelevel + 1);
+                                    }                                }
                             } catch (JSONException ignored) {
                             }
 
@@ -436,15 +492,12 @@ public class Replication {
         cursor.moveToFirst();
         LastRepCode = cursor.getString(0);
         cursor.close();
-        Log.e("test_1","");
-        Log.e("test_1",LastRepCode);
-        Log.e("test_1",RepTable);
-        Log.e("test_1","1");
-        Log.e("test_1",String.valueOf(400));
+
         Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
                 "repinfo"
                 , LastRepCode
                 , RepTable
+                ,""
                 , "1"
                 , String.valueOf(400)
         );
@@ -533,16 +586,17 @@ public class Replication {
                             replicateGoodImageChange();
                         } else {
                             tv_step.setVisibility(View.GONE);
-                            try {
-                                if(dbh.GetColumnscount().equals("0")){
-                                    BrokerStack();
-                                    MenuBroker();
-                                    GoodTypeReplication();
-                                }else
-                                    dialog.dismiss();
+                            MenuBroker();
+                            if(dbh.GetColumnscount().equals("0")){
+                                tv_rep.setText(NumberFunctions.PerisanNumber("در حال بروز رسانی تنظیم جدول"));
+                                GoodTypeReplication();
+                            }else{
+                                intent = new Intent(mContext, NavActivity.class);
+                                mContext.startActivity(intent);
+                                ((Activity) mContext).finish();
+                                callMethod.showToast( "بروز رسانی انجام شد");
+                            }
 
-                            }catch (Exception ignored){ }
-                            callMethod.showToast( "بروز رسانی انجام شد");
                         }
                     } catch (JSONException ignored) {
                     }
@@ -610,6 +664,7 @@ public class Replication {
                     for (Column column : columns) {
                         dbh.ReplicateGoodtype(column);
                     }
+                    columnReplication(0);
                 }
             }
 
@@ -618,15 +673,8 @@ public class Replication {
                 Log.e("onFailure_t", t.getMessage());
             }
         });
-        final Dialog dialog1;
-        dialog1 = new Dialog(mContext);
-        dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        Objects.requireNonNull(dialog1.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
-        dialog1.setContentView(R.layout.rep_prog);
-        TextView repw = dialog1.findViewById(R.id.rep_prog_text);
-        repw.setText("در حال خواندن اطلاعات");
-        dialog1.show();
-        columnReplication(0);
+
+
 
     }
 
@@ -658,6 +706,7 @@ public class Replication {
                 }
             });
         } else {
+
             intent = new Intent(mContext, NavActivity.class);
             mContext.startActivity(intent);
             ((Activity) mContext).finish();

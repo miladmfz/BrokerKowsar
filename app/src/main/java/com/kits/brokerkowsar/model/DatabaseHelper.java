@@ -88,6 +88,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'BrokerStack', '0' Where Not Exists(Select * From Config Where KeyValue = 'BrokerStack')");
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'MenuBroker', '0' Where Not Exists(Select * From Config Where KeyValue = 'MenuBroker')");
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'KsrImage_LastRepCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'KsrImage_LastRepCode')");
+        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'MaxRepLogCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'MaxRepLogCode')");
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'VersionInfo', '" + BuildConfig.VERSION_NAME + "' Where Not Exists(Select * From Config Where KeyValue = 'VersionInfo')");
 
     }
@@ -815,6 +816,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return gooddetail;
     }
     @SuppressLint("Range")
+    public Good getGooddata(String code) {
+        GetPreference();
+
+        query = " SELECT * FROM Good g WHERE GoodCode = "+code;
+
+
+        Log.e("test",query);
+        gooddetail = new Good();
+        cursor = getWritableDatabase().rawQuery(query, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            try{
+                gooddetail.setGoodFieldValue("GoodCode",cursor.getString(cursor.getColumnIndex("GoodCode")));
+                gooddetail.setGoodFieldValue("GoodMainCode",cursor.getString(cursor.getColumnIndex("GoodMainCode")));
+                gooddetail.setGoodFieldValue("GoodName",cursor.getString(cursor.getColumnIndex("GoodName")));
+                gooddetail.setGoodFieldValue("GoodType",cursor.getString(cursor.getColumnIndex("GoodType")));
+                gooddetail.setGoodFieldValue("GoodExplain1",cursor.getString(cursor.getColumnIndex("GoodExplain1")));
+                gooddetail.setGoodFieldValue("GoodExplain2",cursor.getString(cursor.getColumnIndex("GoodExplain2")));
+                gooddetail.setGoodFieldValue("GoodExplain3",cursor.getString(cursor.getColumnIndex("GoodExplain3")));
+                gooddetail.setGoodFieldValue("GoodExplain4",cursor.getString(cursor.getColumnIndex("GoodExplain4")));
+                gooddetail.setGoodFieldValue("GoodExplain5",cursor.getString(cursor.getColumnIndex("GoodExplain5")));
+                gooddetail.setGoodFieldValue("GoodExplain6",cursor.getString(cursor.getColumnIndex("GoodExplain6")));
+                gooddetail.setGoodFieldValue("SellPriceType",cursor.getString(cursor.getColumnIndex("SellPriceType")));
+                gooddetail.setGoodFieldValue("MaxSellPrice",cursor.getString(cursor.getColumnIndex("MaxSellPrice")));
+                gooddetail.setGoodFieldValue("MinSellPrice",cursor.getString(cursor.getColumnIndex("MinSellPrice")));
+                gooddetail.setGoodFieldValue("SellPrice1",cursor.getString(cursor.getColumnIndex("SellPrice1")));
+                gooddetail.setGoodFieldValue("SellPrice2",cursor.getString(cursor.getColumnIndex("SellPrice2")));
+                gooddetail.setGoodFieldValue("SellPrice3",cursor.getString(cursor.getColumnIndex("SellPrice3")));
+                gooddetail.setGoodFieldValue("SellPrice4",cursor.getString(cursor.getColumnIndex("SellPrice4")));
+                gooddetail.setGoodFieldValue("SellPrice5",cursor.getString(cursor.getColumnIndex("SellPrice5")));
+                gooddetail.setGoodFieldValue("SellPrice6",cursor.getString(cursor.getColumnIndex("SellPrice6")));
+                gooddetail.setGoodFieldValue("FirstBarCode",cursor.getString(cursor.getColumnIndex("FirstBarCode")));
+                gooddetail.setGoodFieldValue("GoodUnitRef",cursor.getString(cursor.getColumnIndex("GoodUnitRef")));
+                gooddetail.setGoodFieldValue("DefaultUnitValue",cursor.getString(cursor.getColumnIndex("DefaultUnitValue")));
+                gooddetail.setGoodFieldValue("ISBN",cursor.getString(cursor.getColumnIndex("ISBN")));
+                }catch (Exception ignored) {}
+        }
+        cursor.close();
+        Log.e("test",gooddetail.getGoodFieldValue("SellPrice"));
+        return gooddetail;
+    }
+    @SuppressLint("Range")
     public ArrayList<Good> getAllGood_ByDate(String xDayAgo) {
         GetPreference();
         columns = GetColumns("", "", "1");
@@ -1006,6 +1049,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor.close();
         }
     }
+
+
+
+
+    @SuppressLint("Range")
+    public void InsertPreFactorwithPercent(String pfcode, String goodcode, String FactorAmount, String price, String BasketFlag) {
+        if (Integer.parseInt(BasketFlag) > 0) {
+            if (Float.parseFloat(price) >= 0) {
+                query = "Update PreFactorRow set FactorAmount = " + FactorAmount + ", Price = " + price + " Where PreFactorRowCode=" + BasketFlag;
+            } else {
+                query = "Update PreFactorRow set FactorAmount = " + FactorAmount + " Where PreFactorRowCode=" + BasketFlag;
+            }
+            getWritableDatabase().execSQL(query);
+        } else {
+            query = " Select * From PreFactorRow Where IfNull(PreFactorRef,0)=" + pfcode + " And GoodRef =" + goodcode;
+            if (Float.parseFloat(price) >= 0) {
+                query = query + " And Price =" + price;
+            }
+            cursor = getWritableDatabase().rawQuery(query, null);
+
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                getWritableDatabase().execSQL("Update PreFactorRow set FactorAmount = FactorAmount +" + FactorAmount + " Where PreFactorRowCode=" + cursor.getString(cursor.getColumnIndex("PreFactorRowCode")) + ";");
+            } else {
+                query="INSERT INTO PreFactorRow(PreFactorRef, GoodRef, FactorAmount, Price) "
+                        + "select PreFactorCode ,GoodCode," + FactorAmount + "," +price
+                        +" From PreFactor "
+                        +" Join Good g on GoodCode="+ goodcode
+                        +" Where PreFactorCode="+pfcode+" Limit 1 ";
+
+
+                Log.e("test_",query);
+                getWritableDatabase().execSQL(query);
+            }
+            cursor.close();
+        }
+    }
+
+
+
+
     @SuppressLint("Range")
     public ArrayList<PreFactor> getAllPrefactorHeader(String Search_target) {
         String name=GetRegionText(Search_target);
@@ -1251,6 +1335,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         result = cursor.getString(cursor.getColumnIndex("result"));
         cursor.close();
         return result;
+    }
+    @SuppressLint("Range")
+    public String getPricetipCustomer(String pfcode) {
+     int resultint = 0;
+        query = "SELECT PriceTip  FROM PreFactor h " +
+                " Join Customer c  on c.CustomerCode = h.CustomerRef " +
+                " join Central n on c.CentralRef=n.CentralCode " +
+                " Where IfNull(PreFactorCode,0)= " + pfcode;
+
+        cursor = getWritableDatabase().rawQuery(query, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            resultint = cursor.getInt(cursor.getColumnIndex("PriceTip"));
+            cursor.close();
+        } else {
+            result = "فاکتوری انتخاب نشده";
+        }
+        return String.valueOf(resultint);
     }
     @SuppressLint("Range")
     public String getFactorCustomer(String pfcode) {

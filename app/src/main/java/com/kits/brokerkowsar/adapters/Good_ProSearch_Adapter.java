@@ -178,21 +178,22 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
 
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
                         SearchActivity activity = (SearchActivity) mContext;
-                        activity.good_select_function(goods.get(position).getGoodFieldValue("GoodCode"), goods.get(position).getGoodFieldValue("MaxSellPrice"), "1");
+
+                        activity.good_select_function(goods.get(position));
                     }
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
                         Search_date_detailActivity activity = (Search_date_detailActivity) mContext;
-                        activity.good_select_function(goods.get(position).getGoodFieldValue("GoodCode"), goods.get(position).getGoodFieldValue("MaxSellPrice"), "1");
+                        activity.good_select_function(goods.get(position));
                     }
 
                 } else {
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
                         SearchActivity activity = (SearchActivity) mContext;
-                        activity.good_select_function(goods.get(position).getGoodFieldValue("GoodCode"), goods.get(position).getGoodFieldValue("MaxSellPrice"), "0");
+                        activity.good_select_function(goods.get(position));
                     }
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
                         Search_date_detailActivity activity = (Search_date_detailActivity) mContext;
-                        activity.good_select_function(goods.get(position).getGoodFieldValue("GoodCode"), goods.get(position).getGoodFieldValue("MaxSellPrice"), "0");
+                        activity.good_select_function(goods.get(position));
                     }
 
 
@@ -220,21 +221,21 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
                 if (goods.get(position).isCheck()) {
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
                         SearchActivity activity = (SearchActivity) mContext;
-                        activity.good_select_function(goods.get(position).getGoodFieldValue("GoodCode"), goods.get(position).getGoodFieldValue("MaxSellPrice"), "1");
+                        activity.good_select_function(goods.get(position));
                     }
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
                         Search_date_detailActivity activity = (Search_date_detailActivity) mContext;
-                        activity.good_select_function(goods.get(position).getGoodFieldValue("GoodCode"), goods.get(position).getGoodFieldValue("MaxSellPrice"), "1");
+                        activity.good_select_function(goods.get(position));
                     }
 
                 } else {
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
                         SearchActivity activity = (SearchActivity) mContext;
-                        activity.good_select_function(goods.get(position).getGoodFieldValue("GoodCode"), goods.get(position).getGoodFieldValue("MaxSellPrice"), "0");
+                        activity.good_select_function(goods.get(position));
                     }
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
                         Search_date_detailActivity activity = (Search_date_detailActivity) mContext;
-                        activity.good_select_function(goods.get(position).getGoodFieldValue("GoodCode"), goods.get(position).getGoodFieldValue("MaxSellPrice"), "0");
+                        activity.good_select_function(goods.get(position));
                     }
 
 

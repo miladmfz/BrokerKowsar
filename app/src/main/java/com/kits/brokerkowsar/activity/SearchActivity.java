@@ -59,7 +59,7 @@ public class SearchActivity extends AppCompatActivity {
     Intent intent;
     DatabaseHelper dbh;
     Handler handler;
-    ArrayList<String[]> Multi_buy = new ArrayList<>();
+    ArrayList<Good> Multi_Good = new ArrayList<>();
     DecimalFormat decimalFormat = new DecimalFormat("0,000");
     FloatingActionButton fab;
     Good_ProSearch_Adapter adapter;
@@ -81,7 +81,7 @@ public class SearchActivity extends AppCompatActivity {
     Toolbar toolbar;
     RecyclerView recyclerView_grp;
     Grp_Vlist_detail_Adapter grp_adapter;
-
+    boolean defultenablesellprice;
 
 
     @Override
@@ -214,7 +214,6 @@ public class SearchActivity extends AppCompatActivity {
         try {
             goods = dbh.getAllGood(scan, id);
         }catch (Exception e ){
-            callMethod.showToast(  "تنظیم۱۲۳ جدول مشکل دارد");
             dialog1.dismiss();
             finish();
         }
@@ -295,10 +294,31 @@ public class SearchActivity extends AppCompatActivity {
             final EditText amount_mlti = dialog.findViewById(R.id.box_multi_buy_amount);
             final EditText unitratio_mlti = dialog.findViewById(R.id.box_multi_unitratio);
             final TextView tv = dialog.findViewById(R.id.box_multi_buy_factor);
-            Good goodtemp = dbh.getGoodBuyBox(Multi_buy.get(0)[0]);
-            long percent_param= (long) (100 - (100 * Float.parseFloat(goodtemp.getGoodFieldValue("SellPrice")) / Integer.parseInt(goodtemp.getGoodFieldValue("MaxSellPrice"))));
 
-            unitratio_mlti.setText(NumberFunctions.PerisanNumber(percent_param+""));
+
+
+            String tempvalue="";
+            defultenablesellprice=false;
+
+            for (Good good : Multi_Good) {
+                Good goodtempdata= dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
+
+                if (Multi_Good.get(0).equals(good)){
+                    tempvalue = goodtempdata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
+                }
+
+                if(!tempvalue.equals(goodtempdata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))))){
+                    defultenablesellprice=true;
+                }
+
+            }
+
+            if (defultenablesellprice){
+                unitratio_mlti.setHint(NumberFunctions.PerisanNumber("بر اساس نرخ فروش"));
+            }else {
+                unitratio_mlti.setText(NumberFunctions.PerisanNumber( String.valueOf(100-Integer.parseInt(tempvalue.substring(0,tempvalue.length()-2)))));
+            }
+
             tv.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
             dialog.show();
             amount_mlti.requestFocus();
@@ -312,14 +332,41 @@ public class SearchActivity extends AppCompatActivity {
                 if (!AmountMulti.equals("")) {
 
                     if (Integer.parseInt(AmountMulti) != 0) {
-                        for (String[] singlebuy : Multi_buy) {
 
-                            long Pricetemp=(long) (100 - (100 * Float.parseFloat(goodtemp.getGoodFieldValue("SellPrice")) / Integer.parseInt(goodtemp.getGoodFieldValue("MaxSellPrice"))));
-                            dbh.InsertPreFactor(callMethod.ReadString("PreFactorCode"),
-                                    singlebuy[0],
-                                    AmountMulti,
-                                    "0",
-                                    "0");
+                        for (Good good : Multi_Good) {
+
+
+                            Good gooddata= dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
+                            String temppercent = gooddata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
+
+
+                            Log.e("test_1",unitratio_mlti.getText().toString());
+
+                            if(unitratio_mlti.getText().toString().equals("")){
+                                temppercent=String.valueOf(100-Integer.parseInt(temppercent.substring(0,temppercent.length()-2)));
+                            }else{
+                                temppercent=NumberFunctions.EnglishNumber(unitratio_mlti.getText().toString());
+                            }
+
+
+                            if (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"))>0){
+                                long Pricetemp=(long) Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"))-((long) Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) *Integer.parseInt(temppercent)/100);
+                                dbh.InsertPreFactorwithPercent(callMethod.ReadString("PreFactorCode"),
+                                        good.getGoodFieldValue("GoodCode"),
+                                        AmountMulti,
+                                        String.valueOf(Pricetemp),
+                                        "0");
+
+                            }else{
+                                dbh.InsertPreFactor(callMethod.ReadString("PreFactorCode"),
+                                        good.getGoodFieldValue("GoodCode"),
+                                        AmountMulti,
+                                        "0",
+                                        "0");
+                            }
+
+
+
                         }
                         callMethod.showToast( "به سبد خرید اضافه شد");
 
@@ -328,7 +375,7 @@ public class SearchActivity extends AppCompatActivity {
                         for (Good good : goods) {
                             good.setCheck(false);
                         }
-                        Multi_buy.clear();
+                        Multi_Good.clear();
                         adapter = new Good_ProSearch_Adapter(goods,this);
                         adapter.multi_select = false;
                         gridLayoutManager = new GridLayoutManager(this, grid);
@@ -337,6 +384,7 @@ public class SearchActivity extends AppCompatActivity {
                         recyclerView_good.setAdapter(adapter);
                         recyclerView_good.setItemAnimator(new DefaultItemAnimator());
                         fab.setVisibility(View.GONE);
+
                     } else {
                         callMethod.showToast("تعداد مورد نظر صحیح نمی باشد.");
                     }
@@ -392,7 +440,7 @@ public class SearchActivity extends AppCompatActivity {
             for (Good good : goods) {
                 good.setCheck(false);
             }
-            Multi_buy.clear();
+            Multi_Good.clear();
             adapter.multi_select = false;
 
             adapter = new Good_ProSearch_Adapter(goods,this);
@@ -424,26 +472,19 @@ public class SearchActivity extends AppCompatActivity {
     }
 
 
-    public void good_select_function(String code_fun, String price_fun, String flag) {
+    public void good_select_function(Good good) {
 
-        if (flag.equals("1")) {
+        if (!Multi_Good.contains(good)) {
+            Multi_Good.add(good);
+
             fab.setVisibility(View.VISIBLE);
-            Multi_buy.add(new String[]{code_fun, price_fun});
-
             item_multi.findItem(R.id.menu_multi).setVisible(true);
-
         } else {
-            int objectrow = 0, conter = 0;
-            for (String[] singlebuy : Multi_buy) {
-                if (singlebuy[0].equals(code_fun))
-                    objectrow = conter;
-                conter++;
-            }
-            Multi_buy.remove(objectrow);
-            if (Multi_buy.size() < 1) {
+            Multi_Good.remove(good);
+
+            if (Multi_Good.size() < 1) {
                 fab.setVisibility(View.GONE);
                 adapter.multi_select = false;
-
                 item_multi.findItem(R.id.menu_multi).setVisible(false);
             }
         }

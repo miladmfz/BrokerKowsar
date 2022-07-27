@@ -3,6 +3,8 @@ package com.kits.brokerkowsar.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -24,7 +26,6 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -53,6 +54,7 @@ import com.kits.brokerkowsar.model.GoodGroup;
 import com.kits.brokerkowsar.model.Location;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.RetrofitResponse;
+import com.kits.brokerkowsar.model.UserInfo;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
@@ -87,6 +89,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     NavigationView navigationView;
     TextView tv_versionname;
     TextView tv_dbname;
+    TextView tv_brokercode;
     Button btn_changedb;
     TextView customer;
     TextView sumfac;
@@ -183,6 +186,8 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         View hView = navigationView.getHeaderView(0);
         tv_versionname = hView.findViewById(R.id.header_versionname);
         tv_dbname = hView.findViewById(R.id.header_dbname);
+        tv_brokercode = hView.findViewById(R.id.header_brokercode);
+        btn_changedb = hView.findViewById(R.id.header_changedb);
         btn_changedb = hView.findViewById(R.id.header_changedb);
 
         customer= findViewById(R.id.MainActivity_customer);
@@ -211,10 +216,49 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
     }
 
+    @SuppressLint("SetTextI18n")
+    public void CheckConfig() {
+        UserInfo auser = dbh.LoadPersonalInfo();
+
+        if (Integer.parseInt(auser.getBrokerCode())!=0) {
+            tv_brokercode.setText(" کد بازاریاب : " + NumberFunctions.PerisanNumber(auser.getBrokerCode()));
+            if (dbh.ReadConfig("BrokerStack").equals("0")) {
+                new AlertDialog.Builder(this)
+                        .setTitle("انباری تعریف نشده")
+                        .setMessage("آیا مایل به تغییر کد بازاریاب می باشید ؟")
+                        .setPositiveButton("بله", (dialogInterface, i) -> {
+                            intent = new Intent(this, ConfigActivity.class);
+                            callMethod.showToast("کد بازاریاب را وارد کنید");
+                            startActivity(intent);
+                        })
+                        .setNegativeButton("خیر", (dialogInterface, i) -> {
+                        })
+                        .show();
+            }
+        }else {
+
+            tv_brokercode.setText("کد بازاریاب ندارد");
+            new AlertDialog.Builder(this)
+                    .setTitle("عدم وجود کد بازاریاب")
+                    .setMessage("آیا مایل به تعریف کد بازاریاب می باشید ؟")
+                    .setPositiveButton("بله", (dialogInterface, i) -> {
+                        intent = new Intent(this, ConfigActivity.class);
+                        callMethod.showToast( "کد بازاریاب را وارد کنید");
+                        startActivity(intent);
+                    })
+                    .setNegativeButton("خیر", (dialogInterface, i) -> {
+                        callMethod.showToast("برای ادامه کار به کد بازاریاب نیازمندیم");
+                    })
+                    .show();
+        }
+
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @SuppressLint({"SetTextI18n", "MissingPermission"})
     public void init() {
         noti();
+        CheckConfig();
 
         if(callMethod.ReadBoolan("AutoReplication")) {
 
@@ -225,9 +269,6 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             workManager = WorkManager.getInstance(NavActivity.this);
             workManager.enqueue(req);
         }
-
-
-
 
 
         tv_versionname.setText(BuildConfig.VERSION_NAME);
@@ -264,7 +305,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         if (callMethod.ReadString("PersianCompanyNameUse").equals("اصلی")) {
             btn_test.setVisibility(View.VISIBLE);
             tv_test.setVisibility(View.VISIBLE);
-            dbh.SaveConfig("BrokerStack","1");
+            //dbh.SaveConfig("BrokerStack","1");
         }
 
 
@@ -414,7 +455,10 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
     private void noti() {  }
 
-
-
+    @Override
+    protected void onStop() {
+        workManager.cancelAllWork();
+        super.onStop();
+    }
 }
 

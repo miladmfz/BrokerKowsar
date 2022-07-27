@@ -294,27 +294,27 @@ public class Good implements Serializable {
                 break;
             case "sellprice1":
                 if (SellPrice1 == null) Res = "";
-                else Res = SellPrice1.toString();
+                else Res = String.valueOf(SellPrice1);
                 break;
             case "sellprice2":
                 if (SellPrice2 == null) Res = "";
-                else Res = SellPrice2.toString();
+                else Res = String.valueOf(SellPrice2);
                 break;
             case "sellprice3":
                 if (SellPrice3 == null) Res = "";
-                else Res = SellPrice3.toString();
+                else Res = String.valueOf(SellPrice3);
                 break;
             case "sellprice4":
                 if (SellPrice4 == null) Res = "";
-                else Res = SellPrice4.toString();
+                else Res = String.valueOf(SellPrice4);
                 break;
             case "sellprice5":
                 if (SellPrice5 == null) Res = "";
-                else Res = SellPrice5.toString();
+                else Res = String.valueOf(SellPrice5);
                 break;
             case "sellprice6":
                 if (SellPrice6 == null) Res = "";
-                else Res = SellPrice6.toString();
+                else Res = String.valueOf(SellPrice6);
                 break;
             case "firstbarcode":
                 if (FirstBarCode == null) Res = "";

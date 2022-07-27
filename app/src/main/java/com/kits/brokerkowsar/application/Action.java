@@ -14,6 +14,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -22,6 +23,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.Request;
@@ -30,6 +33,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.adapters.Good_ProSearch_Adapter;
 import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.activity.BuyActivity;
 import com.kits.brokerkowsar.activity.CustomerActivity;
@@ -410,6 +414,7 @@ public class Action {
     }
 
 
+
     public void sendfactor(String factor_code) {
         RequestQueue queue = Volley.newRequestQueue(mContext);
         StringRequest stringrequste = new StringRequest(Request.Method.POST, url, response -> {
@@ -630,9 +635,6 @@ public class Action {
         });
 
     }
-
-
-
 
     public String CursorToJson(Cursor cursor) {
         JSONArray resultSet = new JSONArray();

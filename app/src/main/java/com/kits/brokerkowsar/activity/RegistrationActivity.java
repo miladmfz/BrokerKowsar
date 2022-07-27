@@ -16,6 +16,7 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.Replication;
@@ -36,6 +37,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     DatabaseHelper dbh;
     CallMethod callMethod;
+    Action action;
     Replication replication;
     SwitchMaterial sm_regselloff;
     SwitchMaterial sm_arabictext;
@@ -79,6 +81,7 @@ public class RegistrationActivity extends AppCompatActivity {
         callMethod = new CallMethod(this);
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
         replication = new Replication(this);
+        action = new Action(this);
 
         btn_register = findViewById(R.id.registr_btn);
         btn_totaldelete = findViewById(R.id.registr_totaldelete);
@@ -208,14 +211,14 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
         btn_register.setOnClickListener(view -> {
-            Registration();
             callMethod.EditString("Grid", NumberFunctions.EnglishNumber(ed_reg_grid.getText().toString()));
             callMethod.EditString("Delay", NumberFunctions.EnglishNumber(ed_reg_delay.getText().toString()));
             callMethod.EditString("ItemAmount", NumberFunctions.EnglishNumber(ed_reg_itemamount.getText().toString()));
             callMethod.EditString("TitleSize", NumberFunctions.EnglishNumber(ed_reg_titlesize.getText().toString()));
             callMethod.EditString("BodySize", NumberFunctions.EnglishNumber(ed_reg_bodysize.getText().toString()));
             callMethod.EditString("PhoneNumber", NumberFunctions.EnglishNumber(ed_reg_phonenumber.getText().toString()));
-            finish();
+            Registration();
+
         });
 
 
@@ -223,10 +226,27 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
     public void Registration() {
-        UserInfo auser = new UserInfo();
-        auser.setBrokerCode(NumberFunctions.EnglishNumber(ed_reg_borker.getText().toString()));
 
-        dbh.SavePersonalInfo(auser);
+
+        if (!auser.getBrokerCode().equals(ed_reg_borker.getText().toString())) {
+            UserInfo UserInfoNew = new UserInfo();
+            UserInfoNew.setBrokerCode(NumberFunctions.EnglishNumber(ed_reg_borker.getText().toString()));
+            dbh.SavePersonalInfo(UserInfoNew);
+
+
+            //dbh.ExecQuery("Update ReplicationTable Set LastRepLogCode = -1 Where ServerTable = 'Good' ");
+            dbh.ExecQuery("delete from customer ");
+            dbh.ExecQuery("Update ReplicationTable Set LastRepLogCode = -1 Where ServerTable = 'Customer' ");
+
+
+
+            replication.BrokerStack();
+            action.app_info();
+            replication.DoingReplicate();
+
+        }else {
+            finish();
+        }
     }
 
     void deleteRecursive(File fileOrDirectory) {

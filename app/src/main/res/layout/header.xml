@@ -8,29 +8,6 @@
     android:background="@drawable/nav_header"
     android:layoutDirection="rtl">
 
-    <TextView
-        android:id="@+id/header_versionname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_above="@+id/header_dbname"
-        android:textColor="@color/colorPrimaryDark"
-        android:textSize="10sp"
-        android:textStyle="bold"
-        tools:ignore="SmallSp" />
-
-
-    <TextView
-        android:id="@+id/header_dbname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:textColor="@color/colorPrimaryDark"
-        android:textStyle="bold"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="2dp"
-        android:textSize="20sp" />
-
     <Button
         android:id="@+id/header_changedb"
         style="?attr/materialButtonOutlinedStyle"
@@ -44,6 +21,40 @@
         app:iconTint="@color/white"
         app:strokeColor="@color/grey_1000"
         app:strokeWidth="1dp" />
+
+    <TextView
+        android:id="@+id/header_versionname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/header_dbname"
+        android:layout_marginStart="20sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="10sp"
+        android:textStyle="bold"
+
+        />
+
+
+    <TextView
+        android:id="@+id/header_dbname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/header_brokercode"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="2dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/header_brokercode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
 
 </RelativeLayout>

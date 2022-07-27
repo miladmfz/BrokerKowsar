@@ -39,7 +39,7 @@ public class WManager extends Worker {
     public void AutomaticReplication() {
 
         replication = new Replication(getApplicationContext());
-        replication.RetrofitReplicateAuto(0);
+        replication.DoingReplicateAuto();
 
     }
 }
