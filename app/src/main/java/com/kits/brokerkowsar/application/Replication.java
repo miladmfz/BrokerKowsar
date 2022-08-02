@@ -59,6 +59,7 @@ public class Replication {
     ArrayList<ReplicationModel> replicationModels=new ArrayList<>();
 
     String url;
+    Integer replicatelevel;
     Cursor cursor;
 
     TextView tv_rep;
@@ -79,6 +80,7 @@ public class Replication {
 
 
     public void DoingReplicate() {
+        Log.e("test","0");
         dialog = new Dialog(mContext);
         dialog();
 
@@ -87,6 +89,9 @@ public class Replication {
             @Override
             public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
                 assert response.body() != null;
+                Log.e("test","1");
+                Log.e("test",response.body().getText());
+
                 dbh.SaveConfig("MaxRepLogCode",response.body().getText());
                 RetrofitReplicate(0);
             }
@@ -96,6 +101,8 @@ public class Replication {
 
             }
         });
+
+        Log.e("test","0");
 
     }
     public void DoingReplicateAuto() {
@@ -124,13 +131,18 @@ public class Replication {
         dialog.show();
     }
 
-    public void RetrofitReplicate(Integer replicatelevel) {
+    public void RetrofitReplicate(Integer replevel) {
         dbh.closedb();
-        replicationModels = dbh.GetReplicationTable();
+        replicatelevel=replevel;
 
+        replicationModels = dbh.GetReplicationTable();
+        Log.e("test","______");
+        Log.e("test","replicatelevel");
         if (replicatelevel < replicationModels.size()) {
+            Log.e("test","replicatelevel");
+
             ReplicationModel replicatedetail = replicationModels.get(replicatelevel);
-            tv_rep.setText(NumberFunctions.PerisanNumber("10/" + replicatedetail.getReplicationCode() + "در حال بروز رسانی"));
+            tv_rep.setText(NumberFunctions.PerisanNumber(replicationModels.size()+"/" + replicatedetail.getReplicationCode() + "در حال بروز رسانی"));
             tableDetails = dbh.GetTableDetail(replicatedetail.getClientTable());
 
             FinalStep = 0;
@@ -140,6 +152,7 @@ public class Replication {
 
             String where =replicatedetail.getCondition().replace("BrokerCondition",userInfo.getBrokerCode());
 
+            Log.e("test","1");
 
             Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
                     "repinfo",
@@ -295,6 +308,7 @@ public class Replication {
 
                 @Override
                 public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+                    RetrofitReplicate(replicatelevel);
                     Log.e("test_object.length", t.getMessage());
                 }
             });
@@ -305,12 +319,11 @@ public class Replication {
     }
 
 
-    public void RetrofitReplicateAuto(Integer replicatelevel) {
+    public void RetrofitReplicateAuto(Integer replevel) {
         dbh.closedb();
-
         replicationModels = dbh.GetReplicationTable();
-        if (replicatelevel < replicationModels.size()) {
-            ReplicationModel replicatedetail = replicationModels.get(replicatelevel);
+        if (replevel < replicationModels.size()) {
+            ReplicationModel replicatedetail = replicationModels.get(replevel);
             tableDetails = dbh.GetTableDetail(replicatedetail.getClientTable());
 
             FinalStep = 0;
@@ -449,21 +462,22 @@ public class Replication {
 
                                                     d.close();
                                                     break;
+
                                             }
                                         }
                                         database.execSQL("Update ReplicationTable Set LastRepLogCode = " + LastRepCode + " Where ServerTable = '" + replicatedetail.getServerTable() + "' ");
                                         break;
                                 }
                                 if (arrayobject.length() >= RepRowCount) {
-                                    RetrofitReplicateAuto(replicatelevel);
+                                    RetrofitReplicateAuto(replevel);
                                 } else {
                                     if(Integer.parseInt(LastRepCode)<0){
 
                                         database.execSQL("Update ReplicationTable Set LastRepLogCode = " + dbh.ReadConfig("MaxRepLogCode") + " Where ServerTable = '" + replicatedetail.getServerTable() + "' ");
 
-                                        RetrofitReplicateAuto(replicatelevel);
+                                        RetrofitReplicateAuto(replevel);
                                     }else {
-                                        RetrofitReplicateAuto(replicatelevel + 1);
+                                        RetrofitReplicateAuto(replevel + 1);
                                     }                                }
                             } catch (JSONException ignored) {
                             }
@@ -604,7 +618,7 @@ public class Replication {
             }
             @Override
             public void onFailure(@NotNull Call<RetrofitResponse> call, @NotNull Throwable t) {
-
+                replicateGoodImageChange();
             }
         });
     }

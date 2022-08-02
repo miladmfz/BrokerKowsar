@@ -235,7 +235,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
             //dbh.ExecQuery("Update ReplicationTable Set LastRepLogCode = -1 Where ServerTable = 'Good' ");
-            dbh.ExecQuery("delete from customer ");
+            dbh.ExecQuery("delete from customer");
             dbh.ExecQuery("Update ReplicationTable Set LastRepLogCode = -1 Where ServerTable = 'Customer' ");
 
 
