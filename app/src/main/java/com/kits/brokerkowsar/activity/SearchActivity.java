@@ -214,6 +214,7 @@ public class SearchActivity extends AppCompatActivity {
         try {
             goods = dbh.getAllGood(scan, id);
         }catch (Exception e ){
+            Log.e("test",e.getMessage());
             dialog1.dismiss();
             finish();
         }

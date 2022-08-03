@@ -3,6 +3,7 @@ package com.kits.brokerkowsar.application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -105,12 +106,23 @@ public class Search_box {
 
     public void pro_c(String Goodtype) {
 
+        try{
+            Columns = dbh.GetColumns("", Goodtype, "3");
+        }catch (Exception E){
+            Log.e("test",E.getMessage());
 
-        Columns = dbh.GetColumns("", Goodtype, "3");
+        }
+        Log.e("test","0");
+        Log.e("test",Columns.size()+"");
+
         for (Column Column : Columns) {
+            Log.e("test","1");
+
             Column.setSearch("");
+            Log.e("test","2");
 
             if (Integer.parseInt(Column.getColumnFieldValue("SortOrder")) > 1) {
+                Log.e("test","3");
 
                 layout_view.setOrientation(LinearLayoutCompat.VERTICAL);
                 LinearLayoutCompat layout_view_child = new LinearLayoutCompat(mContext);
@@ -133,7 +145,7 @@ public class Search_box {
                 extra_EditText.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT, (float) 0.3));
                 extra_EditText.setTextSize(15);
                 extra_EditText.setId(Integer.parseInt(Column.getColumnFieldValue("sortorder")));
-                extra_EditText.setHint(Column.getColumnFieldValue("ColumnName"));
+                extra_EditText.setHint(Column.getColumnFieldValue("ColumnCode"));
                 extra_EditText.setText(Column.getColumnFieldValue("Condition"));
                 extra_EditText.setHintTextColor(mContext.getColor(R.color.white));
                 extra_EditText.setId(View.generateViewId());
@@ -148,6 +160,7 @@ public class Search_box {
 
             }
         }
+        Log.e("test","4");
 
 
         btn_search = new MaterialButton(mContext);
@@ -167,7 +180,7 @@ public class Search_box {
                         if (LinearLayoutCompat.getChildAt(j) instanceof EditText) {
                             EditText et = (EditText) LinearLayoutCompat.getChildAt(j);
                             for (Column Column : Columns) {
-                                if (et.getHint().toString().equals(Column.getColumnFieldValue("ColumnName"))) {
+                                if (et.getHint().toString().equals(Column.getColumnFieldValue("ColumnCode"))) {
                                     Column.setSearch(NumberFunctions.EnglishNumber(et.getText().toString()));
                                     Column.setCondition(NumberFunctions.EnglishNumber(et.getText().toString()));
                                     dbh.UpdateSearchColumn(Column);
@@ -181,11 +194,19 @@ public class Search_box {
             Where=" And GoodType= '"+Goodtype+"' ";
             for (Column Column : Columns) {
                 if (!Column.getColumnFieldValue("search").equals("")) {
-                    if (!Column.getColumnFieldValue("columndefinition").equals(""))
-                        Where = Where + " And " + Column.getColumnFieldValue("columndefinition") + " Like '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%'  ";
-                    else
-                        Where = Where + " And " + Column.getColumnFieldValue("ColumnName") + " Like '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%' ";
+                    if (!Column.getColumnName().equals("")){
+                        if (!Column.getColumnFieldValue("columndefinition").equals(""))
+                            Where = Where + " And " + Column.getColumnFieldValue("columndefinition") + " Like '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%'  ";
+                        else
+                            Where = Where + " And " + Column.getColumnFieldValue("ColumnName") + " Like '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%' ";
+                    }else{
+                        String search_condition= " '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%' ";
+                        Where = Where + " And " + Column.getColumnFieldValue("columndefinition") ;
+                        Where=Where.replace("SearchCondition",search_condition);
+                    }
                 }
+
+
             }
 
             SearchActivity activity = (SearchActivity) mContext;
@@ -194,7 +215,10 @@ public class Search_box {
             dialog.dismiss();
 
         });
+        Log.e("test","5");
+
         layout_view.addView(btn_search);
+        Log.e("test","6");
 
     }
 

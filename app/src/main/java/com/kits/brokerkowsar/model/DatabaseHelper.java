@@ -33,6 +33,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     int limitcolumn;
     String query = "";
     String result = "";
+    String Search_Condition = "";
     String SH_selloff;
     String SH_grid;
     String SH_delay;
@@ -115,6 +116,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_KsrImage_IsDefaultImage ON KsrImage (IsDefaultImage)");
 
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Customer_PriceTip ON Customer (PriceTip)");
+
+
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_JobRef ON JobPerson (JobRef)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_AddressRef ON JobPerson (AddressRef)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_CentralRef ON JobPerson (CentralRef)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_Good_JobPersonRef ON JobPerson_Good (JobPersonRef)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_Good_GoodRef ON JobPerson_Good (GoodRef)");
 
 
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodName ON Good (GoodName)");
@@ -412,28 +420,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public ArrayList<Good> getAllGood(String search_target, String aGroupCode) {
         String search=GetRegionText(search_target);
-
         GetPreference();
 
         columns = GetColumns("", "", "1");
 
         search = search.replaceAll(" ", "%");
         search = search.replaceAll("'", "%");
+        Search_Condition= " '%" + search + "%' ";
 
         query = " With FilterTable As (Select 0 as SecondField) SELECT ";
 
         k = 0;
 
         for (Column column : columns) {
-            if (k != 0) {
-                query = query + " , ";
+            if(!column.getColumnName().equals("")) {
+                if (k != 0) {
+                    query = query + " , ";
+                }
+                if (!column.getColumnDefinition().equals("")) {
+                    query = query + column.getColumnDefinition() + " as " + column.getColumnName();
+                } else {
+                    query = query + column.getColumnName();
+                }
+                k++;
             }
-            if (!column.getColumnDefinition().equals("")) {
-                query = query + column.getColumnDefinition() + " as " + column.getColumnName();
-            } else {
-                query = query + column.getColumnName();
-            }
-            k++;
         }
 
         query = query + " FROM Good g , FilterTable " ;
@@ -455,6 +465,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
 
             }
+
+            for (Column column : columns) {
+                if (column.getColumnType().equals("")) {
+                    query = query + " or "+ column.getColumnDefinition();
+                }
+            }
+
             query = query + " )";
         }else{
             query = query + "where 1=1 ";
@@ -468,6 +485,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         query=query.replaceAll("stackCondition",st);
+        query=query.replaceAll("SearchCondition",Search_Condition);
 
         if (SH_goodamount) {
             query = query + " And StackAmount > 0 ";
@@ -551,15 +569,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         query = "With FilterTable As (Select 0 as SecondField) SELECT ";
         k = 0;
         for (Column column : columns) {
-            if (k != 0) {
-                query = query + " , ";
+            if (!column.getColumnName().equals("")) {
+                if (k != 0) {
+                    query = query + " , ";
+                }
+                if (!column.getColumnDefinition().equals("")) {
+                    query = query + column.getColumnDefinition() + " as " + column.getColumnName();
+                } else {
+                    query = query + column.getColumnName();
+                }
+                k++;
             }
-            if (!column.getColumnDefinition().equals("")) {
-                query = query + column.getColumnDefinition() + " as " + column.getColumnName();
-            } else {
-                query = query + column.getColumnName();
-            }
-            k++;
         }
 
 

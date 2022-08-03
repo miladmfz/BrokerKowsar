@@ -457,7 +457,9 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
     @Override
     protected void onStop() {
+        if(callMethod.ReadBoolan("AutoReplication")) {
         workManager.cancelAllWork();
+        }
         super.onStop();
     }
 }
