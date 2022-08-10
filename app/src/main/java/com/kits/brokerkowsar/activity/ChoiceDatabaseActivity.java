@@ -19,6 +19,7 @@ import com.downloader.OnDownloadListener;
 import com.downloader.PRDownloader;
 import com.downloader.PRDownloaderConfig;
 import com.google.android.material.button.MaterialButton;
+import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
@@ -45,6 +46,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     DatabaseHelper dbhbase;
     TextView tv_rep;
     TextView tv_step;
+    TextView tv_versionname;
     Dialog dialog;
     ArrayList<Activation> activations;
     LinearLayoutCompat active_line;
@@ -79,6 +81,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         dialog.setContentView(R.layout.rep_prog);
         tv_rep = dialog.findViewById(R.id.rep_prog_text);
         tv_step = dialog.findViewById(R.id.rep_prog_step);
+        tv_versionname = findViewById(R.id.activition_Version);
 
 
     }
@@ -87,6 +90,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     public void init() {
         activations=dbhbase.getActivation();
 
+        tv_versionname.setText(NumberFunctions.PerisanNumber("نسخه نرم افزار : "+BuildConfig.VERSION_NAME));
         for(Activation singleactive:activations){
             CreateView(singleactive);
         }
