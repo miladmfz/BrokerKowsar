@@ -95,6 +95,7 @@ public class CallMethod extends Application {
         @SuppressLint("HardwareIds") String android_id = Settings.Secure.getString(context
                 .getContentResolver(), Settings.Secure.ANDROID_ID);
 
+        Log.e("ErrorLog",ErrorStr);
 
         PersianCalendar calendar1 = new PersianCalendar();
         String version= BuildConfig.VERSION_NAME;

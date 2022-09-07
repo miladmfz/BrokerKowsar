@@ -17,6 +17,7 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,8 +50,8 @@ public class SearchActivity extends AppCompatActivity {
 
 
     private ArrayList<Good> goods = new ArrayList<>();
+    private ArrayList<Good>  Moregoods = new ArrayList<>();
     private Integer grid;
-    public static String scan = "";
     public String id = "";
     public String title = "";
     Dialog dialog1;
@@ -67,7 +68,11 @@ public class SearchActivity extends AppCompatActivity {
     int pastVisiblesItems = 0, visibleItemCount, totalItemCount;
     Menu item_multi;
     CallMethod callMethod;
-    public String proSearchCondition;
+    public String proSearchCondition="";
+    public String AutoSearch="";
+    public String PageMoreData="0";
+    private boolean loading = true;
+
     TextView tv_customer;
     TextView tv_sumfac;
     TextView tv_customer_code;
@@ -80,6 +85,7 @@ public class SearchActivity extends AppCompatActivity {
     Button btn_scan;
     Toolbar toolbar;
     RecyclerView recyclerView_grp;
+    ProgressBar prog;
     Grp_Vlist_detail_Adapter grp_adapter;
     boolean defultenablesellprice;
 
@@ -131,7 +137,7 @@ public class SearchActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.SearchActivity_toolbar);
         recyclerView_grp = findViewById(R.id.SearchActivity_grp_recy);
         btn_scan = findViewById(R.id.SearchActivity_scan);
-
+        prog= findViewById(R.id.SearchActivity_prog);
 
         tv_customer = findViewById(R.id.SearchActivity_customer);
         tv_sumfac = findViewById(R.id.SearchActivity_sum_factor);
@@ -145,7 +151,7 @@ public class SearchActivity extends AppCompatActivity {
     public void intent() {
         Bundle data = getIntent().getExtras();
         assert data != null;
-        scan = data.getString("scan");
+        AutoSearch = data.getString("scan");
         id = data.getString("id");
         title = data.getString("title");
 
@@ -201,9 +207,10 @@ public class SearchActivity extends AppCompatActivity {
                     public void afterTextChanged(final Editable editable) {
                         handler.removeCallbacksAndMessages(null);
                         handler.postDelayed(() -> {
-                            goods.clear();
-                            goods = dbh.getAllGood(NumberFunctions.EnglishNumber(editable.toString()), id);
-                            CallGoodView();
+                            AutoSearch=editable.toString();
+                            PageMoreData="0";
+                            proSearchCondition="";
+                            GetDataFromDataBase();
                         }, Integer.parseInt(callMethod.ReadString("Delay")));
 
                         handler.postDelayed(() -> edtsearch.selectAll(), 5000);
@@ -211,15 +218,7 @@ public class SearchActivity extends AppCompatActivity {
                 });
 
 
-        try {
-            goods = dbh.getAllGood(scan, id);
-        }catch (Exception e ){
-            Log.e("test",e.getMessage());
-            dialog1.dismiss();
-            finish();
-        }
 
-        CallGoodView();
 
         btn_scan.setOnClickListener(view -> {
             intent = new Intent(this, ScanCodeActivity.class);
@@ -268,9 +267,7 @@ public class SearchActivity extends AppCompatActivity {
                 sm_activestack.setText("فعال -غیرفعال");
                 callMethod.EditBoolan("ActiveStack", false);
             }
-            goods.clear();
-            goods = dbh.getAllGood(NumberFunctions.EnglishNumber(edtsearch.getText().toString()), id);
-            CallGoodView();
+            CallRecyclerView();
         });
 
         sm_goodamount.setOnCheckedChangeListener((compoundButton, b) -> {
@@ -281,9 +278,7 @@ public class SearchActivity extends AppCompatActivity {
                 sm_goodamount.setText("هردو");
                 callMethod.EditBoolan("GoodAmount", false);
             }
-            goods.clear();
-            goods = dbh.getAllGood(NumberFunctions.EnglishNumber(edtsearch.getText().toString()), id);
-            CallGoodView();
+            CallRecyclerView();
         });
 
         fab.setOnClickListener(v -> {
@@ -401,13 +396,25 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
+
+
+
                     visibleItemCount = gridLayoutManager.getChildCount();
-                    visibleItemCount = gridLayoutManager.getItemCount();
+                    totalItemCount = gridLayoutManager.getItemCount();
                     pastVisiblesItems = gridLayoutManager.findFirstVisibleItemPosition();
+
+                    if (loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount-1) {
+                            loading = false;
+                            PageMoreData=String.valueOf(Integer.parseInt(PageMoreData) + 1);
+                            prog.setVisibility(View.VISIBLE);
+                            GetMoreDataFromDataBase();
+                        }
+                    }
                 }
             }
         });
-
+        GetDataFromDataBase();
 
     }
 
@@ -417,8 +424,6 @@ public class SearchActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         item_multi = menu;
         getMenuInflater().inflate(R.menu.options_menu, menu);
-
-
         return true;
     }
 
@@ -456,21 +461,58 @@ public class SearchActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    public void GetDataFromDataBase() {
+        Moregoods.clear();
+        if(proSearchCondition.equals("")){
+            Moregoods = dbh.getAllGood(NumberFunctions.EnglishNumber(AutoSearch), id,PageMoreData);
+        }else {
+            Moregoods = dbh.getAllGood_Extended(NumberFunctions.EnglishNumber(proSearchCondition), id,PageMoreData);
+        }
+        goods.addAll(Moregoods);
+        CallRecyclerView();
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    public void GetMoreDataFromDataBase() {
+        loading=true;
+        Moregoods.clear();
 
-    public void proSearchResult() {
-        goods.clear();
-        goods = dbh.getAllGood_Extended(proSearchCondition, id);
-        CallGoodView();
+        if(proSearchCondition.equals("")){
+            Moregoods = dbh.getAllGood(NumberFunctions.EnglishNumber(AutoSearch), id,PageMoreData);
+        }else {
+            Moregoods = dbh.getAllGood_Extended(NumberFunctions.EnglishNumber(proSearchCondition), id,PageMoreData);
+        }
+
+        if(Moregoods.size()>0){
+
+            Log.e("test_11_last",goods.size()+"");
+            goods.addAll(Moregoods);
+            prog.setVisibility(View.GONE);
+            adapter.notifyDataSetChanged();
+            Log.e("test_11_after",goods.size()+"");
+            Log.e("test_11_after",goods.get(goods.size()-1).getGoodFieldValue("Goodname")+"");
+        }else{
+            callMethod.showToast("کالایی بیشتری یافت نشد");
+            PageMoreData=String.valueOf(Integer.parseInt(PageMoreData) -1);
+        }
+
     }
 
-    public void CallGoodView() {
+    @SuppressLint("NotifyDataSetChanged")
+    public void CallRecyclerView() {
         adapter = new Good_ProSearch_Adapter(goods,this);
-        adapter.notifyDataSetChanged();
+        if (adapter.getItemCount()==0){
+            callMethod.showToast("کالایی یافت نشد");
+        }
         gridLayoutManager = new GridLayoutManager(this, grid);
         recyclerView_good.setLayoutManager(gridLayoutManager);
         recyclerView_good.setAdapter(adapter);
         recyclerView_good.setItemAnimator(new DefaultItemAnimator());
+        prog.setVisibility(View.GONE);
+
+
     }
+
+
 
 
     public void good_select_function(Good good) {
@@ -490,7 +532,6 @@ public class SearchActivity extends AppCompatActivity {
             }
         }
     }
-
 
 }
 
