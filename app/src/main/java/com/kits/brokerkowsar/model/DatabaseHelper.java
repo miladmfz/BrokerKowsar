@@ -51,16 +51,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     String st;
     String joinDetail;
     String joinbasket;
+    SQLiteDatabase db;
 
     public DatabaseHelper(Context context, String DATABASE_NAME) {
         super(context, DATABASE_NAME, null, 1);
         this.callMethod = new CallMethod(context);
         this.goods = new ArrayList<>();
+        this.db = getReadableDatabase();
 
     }
 
 
     public void GetLastDataFromOldDataBase(String tempDbPath) {
+
 
         getWritableDatabase().execSQL("ATTACH DATABASE '" + tempDbPath + "' AS tempDb");
 
@@ -241,7 +244,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor.moveToFirst();
             String goodtypecount = cursor.getString(cursor.getColumnIndex("count"));
             cursor.close();
-            query = "select Count(*) count from BrokerColumn Where AppType = " + AppType;
+            query = "select Count(*) count from BrokerColumn Where Replace(Replace(AppType,char(1740),char(1610)),char(1705),char(1603)) = Replace(Replace('"+AppType+"',char(1740),char(1610)),char(1705),char(1603))";
 
             cursor = getWritableDatabase().rawQuery(query, null);
             cursor.moveToFirst();
@@ -306,6 +309,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //                " gs on gs.GoodRef = g.GoodCode ";
 
 
+        Log.e("test_111","1");
 
     }
 
@@ -326,7 +330,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         switch (AppType) {
             case "0"://        0-detail
 
-                query = "Select * from BrokerColumn where GoodType = '"+GetRegionText(GetGoodTypeFromGood(code))+"' And AppType = 0";
+                query = "Select * from BrokerColumn where Replace(Replace(GoodType,char(1740),char(1610)),char(1705),char(1603)) = '"+GetRegionText(GetGoodTypeFromGood(code))+"' And AppType = 0";
 
                 break;
             case "1"://        1-list
@@ -336,7 +340,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 break;
             case "3"://        3-search
 
-                query = "Select * from BrokerColumn where GoodType = '"+GetRegionText(goodtype)+"' And AppType = 3";
+                query = "Select * from BrokerColumn where Replace(Replace(GoodType,char(1740),char(1610)),char(1705),char(1603)) = '"+GetRegionText(goodtype)+"' And AppType = 3";
 
                 break;
         }
@@ -377,16 +381,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return String.valueOf(result);
     }
 
+
     @SuppressLint("Range")
     public String GetRegionText(String String) {
-        GetPreference();
-        if(SH_ArabicText) {
-            //arabic
-            query = "Select Replace(Replace(Cast('" + String + "' as nvarchar(500)),char(1740),char(1610)),char(1705),char(1603)) result  ";
-        }else{
-            //Persian
-            query = "Select Replace(Replace(Cast('" + String + "' as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705)) result  " ;
-        }
+
+        query = "Select Replace(Replace(Cast('" + String + "' as nvarchar(500)),char(1740),char(1610)),char(1705),char(1603)) result  ";
+
+//        if(SH_ArabicText) {
+//            //arabic
+//            query = "Select Replace(Replace(Cast('" + String + "' as nvarchar(500)),char(1740),char(1610)),char(1705),char(1603)) result  ";
+//        }else{
+//            //Persian
+//            query = "Select Replace(Replace(Cast('" + String + "' as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705)) result  " ;
+//        }
 
         cursor = getWritableDatabase().rawQuery(query, null);
         cursor.moveToFirst();
@@ -421,13 +428,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @SuppressLint({"Recycle", "Range"})
 
     public ArrayList<Good> getAllGood(String search_target, String aGroupCode) {
-        String search=GetRegionText(search_target);
+
         GetPreference();
 
         columns = GetColumns("", "", "1");
+        String search=GetRegionText(search_target);
 
-        search = search.replaceAll(" ", "%");
-        search = search.replaceAll("'", "%");
+        search = search.replaceAll(" ", "%").replaceAll("'", "%");
+
         Search_Condition= " '%" + search + "%' ";
 
         query = " With FilterTable As (Select 0 as SecondField) SELECT ";
@@ -461,7 +469,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         } else {
                             query = query + " or ";
                         }
-                        query = query + column.getColumnName() + " Like '%" + search + "%' ";
+                        query = query + "Replace(Replace("+column.getColumnName()+",char(1740),char(1610)),char(1705),char(1603)) Like '%" + search + "%' ";
                         k++;
                     }
                 }
@@ -520,11 +528,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         }
         query = query + " LIMIT " + SH_itemamount + " ";
+        //query = query + " LIMIT 5 ";
+//        query ="With FilterTable As (Select 0 as SecondField) " +
+//                "SELECT " +
+//                "Case When Exists(Select 1 From goodstack Where StackRef in (10100) and GoodRef=GoodCode) Then 1 Else 0 End as ActiveStack , " +
+//                "Case When SecondField=1 Then g.Date2 Else g.Date2 End as Date , " +
+//                "(Select ki.KsrImageCode From KsrImage ki Where ki.ObjectRef=g.GoodCode Order By ki.IsDefaultImage DESC, ki.KsrImageCode LIMIT 1) as ksrImageCode , " +
+//                "GoodCode , GoodName , GoodExplain1 , " +
+//                "(select Sum(Amount-ReservedAmount) from goodstack Where StackRef in (10100) and GoodRef=GoodCode) as StackAmount , " +
+//                "MaxSellPrice " +
+//                "FROM Good g , FilterTable " +
+//                "where 1=1  " +
+//                "And Exists(Select 1 From GoodStack Where StackRef in (10100) And GoodRef=GoodCode ) " +
+//                "order by g.Date2 DESC , GoodCode DESC  " + // todo
+//                "LIMIT 5";
 
-        cursor = getWritableDatabase().rawQuery(query, null);
+        cursor = db.rawQuery(query, null);
 
-        Log.e("test_",query);
+        Log.e("test_111",query);
         if (cursor != null) {
+            Log.e("test_111","0");
+            Log.e("test_111_cursor",cursor.getCount()+"");
+            Log.e("test_111","1");
+
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
                 for (Column column : columns) {
@@ -556,8 +582,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 goods.add(gooddetail);
             }
         }
+
         assert cursor != null;
         cursor.close();
+
         return goods;
     }
 
@@ -1121,7 +1149,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + " Left Join (SELECT P.PreFactorRef, sum(p.FactorAmount) as SumAmount , sum(p.FactorAmount * p.Price*g.DefaultUnitValue) as SumPrice, count(*) as RowCount "
                 + " From Good g Join Units on UnitCode = GoodUnitRef  Join PreFactorRow p on GoodRef = GoodCode  Where IfNull(PreFactorRef, 0)>0 "
                 + " Group BY PreFactorRef ) s on h.PreFactorCode = s.PreFactorRef "
-                + " Where n.Title || ' ' || n.FName|| ' ' || n.Name Like '%" + name + "%'"
+                + " Where Replace(Replace(n.Title || ' ' || n.FName|| ' ' || n.Name,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%'"
                 + " Order By h.PreFactorCode DESC";
 
         ArrayList<PreFactor> prefactor_header = new ArrayList<>();
@@ -1215,7 +1243,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         query = query + " FROM Good g  " +
                 "Join PreFactorRow pf on GoodRef = GoodCode " +
                 "Join Units u on u.UnitCode = g.GoodUnitRef  " +
-                "Where (GoodName Like '%" + name + "%' and PreFactorRef = " + aPreFactorCode + ") order by PreFactorRowCode DESC ";
+                "Where (Replace(Replace(GoodName,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%' and PreFactorRef = " + aPreFactorCode + ") order by PreFactorRowCode DESC ";
 
 
 
@@ -1259,9 +1287,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     @SuppressLint("Range")
     public void UpdatePreFactorHeader_Customer(String pfcode, String Search_target) {
-        String Customer=GetRegionText(Search_target);
 
-        query = "Update Prefactor set CustomerRef='" + Customer + "' where PreFactorCode = " + pfcode;
+        query = "Update Prefactor set CustomerRef='" + Search_target + "' where PreFactorCode = " + pfcode;
         getWritableDatabase().execSQL(query);
         query = "Select * From ( Select Case PriceTip " +
                 "When 1 Then  SellPrice1 When 2 Then SellPrice2 When 3 Then SellPrice3  " +
@@ -1419,7 +1446,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "join Central c on u.CentralRef= c.CentralCode " +
                 "Left join Address d on u.AddressRef=d.AddressCode " +
                 "Left join City y on d.CityCode=y.CityCode" +
-                " Where (c.Title || ' ' || c.FName|| ' ' || c.Name Like '%" + name + "%' or CustomerCode Like '%" + name + "%' or  Manager Like '%" + name + "%')";
+                " Where Replace(Replace((c.Title || ' ' || c.FName|| ' ' || c.Name,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%' or " +
+                "CustomerCode Like '%" + name + "%' or  " +
+                " Replace(Replace( Manager,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%')";
         if (aOnlyActive) {
             query = query + " And Active = 0";
         }
