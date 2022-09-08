@@ -211,15 +211,12 @@ public class Search_box {
 
             SearchActivity activity = (SearchActivity) mContext;
             activity.proSearchCondition = Where;
-            activity.proSearchResult();
+            activity.PageMoreData = "0";
+            activity.GetDataFromDataBase();
             dialog.dismiss();
 
         });
-        Log.e("test","5");
-
         layout_view.addView(btn_search);
-        Log.e("test","6");
-
     }
 
 

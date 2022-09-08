@@ -24,7 +24,6 @@
             android:layout_height="match_parent"
             android:textColor="@color/color_black"
             android:textSize="30dp"
-            android:text="sdsd"
             android:gravity="center"/>
 
         <androidx.appcompat.widget.LinearLayoutCompat

@@ -1,5 +1,6 @@
 package com.kits.brokerkowsar.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -40,12 +42,15 @@ import java.util.Objects;
 
 
 public class Search_date_detailActivity extends AppCompatActivity {
+
     CallMethod callMethod;
+    private ArrayList<Good>  Moregoods = new ArrayList<>();
 
     private final Integer conter = 0;
     private Integer grid;
     private String date;
-
+    public String PageMoreData="0";
+    private boolean loading = true;
     private String lastDate;
     ArrayList<String[]> Multi_buy = new ArrayList<>();
     private ArrayList<Good> goods = new ArrayList<>();
@@ -55,11 +60,13 @@ public class Search_date_detailActivity extends AppCompatActivity {
     Good_ProSearch_Adapter adapter;
     GridLayoutManager gridLayoutManager;
     RecyclerView recyclerView;
-    int pastVisiblesItems = 0;
+    int pastVisiblesItems = 0, visibleItemCount, totalItemCount;
     Menu item_multi;
+
     String year;
     String mount;
     String day;
+
     PersianCalendar calendar1;
 
     public static String scan = "";
@@ -162,7 +169,7 @@ public class Search_date_detailActivity extends AppCompatActivity {
 
         grid = Integer.parseInt(callMethod.ReadString("Grid"));
         ed_search.setText(date);
-        CallGoodView();
+        GetDataFromDataBase();
 
 
 
@@ -195,7 +202,7 @@ public class Search_date_detailActivity extends AppCompatActivity {
             }
             day=day+(calendar1.getPersianDay());
             lastDate = year+"/"+mount.substring(mount.length()-2)+"/"+day.substring(day.length()-2);
-            CallGoodView();
+            GetDataFromDataBase();
 
         });
 
@@ -239,7 +246,7 @@ public class Search_date_detailActivity extends AppCompatActivity {
                 callMethod.EditBoolan("GoodAmount", false);
             }
             if (conter == 0) {
-                CallGoodView();
+                CallRecyclerView();
             }
         });
 
@@ -252,8 +259,6 @@ public class Search_date_detailActivity extends AppCompatActivity {
             final EditText amount_mlti = dialog.findViewById(R.id.box_multi_buy_amount);
             final EditText unitratio_mlti = dialog.findViewById(R.id.box_multi_unitratio);
             final TextView tv = dialog.findViewById(R.id.box_multi_buy_factor);
-
-
 
             String tempvalue="";
             defultenablesellprice=false;
@@ -288,25 +293,16 @@ public class Search_date_detailActivity extends AppCompatActivity {
             boxbuy.setOnClickListener(view -> {
                 String AmountMulti = amount_mlti.getText().toString();
                 if (!AmountMulti.equals("")) {
-
                     if (Integer.parseInt(AmountMulti) != 0) {
-
                         for (Good good : Multi_Good) {
-
-
                             Good gooddata= dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
                             String temppercent = gooddata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
-
-
-                            Log.e("test_1",unitratio_mlti.getText().toString());
 
                             if(unitratio_mlti.getText().toString().equals("")){
                                 temppercent=String.valueOf(100-Integer.parseInt(temppercent.substring(0,temppercent.length()-2)));
                             }else{
                                 temppercent=NumberFunctions.EnglishNumber(unitratio_mlti.getText().toString());
                             }
-
-
                             if (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"))>0){
                                 long Pricetemp=(long) Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"))-((long) Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) *Integer.parseInt(temppercent)/100);
                                 dbh.InsertPreFactorwithPercent(callMethod.ReadString("PreFactorCode"),
@@ -322,9 +318,6 @@ public class Search_date_detailActivity extends AppCompatActivity {
                                         "0",
                                         "0");
                             }
-
-
-
                         }
                         callMethod.showToast( "به سبد خرید اضافه شد");
 
@@ -354,15 +347,37 @@ public class Search_date_detailActivity extends AppCompatActivity {
 
         });
 
+
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+
+
+
+                    visibleItemCount = gridLayoutManager.getChildCount();
+                    totalItemCount = gridLayoutManager.getItemCount();
+                    pastVisiblesItems = gridLayoutManager.findFirstVisibleItemPosition();
+
+                    if (loading) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount-3) {
+                            loading = false;
+                            PageMoreData=String.valueOf(Integer.parseInt(PageMoreData) + 1);
+                            GetMoreDataFromDataBase();
+                        }
+                    }
+                }
+            }
+        });
+        GetDataFromDataBase();
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         item_multi = menu;
-
         getMenuInflater().inflate(R.menu.options_menu, menu);
-
         return true;
     }
 
@@ -402,17 +417,47 @@ public class Search_date_detailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void CallGoodView() {
 
-        goods.clear();
-        goods = dbh.getAllGood_ByDate(lastDate);
+    @SuppressLint("NotifyDataSetChanged")
+    public void CallRecyclerView() {
         adapter = new Good_ProSearch_Adapter(goods,this);
+        if (adapter.getItemCount()==0){
+            callMethod.showToast("کالایی یافت نشد");
+        }
         gridLayoutManager = new GridLayoutManager(this, grid);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
+    }
+
+    public void GetDataFromDataBase() {
+        Moregoods.clear();
+        Moregoods=dbh.getAllGood_ByDate(lastDate,PageMoreData);
+        goods.addAll(Moregoods);
+        CallRecyclerView();
+    }
+    @SuppressLint("NotifyDataSetChanged")
+    public void GetMoreDataFromDataBase() {
+        loading=true;
+        Moregoods.clear();
+        Moregoods=dbh.getAllGood_ByDate(lastDate,PageMoreData);
+
+        if(Moregoods.size()>0){
+            goods.addAll(Moregoods);
+            adapter.notifyDataSetChanged();
+        }else{
+            callMethod.showToast("کالایی بیشتری یافت نشد");
+            PageMoreData=String.valueOf(Integer.parseInt(PageMoreData) -1);
+        }
 
     }
+
+
+
+
+
+
+
 
 
     public void good_select_function(Good good) {

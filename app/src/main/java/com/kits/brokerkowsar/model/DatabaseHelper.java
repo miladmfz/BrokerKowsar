@@ -36,6 +36,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     String Search_Condition = "";
     String SH_selloff;
     String SH_grid;
+    String LimitAmount;
     String SH_delay;
     String SH_brokerstack;
     String SH_prefactor_code;
@@ -51,19 +52,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     String st;
     String joinDetail;
     String joinbasket;
-    SQLiteDatabase db;
 
     public DatabaseHelper(Context context, String DATABASE_NAME) {
         super(context, DATABASE_NAME, null, 1);
         this.callMethod = new CallMethod(context);
         this.goods = new ArrayList<>();
-        this.db = getReadableDatabase();
 
     }
 
 
     public void GetLastDataFromOldDataBase(String tempDbPath) {
-
 
         getWritableDatabase().execSQL("ATTACH DATABASE '" + tempDbPath + "' AS tempDb");
 
@@ -265,6 +263,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.SH_MenuBroker = ReadConfig("MenuBroker");
         this.SH_selloff = callMethod.ReadString("SellOff");
         this.SH_grid = callMethod.ReadString("Grid");
+
         this.SH_delay = callMethod.ReadString("Delay");
         this.SH_prefactor_code = callMethod.ReadString("PreFactorCode");
         this.SH_prefactor_good = callMethod.ReadString("PreFactorGood");
@@ -273,22 +272,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.SH_real_amount = callMethod.ReadBoolan("RealAmount");
         this.SH_goodamount = callMethod.ReadBoolan("GoodAmount");
         this.SH_ArabicText = callMethod.ReadBoolan("ArabicText");
-
+        LimitAmount=String.valueOf(Integer.parseInt(SH_grid)*6);
         sc = "Where StackRef in (" + SH_brokerstack + ")";
 
         st="";
-//        if (SH_activestack) {
-//            stackCondition = stackCondition + " And Active = 1";
-//        }
-//        joinquery = " , (Select ki.KsrImageCode From KsrImage ki Where ki.ObjectRef=g.GoodCode Order By ki.IsDefaultImage DESC, ki.KsrImageCode LIMIT 1) As KsrImageCode " +
-//                "FROM Good g ,FilterTable Join Units u on u.UnitCode = g.GoodUnitRef " +
-//                " Join (Select GoodRef, Sum(Amount) as StackAmount, Sum(ReservedAmount) as ReservedAmount,ActiveStack" +
-//                " From GoodStack " + stackCondition + " Group By GoodRef) gs on gs.GoodRef = g.GoodCode " +
-//                " Left Join (Select GoodRef, Sum(FactorAmount) FactorAmount , Sum(FactorAmount*Price) Price From PreFactorRow" +
-//                " Where PreFactorRef =" + SH_prefactor_code + " Group BY GoodRef) pf on pf.GoodRef = g.GoodCode " +
-//                " Left Join PreFactor h on h.PreFactorCode = " + SH_prefactor_code +
-//                " Left Join Customer c on c.CustomerCode=h.CustomerRef " +
-//                " Left Join CacheGoodGroup cgg on cgg.GoodRef = g.Goodcode ";
 
 
 
@@ -304,12 +291,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " Left Join CacheGoodGroup cgg on cgg.GoodRef = g.Goodcode " ;
 
 
-//        searchquery=" FROM Good g ,FilterTable " +
-//                " Join (Select GoodRef, Sum(Amount) as StackAmount, Sum(ReservedAmount) as ReservedAmount,ActiveStack From GoodStack Where StackRef in (1) Group By GoodRef)" +
-//                " gs on gs.GoodRef = g.GoodCode ";
 
-
-        Log.e("test_111","1");
 
     }
 
@@ -381,12 +363,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return String.valueOf(result);
     }
 
-
     @SuppressLint("Range")
     public String GetRegionText(String String) {
 
+
         query = "Select Replace(Replace(Cast('" + String + "' as nvarchar(500)),char(1740),char(1610)),char(1705),char(1603)) result  ";
 
+
+//        GetPreference();
 //        if(SH_ArabicText) {
 //            //arabic
 //            query = "Select Replace(Replace(Cast('" + String + "' as nvarchar(500)),char(1740),char(1610)),char(1705),char(1603)) result  ";
@@ -427,13 +411,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @SuppressLint({"Recycle", "Range"})
 
-    public ArrayList<Good> getAllGood(String search_target, String aGroupCode) {
-
+    public ArrayList<Good> getAllGood(String search_target, String aGroupCode,String MoreCallData) {
+        goods.clear();
         GetPreference();
 
-        columns = GetColumns("", "", "1");
-        String search=GetRegionText(search_target);
 
+        columns = GetColumns("", "", "1");
+
+        String search=GetRegionText(search_target);
         search = search.replaceAll(" ", "%").replaceAll("'", "%");
 
         Search_Condition= " '%" + search + "%' ";
@@ -520,36 +505,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     query = query + " , ";
                 }
                 if (Integer.parseInt(column.getOrderIndex()) > 0) {
-                    query = query + column.getColumnName();
+                    if(column.getColumnName().equals("Date")){
+                        String newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
+                        query=query+newSt;
+                        //Case When SecondField=1 Then g.Date2 Else g.Date2 End
+                        //query = query + column.getColumnName();
+                    }else{
+                        query = query + column.getColumnName();
+                    }
                 } else {
-                    query = query + column.getColumnName() + " DESC ";
+                    if(column.getColumnName().equals("Date")){
+                        String newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
+                        query=query+newSt + " DESC ";
+                    }else{
+                        query = query + column.getColumnName();
+                    }
                 }
                 k++;
             }
         }
-        query = query + " LIMIT " + SH_itemamount + " ";
-        //query = query + " LIMIT 5 ";
-//        query ="With FilterTable As (Select 0 as SecondField) " +
-//                "SELECT " +
-//                "Case When Exists(Select 1 From goodstack Where StackRef in (10100) and GoodRef=GoodCode) Then 1 Else 0 End as ActiveStack , " +
-//                "Case When SecondField=1 Then g.Date2 Else g.Date2 End as Date , " +
-//                "(Select ki.KsrImageCode From KsrImage ki Where ki.ObjectRef=g.GoodCode Order By ki.IsDefaultImage DESC, ki.KsrImageCode LIMIT 1) as ksrImageCode , " +
-//                "GoodCode , GoodName , GoodExplain1 , " +
-//                "(select Sum(Amount-ReservedAmount) from goodstack Where StackRef in (10100) and GoodRef=GoodCode) as StackAmount , " +
-//                "MaxSellPrice " +
-//                "FROM Good g , FilterTable " +
-//                "where 1=1  " +
-//                "And Exists(Select 1 From GoodStack Where StackRef in (10100) And GoodRef=GoodCode ) " +
-//                "order by g.Date2 DESC , GoodCode DESC  " + // todo
-//                "LIMIT 5";
+        //query = query + " LIMIT " + SH_itemamount + " ";
 
-        cursor = db.rawQuery(query, null);
+        query = query + " LIMIT  "+LimitAmount;
+        query = query + " OFFSET "+(Integer.parseInt(LimitAmount)*Integer.parseInt(MoreCallData));
 
-        Log.e("test_111",query);
+        cursor = getWritableDatabase().rawQuery(query, null);
+
+        Log.e("test_",query);
         if (cursor != null) {
-            Log.e("test_111","0");
-            Log.e("test_111_cursor",cursor.getCount()+"");
-            Log.e("test_111","1");
 
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
@@ -582,16 +565,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 goods.add(gooddetail);
             }
         }
-
         assert cursor != null;
         cursor.close();
-
         return goods;
     }
 
     @SuppressLint("Range")
-    public ArrayList<Good> getAllGood_Extended(String searchbox_result, String aGroupCode) {
-
+    public ArrayList<Good> getAllGood_Extended(String searchbox_result, String aGroupCode,String MoreCallData) {
+        goods.clear();
         GetPreference();
         columns = GetColumns("", "", "1");
 
@@ -656,16 +637,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     query = query + " , ";
                 }
                 if (Integer.parseInt(column.getOrderIndex()) > 0) {
-                    query = query + column.getColumnName();
+                    if(column.getColumnName().equals("Date")){
+                        String newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
+                        query=query+newSt;
+                        //Case When SecondField=1 Then g.Date2 Else g.Date2 End
+                        //query = query + column.getColumnName();
+                    }
                 } else {
-                    query = query + column.getColumnName() + " DESC ";
+                    if(column.getColumnName().equals("Date")){
+                        String newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
+                        query=query+newSt + " DESC ";
+                    }
                 }
                 k++;
             }
         }
 
 
-        query = query + " LIMIT " + SH_itemamount;
+        query = query + " LIMIT  "+LimitAmount;
+        query = query + " OFFSET "+(Integer.parseInt(LimitAmount)*Integer.parseInt(MoreCallData));
+
         Log.e("test_",query);
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor != null) {
@@ -908,10 +899,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return gooddetail;
     }
     @SuppressLint("Range")
-    public ArrayList<Good> getAllGood_ByDate(String xDayAgo) {
+    public ArrayList<Good> getAllGood_ByDate(String xDayAgo,String MoreCallData) {
+        goods.clear();
         GetPreference();
         columns = GetColumns("", "", "1");
-
         query = " With FilterTable As (Select 1 as SecondField) SELECT ";
         k = 0;
         for (Column column : columns) {
@@ -955,13 +946,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     query = query + " , ";
                 }
                 if (Integer.parseInt(column.getOrderIndex()) > 0) {
-                    query = query + column.getColumnName();
+                    if(column.getColumnName().equals("Date")){
+                        String newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
+                        query=query+newSt;
+                        //Case When SecondField=1 Then g.Date2 Else g.Date2 End
+                        //query = query + column.getColumnName();
+                    }
                 } else {
-                    query = query + column.getColumnName() + " DESC ";
+                    if(column.getColumnName().equals("Date")){
+                        String newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
+                        query=query+newSt + " DESC ";
+                    }
                 }
                 k++;
             }
         }
+
+        query = query + " LIMIT  "+LimitAmount;
+        query = query + " OFFSET "+(Integer.parseInt(LimitAmount)*Integer.parseInt(MoreCallData));
+
         Log.e("test",query);
         goods = new ArrayList<>();
         cursor = getWritableDatabase().rawQuery(query, null);
@@ -1005,6 +1008,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public ArrayList<Good> getAllGood_pfcode() {
+        goods.clear();
         GetPreference();
         query = "SELECT * from PrefactorRow  Where ifnull(PreFactorRef,0)= " + SH_prefactor_code;
         goods = new ArrayList<>();
@@ -1142,6 +1146,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @SuppressLint("Range")
     public ArrayList<PreFactor> getAllPrefactorHeader(String Search_target) {
+
         String name=GetRegionText(Search_target);
 
         query = " SELECT h.*, s.SumAmount , s.SumPrice , s.RowCount ,n.Title || ' ' || n.FName|| ' ' || n.Name CustomerName FROM PreFactor h Join Customer c  on c.CustomerCode = h.CustomerRef " +
@@ -1287,8 +1292,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     @SuppressLint("Range")
     public void UpdatePreFactorHeader_Customer(String pfcode, String Search_target) {
+        String Customer=GetRegionText(Search_target);
 
-        query = "Update Prefactor set CustomerRef='" + Search_target + "' where PreFactorCode = " + pfcode;
+        query = "Update Prefactor set CustomerRef='" + Customer + "' where PreFactorCode = " + pfcode;
         getWritableDatabase().execSQL(query);
         query = "Select * From ( Select Case PriceTip " +
                 "When 1 Then  SellPrice1 When 2 Then SellPrice2 When 3 Then SellPrice3  " +
@@ -1436,18 +1442,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
     @SuppressLint("Range")
     public ArrayList<Customer> AllCustomer(String search_target, boolean aOnlyActive) {
-        Log.e("test",search_target);
-        String name= GetRegionText(search_target);
-        Log.e("test",name);
 
-        name = name.replaceAll(" ", "%");
+        String name= GetRegionText(search_target);
+
         query = "SELECT u.CustomerCode,u.PriceTip,c.Title || ' ' || c.FName|| ' ' || c.Name CentralName,Address,Manager,Mobile,Phone,Delegacy,y.Name CityName, CustomerBestankar - CustomerBedehkar Bestankar, Active, CentralPrivateCode, EtebarNaghd" +
                 ",EtebarCheck, Takhfif, MobileName, Email, Fax, ZipCode, PostCode FROM Customer u " +
                 "join Central c on u.CentralRef= c.CentralCode " +
                 "Left join Address d on u.AddressRef=d.AddressCode " +
                 "Left join City y on d.CityCode=y.CityCode" +
                 " Where Replace(Replace((c.Title || ' ' || c.FName|| ' ' || c.Name,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%' or " +
-                "CustomerCode Like '%" + name + "%' or  " +
+                " CustomerCode Like '%" + name + "%' or  " +
                 " Replace(Replace( Manager,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%')";
         if (aOnlyActive) {
             query = query + " And Active = 0";
