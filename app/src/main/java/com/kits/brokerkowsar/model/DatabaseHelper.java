@@ -1158,7 +1158,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + " Left Join (SELECT P.PreFactorRef, sum(p.FactorAmount) as SumAmount , sum(p.FactorAmount * p.Price*g.DefaultUnitValue) as SumPrice, count(*) as RowCount "
                 + " From Good g Join Units on UnitCode = GoodUnitRef  Join PreFactorRow p on GoodRef = GoodCode  Where IfNull(PreFactorRef, 0)>0 "
                 + " Group BY PreFactorRef ) s on h.PreFactorCode = s.PreFactorRef "
-                + " Where Replace(Replace(n.Title || ' ' || n.FName|| ' ' || n.Name,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%'"
+                + " Where Replace(Replace(CustomerName,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%'"
                 + " Order By h.PreFactorCode DESC";
 
         ArrayList<PreFactor> prefactor_header = new ArrayList<>();
@@ -1454,7 +1454,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "join Central c on u.CentralRef= c.CentralCode " +
                 "Left join Address d on u.AddressRef=d.AddressCode " +
                 "Left join City y on d.CityCode=y.CityCode" +
-                " Where Replace(Replace((c.Title || ' ' || c.FName|| ' ' || c.Name,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%' or " +
+                " Where (Replace(Replace(CentralName,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%' or " +
                 " CustomerCode Like '%" + name + "%' or  " +
                 " Replace(Replace( Manager,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%')";
         if (aOnlyActive) {
