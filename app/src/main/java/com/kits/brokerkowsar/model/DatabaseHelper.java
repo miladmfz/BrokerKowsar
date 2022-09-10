@@ -454,7 +454,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         } else {
                             query = query + " or ";
                         }
-                        query = query + "Replace(Replace("+column.getColumnName()+",char(1740),char(1610)),char(1705),char(1603)) Like '%" + search + "%' ";
+                        if(column.getColumnType().equals("0")){
+                            query = query + "Replace(Replace("+column.getColumnName()+",char(1740),char(1610)),char(1705),char(1603)) Like '%" + search + "%' ";
+                        }else {
+                            query = query + column.getColumnName()+" Like '%" + search + "%' ";
+                        }
                         k++;
                     }
                 }
