@@ -90,7 +90,7 @@ public class Replication {
             public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
                 assert response.body() != null;
                 Log.e("test","1");
-                Log.e("test",response.body().getText());
+                Log.e("test_+_+_",response.body().getText());
 
                 dbh.SaveConfig("MaxRepLogCode",response.body().getText());
                 RetrofitReplicate(0);

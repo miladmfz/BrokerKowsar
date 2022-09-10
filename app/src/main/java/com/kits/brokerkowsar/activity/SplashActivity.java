@@ -71,6 +71,7 @@ public class SplashActivity extends AppCompatActivity {
         callMethod = new CallMethod(this);
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
 
+
         if (callMethod.firstStart()) {
             callMethod.EditBoolan("FirstStart", false);
             callMethod.EditString("SellOff", "1");

@@ -541,6 +541,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
                 for (Column column : columns) {
+                    Log.e("test_",column.getColumnName());
+
                     try{
                         switch (column.getColumnType()) {
                             case "0":
@@ -614,6 +616,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         query=query.replaceAll("stackCondition",st);
+        query=query.replaceAll("SearchCondition",Search_Condition);
+
 
         if (SH_goodamount) {
             query = query + " And StackAmount > 0 ";
@@ -644,30 +648,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     if(column.getColumnName().equals("Date")){
                         String newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
                         query=query+newSt;
-                        //Case When SecondField=1 Then g.Date2 Else g.Date2 End
-                        //query = query + column.getColumnName();
+                    }else{
+                        query = query + column.getColumnName();
                     }
                 } else {
                     if(column.getColumnName().equals("Date")){
                         String newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
                         query=query+newSt + " DESC ";
+                    }else{
+                        query = query + column.getColumnName();
                     }
                 }
                 k++;
             }
         }
-
-
         query = query + " LIMIT  "+LimitAmount;
         query = query + " OFFSET "+(Integer.parseInt(LimitAmount)*Integer.parseInt(MoreCallData));
 
         Log.e("test_",query);
         cursor = getWritableDatabase().rawQuery(query, null);
+
+        Log.e("test_",query);
         if (cursor != null) {
+
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
-                try{
-                    for (Column column : columns) {
+                for (Column column : columns) {
+                    Log.e("test_",column.getColumnName());
+
+                    try{
                         switch (column.getColumnType()) {
                             case "0":
                                 gooddetail.setGoodFieldValue(
@@ -688,11 +697,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                 );
                                 break;
                         }
+                    }catch (Exception ignored) {}
+                }
+                gooddetail.setCheck(false);
 
-                    }
-
-                    gooddetail.setCheck(false);
-                }catch (Exception ignored) {}
                 goods.add(gooddetail);
             }
         }
@@ -701,6 +709,126 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return goods;
     }
 
+    @SuppressLint("Range")
+    public ArrayList<Good> getAllGood_ByDate(String xDayAgo,String MoreCallData) {
+        goods.clear();
+        GetPreference();
+        columns = GetColumns("", "", "1");
+        query = "  With FilterTable As (Select 1 as SecondField) SELECT ";
+        k = 0;
+        for (Column column : columns) {
+            if(!column.getColumnName().equals("")) {
+                if (k != 0) {
+                    query = query + " , ";
+                }
+                if (!column.getColumnDefinition().equals("")) {
+                    query = query + column.getColumnDefinition() + " as " + column.getColumnName();
+                } else {
+                    query = query + column.getColumnName();
+                }
+                k++;
+            }
+        }
+        String newSt="Date";
+        for (Column column : columns) {
+
+            if(column.getColumnName().equals("Date")) {
+                newSt= column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then") + 5, column.getColumnDefinition().indexOf("Then") + 12);
+            }
+        }
+
+
+
+        query = query + " FROM Good g , FilterTable Where "+newSt+">='" + xDayAgo + "' ";
+
+        query=query+" And Exists(Select 1 From GoodStack stackCondition And GoodRef=GoodCode )";
+
+        if (SH_activestack) {
+            st = sc+ " And ActiveStack = 1 ";
+        }else{
+            st = sc;
+        }
+
+        query=query.replaceAll("stackCondition",st);
+
+
+        if (SH_goodamount) {
+            query = query + " And StackAmount > 0 ";
+        }
+
+        if (SH_activestack) {
+            query = query + " And ActiveStack > 0 ";
+        }
+
+        query = query + " order by ";
+        int k = 0;
+        for (Column column : columns) {
+            if (!column.getOrderIndex().equals("0")) {
+                if (k != 0) {
+                    query = query + " , ";
+                }
+                if (Integer.parseInt(column.getOrderIndex()) > 0) {
+                    if(column.getColumnName().equals("Date")){
+                        newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
+                        query=query+newSt;
+                    }else{
+                        query = query + column.getColumnName();
+                    }
+                } else {
+                    if(column.getColumnName().equals("Date")){
+                        newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
+                        query=query+newSt + " DESC ";
+                    }else{
+                        query = query + column.getColumnName();
+                    }
+                }
+                k++;
+            }
+        }
+        query = query + " LIMIT  "+LimitAmount;
+        query = query + " OFFSET "+(Integer.parseInt(LimitAmount)*Integer.parseInt(MoreCallData));
+
+        Log.e("test",query);
+        goods = new ArrayList<>();
+        cursor = getWritableDatabase().rawQuery(query, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                gooddetail = new Good();
+                for (Column column : columns) {
+                    try{
+                        switch (column.getColumnType()) {
+                            case "0":
+                                gooddetail.setGoodFieldValue(
+                                        column.getColumnName(),
+                                        cursor.getString(cursor.getColumnIndex(column.getColumnName()))
+                                );
+                                break;
+                            case "1":
+                                gooddetail.setGoodFieldValue(
+                                        column.getColumnName(),
+                                        String.valueOf(cursor.getInt(cursor.getColumnIndex(column.getColumnName())))
+                                );
+                                break;
+                            case "2":
+                                gooddetail.setGoodFieldValue(
+                                        column.getColumnName(),
+                                        String.valueOf(cursor.getFloat(cursor.getColumnIndex(column.getColumnName())))
+                                );
+                                break;
+                        }
+                    }catch (Exception ignored) {}
+                }
+
+                gooddetail.setCheck(false);
+
+                goods.add(gooddetail);
+            }
+        }
+
+        assert cursor != null;
+        cursor.close();
+        return goods;
+    }
 
 
     @SuppressLint("Range")
@@ -730,6 +858,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         query=query.replaceAll("stackCondition",st);
+        query=query.replaceAll("SearchCondition",Search_Condition);
+
 
         query = query + " WHERE GoodCode = " + code;
 
@@ -901,114 +1031,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         Log.e("test",gooddetail.getGoodFieldValue("SellPrice"));
         return gooddetail;
-    }
-    @SuppressLint("Range")
-    public ArrayList<Good> getAllGood_ByDate(String xDayAgo,String MoreCallData) {
-        goods.clear();
-        GetPreference();
-        columns = GetColumns("", "", "1");
-        query = " With FilterTable As (Select 1 as SecondField) SELECT ";
-        k = 0;
-        for (Column column : columns) {
-            if (k != 0) {
-                query = query + " , ";
-            }
-            if (!column.getColumnDefinition().equals("")) {
-                query = query + column.getColumnDefinition() + " as " + column.getColumnName();
-            } else {
-                query = query + column.getColumnName();
-            }
-            k++;
-        }
-        query = query + " FROM Good g , FilterTable Where Date>='" + xDayAgo + "' ";
-
-
-
-        if (SH_activestack) {
-            st = sc+ " And ActiveStack = 1 ";
-        }else{
-            st = sc;
-        }
-
-        query=query.replaceAll("stackCondition",st);
-
-        if (SH_goodamount) {
-            query = query + " And StackAmount > 0 ";
-        }
-
-        if (SH_activestack) {
-            query = query + " And ActiveStack > 0 ";
-        }
-
-
-        query = query + " order by ";
-
-        k = 0;
-        for (Column column : columns) {
-            if (!column.getOrderIndex().equals("0")) {
-                if (k != 0) {
-                    query = query + " , ";
-                }
-                if (Integer.parseInt(column.getOrderIndex()) > 0) {
-                    if(column.getColumnName().equals("Date")){
-                        String newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
-                        query=query+newSt;
-                        //Case When SecondField=1 Then g.Date2 Else g.Date2 End
-                        //query = query + column.getColumnName();
-                    }
-                } else {
-                    if(column.getColumnName().equals("Date")){
-                        String newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
-                        query=query+newSt + " DESC ";
-                    }
-                }
-                k++;
-            }
-        }
-
-        query = query + " LIMIT  "+LimitAmount;
-        query = query + " OFFSET "+(Integer.parseInt(LimitAmount)*Integer.parseInt(MoreCallData));
-
-        Log.e("test",query);
-        goods = new ArrayList<>();
-        cursor = getWritableDatabase().rawQuery(query, null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                gooddetail = new Good();
-                for (Column column : columns) {
-                    try{
-                        switch (column.getColumnType()) {
-                            case "0":
-                                gooddetail.setGoodFieldValue(
-                                        column.getColumnName(),
-                                        cursor.getString(cursor.getColumnIndex(column.getColumnName()))
-                                );
-                                break;
-                            case "1":
-                                gooddetail.setGoodFieldValue(
-                                        column.getColumnName(),
-                                        String.valueOf(cursor.getInt(cursor.getColumnIndex(column.getColumnName())))
-                                );
-                                break;
-                            case "2":
-                                gooddetail.setGoodFieldValue(
-                                        column.getColumnName(),
-                                        String.valueOf(cursor.getFloat(cursor.getColumnIndex(column.getColumnName())))
-                                );
-                                break;
-                        }
-                    }catch (Exception ignored) {}
-                }
-
-                gooddetail.setCheck(false);
-
-                goods.add(gooddetail);
-            }
-        }
-
-        assert cursor != null;
-        cursor.close();
-        return goods;
     }
 
     public ArrayList<Good> getAllGood_pfcode() {

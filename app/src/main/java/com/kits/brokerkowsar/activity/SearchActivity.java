@@ -49,7 +49,7 @@ import java.util.Objects;
 public class SearchActivity extends AppCompatActivity {
 
 
-    private ArrayList<Good> goods = new ArrayList<>();
+    public ArrayList<Good> goods = new ArrayList<>();
     private ArrayList<Good>  Moregoods = new ArrayList<>();
     private Integer grid;
     public String id = "";
@@ -207,6 +207,7 @@ public class SearchActivity extends AppCompatActivity {
                     public void afterTextChanged(final Editable editable) {
                         handler.removeCallbacksAndMessages(null);
                         handler.postDelayed(() -> {
+                            goods.clear();
                             AutoSearch=editable.toString();
                             PageMoreData="0";
                             proSearchCondition="";
@@ -267,7 +268,9 @@ public class SearchActivity extends AppCompatActivity {
                 sm_activestack.setText("فعال -غیرفعال");
                 callMethod.EditBoolan("ActiveStack", false);
             }
-            CallRecyclerView();
+            goods.clear();
+            PageMoreData="0";
+            GetDataFromDataBase();
         });
 
         sm_goodamount.setOnCheckedChangeListener((compoundButton, b) -> {
@@ -278,7 +281,9 @@ public class SearchActivity extends AppCompatActivity {
                 sm_goodamount.setText("هردو");
                 callMethod.EditBoolan("GoodAmount", false);
             }
-            CallRecyclerView();
+            goods.clear();
+            PageMoreData="0";
+            GetDataFromDataBase();
         });
 
         fab.setOnClickListener(v -> {
@@ -468,7 +473,9 @@ public class SearchActivity extends AppCompatActivity {
         }else {
             Moregoods = dbh.getAllGood_Extended(NumberFunctions.EnglishNumber(proSearchCondition), id,PageMoreData);
         }
-        goods.addAll(Moregoods);
+        if(goods.isEmpty()){
+            goods.addAll(Moregoods);
+        }
         CallRecyclerView();
     }
     @SuppressLint("NotifyDataSetChanged")
@@ -484,12 +491,15 @@ public class SearchActivity extends AppCompatActivity {
 
         if(Moregoods.size()>0){
 
-            Log.e("test_11_last",goods.size()+"");
-            goods.addAll(Moregoods);
+            if(goods.isEmpty()){
+                goods.addAll(Moregoods);
+            }
+            if(goods.size()>(Integer.parseInt(callMethod.ReadString("Grid"))*5)){
+                goods.addAll(Moregoods);
+            }
             prog.setVisibility(View.GONE);
             adapter.notifyDataSetChanged();
-            Log.e("test_11_after",goods.size()+"");
-            Log.e("test_11_after",goods.get(goods.size()-1).getGoodFieldValue("Goodname")+"");
+
         }else{
             callMethod.showToast("کالایی بیشتری یافت نشد");
             PageMoreData=String.valueOf(Integer.parseInt(PageMoreData) -1);
@@ -499,6 +509,7 @@ public class SearchActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void CallRecyclerView() {
+
         adapter = new Good_ProSearch_Adapter(goods,this);
         if (adapter.getItemCount()==0){
             callMethod.showToast("کالایی یافت نشد");

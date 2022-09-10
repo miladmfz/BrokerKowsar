@@ -191,7 +191,7 @@ public class Search_box {
                     }
                 }
             }
-            Where=" And GoodType= '"+Goodtype+"' ";
+            Where=" And Replace(Replace(GoodType,char(1740),char(1610)),char(1705),char(1603))= Replace(Replace('"+Goodtype+"',char(1740),char(1610)),char(1705),char(1603)) ";
             for (Column Column : Columns) {
                 if (!Column.getColumnFieldValue("search").equals("")) {
                     if(Column.getColumnType().equals("0")){
@@ -221,8 +221,10 @@ public class Search_box {
             }
 
             SearchActivity activity = (SearchActivity) mContext;
+
             activity.proSearchCondition = Where;
             activity.PageMoreData = "0";
+            activity.goods.clear();
             activity.GetDataFromDataBase();
             dialog.dismiss();
 

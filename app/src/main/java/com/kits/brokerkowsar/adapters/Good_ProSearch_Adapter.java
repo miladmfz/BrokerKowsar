@@ -82,6 +82,7 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
         return new gooddetailHolder(view);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull final gooddetailHolder holder, @SuppressLint("RecyclerView") final int position) {
         final Good gooddetail = goods.get(position);
@@ -97,17 +98,6 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
                 extra_TextView.setGravity(Gravity.CENTER);
                 extra_TextView.setTextColor(mContext.getColor(R.color.grey_1000));
 
-                if (Column.getSortOrder().equals("1")) {
-                    extra_TextView.setMaxLines(2);
-                }
-
-                if (Column.getSortOrder().equals("2")) {
-                    extra_TextView.setTextSize(14);
-                }
-                if (Column.getColumnName().equals("MaxSellPrice")) {
-
-                    extra_TextView.setTextColor(getcolorresource("3"));
-                }
 
                 try {
                     if(Integer.parseInt(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname")))>999) {
@@ -120,6 +110,30 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
                 }
 
 
+
+
+                if (Column.getSortOrder().equals("2")) {
+                    extra_TextView.setLines(3);
+                    if (extra_TextView.getText().toString().length()>50){
+                        String lowText=extra_TextView.getText().toString().substring(0,50)+"...";
+                        extra_TextView.setText(lowText);
+                    }
+                }
+
+                if (Column.getSortOrder().equals("3")) {
+                    if (extra_TextView.getText().toString().length()>30){
+                        String lowText=extra_TextView.getText().toString().substring(0,30)+"...";
+                        extra_TextView.setText(lowText);
+                    }
+                    extra_TextView.setTextSize(14);
+                    extra_TextView.setLines(2);
+
+                }
+
+                if (Column.getColumnName().equals("MaxSellPrice")) {
+
+                    extra_TextView.setTextColor(getcolorresource("3"));
+                }
 
 
                 holder.mainline.addView(extra_TextView);

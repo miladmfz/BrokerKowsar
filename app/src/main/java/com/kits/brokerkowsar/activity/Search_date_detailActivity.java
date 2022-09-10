@@ -246,7 +246,9 @@ public class Search_date_detailActivity extends AppCompatActivity {
                 callMethod.EditBoolan("GoodAmount", false);
             }
             if (conter == 0) {
-                CallRecyclerView();
+                goods.clear();
+                PageMoreData="0";
+                GetDataFromDataBase();
             }
         });
 
@@ -353,15 +355,12 @@ public class Search_date_detailActivity extends AppCompatActivity {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
-
-
-
                     visibleItemCount = gridLayoutManager.getChildCount();
                     totalItemCount = gridLayoutManager.getItemCount();
                     pastVisiblesItems = gridLayoutManager.findFirstVisibleItemPosition();
 
                     if (loading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount-3) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount-1) {
                             loading = false;
                             PageMoreData=String.valueOf(Integer.parseInt(PageMoreData) + 1);
                             GetMoreDataFromDataBase();
@@ -433,7 +432,9 @@ public class Search_date_detailActivity extends AppCompatActivity {
     public void GetDataFromDataBase() {
         Moregoods.clear();
         Moregoods=dbh.getAllGood_ByDate(lastDate,PageMoreData);
-        goods.addAll(Moregoods);
+        if(goods.isEmpty()){
+            goods.addAll(Moregoods);
+        }
         CallRecyclerView();
     }
     @SuppressLint("NotifyDataSetChanged")
@@ -443,7 +444,12 @@ public class Search_date_detailActivity extends AppCompatActivity {
         Moregoods=dbh.getAllGood_ByDate(lastDate,PageMoreData);
 
         if(Moregoods.size()>0){
-            goods.addAll(Moregoods);
+            if(goods.isEmpty()){
+                goods.addAll(Moregoods);
+            }
+            if(goods.size()>(Integer.parseInt(callMethod.ReadString("Grid"))*5)){
+                goods.addAll(Moregoods);
+            }
             adapter.notifyDataSetChanged();
         }else{
             callMethod.showToast("کالایی بیشتری یافت نشد");
