@@ -94,10 +94,6 @@ public class SplashActivity extends AppCompatActivity {
             dbhbase = new DatabaseHelper(App.getContext(), "/data/data/com.kits.brokerkowsar/databases/KowsarDb.sqlite");
             dbhbase.CreateActivationDb();
 
-//            callMethod.saveArrayList(new ArrayList<>(), "ServerURLs");
-//            callMethod.saveArrayList(new ArrayList<>(), "SQLiteURLs");
-//            callMethod.saveArrayList(new ArrayList<>(), "PersianCompanyNames");
-//            callMethod.saveArrayList(new ArrayList<>(), "EnglishCompanyNames");
             try {
                 dbh.SaveConfig("BrokerStack","0");
                 dbh.SaveConfig("MenuBroker","");

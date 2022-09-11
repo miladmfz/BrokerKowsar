@@ -35,7 +35,7 @@
     <string name="buy_totalamount">تعداد کل:</string>
     <string name="buy_rows">تعداد ردیف:</string>
     <string name="buy_factorname">فاکتور</string>
-    <string name="buy_deletall">حذف سبد</string>
+    <string name="buy_deletall">حذف</string>
     <string name="buy_tollbarname">سبد خرید</string>
     <string name="buy_sendfactor">نهایی کردن سبد خرید</string>
     <string name="buyhistory_totalprice">مبلغ نهایی</string>

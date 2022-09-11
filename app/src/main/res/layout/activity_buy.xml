@@ -61,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="3dp"
-                    android:layout_weight="0.3"
+                    android:layout_weight="0.33"
                     android:text="@string/buy_deletall"
                     android:textColor="#ffffff"
                     android:textSize="12sp"
@@ -74,14 +74,14 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.3"
+                    android:layout_weight="0.33"
                     android:orientation="vertical">
 
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.3"
+                        android:layout_weight="0.7"
                         android:gravity="center"
                         android:text="@string/buy_totalamount"
                         android:textSize="12sp"
@@ -94,7 +94,6 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.3"
                         android:gravity="center"
-                        android:text="@string/buy_totalamount"
                         android:textStyle="bold" />
 
 
@@ -103,14 +102,14 @@
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.3"
+                    android:layout_weight="0.33"
                     android:orientation="vertical">
 
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.3"
+                        android:layout_weight="0.7"
 
                         android:gravity="center"
 
@@ -125,7 +124,6 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.3"
                         android:gravity="center"
-                        android:text="@string/buy_rows"
                         android:textStyle="bold" />
 
 
@@ -141,10 +139,8 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.3"
-
+                        android:layout_weight="0.7"
                         android:gravity="center"
-
                         android:text="@string/buy_factorname"
                         android:textSize="12sp"
                         android:textStyle="bold" />
@@ -156,6 +152,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="0.3"
                         android:gravity="center"
+                        android:layout_gravity="center"
                         android:text="@string/buy_factorname"
                         android:textStyle="bold" />
 
@@ -172,7 +169,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.5"
+                        android:layout_weight="0.7"
                         android:gravity="center"
                         android:text="@string/buy_total"
                         android:textSize="12sp"
@@ -183,7 +180,7 @@
                         android:id="@+id/BuyActivity_total_price_buy"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.5"
+                        android:layout_weight="0.3"
                         android:gravity="center"
                         android:text="@string/buy_total"
                         android:textStyle="bold" />

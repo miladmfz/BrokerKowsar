@@ -201,7 +201,7 @@ public class Search_box {
                             else
                                 Where = Where + " And Replace(Replace(" + Column.getColumnFieldValue("ColumnName") + ",char(1740),char(1610)),char(1705),char(1603)) Like '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%' ";
                         }else{
-                            String search_condition= " '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%' ";
+                            String search_condition= " Replace(Replace('%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%',char(1740),char(1610)),char(1705),char(1603)) ";
                             Where = Where + " And " + Column.getColumnFieldValue("columndefinition") ;
                             Where=Where.replace("SearchCondition",search_condition);
                         }

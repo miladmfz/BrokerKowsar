@@ -60,6 +60,31 @@ public class Good implements Serializable {
     @SerializedName("Isbn")
     private String Isbn;
 
+    @SerializedName("Extera1")
+    private String Extera1;
+    @SerializedName("Extera2")
+    private String Extera2;
+    @SerializedName("Extera3")
+    private String Extera3;
+    @SerializedName("Extera4")
+    private String Extera4;
+    @SerializedName("Extera5")
+    private String Extera5;
+    @SerializedName("Extera6")
+    private String Extera6;
+    @SerializedName("Extera7")
+    private String Extera7;
+    @SerializedName("Extera8")
+    private String Extera8;
+    @SerializedName("Extera9")
+    private String Extera9;
+    @SerializedName("Extera10")
+    private String Extera10;
+
+
+
+
+
     @SerializedName("Nvarchar1")
     private String Nvarchar1;
     @SerializedName("Nvarchar2")
@@ -332,9 +357,71 @@ public class Good implements Serializable {
                 if (Isbn == null) Res = "";
                 else Res = Isbn;
                 break;
+            case "extera1":
+                if (Extera1 == null)
+                    Res = "";
+                else
+                    Res = Extera1;
+                break;
+            case "extera2":
+                if (Extera2 == null)
+                    Res = "";
+                else
+                    Res = Extera2;
+                break;
+            case "extera3":
+                if (Extera3 == null)
+                    Res = "";
+                else
+                    Res = Extera3;
+                break;
+            case "extera4":
+                if (Extera4 == null)
+                    Res = "";
+                else
+                    Res = Extera4;
+                break;
+            case "extera5":
+                if (Extera5 == null)
+                    Res = "";
+                else
+                    Res = Extera5;
+                break;
+            case "extera6":
+                if (Extera6 == null)
+                    Res = "";
+                else
+                    Res = Extera6;
+                break;
+            case "extera7":
+                if (Extera7 == null)
+                    Res = "";
+                else
+                    Res = Extera7;
+                break;
+            case "extera8":
+                if (Extera8 == null)
+                    Res = "";
+                else
+                    Res = Extera8;
+                break;
+            case "extera9":
+                if (Extera9 == null)
+                    Res = "";
+                else
+                    Res = Extera9;
+                break;
+            case "extera10":
+                if (Extera10 == null)
+                    Res = "";
+                else
+                    Res = Extera10;
+                break;
             case "nvarchar1":
-                if (Nvarchar1 == null) Res = "";
-                else Res = Nvarchar1;
+                if (Nvarchar1 == null)
+                    Res = "";
+                else
+                    Res = Nvarchar1;
                 break;
             case "nvarchar2":
                 if (Nvarchar2 == null) Res = "";
@@ -701,6 +788,36 @@ public class Good implements Serializable {
                 break;
             case "isbn":
                 Isbn = Res;
+                break;
+            case "extera1":
+                Extera1 = Res;
+                break;
+            case "extera2":
+                Extera2 = Res;
+                break;
+            case "extera3":
+                Extera3 = Res;
+                break;
+            case "extera4":
+                Extera4 = Res;
+                break;
+            case "extera5":
+                Extera5 = Res;
+                break;
+            case "extera6":
+                Extera6 = Res;
+                break;
+            case "extera7":
+                Extera7 = Res;
+                break;
+            case "extera8":
+                Extera8 = Res;
+                break;
+            case "extera9":
+                Extera9 = Res;
+                break;
+            case "extera10":
+                Extera10 = Res;
                 break;
             case "nvarchar1":
                 Nvarchar1 = Res;

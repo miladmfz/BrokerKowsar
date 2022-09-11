@@ -2,9 +2,11 @@ package com.kits.brokerkowsar.activity;
 
 
 import android.app.Dialog;
+import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,10 +15,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.adapters.Good_ProSearch_Adapter;
 import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.adapters.Good_buy_Adapter;
 import com.kits.brokerkowsar.application.Action;
@@ -97,10 +101,24 @@ public class BuyActivity extends AppCompatActivity {
 
         goods = dbh.getAllPreFactorRows("", PreFac);
         adapter = new Good_buy_Adapter(goods, this);
+        if (adapter.getItemCount()==0){
+            callMethod.showToast( "سبد خرید خالی می باشد");
+        }
         gridLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(gridLayoutManager);
-        gridLayoutManager.scrollToPosition(Integer.parseInt(callMethod.ReadString("BasketItemView"))-1);
         recyclerView.setAdapter(adapter);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setVisibility(View.VISIBLE);
+
+        try{
+            recyclerView.scrollToPosition(Integer.parseInt(callMethod.ReadString("BasketItemView"))-1);
+        }catch (Exception e){
+            recyclerView.scrollToPosition(0);
+            callMethod.EditString("BasketItemView", "0");
+
+        }
+
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
@@ -109,6 +127,7 @@ public class BuyActivity extends AppCompatActivity {
                 }
             }
         });
+
         tv_price.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(PreFac)))));
         tv_amount.setText(NumberFunctions.PerisanNumber(dbh.getFactorSumAmount(PreFac)));
         tv_customer.setText(NumberFunctions.PerisanNumber(dbh.getFactorCustomer(PreFac)));
@@ -136,16 +155,9 @@ public class BuyActivity extends AppCompatActivity {
                         .setPositiveButton("بله", (dialogInterface, i) -> action.sendfactor(PreFac))
                         .setNegativeButton("خیر", (dialogInterface, i) -> { })
                         .show()
-
-
-
-
         );
 
-        if (dbh.getAllGood_pfcode().size() < 1) {
-            callMethod.showToast( "کالای برای اصلاح موجود نمی باشد");
-            finish();
-        }
+
     }
 
 

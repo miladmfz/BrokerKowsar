@@ -75,49 +75,50 @@ public class Good_buy_Adapter extends RecyclerView.Adapter<Good_buy_Adapter.Good
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull final GoodViewHolder holder, int position) {
-        final Good gooddetail = goods.get(position);
+    public void onBindViewHolder(@NonNull final GoodViewHolder holder, @SuppressLint("RecyclerView") int position) {
+
+        Log.e("test11","3");
 
 
-        int maxsellprice = Integer.parseInt(gooddetail.getGoodFieldValue("MaxSellPrice"));
-        int sellprice = Integer.parseInt(gooddetail.getGoodFieldValue("Price"));
-        int fac_amount = Integer.parseInt(gooddetail.getGoodFieldValue("FactorAmount"));
-        int unit_value = Integer.parseInt(gooddetail.getGoodFieldValue("DefaultUnitValue"));
+        int maxsellprice = Integer.parseInt(goods.get(position).getGoodFieldValue("MaxSellPrice"));
+        int sellprice = Integer.parseInt(goods.get(position).getGoodFieldValue("Price"));
+        int fac_amount = Integer.parseInt(goods.get(position).getGoodFieldValue("FactorAmount"));
+        int unit_value = Integer.parseInt(goods.get(position).getGoodFieldValue("DefaultUnitValue"));
 
 
         long maxprice = (long) maxsellprice * fac_amount * unit_value;
         final long price = (long) sellprice * fac_amount * unit_value;
         sum = sum + price;
-        int ws = Integer.parseInt(gooddetail.getGoodFieldValue("Shortage"));
+        int ws = Integer.parseInt(goods.get(position).getGoodFieldValue("Shortage"));
 
 
-        holder.goodnameTextView.setText(NumberFunctions.PerisanNumber(gooddetail.getGoodFieldValue("GoodName")));
-        holder.amount.setText(NumberFunctions.PerisanNumber(gooddetail.getGoodFieldValue("FactorAmount")));
+        holder.goodnameTextView.setText(NumberFunctions.PerisanNumber(goods.get(position).getGoodFieldValue("GoodName")));
+        holder.amount.setText(NumberFunctions.PerisanNumber(goods.get(position).getGoodFieldValue("FactorAmount")));
 
-        holder.maxsellpriceTextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(gooddetail.getGoodFieldValue("MaxSellPrice")))));
-        holder.priceTextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(gooddetail.getGoodFieldValue("Price")))));
+        holder.maxsellpriceTextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(goods.get(position).getGoodFieldValue("MaxSellPrice")))));
+        holder.priceTextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(goods.get(position).getGoodFieldValue("Price")))));
         holder.total.setText(NumberFunctions.PerisanNumber(decimalFormat.format(price)));
         holder.maxtotal.setText(NumberFunctions.PerisanNumber(decimalFormat.format(maxprice)));
 
-            if(gooddetail.getGoodFieldValue("SellPriceType").equals("0")) {
+            if(goods.get(position).getGoodFieldValue("SellPriceType").equals("0")) {
                 holder.offer.setText("");
             }else {
                 holder.offer.setText(NumberFunctions.PerisanNumber((100 - ((sellprice * 100) / maxsellprice)) + " درصد تخفیف "));
             }
 
 
-        if (image_info.Image_exist(gooddetail.getGoodFieldValue("KsrImageCode"))) {
+        if (image_info.Image_exist(goods.get(position).getGoodFieldValue("KsrImageCode"))) {
             String root = Environment.getExternalStorageDirectory().getAbsolutePath();
             File imagefile = new File(root + "/Kowsar/" +
                     callMethod.ReadString("EnglishCompanyNameUse") + "/" +
-                    gooddetail.getGoodFieldValue("KsrImageCode") + ".jpg");
+                    goods.get(position).getGoodFieldValue("KsrImageCode") + ".jpg");
             Bitmap myBitmap = BitmapFactory.decodeFile(imagefile.getAbsolutePath());
             holder.img.setImageBitmap(myBitmap);
 
         } else {
             Call<RetrofitResponse> call2 = apiInterface.GetImageFromKsr(
                     "GetImageFromKsr",
-                    gooddetail.getGoodFieldValue("KsrImageCode")
+                    goods.get(position).getGoodFieldValue("KsrImageCode")
             );
             call2.enqueue(new Callback<RetrofitResponse>() {
                 @Override
@@ -131,7 +132,7 @@ public class Good_buy_Adapter extends RecyclerView.Adapter<Good_buy_Adapter.Good
                             holder.img.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length), BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getWidth() * 2, BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getHeight() * 2, false));
 
                         } else {
-                           image_info.SaveImage(BitmapFactory.decodeByteArray(Base64.decode(response.body().getText(), Base64.DEFAULT), 0, Base64.decode(response.body().getText(), Base64.DEFAULT).length), gooddetail.getGoodFieldValue("KsrImageCode"));
+                           image_info.SaveImage(BitmapFactory.decodeByteArray(Base64.decode(response.body().getText(), Base64.DEFAULT), 0, Base64.decode(response.body().getText(), Base64.DEFAULT).length), goods.get(position).getGoodFieldValue("KsrImageCode"));
                             notifyItemChanged(position);
                         }
                     }
@@ -167,7 +168,7 @@ public class Good_buy_Adapter extends RecyclerView.Adapter<Good_buy_Adapter.Good
                 .setMessage("آیا کالا از لیست حذف گردد؟")
                 .setPositiveButton("بله", (dialogInterface, i) -> {
 
-                    dbh.DeletePreFactorRow(callMethod.ReadString("PreFactorCode"), gooddetail.getGoodFieldValue("PreFactorRowCode"));
+                    dbh.DeletePreFactorRow(callMethod.ReadString("PreFactorCode"), goods.get(position).getGoodFieldValue("PreFactorRowCode"));
                     callMethod.showToast( "از سبد خرید حذف گردید");
                     intent = new Intent(mContext, BuyActivity.class);
                     intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
@@ -185,8 +186,8 @@ public class Good_buy_Adapter extends RecyclerView.Adapter<Good_buy_Adapter.Good
 
         holder.amount.setOnClickListener(view ->
                 action.buydialog(
-                        gooddetail.getGoodFieldValue("GoodCode"),
-                        gooddetail.getGoodFieldValue("PrefactorRowCode")
+                        goods.get(position).getGoodFieldValue("GoodCode"),
+                        goods.get(position).getGoodFieldValue("PrefactorRowCode")
                 )
         );
 

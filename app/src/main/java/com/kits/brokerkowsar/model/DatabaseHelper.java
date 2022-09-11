@@ -856,7 +856,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }else{
             st = sc;
         }
-
+        Search_Condition="'%%'";
         query=query.replaceAll("stackCondition",st);
         query=query.replaceAll("SearchCondition",Search_Condition);
 

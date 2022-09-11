@@ -135,6 +135,7 @@ public class DetailActivity extends AppCompatActivity {
 
         for (Column Column : Columns) {
             if (Integer.parseInt(Column.getColumnFieldValue("SortOrder")) > 0) {
+                Log.e("test11",Column.getColumnFieldValue("ColumnDesc")+" = "+gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname")));
                 CreateView(
                         Column.getColumnFieldValue("ColumnDesc"),
                         gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))
