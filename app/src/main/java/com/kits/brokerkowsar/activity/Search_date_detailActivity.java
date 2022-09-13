@@ -447,7 +447,7 @@ public class Search_date_detailActivity extends AppCompatActivity {
             if(goods.isEmpty()){
                 goods.addAll(Moregoods);
             }
-            if(goods.size()>(Integer.parseInt(callMethod.ReadString("Grid"))*5)){
+            if(goods.size()>(Integer.parseInt(callMethod.ReadString("Grid"))*10)){
                 goods.addAll(Moregoods);
             }
             adapter.notifyDataSetChanged();

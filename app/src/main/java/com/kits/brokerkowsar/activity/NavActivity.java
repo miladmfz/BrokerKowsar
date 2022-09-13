@@ -168,8 +168,11 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     }
 
     public void Config() {
+
+
         action = new Action(this);
         callMethod = new CallMethod(this);
+
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
         replication = new Replication(this);
 
@@ -218,39 +221,68 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
     @SuppressLint("SetTextI18n")
     public void CheckConfig() {
-        UserInfo auser = dbh.LoadPersonalInfo();
+        try {
+            UserInfo auser = new UserInfo();
+            File databasefile = new File(callMethod.ReadString("DatabaseName"));
 
-        if (Integer.parseInt(auser.getBrokerCode())!=0) {
-            tv_brokercode.setText(" کد بازاریاب : " + NumberFunctions.PerisanNumber(auser.getBrokerCode()));
-            if (dbh.ReadConfig("BrokerStack").equals("0")) {
+
+            if (databasefile.exists()) {
+                auser = dbh.LoadPersonalInfo();
+            } else {
+                callMethod.EditString("ServerURLUse", "");
+                callMethod.EditString("SQLiteURLUse", "");
+                callMethod.EditString("PersianCompanyNameUse", "");
+                callMethod.EditString("EnglishCompanyNameUse", "");
+                callMethod.EditString("DatabaseName","");
+                intent = new Intent(this, SplashActivity.class);
+                startActivity(intent);
+            }
+
+
+
+
+
+            if (Integer.parseInt(auser.getBrokerCode())!=0) {
+
+                tv_brokercode.setText(" کد بازاریاب : " + NumberFunctions.PerisanNumber(auser.getBrokerCode()));
+                if (dbh.ReadConfig("BrokerStack").equals("0")) {
+                    if(callMethod.ReadBoolan("AutoReplication")) {
+                        workManager.cancelAllWork();
+                    }
+                    new AlertDialog.Builder(this)
+                            .setTitle("انباری تعریف نشده")
+                            .setMessage("آیا مایل به تغییر کد بازاریاب می باشید ؟")
+                            .setPositiveButton("بله", (dialogInterface, i) -> {
+                                intent = new Intent(this, ConfigActivity.class);
+                                callMethod.showToast("کد بازاریاب را وارد کنید");
+                                startActivity(intent);
+                            })
+                            .setNegativeButton("خیر", (dialogInterface, i) -> {
+                            })
+                            .show();
+                }
+            }else {
+                if(callMethod.ReadBoolan("AutoReplication")) {
+                    workManager.cancelAllWork();
+                }
+                tv_brokercode.setText("کد بازاریاب ندارد");
                 new AlertDialog.Builder(this)
-                        .setTitle("انباری تعریف نشده")
-                        .setMessage("آیا مایل به تغییر کد بازاریاب می باشید ؟")
+                        .setTitle("عدم وجود کد بازاریاب")
+                        .setMessage("آیا مایل به تعریف کد بازاریاب می باشید ؟")
                         .setPositiveButton("بله", (dialogInterface, i) -> {
                             intent = new Intent(this, ConfigActivity.class);
-                            callMethod.showToast("کد بازاریاب را وارد کنید");
+                            callMethod.showToast( "کد بازاریاب را وارد کنید");
                             startActivity(intent);
                         })
                         .setNegativeButton("خیر", (dialogInterface, i) -> {
+                            callMethod.showToast("برای ادامه کار به کد بازاریاب نیازمندیم");
                         })
                         .show();
             }
-        }else {
-
-            tv_brokercode.setText("کد بازاریاب ندارد");
-            new AlertDialog.Builder(this)
-                    .setTitle("عدم وجود کد بازاریاب")
-                    .setMessage("آیا مایل به تعریف کد بازاریاب می باشید ؟")
-                    .setPositiveButton("بله", (dialogInterface, i) -> {
-                        intent = new Intent(this, ConfigActivity.class);
-                        callMethod.showToast( "کد بازاریاب را وارد کنید");
-                        startActivity(intent);
-                    })
-                    .setNegativeButton("خیر", (dialogInterface, i) -> {
-                        callMethod.showToast("برای ادامه کار به کد بازاریاب نیازمندیم");
-                    })
-                    .show();
+        }catch (Exception e) {
+            e.printStackTrace();
         }
+
 
     }
 
@@ -462,5 +494,8 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         }
         super.onStop();
     }
+
+
+
 }
 

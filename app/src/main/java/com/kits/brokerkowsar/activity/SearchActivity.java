@@ -494,11 +494,11 @@ public class SearchActivity extends AppCompatActivity {
             if(goods.isEmpty()){
                 goods.addAll(Moregoods);
             }
-            if(goods.size()>(Integer.parseInt(callMethod.ReadString("Grid"))*5)){
+            if(goods.size()>(Integer.parseInt(callMethod.ReadString("Grid"))*10)){
                 goods.addAll(Moregoods);
             }
-            prog.setVisibility(View.GONE);
             adapter.notifyDataSetChanged();
+            prog.setVisibility(View.GONE);
 
         }else{
             callMethod.showToast("کالایی بیشتری یافت نشد");

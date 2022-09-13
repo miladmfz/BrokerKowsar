@@ -144,7 +144,7 @@ public class Replication {
             ReplicationModel replicatedetail = replicationModels.get(replicatelevel);
             tv_rep.setText(NumberFunctions.PerisanNumber(replicationModels.size()+"/" + replicatedetail.getReplicationCode() + "در حال بروز رسانی"));
             tableDetails = dbh.GetTableDetail(replicatedetail.getClientTable());
-
+            Log.e("test","0");
             FinalStep = 0;
             LastRepCode=String.valueOf(replicatedetail.getLastRepLogCode());
 
@@ -152,6 +152,7 @@ public class Replication {
 
             String where =replicatedetail.getCondition().replace("BrokerCondition",userInfo.getBrokerCode());
 
+            Log.e("test","1");
             Log.e("test","1");
 
             Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
@@ -167,6 +168,7 @@ public class Replication {
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
+
 
                     if (response.isSuccessful()) {
                         assert response.body() != null;
@@ -280,6 +282,7 @@ public class Replication {
                                                 } catch (Exception e) {
                                                     Log.e("test_qCol=", e.getMessage());
                                                 }
+
 
                                                 d.close();
                                                 break;

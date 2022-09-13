@@ -19,6 +19,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.work.WorkManager;
 
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.App;
@@ -28,6 +29,7 @@ import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -42,6 +44,7 @@ public class SplashActivity extends AppCompatActivity {
     final int PERMISSION_CODE = 1;
     DatabaseHelper dbh,dbhbase;
     final int PERMISSION_REQUEST_CODE = 1;
+    WorkManager workManager;
 
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
@@ -70,7 +73,11 @@ public class SplashActivity extends AppCompatActivity {
     public void init() {
         callMethod = new CallMethod(this);
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
-
+        if(callMethod.ReadBoolan("AutoReplication")) {
+            try{
+            workManager.cancelAllWork();
+            }catch (Exception ignored){}
+        }
 
         if (callMethod.firstStart()) {
             callMethod.EditBoolan("FirstStart", false);
@@ -94,6 +101,7 @@ public class SplashActivity extends AppCompatActivity {
             dbhbase = new DatabaseHelper(App.getContext(), "/data/data/com.kits.brokerkowsar/databases/KowsarDb.sqlite");
             dbhbase.CreateActivationDb();
 
+
             try {
                 dbh.SaveConfig("BrokerStack","0");
                 dbh.SaveConfig("MenuBroker","");
@@ -113,23 +121,44 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void Startapplication() {
+        File databasedir = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse"));
+        File temp = new File(databasedir, "/tempDb");
+        if(!temp.exists()){
+            if (callMethod.ReadString("DatabaseName").equals("")) {
+                handler = new Handler();
+                handler.postDelayed(() -> {
+                    intent = new Intent(this, ChoiceDatabaseActivity.class);
+                    startActivity(intent);
+                    finish();
+                }, 2000);
+            } else {
 
-        if (callMethod.ReadString("DatabaseName").equals("")) {
-            handler = new Handler();
-            handler.postDelayed(() -> {
-                intent = new Intent(this, ChoiceDatabaseActivity.class);
-                startActivity(intent);
-                finish();
-            }, 2000);
-        } else {
-
-            handler = new Handler();
-            handler.postDelayed(() -> {
-                intent = new Intent(this, NavActivity.class);
-                startActivity(intent);
-                finish();
-            }, 2000);
+                handler = new Handler();
+                handler.postDelayed(() -> {
+                    intent = new Intent(this, NavActivity.class);
+                    startActivity(intent);
+                    finish();
+                }, 2000);
+            }
+        }else{
+            deleteRecursive(databasedir);
+            callMethod.EditString("ServerURLUse", "");
+            callMethod.EditString("SQLiteURLUse", "");
+            callMethod.EditString("PersianCompanyNameUse", "");
+            callMethod.EditString("EnglishCompanyNameUse", "");
+            callMethod.EditString("DatabaseName","");
+            startActivity(getIntent());
+            finish();
         }
+
+
+
+
+
+
+
+
+
     }
 
     private void requestPermission() {
@@ -213,5 +242,20 @@ public class SplashActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
     }
+    void deleteRecursive(File fileOrDirectory) {
+        if (fileOrDirectory.isDirectory())
+            for (File child : fileOrDirectory.listFiles())
+                deleteRecursive(child);
 
+        fileOrDirectory.delete();
+        callMethod.EditString("PersianCompanyNameUse", "");
+        callMethod.EditString("EnglishCompanyNameUse", "");
+        callMethod.EditString("ServerURLUse", "");
+        //callMethod.EditString("DatabaseName", "");
+        callMethod.EditString("DatabaseName", "");
+        intent = new Intent(this, SplashActivity.class);
+        finish();
+        startActivity(intent);
+
+    }
 }

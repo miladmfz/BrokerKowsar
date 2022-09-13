@@ -272,7 +272,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.SH_real_amount = callMethod.ReadBoolan("RealAmount");
         this.SH_goodamount = callMethod.ReadBoolan("GoodAmount");
         this.SH_ArabicText = callMethod.ReadBoolan("ArabicText");
-        LimitAmount=String.valueOf(Integer.parseInt(SH_grid)*6);
+        LimitAmount=String.valueOf(Integer.parseInt(SH_grid)*11);
         sc = "Where StackRef in (" + SH_brokerstack + ")";
 
         st="";
