@@ -175,6 +175,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
         replication = new Replication(this);
+        dbh.ClearSearchColumn();
 
         toolbar = findViewById(R.id.NavActivity_toolbar);
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);

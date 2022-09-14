@@ -1749,6 +1749,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL(query);
     }
 
+    public void ClearSearchColumn() {
+        query = "update BrokerColumn set condition = '' ";
+        getWritableDatabase().execSQL(query);
+    }
+
     public void ReplicateColumn(Column column, Integer Apptype) {
 
         query = "INSERT INTO BrokerColumn" +

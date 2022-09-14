@@ -478,6 +478,7 @@ public class SearchActivity extends AppCompatActivity {
         }
         CallRecyclerView();
     }
+
     @SuppressLint("NotifyDataSetChanged")
     public void GetMoreDataFromDataBase() {
         loading=true;
