@@ -95,7 +95,6 @@ public class SearchActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-
         dialog1 = new Dialog(this);
         dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(dialog1.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
@@ -103,9 +102,9 @@ public class SearchActivity extends AppCompatActivity {
         TextView repw = dialog1.findViewById(R.id.rep_prog_text);
         repw.setText("در حال خواندن اطلاعات");
         dialog1.show();
-
         intent();
         Config();
+
         try {
             Handler handler = new Handler();
             handler.postDelayed(this::init, 100);
@@ -114,13 +113,9 @@ public class SearchActivity extends AppCompatActivity {
             callMethod.ErrorLog(e.getMessage());
         }
 
-
-
     }
 
-
     //*************************************************
-
 
     public void Config() {
 
@@ -187,7 +182,6 @@ public class SearchActivity extends AppCompatActivity {
         grp_adapter = new Grp_Vlist_detail_Adapter(goodGroups, this);
         recyclerView_grp.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false));
         recyclerView_grp.setAdapter(grp_adapter);
-        Log.e("test_goodGroups",goodGroups.size()+"");
 
         if (goodGroups.size() == 0) {
             recyclerView_grp.getLayoutParams().height = 0;
@@ -218,9 +212,6 @@ public class SearchActivity extends AppCompatActivity {
                     }
                 });
 
-
-
-
         btn_scan.setOnClickListener(view -> {
             intent = new Intent(this, ScanCodeActivity.class);
             startActivity(intent);
@@ -236,12 +227,11 @@ public class SearchActivity extends AppCompatActivity {
         });
 
 
+
         btn_pro_search.setOnClickListener(view -> {
             Search_box search_box = new Search_box(this);
             search_box.search_pro();
         });
-
-
         if (callMethod.ReadBoolan("ActiveStack")) {
             sm_activestack.setChecked(true);
             sm_activestack.setText("فعال");
@@ -257,8 +247,6 @@ public class SearchActivity extends AppCompatActivity {
             sm_goodamount.setChecked(false);
             sm_goodamount.setText("هردو");
         }
-
-
         sm_activestack.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
                 sm_activestack.setText("فعال");
@@ -272,7 +260,6 @@ public class SearchActivity extends AppCompatActivity {
             PageMoreData="0";
             GetDataFromDataBase();
         });
-
         sm_goodamount.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
                 sm_goodamount.setText("موجود");
@@ -285,9 +272,7 @@ public class SearchActivity extends AppCompatActivity {
             PageMoreData="0";
             GetDataFromDataBase();
         });
-
         fab.setOnClickListener(v -> {
-
             final Dialog dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.box_multi_buy);
@@ -295,9 +280,6 @@ public class SearchActivity extends AppCompatActivity {
             final EditText amount_mlti = dialog.findViewById(R.id.box_multi_buy_amount);
             final EditText unitratio_mlti = dialog.findViewById(R.id.box_multi_unitratio);
             final TextView tv = dialog.findViewById(R.id.box_multi_buy_factor);
-
-
-
             String tempvalue="";
             defultenablesellprice=false;
 
@@ -335,21 +317,14 @@ public class SearchActivity extends AppCompatActivity {
                     if (Integer.parseInt(AmountMulti) != 0) {
 
                         for (Good good : Multi_Good) {
-
-
                             Good gooddata= dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
                             String temppercent = gooddata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
-
-
                             Log.e("test_1",unitratio_mlti.getText().toString());
-
                             if(unitratio_mlti.getText().toString().equals("")){
                                 temppercent=String.valueOf(100-Integer.parseInt(temppercent.substring(0,temppercent.length()-2)));
                             }else{
                                 temppercent=NumberFunctions.EnglishNumber(unitratio_mlti.getText().toString());
                             }
-
-
                             if (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"))>0){
                                 long Pricetemp=(long) Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"))-((long) Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) *Integer.parseInt(temppercent)/100);
                                 dbh.InsertPreFactorwithPercent(callMethod.ReadString("PreFactorCode"),
@@ -357,7 +332,6 @@ public class SearchActivity extends AppCompatActivity {
                                         AmountMulti,
                                         String.valueOf(Pricetemp),
                                         "0");
-
                             }else{
                                 dbh.InsertPreFactor(callMethod.ReadString("PreFactorCode"),
                                         good.getGoodFieldValue("GoodCode"),
@@ -365,9 +339,6 @@ public class SearchActivity extends AppCompatActivity {
                                         "0",
                                         "0");
                             }
-
-
-
                         }
                         callMethod.showToast( "به سبد خرید اضافه شد");
 
@@ -401,9 +372,6 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
-
-
-
                     visibleItemCount = gridLayoutManager.getChildCount();
                     totalItemCount = gridLayoutManager.getItemCount();
                     pastVisiblesItems = gridLayoutManager.findFirstVisibleItemPosition();
@@ -484,11 +452,16 @@ public class SearchActivity extends AppCompatActivity {
         loading=true;
         Moregoods.clear();
 
-        if(proSearchCondition.equals("")){
-            Moregoods = dbh.getAllGood(NumberFunctions.EnglishNumber(AutoSearch), id,PageMoreData);
-        }else {
-            Moregoods = dbh.getAllGood_Extended(NumberFunctions.EnglishNumber(proSearchCondition), id,PageMoreData);
-        }
+         new Runnable(){
+            public void run() {
+                if(proSearchCondition.equals("")){
+                    Moregoods = dbh.getAllGood(NumberFunctions.EnglishNumber(AutoSearch), id,PageMoreData);
+                }else {
+                    Moregoods = dbh.getAllGood_Extended(NumberFunctions.EnglishNumber(proSearchCondition), id,PageMoreData);
+                }
+            }
+        };
+
 
         if(Moregoods.size()>0){
 
@@ -502,6 +475,9 @@ public class SearchActivity extends AppCompatActivity {
             prog.setVisibility(View.GONE);
 
         }else{
+            loading=false;
+            prog.setVisibility(View.GONE);
+
             callMethod.showToast("کالایی بیشتری یافت نشد");
             PageMoreData=String.valueOf(Integer.parseInt(PageMoreData) -1);
         }
