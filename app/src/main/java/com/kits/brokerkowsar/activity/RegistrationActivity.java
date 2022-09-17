@@ -233,12 +233,8 @@ public class RegistrationActivity extends AppCompatActivity {
             UserInfoNew.setBrokerCode(NumberFunctions.EnglishNumber(ed_reg_borker.getText().toString()));
             dbh.SavePersonalInfo(UserInfoNew);
 
-
-            //dbh.ExecQuery("Update ReplicationTable Set LastRepLogCode = -1 Where ServerTable = 'Good' ");
             dbh.ExecQuery("delete from customer");
             dbh.ExecQuery("Update ReplicationTable Set LastRepLogCode = -1 Where ServerTable = 'Customer' ");
-
-
 
             replication.BrokerStack();
             action.app_info();
@@ -258,7 +254,6 @@ public class RegistrationActivity extends AppCompatActivity {
         callMethod.EditString("PersianCompanyNameUse", "");
         callMethod.EditString("EnglishCompanyNameUse", "");
         callMethod.EditString("ServerURLUse", "");
-        //callMethod.EditString("DatabaseName", "");
         callMethod.EditString("DatabaseName", "");
         intent = new Intent(this, SplashActivity.class);
         finish();

@@ -92,7 +92,7 @@ public class SplashActivity extends AppCompatActivity {
             callMethod.EditBoolan("ActiveStack", false);
             callMethod.EditBoolan("GoodAmount", false);
             callMethod.EditBoolan("ArabicText", true);
-            callMethod.EditBoolan("AutoReplication", true);
+            callMethod.EditBoolan("AutoReplication", false);
             callMethod.EditBoolan("SellPriceTypeDeactivate", true);
 
             callMethod.EditString("ServerURLUse", "");

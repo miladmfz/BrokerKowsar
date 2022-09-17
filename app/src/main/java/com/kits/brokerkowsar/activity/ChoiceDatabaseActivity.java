@@ -9,6 +9,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,7 +54,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     TextView active_edt;
     Button active_btn;
     Intent intent;
-
+    int downloadId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,6 +127,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
                 .setDatabaseEnabled(true)
                 .build();
+
         PRDownloader.initialize(getApplicationContext(), config);
 
         // Setting timeout globally for the download network requests:
@@ -135,7 +137,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                 .build();
         PRDownloader.initialize(getApplicationContext(), config1);
 
-        PRDownloader.download(url, databasedir.getPath(), databasefile.getName())
+        downloadId = PRDownloader.download(url, databasedir.getPath(), databasefile.getName())
                 .build()
                 .setOnStartOrResumeListener(() -> {
                     dialog.show();
@@ -143,6 +145,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                 })
                 .setOnPauseListener(() -> {})
                 .setOnCancelListener(() -> {})
+
                 .setOnProgressListener(progress -> {
                     tv_rep.setText("در حال بارگیری...");
                     tv_step.setText(NumberFunctions.PerisanNumber((((progress.currentBytes)*100)/progress.totalBytes)+"/100"));
@@ -151,7 +154,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                     @SuppressLint("SdCardPath")
                     @Override
                     public void onDownloadComplete() {
-                        dialog.dismiss();
+
                         callMethod.EditString("DatabaseName", "/data/data/com.kits.brokerkowsar/databases/" + dbname + "/KowsarDb.sqlite");
                         dbh = new DatabaseHelper(App.getContext(), callMethod.ReadString("DatabaseName"));
                         dbh.DatabaseCreate();
@@ -169,16 +172,27 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                         intent = new Intent(App.getContext(), SplashActivity.class);
                         startActivity(intent);
                         finish();
+                        dialog.dismiss();
                     }
 
                     @Override
                     public void onError(Error error) {
-                        callMethod.ErrorLog(error.toString());
+                        Toast.makeText(ChoiceDatabaseActivity.this, "مشکل ارتباطی /n  لطفا دوباره امتحان کنید", Toast.LENGTH_SHORT).show();
+                        test();
+
+
                     }
 
                 });
+
     }
-    @SuppressLint({"SetTextI18n", "SdCardPath"})
+
+    public void test() {
+        callMethod.ErrorLog("testeror");
+        PRDownloader.resume(downloadId);
+    }
+
+        @SuppressLint({"SetTextI18n", "SdCardPath"})
     public void CreateView(Activation singleactive){
 
         String serverip=singleactive.getServerURL().substring(singleactive.getServerURL().indexOf("//")+2,singleactive.getServerURL().indexOf("/login")-6);

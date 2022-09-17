@@ -222,24 +222,8 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
     @SuppressLint("SetTextI18n")
     public void CheckConfig() {
-        try {
-            UserInfo auser = new UserInfo();
-            File databasefile = new File(callMethod.ReadString("DatabaseName"));
 
-
-            if (databasefile.exists()) {
-                auser = dbh.LoadPersonalInfo();
-            } else {
-                callMethod.EditString("ServerURLUse", "");
-                callMethod.EditString("SQLiteURLUse", "");
-                callMethod.EditString("PersianCompanyNameUse", "");
-                callMethod.EditString("EnglishCompanyNameUse", "");
-                callMethod.EditString("DatabaseName","");
-                intent = new Intent(this, SplashActivity.class);
-                startActivity(intent);
-            }
-
-
+        UserInfo auser = dbh.LoadPersonalInfo();
 
 
 
@@ -263,9 +247,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
                             .show();
                 }
             }else {
-                if(callMethod.ReadBoolan("AutoReplication")) {
-                    workManager.cancelAllWork();
-                }
+
                 tv_brokercode.setText("کد بازاریاب ندارد");
                 new AlertDialog.Builder(this)
                         .setTitle("عدم وجود کد بازاریاب")
@@ -280,9 +262,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
                         })
                         .show();
             }
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
+
 
 
     }

@@ -723,7 +723,7 @@ public class Replication {
                 }
             });
         } else {
-
+            callMethod.EditBoolan("AutoReplication", true);
             intent = new Intent(mContext, NavActivity.class);
             mContext.startActivity(intent);
             ((Activity) mContext).finish();
