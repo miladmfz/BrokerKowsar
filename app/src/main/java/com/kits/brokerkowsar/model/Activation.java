@@ -1,6 +1,9 @@
 package com.kits.brokerkowsar.model;
 
 import com.google.gson.annotations.SerializedName;
+import com.kits.brokerkowsar.application.App;
+
+import java.io.File;
 
 public class Activation {
 
@@ -19,6 +22,14 @@ public class Activation {
     @SerializedName("MaxDevice")
     private String MaxDevice;
 
+    public String getDatabaseFolderPath() {
+        return "/data/data/"+App.getContext().getPackageName() + "/databases/" + EnglishCompanyName;
+    }
+
+
+    public String getDatabaseFilePath() {
+        return "/data/data/"+App.getContext().getPackageName() + "/databases/" + EnglishCompanyName+"/KowsarDb.sqlite";
+    }
 
     public String getAppBrokerCustomerCode() {
         return AppBrokerCustomerCode;

@@ -528,20 +528,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 k++;
             }
         }
-        //query = query + " LIMIT " + SH_itemamount + " ";
 
         query = query + " LIMIT  "+LimitAmount;
         query = query + " OFFSET "+(Integer.parseInt(LimitAmount)*Integer.parseInt(MoreCallData));
 
         cursor = getWritableDatabase().rawQuery(query, null);
 
-        Log.e("test_",query);
+        Log.e("test_query",query);
         if (cursor != null) {
 
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
                 for (Column column : columns) {
-                    Log.e("test_",column.getColumnName());
 
                     try{
                         switch (column.getColumnType()) {

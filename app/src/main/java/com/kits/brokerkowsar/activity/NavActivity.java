@@ -353,7 +353,6 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             callMethod.EditString("PersianCompanyNameUse", "");
             callMethod.EditString("EnglishCompanyNameUse", "");
             callMethod.EditString("ServerURLUse", "");
-            //callMethod.EditString("DatabaseName", "");
             callMethod.EditString("DatabaseName", "");
             intent = new Intent(this, SplashActivity.class);
             finish();

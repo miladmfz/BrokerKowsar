@@ -53,6 +53,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     LinearLayoutCompat active_line;
     TextView active_edt;
     Button active_btn;
+    Button btn_prog;
     Intent intent;
     int downloadId;
     @Override
@@ -82,6 +83,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         dialog.setContentView(R.layout.rep_prog);
         tv_rep = dialog.findViewById(R.id.rep_prog_text);
         tv_step = dialog.findViewById(R.id.rep_prog_step);
+        btn_prog = dialog.findViewById(R.id.rep_prog_btn);
         tv_versionname = findViewById(R.id.activition_Version);
 
 
@@ -122,7 +124,14 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
 
     }
 
-    public void DownloadRequesttest(String url,String dbname,File databasedir, File databasefile) {
+    public void DownloadRequest(Activation activation) {
+        File file= new File(activation.getDatabaseFilePath());
+        File file1= new File(activation.getDatabaseFolderPath());
+        Log.e("test_filename",file.getName());
+        Log.e("test_filename",file1.getName());
+        Log.e("test_fe0",activation.getDatabaseFilePath());
+        Log.e("test_fe1","/data/data/com.kits.brokerkowsar/databases/" + activation.getEnglishCompanyName() + "/KowsarDb.sqlite");
+        btn_prog.setOnClickListener(view -> DownloadRequest(activation));
 
         PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
                 .setDatabaseEnabled(true)
@@ -137,7 +146,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                 .build();
         PRDownloader.initialize(getApplicationContext(), config1);
 
-        downloadId = PRDownloader.download(url, databasedir.getPath(), databasefile.getName())
+        downloadId = PRDownloader.download( activation.getSQLiteURL(), activation.getDatabaseFolderPath(), "KowsarDb.sqlite")
                 .build()
                 .setOnStartOrResumeListener(() -> {
                     dialog.show();
@@ -155,20 +164,21 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                     @Override
                     public void onDownloadComplete() {
 
-                        callMethod.EditString("DatabaseName", "/data/data/com.kits.brokerkowsar/databases/" + dbname + "/KowsarDb.sqlite");
+                        callMethod.EditString("DatabaseName", activation.getDatabaseFilePath());
                         dbh = new DatabaseHelper(App.getContext(), callMethod.ReadString("DatabaseName"));
                         dbh.DatabaseCreate();
-                        File tempdb = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse")+"/tempDb");
+                        File tempdb = new File(activation.getDatabaseFolderPath()+"/tempDb");
 
                         if (tempdb.exists()){
-                            String tempdbpath= getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse")+"/tempDb";
-                            dbh.GetLastDataFromOldDataBase(tempdbpath);
+                            dbh.GetLastDataFromOldDataBase(activation.getDatabaseFolderPath()+"/tempDb");
                             dbh.InitialConfigInsert();
                             tempdb.delete();
                         }else{
                             dbh.InitialConfigInsert();
                         }
-
+                        callMethod.EditString("PersianCompanyNameUse", activation.getPersianCompanyName());
+                        callMethod.EditString("EnglishCompanyNameUse",activation.getEnglishCompanyName());
+                        callMethod.EditString("ServerURLUse", activation.getServerURL());
                         intent = new Intent(App.getContext(), SplashActivity.class);
                         startActivity(intent);
                         finish();
@@ -177,9 +187,8 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Error error) {
-                        Toast.makeText(ChoiceDatabaseActivity.this, "مشکل ارتباطی /n  لطفا دوباره امتحان کنید", Toast.LENGTH_SHORT).show();
-                        test();
-
+                        btn_prog.setVisibility(View.VISIBLE);
+                        tv_step.setText("مشکل ارتباطی لطفا دوباره امتحان کنید");
 
                     }
 
@@ -187,10 +196,6 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
 
     }
 
-    public void test() {
-        callMethod.ErrorLog("testeror");
-        PRDownloader.resume(downloadId);
-    }
 
         @SuppressLint({"SetTextI18n", "SdCardPath"})
     public void CreateView(Activation singleactive){
@@ -269,15 +274,11 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
 
         btn_login.setOnClickListener(v -> {
 
-            File databasedir = new File(getApplicationInfo().dataDir + "/databases/" + singleactive.getEnglishCompanyName());
-            File databasefile = new File(databasedir, "/KowsarDb.sqlite");
-            callMethod.EditString("PersianCompanyNameUse", singleactive.getPersianCompanyName());
-            callMethod.EditString("EnglishCompanyNameUse",singleactive.getEnglishCompanyName());
-            callMethod.EditString("ServerURLUse", singleactive.getServerURL());
-            if (!databasefile.exists()) {
-                DownloadRequesttest(singleactive.getSQLiteURL(),singleactive.getEnglishCompanyName(),databasedir,databasefile);
+
+            if (!new File(singleactive.getDatabaseFilePath()).exists()) {
+                DownloadRequest(singleactive);
             } else {
-                callMethod.EditString("DatabaseName", "/data/data/com.kits.brokerkowsar/databases/" + singleactive.getEnglishCompanyName() + "/KowsarDb.sqlite");
+                callMethod.EditString("DatabaseName", singleactive.getDatabaseFilePath());
                 intent = new Intent(this, SplashActivity.class);
                 startActivity(intent);
                 finish();
@@ -288,7 +289,10 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
 
         btn_update.setOnClickListener(v -> {
 
-            Call<RetrofitResponse> call1 = apiInterface.Activation("ActivationCode", singleactive.getActivationCode());
+            Call<RetrofitResponse> call1 = apiInterface.Activation(
+                    "ActivationCode",
+                    singleactive.getActivationCode()
+            );
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {

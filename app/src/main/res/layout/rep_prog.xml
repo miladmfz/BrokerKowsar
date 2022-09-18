@@ -47,6 +47,24 @@
         android:textSize="20sp"
         android:paddingBottom="10dp"
         android:visibility="visible" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:weightSum="1">
+        <Button
+            android:id="@+id/rep_prog_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:layout_margin="2dp"
+            android:text="امتحان محدد"
+            android:textColor="#ffffff"
+            app:backgroundTint="@color/blue_500"
+            app:strokeColor="@color/grey_1000"
+            app:strokeWidth="1dp"
+            android:visibility="gone"/>
+
+    </LinearLayout>
 
 
 </androidx.appcompat.widget.LinearLayoutCompat>

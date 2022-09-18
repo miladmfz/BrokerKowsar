@@ -319,7 +319,6 @@ public class SearchActivity extends AppCompatActivity {
                         for (Good good : Multi_Good) {
                             Good gooddata= dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
                             String temppercent = gooddata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
-                            Log.e("test_1",unitratio_mlti.getText().toString());
                             if(unitratio_mlti.getText().toString().equals("")){
                                 temppercent=String.valueOf(100-Integer.parseInt(temppercent.substring(0,temppercent.length()-2)));
                             }else{
@@ -435,6 +434,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void GetDataFromDataBase() {
+        loading=true;
         Moregoods.clear();
         if(proSearchCondition.equals("")){
             Moregoods = dbh.getAllGood(NumberFunctions.EnglishNumber(AutoSearch), id,PageMoreData);
@@ -449,38 +449,32 @@ public class SearchActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void GetMoreDataFromDataBase() {
-        loading=true;
+ Log.e("test111","0");
         Moregoods.clear();
 
-         new Runnable(){
-            public void run() {
                 if(proSearchCondition.equals("")){
+
                     Moregoods = dbh.getAllGood(NumberFunctions.EnglishNumber(AutoSearch), id,PageMoreData);
                 }else {
                     Moregoods = dbh.getAllGood_Extended(NumberFunctions.EnglishNumber(proSearchCondition), id,PageMoreData);
                 }
-            }
-        };
+                if(Moregoods.size()>0){
+                    if(goods.isEmpty()){
+                        goods.addAll(Moregoods);
+                    }
+                    if(goods.size()>(Integer.parseInt(callMethod.ReadString("Grid"))*10)){
+                        goods.addAll(Moregoods);
+                    }
+                    adapter.notifyDataSetChanged();
+                    prog.setVisibility(View.GONE);
+                    loading=true;
 
-
-        if(Moregoods.size()>0){
-
-            if(goods.isEmpty()){
-                goods.addAll(Moregoods);
-            }
-            if(goods.size()>(Integer.parseInt(callMethod.ReadString("Grid"))*10)){
-                goods.addAll(Moregoods);
-            }
-            adapter.notifyDataSetChanged();
-            prog.setVisibility(View.GONE);
-
-        }else{
-            loading=false;
-            prog.setVisibility(View.GONE);
-
-            callMethod.showToast("کالایی بیشتری یافت نشد");
-            PageMoreData=String.valueOf(Integer.parseInt(PageMoreData) -1);
-        }
+                }else{
+                    loading=false;
+                    prog.setVisibility(View.GONE);
+                    callMethod.showToast("کالای بیشتری یافت نشد");
+                    PageMoreData=String.valueOf(Integer.parseInt(PageMoreData) -1);
+                }
 
     }
 
