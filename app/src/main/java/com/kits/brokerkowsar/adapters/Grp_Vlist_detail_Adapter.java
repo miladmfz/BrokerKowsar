@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.activity.SearchActivity;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.model.DatabaseHelper;

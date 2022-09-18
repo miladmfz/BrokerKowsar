@@ -8,23 +8,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.Request;
@@ -33,8 +27,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.adapters.Good_ProSearch_Adapter;
-import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.activity.BuyActivity;
 import com.kits.brokerkowsar.activity.CustomerActivity;
 import com.kits.brokerkowsar.activity.NavActivity;
@@ -45,7 +37,6 @@ import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.kits.brokerkowsar.model.UserInfo;
-import com.kits.brokerkowsar.model.Utilities;
 import com.kits.brokerkowsar.webService.APIClient_kowsar;
 import com.kits.brokerkowsar.webService.APIInterface;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
@@ -56,7 +47,6 @@ import org.json.JSONObject;
 
 
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;

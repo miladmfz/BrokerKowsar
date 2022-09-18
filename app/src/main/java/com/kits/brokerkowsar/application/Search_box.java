@@ -17,7 +17,6 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 
 import com.google.android.material.button.MaterialButton;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.activity.SearchActivity;
 import com.kits.brokerkowsar.model.Column;
 import com.kits.brokerkowsar.model.DatabaseHelper;

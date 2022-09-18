@@ -7,14 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.PreFactor;

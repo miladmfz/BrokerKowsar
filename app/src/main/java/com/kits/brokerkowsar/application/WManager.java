@@ -1,21 +1,11 @@
 package com.kits.brokerkowsar.application;
 
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
-
 
 import androidx.annotation.NonNull;
-import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
-
-import com.google.common.util.concurrent.ListenableFuture;
-
-import java.io.File;
-import java.util.concurrent.Executor;
 
 
 public class WManager extends Worker {

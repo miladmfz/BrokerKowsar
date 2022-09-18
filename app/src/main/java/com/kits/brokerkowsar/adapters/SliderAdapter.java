@@ -2,14 +2,11 @@ package com.kits.brokerkowsar.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Environment;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,22 +16,13 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.Image_info;
-import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.application.App;
-import com.kits.brokerkowsar.activity.DetailActivity;
-import com.kits.brokerkowsar.application.App;
-import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.RetrofitResponse;
-import com.kits.brokerkowsar.webService.APIInterface;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
@@ -42,7 +30,6 @@ import com.smarteist.autoimageslider.SliderViewAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;

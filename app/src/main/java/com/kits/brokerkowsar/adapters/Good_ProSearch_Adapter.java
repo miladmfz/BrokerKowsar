@@ -69,10 +69,10 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
         this.goods = goods;
         this.callMethod = new CallMethod(mContext);
         this.image_info = new Image_info(mContext);
-        dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
-        action = new Action(mContext);
-        Columns = dbh.GetColumns("id", "", "1");
-        apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
+        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
+        this.action = new Action(mContext);
+        this.Columns = dbh.GetColumns("id", "", "1");
+        this.apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
     }
 
     @NonNull
@@ -98,7 +98,6 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
                 extra_TextView.setGravity(Gravity.CENTER);
                 extra_TextView.setTextColor(mContext.getColor(R.color.grey_1000));
 
-
                 try {
                     if(Integer.parseInt(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname")))>999) {
                         extra_TextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))))));
@@ -108,9 +107,6 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
                 }catch (Exception e){
                     extra_TextView.setText(NumberFunctions.PerisanNumber(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))));
                 }
-
-
-
 
                 if (Column.getSortOrder().equals("2")) {
                     extra_TextView.setLines(3);
@@ -137,10 +133,8 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
 
 
                 holder.mainline.addView(extra_TextView);
-
             }
         }
-
         if (image_info.Image_exist(gooddetail.getGoodFieldValue("KsrImageCode"))) {
             String root = Environment.getExternalStorageDirectory().getAbsolutePath();
             File imagefile = new File(root + "/Kowsar/" +
