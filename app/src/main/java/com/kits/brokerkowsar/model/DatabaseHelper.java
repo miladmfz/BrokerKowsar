@@ -522,7 +522,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         String newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
                         query=query+newSt + " DESC ";
                     }else{
-                        query = query + column.getColumnName();
+                        query = query + column.getColumnName()+" DESC ";
                     }
                 }
                 k++;
@@ -654,7 +654,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         String newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
                         query=query+newSt + " DESC ";
                     }else{
-                        query = query + column.getColumnName();
+                        query = query + column.getColumnName()+" DESC ";
                     }
                 }
                 k++;
@@ -777,7 +777,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
                         query=query+newSt + " DESC ";
                     }else{
-                        query = query + column.getColumnName();
+                        query = query + column.getColumnName()+" DESC ";
                     }
                 }
                 k++;
