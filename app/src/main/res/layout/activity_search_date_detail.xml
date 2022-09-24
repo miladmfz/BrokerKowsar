@@ -59,66 +59,47 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.5">
 
-                <Button
-                    android:id="@+id/Search_date_detailActivity_refresh_fac"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0."
-                    android:background="@drawable/ic_refresh" />
-
-                <TextView
-                    android:id="@+id/Search_date_detailActivity_sum_factor"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.5"
-                    android:textSize="20sp"
-
-                    android:gravity="center" />
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="@string/totalfactorheader"
-                    android:textSize="20sp"
-
-                    android:layout_weight="0.5"
+                    android:text="@string/customerfactorheader"
+                    android:textSize="14sp"
+                    android:layout_weight="0.7"
                     android:gravity="center" />
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <TextView
-                android:id="@+id/Search_date_detailActivity_customer_code"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text=""
-                android:layout_weight="0.8"
-                android:textSize="20sp"
-
-                android:gravity="center" />
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5">
 
                 <TextView
                     android:id="@+id/Search_date_detailActivity_customer"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:textSize="20sp"
-
-                    android:layout_weight="0.5"
-                    android:gravity="center" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="@string/customerfactorheader"
-
-                    android:layout_weight="0.5"
+                    android:textSize="18sp"
+                    android:layout_weight="0.3"
                     android:gravity="center" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/Search_date_detailActivity_ll_sum_factor"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="0.5">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/totalfactorheader"
+                    android:textSize="14sp"
+                    android:layout_weight="0.7"
+                    android:gravity="center" />
+                <TextView
+                    android:id="@+id/Search_date_detailActivity_sum_factor"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3"
+                    android:textSize="18sp"
+                    android:gravity="center" />
+
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
         </androidx.appcompat.widget.LinearLayoutCompat>
 
         <androidx.appcompat.widget.LinearLayoutCompat

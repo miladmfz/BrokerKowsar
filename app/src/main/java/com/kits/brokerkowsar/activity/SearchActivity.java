@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -75,19 +76,18 @@ public class SearchActivity extends AppCompatActivity {
 
     TextView tv_customer;
     TextView tv_sumfac;
-    TextView tv_customer_code;
     ArrayList<GoodGroup> goodGroups;
     SwitchMaterial sm_activestack;
     SwitchMaterial sm_goodamount;
     Button btn_pro_search;
     Button btn_grp_button;
-    Button btn_ref_fac;
     Button btn_scan;
     Toolbar toolbar;
     RecyclerView recyclerView_grp;
     ProgressBar prog;
     Grp_Vlist_detail_Adapter grp_adapter;
     boolean defultenablesellprice;
+    LinearLayoutCompat llsumfactor;
 
 
     @Override
@@ -128,7 +128,6 @@ public class SearchActivity extends AppCompatActivity {
         sm_goodamount = findViewById(R.id.SearchActivityswitch_amount);
         btn_pro_search = findViewById(R.id.SearchActivity_pro_search);
         btn_grp_button = findViewById(R.id.SearchActivity_grp);
-        btn_ref_fac = findViewById(R.id.SearchActivity_refresh_fac);
         toolbar = findViewById(R.id.SearchActivity_toolbar);
         recyclerView_grp = findViewById(R.id.SearchActivity_grp_recy);
         btn_scan = findViewById(R.id.SearchActivity_scan);
@@ -136,7 +135,7 @@ public class SearchActivity extends AppCompatActivity {
 
         tv_customer = findViewById(R.id.SearchActivity_customer);
         tv_sumfac = findViewById(R.id.SearchActivity_sum_factor);
-        tv_customer_code = findViewById(R.id.SearchActivity_customer_code);
+        llsumfactor = findViewById(R.id.SearchActivity_ll_sum_factor);
         recyclerView_good = findViewById(R.id.SearchActivity_allgood);
         fab = findViewById(R.id.SearchActivity_fab);
         edtsearch = findViewById(R.id.SearchActivity_edtsearch);
@@ -153,16 +152,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
 
-    public void factorState() {
-        if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
-            tv_customer.setText("فاکتوری انتخاب نشده");
-            tv_sumfac.setText("0");
-        } else {
-            tv_customer.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
-            tv_sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorCode"))))));
-            tv_customer_code.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PreFactorCode")));
-        }
-    }
+
 
 
     @SuppressLint("SetTextI18n")
@@ -172,12 +162,8 @@ public class SearchActivity extends AppCompatActivity {
 
         toolbar.setTitle(title);
 
-        factorState();
 
-        btn_ref_fac.setOnClickListener(view -> {
-            factorState();
-        });
-
+        Log.e("test_id",id);
         goodGroups = dbh.getAllGroups(id);
         grp_adapter = new Grp_Vlist_detail_Adapter(goodGroups, this);
         recyclerView_grp.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false));
@@ -449,7 +435,6 @@ public class SearchActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void GetMoreDataFromDataBase() {
- Log.e("test111","0");
         Moregoods.clear();
 
                 if(proSearchCondition.equals("")){
@@ -515,6 +500,22 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
+    public void factorState() {
+        if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
+            tv_customer.setText("فاکتوری انتخاب نشده");
+            llsumfactor.setVisibility(View.GONE);
+        } else {
+            llsumfactor.setVisibility(View.VISIBLE);
+            tv_customer.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
+            tv_sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorCode"))))));
+        }
+    }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        factorState();
+        super.onWindowFocusChanged(hasFocus);
+    }
 }
 
 

@@ -10,7 +10,7 @@ android {
         minSdk 23
         targetSdk 32
         versionCode 1
-        versionName "11.06.12"
+        versionName "11.07.01"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -42,11 +42,16 @@ dependencies {
     implementation 'com.google.android.material:material:1.7.0-alpha01'
 
     // component
+    implementation 'com.thoughtbot:expandablerecyclerview:1.3'
+
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.github.smarteist:autoimageslider:1.3.2'
     implementation "androidx.work:work-runtime:2.7.1"
     implementation "androidx.concurrent:concurrent-futures:1.1.0"
     implementation 'com.google.guava:guava:29.0-android'
+    implementation 'jp.wasabeef:recyclerview-animators:4.0.2'
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+
 
     //  font and image
     implementation 'uk.co.chrisjenx:calligraphy:2.3.0'

@@ -66,8 +66,8 @@ public class DetailActivity extends AppCompatActivity {
     Toolbar toolbar;
     TextView tv_customer;
     TextView tv_sumfac;
-    TextView tv_customer_code;
     Button btnbuy;
+    LinearLayoutCompat llsumfactor;
 
 
     @Override
@@ -111,7 +111,7 @@ public class DetailActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.DetailActivity_toolbar);
         tv_customer = findViewById(R.id.DetailActivity_customer);
         tv_sumfac = findViewById(R.id.DetailActivity_sum_factor);
-        tv_customer_code = findViewById(R.id.DetailActivity_customer_code);
+        llsumfactor = findViewById(R.id.DetailActivity_ll_sum_factor);
         mainviewline = findViewById(R.id.DetailActivity_line_property);
         prog = findViewById(R.id.DetailActivity_prog);
 
@@ -125,12 +125,11 @@ public class DetailActivity extends AppCompatActivity {
     public void init() {
         if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
             tv_customer.setText("فاکتوری انتخاب نشده");
-            tv_sumfac.setText("0");
-
+            llsumfactor.setVisibility(View.GONE);
         } else {
+            llsumfactor.setVisibility(View.VISIBLE);
             tv_customer.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
             tv_sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorCode"))))));
-            tv_customer_code.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PreFactorCode")));
         }
 
         for (Column Column : Columns) {

@@ -55,32 +55,25 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="@string/totalfactorheader"
-                    android:textSize="20sp"
-                    android:layout_weight="0.5"
+                    android:text="@string/customerfactorheader"
+                    android:textSize="14sp"
+                    android:layout_weight="0.7"
                     android:gravity="center" />
 
                 <TextView
-                    android:id="@+id/DetailActivity_sum_factor"
+                    android:id="@+id/DetailActivity_customer"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.5"
-                    android:textSize="12sp"
+                    android:layout_weight="0.3"
+                    android:textSize="18sp"
                     android:gravity="center" />
+
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <TextView
-                android:id="@+id/DetailActivity_customer_code"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text=""
-                android:layout_weight="0.7"
-                android:textSize="20sp"
-
-                android:gravity="center" />
-
             <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/DetailActivity_ll_sum_factor"
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5">
@@ -88,18 +81,18 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="@string/customerfactorheader"
-                    android:textSize="12sp"
-                    android:layout_weight="0.5"
+                    android:text="@string/totalfactorheader"
+                    android:textSize="14sp"
+                    android:layout_weight="0.7"
                     android:gravity="center" />
 
                 <TextView
-                    android:id="@+id/DetailActivity_customer"
+                    android:id="@+id/DetailActivity_sum_factor"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.5"
+                    android:layout_weight="0.3"
+                    android:textSize="18sp"
                     android:gravity="center" />
-
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 

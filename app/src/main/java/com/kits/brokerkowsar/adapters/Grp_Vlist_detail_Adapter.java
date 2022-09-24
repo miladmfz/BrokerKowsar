@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -47,17 +50,16 @@ public class Grp_Vlist_detail_Adapter extends RecyclerView.Adapter<Grp_Vlist_det
 
     @Override
     public void onBindViewHolder(@NonNull GoodGroupViewHolder holder, int position) {
-        final GoodGroup GoodGroupdetail = GoodGroups.get(position);
 
 
-        holder.grpname.setText(GoodGroupdetail.getGoodGroupFieldValue("Name"));
+        holder.grpname.setText(GoodGroups.get(position).getGoodGroupFieldValue("Name"));
 
 
-        if (dbh.getAllGroups(String.valueOf(GoodGroupdetail.getGoodGroupFieldValue("GroupCode"))).size() == 0) {
-            holder.grpname.setIconSize(1);
-
+        if (Integer.parseInt(GoodGroups.get(position).getGoodGroupFieldValue("ChildNo"))>0) {
+            holder.img.setVisibility(View.VISIBLE);
         } else
-            holder.grpname.setIconSize(50);
+            holder.img.setVisibility(View.GONE);
+
 
 
         holder.grpname.setOnClickListener(v -> {
@@ -78,13 +80,15 @@ public class Grp_Vlist_detail_Adapter extends RecyclerView.Adapter<Grp_Vlist_det
 
     static class GoodGroupViewHolder extends RecyclerView.ViewHolder {
 
-        private final MaterialButton grpname;
-        MaterialCardView rltv;
+        private final TextView grpname;
+        private final ImageView img;
+        FrameLayout rltv;
 
         GoodGroupViewHolder(View itemView) {
             super(itemView);
             grpname = itemView.findViewById(R.id.grp_vlist_detail_name);
             rltv = itemView.findViewById(R.id.grp_vlist_detail);
+            img = itemView.findViewById(R.id.grp_vlist_detail_image);
         }
     }
 }

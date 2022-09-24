@@ -21,6 +21,12 @@ public class GoodGroup {
     @SerializedName("L5")
     private Integer L5;
 
+    @SerializedName("ChildNo")
+    private Integer ChildNo;
+
+
+
+
 
     public String getGoodGroupFieldValue(String AKey) {
 
@@ -60,6 +66,10 @@ public class GoodGroup {
                 if (L5 == null) Res = "";
                 else Res = L5.toString();
                 break;
+            case "childno":
+                if (ChildNo == null) Res = "0";
+                else Res = ChildNo.toString();
+                break;
         }
 
         return Res;
@@ -96,5 +106,10 @@ public class GoodGroup {
 
     public void setL5(Integer l5) {
         L5 = l5;
+    }
+
+
+    public void setChildNo(Integer childNo) {
+        ChildNo = childNo;
     }
 }

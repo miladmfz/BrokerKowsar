@@ -581,6 +581,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         columns = GetColumns("", "", "1");
 
 
+
         query = "With FilterTable As (Select 0 as SecondField) SELECT ";
         k = 0;
         for (Column column : columns) {
@@ -1574,7 +1575,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public ArrayList<GoodGroup> getAllGroups(String GL) {
 
-        query = "SELECT * FROM GoodsGrp WHERE 1=1 ";
+        query = "SELECT * ," +
+                "case When L1=0 Then (Select Count(*) From GoodsGrp s Where s.L1=g.GroupCode) " +
+                "When L2=0 Then (Select Count(*) From GoodsGrp s Where s.L2=g.GroupCode) " +
+                "When L3=0 Then (Select Count(*) From GoodsGrp s Where s.L3=g.GroupCode) " +
+                "When L4=0 Then (Select Count(*) From GoodsGrp s Where s.L4=g.GroupCode) " +
+                "When L5=0 Then (Select Count(*) From GoodsGrp s Where s.L5=g.GroupCode) " +
+                "Else 0 End  ChildNo " +
+                " FROM GoodsGrp g WHERE 1=1 ";
         if (Integer.parseInt(GL) > 0) {
             query = query + " And ((L1=" + GL + " And L2=0) or (L2=" + GL + " And L3=0) or (L3=" + GL + " And L4=0) or (L4=" + GL + " And L5=0) or (L5=" + GL + "))";
         } else {
@@ -1583,7 +1591,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ArrayList<GoodGroup> groups = new ArrayList<>();
 
-        Log.e("test",query);
+        Log.e("test_query",query);
         cursor = getWritableDatabase().rawQuery(query, null);
 
         if (cursor != null) {
@@ -1597,6 +1605,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     grp.setL3(cursor.getInt(cursor.getColumnIndex("L3")));
                     grp.setL4(cursor.getInt(cursor.getColumnIndex("L4")));
                     grp.setL5(cursor.getInt(cursor.getColumnIndex("L5")));
+                    grp.setChildNo(cursor.getInt(cursor.getColumnIndex("ChildNo")));
                 }catch (Exception ignored) {}
                 groups.add(grp);
 

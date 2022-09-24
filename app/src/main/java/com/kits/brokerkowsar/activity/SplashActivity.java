@@ -1,6 +1,7 @@
 package com.kits.brokerkowsar.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 
+@SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
 
 
@@ -46,7 +48,6 @@ public class SplashActivity extends AppCompatActivity {
     final int PERMISSION_REQUEST_CODE = 1;
     WorkManager workManager;
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +80,9 @@ public class SplashActivity extends AppCompatActivity {
             }catch (Exception ignored){}
         }
 
+        if(callMethod.ReadString("ServerURLUse").equals("")){
+            callMethod.EditString("DatabaseName","");
+        }
         if (callMethod.firstStart()) {
             callMethod.EditBoolan("FirstStart", false);
             callMethod.EditString("SellOff", "1");

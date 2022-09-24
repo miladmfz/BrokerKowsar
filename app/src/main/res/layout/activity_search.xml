@@ -74,42 +74,28 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.5">
 
-                <Button
-                    android:id="@+id/SearchActivity_refresh_fac"
-                    android:layout_width="50dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0."
-                    android:background="@drawable/ic_refresh" />
-
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.5"
+                    android:layout_weight="0.7"
                     android:gravity="center"
-                    android:text="@string/totalfactorheader"
-                    android:textSize="20sp" />
+                    android:text="@string/customerfactorheader"
+                    android:textSize="14sp"/>
 
                 <TextView
-                    android:id="@+id/SearchActivity_sum_factor"
+                    android:id="@+id/SearchActivity_customer"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.6"
+                    android:layout_weight="0.3"
                     android:gravity="center"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
+
             </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <TextView
-                android:id="@+id/SearchActivity_customer_code"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.8"
-                android:gravity="center"
-
-                android:textSize="20sp" />
-
             <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/SearchActivity_ll_sum_factor"
+
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5">
@@ -117,21 +103,22 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.5"
+                    android:layout_weight="0.7"
                     android:gravity="center"
-                    android:text="@string/customerfactorheader" />
+                    android:text="@string/totalfactorheader"
+                    android:textSize="14sp" />
 
                 <TextView
-                    android:id="@+id/SearchActivity_customer"
+                    android:id="@+id/SearchActivity_sum_factor"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0.4"
+                    android:layout_weight="0.3"
                     android:gravity="center"
-                    android:textSize="14sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
 
-
             </androidx.appcompat.widget.LinearLayoutCompat>
+
         </androidx.appcompat.widget.LinearLayoutCompat>
 
 
@@ -161,10 +148,9 @@
                     android:layout_weight="0.3"
                     android:gravity="center"
                     android:text="@string/search_grp"
-                    android:textColor="@color/green_900"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:backgroundTint="@color/green_200"
+                    android:textColor="@color/color_black"
+                    android:textSize="16sp"
+                    app:backgroundTint="@color/blue_100"
                     app:strokeColor="@color/grey_1000"
                     app:strokeWidth="1dp" />
 
@@ -179,7 +165,7 @@
                     android:gravity="center"
                     android:text="@string/prosearch_active"
                     android:textColor="@color/grey_1000"
-                    android:textSize="12sp"
+                    android:textSize="16sp"
                     app:backgroundTint="@color/white"
                     app:strokeColor="@color/grey_1000"
                     app:strokeWidth="1dp" />
@@ -217,7 +203,7 @@
                     android:id="@+id/SearchActivity_edtsearch"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:layout_weight="0.3"
+                    android:layout_weight="0.2"
                     android:background="@drawable/bg_round_selected"
                     android:hint="@string/search_et"
                     android:inputType="text"
@@ -227,26 +213,14 @@
                     tools:ignore="LabelFor" />
 
                 <Button
-
-                    android:id="@+id/SearchActivity_scan"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
                     android:layout_margin="5dp"
-                    android:layout_weight="0.90"
-                    android:gravity="center"
-                    android:singleLine="true"
-                    android:text="@string/scan"
-
-                    android:textColor="@color/green_900"
-                    android:textSize="14sp"
-
-
-                    android:textStyle="bold"
-                    app:backgroundTint="@color/green_200"
-                    app:strokeColor="@color/grey_1000"
-                    app:strokeWidth="1dp"
-
+                    android:id="@+id/SearchActivity_scan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingRight="40dp"
+                    android:layout_weight="0.2"
+                    android:layout_gravity="center"
+                    android:background="@drawable/ic_baseline_qr_code_scanner_24"
                     />
             </androidx.appcompat.widget.LinearLayoutCompat>
 

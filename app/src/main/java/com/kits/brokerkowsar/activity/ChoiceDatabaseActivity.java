@@ -125,12 +125,6 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     }
 
     public void DownloadRequest(Activation activation) {
-        File file= new File(activation.getDatabaseFilePath());
-        File file1= new File(activation.getDatabaseFolderPath());
-        Log.e("test_filename",file.getName());
-        Log.e("test_filename",file1.getName());
-        Log.e("test_fe0",activation.getDatabaseFilePath());
-        Log.e("test_fe1","/data/data/com.kits.brokerkowsar/databases/" + activation.getEnglishCompanyName() + "/KowsarDb.sqlite");
         btn_prog.setOnClickListener(view -> DownloadRequest(activation));
 
         PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
@@ -197,7 +191,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     }
 
 
-        @SuppressLint({"SetTextI18n", "SdCardPath"})
+    @SuppressLint({"SetTextI18n", "SdCardPath"})
     public void CreateView(Activation singleactive){
 
         String serverip=singleactive.getServerURL().substring(singleactive.getServerURL().indexOf("//")+2,singleactive.getServerURL().indexOf("/login")-6);
@@ -278,6 +272,9 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
             if (!new File(singleactive.getDatabaseFilePath()).exists()) {
                 DownloadRequest(singleactive);
             } else {
+                callMethod.EditString("PersianCompanyNameUse", singleactive.getPersianCompanyName());
+                callMethod.EditString("EnglishCompanyNameUse",singleactive.getEnglishCompanyName());
+                callMethod.EditString("ServerURLUse", singleactive.getServerURL());
                 callMethod.EditString("DatabaseName", singleactive.getDatabaseFilePath());
                 intent = new Intent(this, SplashActivity.class);
                 startActivity(intent);

@@ -3,7 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.kits.brokerkowsar">
 
-
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         tools:ignore="ManifestOrder" />
@@ -18,9 +17,9 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
@@ -35,6 +34,9 @@
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup"
         tools:targetApi="n">
+        <activity
+            android:name=".activity.AllViewActivity"
+            android:exported="false" />
         <activity android:name=".activity.ChoiceDatabaseActivity" />
         <activity android:name=".activity.AboutusActivity" />
         <activity android:name=".activity.BuyActivity" />
@@ -50,7 +52,8 @@
         <activity android:name=".activity.ScanCodeActivity" />
         <activity android:name=".activity.Search_date_detailActivity" />
         <activity android:name=".activity.SearchActivity" />
-        <activity android:name=".activity.SplashActivity"
+        <activity
+            android:name=".activity.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

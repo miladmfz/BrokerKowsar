@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -73,15 +74,18 @@ public class Search_date_detailActivity extends AppCompatActivity {
     public String title = "";
     Intent intent;
 
-    Button btn_refresh;
     Toolbar toolbar;
     TextView tv_customer;
     TextView tv_sumfac;
-    TextView tv_customer_code;
     SwitchMaterial sm_goodamount;
     Button btn_search;
     EditText ed_search;
     ArrayList<Good> Multi_Good = new ArrayList<>();
+    LinearLayoutCompat llsumfactor;
+
+
+
+
     boolean defultenablesellprice;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,10 +123,9 @@ public class Search_date_detailActivity extends AppCompatActivity {
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
         tv_customer = findViewById(R.id.Search_date_detailActivity_customer);
         tv_sumfac = findViewById(R.id.Search_date_detailActivity_sum_factor);
-        tv_customer_code = findViewById(R.id.Search_date_detailActivity_customer_code);
+        llsumfactor = findViewById(R.id.Search_date_detailActivity_ll_sum_factor);
 
         toolbar = findViewById(R.id.search_date_toolbar);
-        btn_refresh = findViewById(R.id.Search_date_detailActivity_refresh_fac);
         fab = findViewById(R.id.search_date_fab);
         calendar1 = new PersianCalendar();
         recyclerView = findViewById(R.id.search_date_recycler);
@@ -206,26 +209,6 @@ public class Search_date_detailActivity extends AppCompatActivity {
 
         });
 
-
-        btn_refresh.setOnClickListener(view -> {
-            if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
-                tv_customer.setText("فاکتوری انتخاب نشده");
-                tv_sumfac.setText("0");
-            } else {
-                tv_customer.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
-                tv_sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(dbh.getFactorSum(callMethod.ReadString("PreFactorCode")))));
-                tv_customer_code.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PreFactorCode")));
-            }
-        });
-
-        if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
-            tv_customer.setText("فاکتوری انتخاب نشده");
-            tv_sumfac.setText("0");
-        } else {
-            tv_customer.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
-            tv_sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorCode"))))));
-            tv_customer_code.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PreFactorCode")));
-        }
 
 
 
@@ -483,6 +466,26 @@ public class Search_date_detailActivity extends AppCompatActivity {
             }
         }
     }
+    public void factorState() {
+        if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
+            tv_customer.setText("فاکتوری انتخاب نشده");
+            llsumfactor.setVisibility(View.GONE);
+        } else {
+            llsumfactor.setVisibility(View.VISIBLE);
+            tv_customer.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
+            tv_sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorCode"))))));
+        }
+    }
+
+
+
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        factorState();
+        super.onWindowFocusChanged(hasFocus);
+    }
+
 
 
 }

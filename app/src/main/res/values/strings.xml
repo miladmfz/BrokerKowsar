@@ -20,6 +20,7 @@
     <string name="printer_ready2">برای شروع چاپ روی دکمه " پرینت کردن " ضربه بزنید</string>
     <string name="good_search">جستجوی کالا</string>
     <string name="good_new">جدیدترین ها</string>
+    <string name="good_allview">دسته بندی ها</string>
     <string name="nav_public">عمومی</string>
     <string name="good_bag">سبد خرید</string>
     <string name="open_prefactor">فاکتورهای باز</string>
@@ -86,7 +87,7 @@
     <string name="prosearch_et3">نوبت چاپ :</string>
     <string name="insert_prefactor">ایجاد فاکتور جدید</string>
     <string name="factor_in_use">کد فاکتور فعلی :</string>
-    <string name="refresh">بارگذاری مجدد</string>
+    <string name="refresh">نوسازی</string>
     <string name="search_et">جستجو</string>
     <string name="config_change">تغییر اطلاعات</string>
     <string name="config_returnhome">بازگشت به صفحه اصلی</string>
