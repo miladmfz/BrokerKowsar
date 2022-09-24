@@ -11,6 +11,8 @@
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/drawable/bg_round_green.xml" value="0.1" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/drawable/bg_round_green_history.xml" value="0.1" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/drawable/bg_round_green_history_line.xml" value="0.1" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/drawable/bg_round_grey.xml" value="0.122" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/drawable/bg_round_greylight.xml" value="0.122" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/drawable/bg_round_orange.xml" value="0.1" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/drawable/bg_round_red.xml" value="0.1" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/drawable/bg_round_selected.xml" value="0.1" />
@@ -37,7 +39,7 @@
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/activity_registration.xml" value="0.22" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/activity_search.xml" value="0.2" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/activity_search_date_detail.xml" value="0.16799999999999998" />
-        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/activity_splash.xml" value="0.17314814814814813" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/activity_splash.xml" value="0.136" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/box_buy_absolute.xml" value="0.33" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/box_buy_percent.xml" value="0.1765625" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/box_multi_buy.xml" value="0.33" />
@@ -48,6 +50,7 @@
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/header.xml" value="0.4" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/item.xml" value="0.12" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/item2.xml" value="0.2" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/item3.xml" value="0.14635416666666667" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/rep_prog.xml" value="0.33" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/search_box.xml" value="0.17708333333333334" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/menu/activity_navigation_drawer.xml" value="0.264" />

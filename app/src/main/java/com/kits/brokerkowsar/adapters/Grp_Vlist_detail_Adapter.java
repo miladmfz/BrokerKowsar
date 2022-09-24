@@ -19,6 +19,7 @@ import com.kits.brokerkowsar.activity.SearchActivity;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.GoodGroup;
+import com.kits.brokerkowsar.model.NumberFunctions;
 
 import java.util.ArrayList;
 
@@ -52,7 +53,7 @@ public class Grp_Vlist_detail_Adapter extends RecyclerView.Adapter<Grp_Vlist_det
     public void onBindViewHolder(@NonNull GoodGroupViewHolder holder, int position) {
 
 
-        holder.grpname.setText(GoodGroups.get(position).getGoodGroupFieldValue("Name"));
+        holder.grpname.setText(NumberFunctions.PerisanNumber(GoodGroups.get(position).getGoodGroupFieldValue("Name")));
 
 
         if (Integer.parseInt(GoodGroups.get(position).getGoodGroupFieldValue("ChildNo"))>0) {

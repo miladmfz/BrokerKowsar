@@ -46,20 +46,14 @@ public class AllViewActivity extends AppCompatActivity {
 
     APIInterface apiInterface;
 
-    private Action action;
-    private boolean doubleBackToExitPressedOnce = false;
-    private Intent intent;
     CallMethod callMethod;
-    private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
-    private Replication replication;
     DatabaseHelper dbh;
-    ArrayList<GoodGroup> menugrp;
     Toolbar toolbar;
 
 
-    ArrayList<Category> companies=new ArrayList<>();
+    ArrayList<Category> categories=new ArrayList<>();
     RecyclerView rc;
-    Category cm ;
+    Category category ;
 
 
     @Override
@@ -83,13 +77,8 @@ public class AllViewActivity extends AppCompatActivity {
 
 
     public void Config() {
-
-
-        action = new Action(this);
         callMethod = new CallMethod(this);
-
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
-        replication = new Replication(this);
         dbh.ClearSearchColumn();
 
         toolbar = findViewById(R.id.allview_toolbar);
@@ -104,32 +93,34 @@ public class AllViewActivity extends AppCompatActivity {
     public void init() {
 
 
-        companies = new ArrayList<>();
+        categories = new ArrayList<>();
 
 
 
-        ArrayList<GoodGroup> res = dbh.getAllGroups("0");
+        ArrayList<GoodGroup> groupsHeader = dbh.getAllGroups("0");
 
-        for (GoodGroup goodGroups_parent : res) {
+        for (GoodGroup groupHeader : groupsHeader) {
             ArrayList<Product> Product_child = new ArrayList<>();
-            ArrayList<GoodGroup> res1 = dbh.getAllGroups(goodGroups_parent.getGoodGroupFieldValue("groupcode"));
-            for (GoodGroup goodGroups_parent1 : res1) {
+            ArrayList<GoodGroup> groupsRow = dbh.getAllGroups(groupHeader.getGoodGroupFieldValue("groupcode"));
+            for (GoodGroup groupRow : groupsRow) {
                 Product_child.add(new Product(
-                        goodGroups_parent1.getGoodGroupFieldValue("Name"),
-                        Integer.parseInt(goodGroups_parent1.getGoodGroupFieldValue("groupcode")),
-                        Integer.parseInt(goodGroups_parent1.getGoodGroupFieldValue("ChildNo"))));
+                        groupRow.getGoodGroupFieldValue("Name"),
+                        Integer.parseInt(groupRow.getGoodGroupFieldValue("groupcode")),
+                        Integer.parseInt(groupRow.getGoodGroupFieldValue("ChildNo"))));
             }
-            cm = new Category(
-                    goodGroups_parent.getGoodGroupFieldValue("Name"),
+
+            category = new Category(
+                    groupHeader.getGoodGroupFieldValue("Name"),
                     Product_child,
-                    Integer.parseInt(goodGroups_parent.getGoodGroupFieldValue("groupcode")),
-                    Integer.parseInt(goodGroups_parent.getGoodGroupFieldValue("ChildNo")));
-            companies.add(cm);
+                    Integer.parseInt(groupHeader.getGoodGroupFieldValue("groupcode")),
+                    Integer.parseInt(groupHeader.getGoodGroupFieldValue("ChildNo")));
+
+            categories.add(category);
         }
 
 
 
-    ProductAdapter adapter = new ProductAdapter(companies, App.getContext());
+    ProductAdapter adapter = new ProductAdapter(categories, App.getContext());
     rc.setAdapter(adapter);
     rc.setLayoutManager(new LinearLayoutManager(this));
 

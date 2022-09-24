@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.activity.SearchActivity;
+import com.kits.brokerkowsar.model.NumberFunctions;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
 
  public class ProductViewHolder extends ChildViewHolder {
@@ -19,7 +20,7 @@ import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
      }
 
      public void bind(Product product){
-         mtextView.setText(product.name);
+         mtextView.setText(NumberFunctions.PerisanNumber(product.name));
      }
 
      public void intent(final Product product,final  Context mContext){

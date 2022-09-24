@@ -128,7 +128,7 @@ public class DetailActivity extends AppCompatActivity {
             llsumfactor.setVisibility(View.GONE);
         } else {
             llsumfactor.setVisibility(View.VISIBLE);
-            tv_customer.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
+            tv_customer.setText(NumberFunctions.PerisanNumber(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode"))));
             tv_sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorCode"))))));
         }
 

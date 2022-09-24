@@ -287,7 +287,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         }
 
 
-        tv_versionname.setText(BuildConfig.VERSION_NAME);
+        tv_versionname.setText(NumberFunctions.PerisanNumber(BuildConfig.VERSION_NAME));
         tv_dbname.setText(callMethod.ReadString("PersianCompanyNameUse"));
         toolbar.setTitle(callMethod.ReadString("PersianCompanyNameUse"));
         menugrp = dbh.getmenuGroups();
@@ -296,7 +296,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         navigationView.getMenu().clear();
 
         for (GoodGroup goodGroup : menugrp) {
-            navigationView.getMenu().add(goodGroup.getGoodGroupFieldValue("Name")).setIcon(R.drawable.grpmenu).setOnMenuItemClickListener(item -> {
+            navigationView.getMenu().add(NumberFunctions.PerisanNumber(goodGroup.getGoodGroupFieldValue("Name"))).setIcon(R.drawable.grpmenu).setOnMenuItemClickListener(item -> {
                 intent = new Intent(this, SearchActivity.class);
                 intent.putExtra("scan", "");
                 intent.putExtra("id", goodGroup.getGoodGroupFieldValue("GroupCode"));
@@ -472,7 +472,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             llsumfactor.setVisibility(View.GONE);
         } else {
             llsumfactor.setVisibility(View.VISIBLE);
-            customer.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
+            customer.setText(NumberFunctions.PerisanNumber(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode"))));
             sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorCode"))))));
         }
     }

@@ -218,21 +218,7 @@ public class SearchActivity extends AppCompatActivity {
             Search_box search_box = new Search_box(this);
             search_box.search_pro();
         });
-        if (callMethod.ReadBoolan("ActiveStack")) {
-            sm_activestack.setChecked(true);
-            sm_activestack.setText("فعال");
-        } else {
-            sm_activestack.setChecked(false);
-            sm_activestack.setText("فعال -غیرفعال");
-        }
 
-        if (callMethod.ReadBoolan("GoodAmount")) {
-            sm_goodamount.setChecked(true);
-            sm_goodamount.setText("موجود");
-        } else {
-            sm_goodamount.setChecked(false);
-            sm_goodamount.setText("هردو");
-        }
         sm_activestack.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
                 sm_activestack.setText("فعال");
@@ -500,20 +486,36 @@ public class SearchActivity extends AppCompatActivity {
         }
     }
 
-    public void factorState() {
+    public void RefreshState() {
         if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
             tv_customer.setText("فاکتوری انتخاب نشده");
             llsumfactor.setVisibility(View.GONE);
         } else {
             llsumfactor.setVisibility(View.VISIBLE);
-            tv_customer.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
+            tv_customer.setText(NumberFunctions.PerisanNumber(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode"))));
             tv_sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorCode"))))));
+        }
+
+        if (callMethod.ReadBoolan("ActiveStack")) {
+            sm_activestack.setChecked(true);
+            sm_activestack.setText("فعال");
+        } else {
+            sm_activestack.setChecked(false);
+            sm_activestack.setText("فعال -غیرفعال");
+        }
+
+        if (callMethod.ReadBoolan("GoodAmount")) {
+            sm_goodamount.setChecked(true);
+            sm_goodamount.setText("موجود");
+        } else {
+            sm_goodamount.setChecked(false);
+            sm_goodamount.setText("هردو");
         }
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
-        factorState();
+        RefreshState();
         super.onWindowFocusChanged(hasFocus);
     }
 }

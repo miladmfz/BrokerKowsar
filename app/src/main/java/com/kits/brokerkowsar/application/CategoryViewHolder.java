@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.activity.SearchActivity;
+import com.kits.brokerkowsar.model.NumberFunctions;
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 
 
@@ -28,7 +29,7 @@ public class CategoryViewHolder extends GroupViewHolder {
     }
 
     public void bind (Category company){
-        textView.setText(company.getTitle());
+        textView.setText(NumberFunctions.PerisanNumber(company.getTitle()));
 
     }
 
