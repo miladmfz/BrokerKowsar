@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/kowsar_back"
     tools:context=".activity.SearchActivity"
     android:layoutDirection="rtl">
 
@@ -228,28 +227,52 @@
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:weightSum="1">
+       >
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/SearchActivity_allgood"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:background="#ffffff"
             android:layout_margin="10sp"
-            android:layout_weight="0.1"
             android:visibility="visible"/>
         <ProgressBar
             android:id="@+id/SearchActivity_prog"
             style="?android:attr/progressBarStyle"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
-            android:layout_weight="0.9"
+            android:layout_gravity="center"
             />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/SearchActivity_lottie"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_margin="2dp"
+            app:lottie_rawRes="@raw/notfind"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            />
+
+
+        <TextView
+            android:id="@+id/SearchActivity_tvstatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="40sp"
+            android:layout_gravity="center"
+            android:textColor="#03a9f4"
+
+            />
+
     </androidx.appcompat.widget.LinearLayoutCompat>
 
     </androidx.appcompat.widget.LinearLayoutCompat>

@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.Search_date_detailActivity"
-    android:background="@drawable/kowsar_back"
     android:orientation="vertical"
     android:layoutDirection="rtl">
 
@@ -112,19 +111,22 @@
             <EditText
                 android:id="@+id/search_date"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:hint="تعداد روز را مشخص کنید"
                 android:layout_weight="0.3"
-                android:inputType="number" />
+                android:inputType="number"
+                android:layout_gravity="center"
+                android:gravity="center"
+                />
 
             <Button
                 android:id="@+id/search_date_btn"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="0.7"
                 android:text="اعمال روز"
                 style="?attr/materialButtonOutlinedStyle"
-                app:backgroundTint="@color/green_600"
+                app:backgroundTint="#0B8CC6"
                 app:strokeColor="@color/grey_1000"
                 app:strokeWidth="1dp"
                 android:textColor="@color/white"
@@ -138,6 +140,30 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:background="#ffffff" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/search_date_lottie"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_margin="2dp"
+            app:lottie_rawRes="@raw/notfind"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            />
+
+
+        <TextView
+            android:id="@+id/search_date_tvstatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="40sp"
+            android:layout_gravity="center"
+            android:textColor="#03a9f4"
+
+            />
+
 
 
     </androidx.appcompat.widget.LinearLayoutCompat>

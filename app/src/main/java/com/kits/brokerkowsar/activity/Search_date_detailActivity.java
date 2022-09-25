@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.kits.brokerkowsar.R;
@@ -83,7 +84,8 @@ public class Search_date_detailActivity extends AppCompatActivity {
     ArrayList<Good> Multi_Good = new ArrayList<>();
     LinearLayoutCompat llsumfactor;
 
-
+    LottieAnimationView lottieAnimationView;
+    TextView tvstatus;
 
 
     boolean defultenablesellprice;
@@ -132,6 +134,10 @@ public class Search_date_detailActivity extends AppCompatActivity {
         btn_search = findViewById(R.id.search_date_btn);
         ed_search = findViewById(R.id.search_date);
         sm_goodamount = findViewById(R.id.search_date_switch_amount);
+        lottieAnimationView = findViewById(R.id.search_date_lottie);
+        tvstatus = findViewById(R.id.search_date_tvstatus);
+
+
         setSupportActionBar(toolbar);
 
     }
@@ -404,7 +410,12 @@ public class Search_date_detailActivity extends AppCompatActivity {
     public void CallRecyclerView() {
         adapter = new Good_ProSearch_Adapter(goods,this);
         if (adapter.getItemCount()==0){
-            callMethod.showToast("کالایی یافت نشد");
+            tvstatus.setText("کالایی یافت نشد");
+            tvstatus.setVisibility(View.VISIBLE);
+            lottieAnimationView.setVisibility(View.VISIBLE);
+        }else {
+            lottieAnimationView.setVisibility(View.GONE);
+            tvstatus.setVisibility(View.GONE);
         }
         gridLayoutManager = new GridLayoutManager(this, grid);
         recyclerView.setLayoutManager(gridLayoutManager);

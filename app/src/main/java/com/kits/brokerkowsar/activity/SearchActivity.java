@@ -29,6 +29,8 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.airbnb.lottie.Lottie;
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.kits.brokerkowsar.R;
@@ -73,6 +75,9 @@ public class SearchActivity extends AppCompatActivity {
     public String AutoSearch="";
     public String PageMoreData="0";
     private boolean loading = true;
+
+    LottieAnimationView lottieAnimationView;
+    TextView tvstatus;
 
     TextView tv_customer;
     TextView tv_sumfac;
@@ -139,6 +144,8 @@ public class SearchActivity extends AppCompatActivity {
         recyclerView_good = findViewById(R.id.SearchActivity_allgood);
         fab = findViewById(R.id.SearchActivity_fab);
         edtsearch = findViewById(R.id.SearchActivity_edtsearch);
+        lottieAnimationView = findViewById(R.id.SearchActivity_lottie);
+        tvstatus = findViewById(R.id.SearchActivity_tvstatus);
 
     }
 
@@ -454,8 +461,14 @@ public class SearchActivity extends AppCompatActivity {
 
         adapter = new Good_ProSearch_Adapter(goods,this);
         if (adapter.getItemCount()==0){
-            callMethod.showToast("کالایی یافت نشد");
+            tvstatus.setText("کالایی یافت نشد");
+            tvstatus.setVisibility(View.VISIBLE);
+            lottieAnimationView.setVisibility(View.VISIBLE);
+        }else {
+            lottieAnimationView.setVisibility(View.GONE);
+            tvstatus.setVisibility(View.GONE);
         }
+
         gridLayoutManager = new GridLayoutManager(this, grid);
         recyclerView_good.setLayoutManager(gridLayoutManager);
         recyclerView_good.setAdapter(adapter);
