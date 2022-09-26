@@ -20,14 +20,14 @@ import com.kits.brokerkowsar.model.PreFactor;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class Prefactor_Header_Box_adapter extends RecyclerView.Adapter<Prefactor_Header_Box_adapter.facViewHolder> {
+public class PrefactorHeaderOpenAdapter extends RecyclerView.Adapter<PrefactorHeaderOpenAdapter.facViewHolder> {
     private final Context mContext;
     CallMethod callMethod;
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
     private final ArrayList<PreFactor> PreFactors;
 
 
-    public Prefactor_Header_Box_adapter(ArrayList<PreFactor> PreFactors, Context mContext) {
+    public PrefactorHeaderOpenAdapter(ArrayList<PreFactor> PreFactors, Context mContext) {
         this.mContext = mContext;
         this.PreFactors = PreFactors;
         this.callMethod = new CallMethod(mContext);
@@ -36,7 +36,7 @@ public class Prefactor_Header_Box_adapter extends RecyclerView.Adapter<Prefactor
     @NonNull
     @Override
     public facViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.prefactor_header_box, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.prefactor_header_open, parent, false);
         return new facViewHolder(view);
     }
 

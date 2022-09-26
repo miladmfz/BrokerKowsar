@@ -16,7 +16,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
@@ -26,7 +25,7 @@ import com.bixolon.printer.BixolonPrinter;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
-import com.kits.brokerkowsar.application.Image_info;
+import com.kits.brokerkowsar.application.ImageInfo;
 import com.kits.brokerkowsar.model.BluetoothUtil;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
@@ -356,7 +355,7 @@ public class PrinterActivity extends AppCompatActivity {
                                         , true);
                             }
 
-                            Image_info image_info = new Image_info(App.getContext());
+                            ImageInfo image_info = new ImageInfo(App.getContext());
                             image_info.SaveImage_factor(loadBitmapFromView(main_layout), PreFac);
 
                         } catch (Exception e) {

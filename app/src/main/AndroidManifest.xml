@@ -38,9 +38,9 @@
             android:name=".activity.AllViewActivity"
             android:exported="false" />
         <activity android:name=".activity.ChoiceDatabaseActivity" />
-        <activity android:name=".activity.AboutusActivity" />
+        <activity android:name=".activity.AboutUsActivity" />
         <activity android:name=".activity.BuyActivity" />
-        <activity android:name=".activity.BuyhistoryActivity" />
+        <activity android:name=".activity.BuyHistoryActivity" />
         <activity android:name=".activity.ConfigActivity" />
         <activity android:name=".activity.CustomerActivity" />
         <activity android:name=".activity.DetailActivity" />
@@ -50,7 +50,7 @@
         <activity android:name=".activity.PrinterActivity" />
         <activity android:name=".activity.RegistrationActivity" />
         <activity android:name=".activity.ScanCodeActivity" />
-        <activity android:name=".activity.Search_date_detailActivity" />
+        <activity android:name=".activity.SearchByDateActivity" />
         <activity android:name=".activity.SearchActivity" />
         <activity
             android:name=".activity.SplashActivity"

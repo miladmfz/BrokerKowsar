@@ -4,8 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,24 +15,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
-import com.kits.brokerkowsar.application.Image_info;
+import com.kits.brokerkowsar.application.ImageInfo;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.NumberFunctions;
-import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class GoodBuyHistoryAdapter extends RecyclerView.Adapter<GoodBuyHistoryAdapter.GoodViewHolder> {
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
@@ -43,7 +35,7 @@ public class GoodBuyHistoryAdapter extends RecyclerView.Adapter<GoodBuyHistoryAd
     CallMethod callMethod;
     private final String itemposition;
     APIInterface apiInterface;
-    private final Image_info image_info;
+    private final ImageInfo image_info;
     private long sum = 0;
     private final DatabaseHelper dbh;
     Action action;
@@ -56,7 +48,7 @@ public class GoodBuyHistoryAdapter extends RecyclerView.Adapter<GoodBuyHistoryAd
         this.goods = goods;
         this.itemposition = Itemposition;
         this.callMethod = new CallMethod(mContext);
-        this.image_info = new Image_info(mContext);
+        this.image_info = new ImageInfo(mContext);
         this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
         
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);

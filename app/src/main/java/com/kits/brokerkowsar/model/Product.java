@@ -1,4 +1,4 @@
-package com.kits.brokerkowsar.application;
+package com.kits.brokerkowsar.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

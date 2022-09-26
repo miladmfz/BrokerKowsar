@@ -71,6 +71,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     }
 
     //*****************************************************************************************
+    @SuppressLint("SdCardPath")
     public void Config() {
 
         callMethod = new CallMethod(this);

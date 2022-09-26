@@ -12,7 +12,6 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -22,8 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.juanlabrador.badgecounter.BadgeCounter;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.application.App;
-import com.kits.brokerkowsar.adapters.Prefactor_Header_adapter;
+import com.kits.brokerkowsar.adapters.PrefactorHeaderAdapter;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.NumberFunctions;
@@ -43,7 +41,7 @@ public class PrefactorActivity extends AppCompatActivity {
     private ArrayList<PreFactor> preFactors = new ArrayList<>();
     private DatabaseHelper dbh;
     private RecyclerView recyclerView;
-    Prefactor_Header_adapter adapter;
+    PrefactorHeaderAdapter adapter;
     GridLayoutManager gridLayoutManager;
     CallMethod callMethod;
     TextView tv_lastfactor;
@@ -145,7 +143,7 @@ public class PrefactorActivity extends AppCompatActivity {
 
     public void callfactor() {
         preFactors = dbh.getAllPrefactorHeader(search_target);
-        adapter = new Prefactor_Header_adapter(preFactors, this);
+        adapter = new PrefactorHeaderAdapter(preFactors, this);
         gridLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);

@@ -3,25 +3,18 @@ package com.kits.brokerkowsar.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,22 +31,15 @@ import androidx.work.NetworkType;
 import androidx.work.PeriodicWorkRequest;
 import androidx.work.WorkManager;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.material.navigation.NavigationView;
 import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.Action;
-import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.Replication;
 import com.kits.brokerkowsar.application.WManager;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.GoodGroup;
-import com.kits.brokerkowsar.model.Location;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.kits.brokerkowsar.model.UserInfo;
@@ -63,13 +49,9 @@ import com.kits.brokerkowsar.webService.APIInterface;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -387,7 +369,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             intent.putExtra("title", "جستجوی کالا");
             startActivity(intent);
         } else if (id == R.id.aboutus) {
-            intent = new Intent(this, AboutusActivity.class);
+            intent = new Intent(this, AboutUsActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_allview) {
             intent = new Intent(this, AllViewActivity.class);
@@ -421,7 +403,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
                 Toast.makeText(this, "سبد خرید خالی است.", Toast.LENGTH_SHORT).show();
             }
         } else if (id == R.id.nav_search_date) {
-            intent = new Intent(this, Search_date_detailActivity.class);
+            intent = new Intent(this, SearchByDateActivity.class);
             intent.putExtra("date", "7");
             startActivity(intent);
         } else if (id == R.id.nav_cfg) {

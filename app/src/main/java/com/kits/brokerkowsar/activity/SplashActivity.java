@@ -95,7 +95,6 @@ public class SplashActivity extends AppCompatActivity {
             callMethod.EditBoolan("RealAmount", false);
             callMethod.EditBoolan("ActiveStack", false);
             callMethod.EditBoolan("GoodAmount", false);
-            callMethod.EditBoolan("ArabicText", true);
             callMethod.EditBoolan("AutoReplication", false);
             callMethod.EditBoolan("SellPriceTypeDeactivate", true);
 

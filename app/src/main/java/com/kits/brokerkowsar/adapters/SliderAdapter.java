@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 
 import com.kits.brokerkowsar.application.CallMethod;
-import com.kits.brokerkowsar.application.Image_info;
+import com.kits.brokerkowsar.application.ImageInfo;
 import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
@@ -41,7 +41,7 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
     private final ArrayList<Good> goods;
     private final Context mcontext;
     private final Boolean image_zoom;
-    private final Image_info image_info;
+    private final ImageInfo image_info;
     CallMethod callMethod;
 
     String url;
@@ -52,7 +52,7 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
         this.goods=Goods;
         this.image_zoom=zoom;
         this.callMethod = new CallMethod(mcontext);
-        image_info = new Image_info(mcontext);
+        image_info = new ImageInfo(mcontext);
         url = callMethod.ReadString("ServerURLUse");
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
 

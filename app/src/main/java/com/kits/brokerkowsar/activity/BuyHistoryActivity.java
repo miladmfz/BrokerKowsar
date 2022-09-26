@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 
-public class BuyhistoryActivity extends AppCompatActivity {
+public class BuyHistoryActivity extends AppCompatActivity {
 
     private String Itemposition = "0";
     private String srch = "";

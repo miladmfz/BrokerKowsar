@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.activity.BuyActivity;
-import com.kits.brokerkowsar.activity.BuyhistoryActivity;
+import com.kits.brokerkowsar.activity.BuyHistoryActivity;
 import com.kits.brokerkowsar.activity.CustomerActivity;
 import com.kits.brokerkowsar.activity.PrefactorActivity;
 import com.kits.brokerkowsar.activity.PrinterActivity;
@@ -33,7 +33,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 
-public class Prefactor_Header_adapter extends RecyclerView.Adapter<Prefactor_Header_adapter.facViewHolder> {
+public class PrefactorHeaderAdapter extends RecyclerView.Adapter<PrefactorHeaderAdapter.facViewHolder> {
 
     private final Context mContext;
     CallMethod callMethod;
@@ -46,7 +46,7 @@ public class Prefactor_Header_adapter extends RecyclerView.Adapter<Prefactor_Hea
     private final Action action;
 
 
-    public Prefactor_Header_adapter(ArrayList<PreFactor> PreFactors, Context mContext) {
+    public PrefactorHeaderAdapter(ArrayList<PreFactor> PreFactors, Context mContext) {
         this.mContext = mContext;
         this.PreFactors = PreFactors;
         this.callMethod = new CallMethod(mContext);
@@ -88,7 +88,7 @@ public class Prefactor_Header_adapter extends RecyclerView.Adapter<Prefactor_Hea
 
         holder.fac_history_good.setOnClickListener(view -> {
             callMethod.EditString("PreFactorGood", preFactordetail.getPreFactorFieldValue("PreFactorCode"));
-            intent = new Intent(mContext, BuyhistoryActivity.class);
+            intent = new Intent(mContext, BuyHistoryActivity.class);
             mContext.startActivity(intent);
         });
 

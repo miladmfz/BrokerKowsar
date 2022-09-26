@@ -7,14 +7,14 @@ import android.os.Environment;
 import java.io.File;
 import java.io.FileOutputStream;
 
-public class Image_info {
+public class ImageInfo {
 
 
     private final Context mContext;
     CallMethod callMethod;
 
 
-    public Image_info(Context mContext) {
+    public ImageInfo(Context mContext) {
         this.mContext = mContext;
         callMethod = new CallMethod(mContext);
     }

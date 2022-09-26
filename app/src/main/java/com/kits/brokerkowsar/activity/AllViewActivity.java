@@ -1,42 +1,26 @@
 package com.kits.brokerkowsar.activity;
 
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.WorkManager;
 
-import android.content.Intent;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
-import com.google.android.material.navigation.NavigationView;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.adapters.Good_ProSearch_Adapter;
-import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
-import com.kits.brokerkowsar.application.Category;
-import com.kits.brokerkowsar.application.Product;
-import com.kits.brokerkowsar.application.ProductAdapter;
-import com.kits.brokerkowsar.application.Replication;
+import com.kits.brokerkowsar.model.Category;
+import com.kits.brokerkowsar.model.Product;
+import com.kits.brokerkowsar.adapters.ProductAdapter;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.GoodGroup;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 

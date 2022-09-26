@@ -1,16 +1,11 @@
 package com.kits.brokerkowsar.activity;
 
 
-import android.app.Dialog;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,11 +15,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.adapters.Good_ProSearch_Adapter;
-import com.kits.brokerkowsar.application.App;
-import com.kits.brokerkowsar.adapters.Good_buy_Adapter;
+import com.kits.brokerkowsar.adapters.GoodBasketAdapter;
 import com.kits.brokerkowsar.application.Action;
-import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
@@ -34,7 +26,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class BuyActivity extends AppCompatActivity {
 
@@ -44,7 +35,7 @@ public class BuyActivity extends AppCompatActivity {
     private String PreFac = "0";
     private DatabaseHelper dbh;
     ArrayList<Good> goods;
-    Good_buy_Adapter adapter;
+    GoodBasketAdapter adapter;
     GridLayoutManager gridLayoutManager;
     RecyclerView recyclerView;
     CallMethod callMethod;
@@ -100,7 +91,7 @@ public class BuyActivity extends AppCompatActivity {
 
 
         goods = dbh.getAllPreFactorRows("", PreFac);
-        adapter = new Good_buy_Adapter(goods, this);
+        adapter = new GoodBasketAdapter(goods, this);
         if (adapter.getItemCount()==0){
             callMethod.showToast( "سبد خرید خالی می باشد");
         }

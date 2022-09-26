@@ -4,7 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -19,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,14 +27,12 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.airbnb.lottie.Lottie;
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.application.App;
-import com.kits.brokerkowsar.adapters.Good_ProSearch_Adapter;
-import com.kits.brokerkowsar.adapters.Grp_Vlist_detail_Adapter;
+import com.kits.brokerkowsar.adapters.GoodAdapter;
+import com.kits.brokerkowsar.adapters.GroupLableAdapter;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.Search_box;
 import com.kits.brokerkowsar.model.DatabaseHelper;
@@ -66,7 +62,7 @@ public class SearchActivity extends AppCompatActivity {
     ArrayList<Good> Multi_Good = new ArrayList<>();
     DecimalFormat decimalFormat = new DecimalFormat("0,000");
     FloatingActionButton fab;
-    Good_ProSearch_Adapter adapter;
+    GoodAdapter adapter;
     GridLayoutManager gridLayoutManager;
     int pastVisiblesItems = 0, visibleItemCount, totalItemCount;
     Menu item_multi;
@@ -90,7 +86,7 @@ public class SearchActivity extends AppCompatActivity {
     Toolbar toolbar;
     RecyclerView recyclerView_grp;
     ProgressBar prog;
-    Grp_Vlist_detail_Adapter grp_adapter;
+    GroupLableAdapter grp_adapter;
     boolean defultenablesellprice;
     LinearLayoutCompat llsumfactor;
 
@@ -172,7 +168,7 @@ public class SearchActivity extends AppCompatActivity {
 
         Log.e("test_id",id);
         goodGroups = dbh.getAllGroups(id);
-        grp_adapter = new Grp_Vlist_detail_Adapter(goodGroups, this);
+        grp_adapter = new GroupLableAdapter(goodGroups, this);
         recyclerView_grp.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false));
         recyclerView_grp.setAdapter(grp_adapter);
 
@@ -326,7 +322,7 @@ public class SearchActivity extends AppCompatActivity {
                             good.setCheck(false);
                         }
                         Multi_Good.clear();
-                        adapter = new Good_ProSearch_Adapter(goods,this);
+                        adapter = new GoodAdapter(goods,this);
                         adapter.multi_select = false;
                         gridLayoutManager = new GridLayoutManager(this, grid);
                         gridLayoutManager.scrollToPosition(pastVisiblesItems + 2);
@@ -400,7 +396,7 @@ public class SearchActivity extends AppCompatActivity {
             Multi_Good.clear();
             adapter.multi_select = false;
 
-            adapter = new Good_ProSearch_Adapter(goods,this);
+            adapter = new GoodAdapter(goods,this);
             gridLayoutManager = new GridLayoutManager(this, grid);
             gridLayoutManager.scrollToPosition(pastVisiblesItems + 2);
             recyclerView_good.setLayoutManager(gridLayoutManager);
@@ -459,7 +455,7 @@ public class SearchActivity extends AppCompatActivity {
     @SuppressLint("NotifyDataSetChanged")
     public void CallRecyclerView() {
 
-        adapter = new Good_ProSearch_Adapter(goods,this);
+        adapter = new GoodAdapter(goods,this);
         if (adapter.getItemCount()==0){
             tvstatus.setText("کالایی یافت نشد");
             tvstatus.setVisibility(View.VISIBLE);

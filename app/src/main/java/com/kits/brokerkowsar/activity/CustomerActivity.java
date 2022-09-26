@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,8 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.App;
-import com.kits.brokerkowsar.adapters.Customer_Adapter;
-import com.kits.brokerkowsar.application.App;
+import com.kits.brokerkowsar.adapters.CustomerAdapter;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.Replication;
 import com.kits.brokerkowsar.model.Customer;
@@ -53,7 +50,7 @@ public class CustomerActivity extends AppCompatActivity {
     private RecyclerView rc_customer;
     ArrayList<Customer> customers = new ArrayList<>();
     ArrayList<Customer> citys = new ArrayList<>();
-    Customer_Adapter adapter;
+    CustomerAdapter adapter;
     GridLayoutManager gridLayoutManager;
     LinearLayoutCompat li_search, li_new;
     Replication replication;
@@ -298,7 +295,7 @@ public class CustomerActivity extends AppCompatActivity {
 
     public void allCustomer() {
         customers = dbh.AllCustomer(srch, activecustomer);
-        adapter = new Customer_Adapter(customers, this, edit, factor_target);
+        adapter = new CustomerAdapter(customers, this, edit, factor_target);
         gridLayoutManager = new GridLayoutManager(this, 1);
         rc_customer.setLayoutManager(gridLayoutManager);
         rc_customer.setAdapter(adapter);

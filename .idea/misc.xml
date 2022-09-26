@@ -20,6 +20,7 @@
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/drawable/edittest1.xml" value="0.148" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/drawable/gradientbackground.xml" value="0.1" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/drawable/grpmenu.xml" value="0.1" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/drawable/ic_baseline_category_24.xml" value="0.1" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/drawable/ic_keyboard_arrow_down_black_24dp.xml" value="0.1" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/drawable/ic_ww.xml" value="0.1" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/activity_aboutus.xml" value="0.17708333333333334" />
@@ -51,6 +52,8 @@
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/item.xml" value="0.12" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/item2.xml" value="0.2" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/item3.xml" value="0.14635416666666667" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/prefactor_header.xml" value="0.1984375" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/prefactor_header_box.xml" value="0.1984375" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/rep_prog.xml" value="0.33" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/search_box.xml" value="0.17708333333333334" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/menu/activity_navigation_drawer.xml" value="0.264" />

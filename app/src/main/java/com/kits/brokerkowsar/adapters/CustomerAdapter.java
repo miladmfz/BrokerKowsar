@@ -3,12 +3,10 @@ package com.kits.brokerkowsar.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -16,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.activity.ConfigActivity;
 import com.kits.brokerkowsar.activity.PrefactorActivity;
 import com.kits.brokerkowsar.application.Action;
@@ -29,7 +26,7 @@ import com.kits.brokerkowsar.model.UserInfo;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class Customer_Adapter extends RecyclerView.Adapter<Customer_Adapter.facViewHolder> {
+public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.facViewHolder> {
     private final Context mContext;
     CallMethod callMethod;
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
@@ -41,7 +38,7 @@ public class Customer_Adapter extends RecyclerView.Adapter<Customer_Adapter.facV
     private Intent intent;
 
 
-    public Customer_Adapter(ArrayList<Customer> customers, Context mContext, String edit, String factor_target) {
+    public CustomerAdapter(ArrayList<Customer> customers, Context mContext, String edit, String factor_target) {
         this.mContext = mContext;
         this.customers = customers;
         this.edit = edit;

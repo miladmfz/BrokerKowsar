@@ -14,10 +14,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.application.App;
-import com.kits.brokerkowsar.adapters.Prefactor_Header_Box_adapter;
-import com.kits.brokerkowsar.adapters.Prefactor_Header_adapter;
-import com.kits.brokerkowsar.application.App;
+import com.kits.brokerkowsar.adapters.PrefactorHeaderOpenAdapter;
+import com.kits.brokerkowsar.adapters.PrefactorHeaderAdapter;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.NumberFunctions;
@@ -95,10 +93,10 @@ public class PrefactoropenActivity extends AppCompatActivity {
         gridLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(gridLayoutManager);
         if (Integer.parseInt(fac) != 0) {
-            Prefactor_Header_adapter adapter = new Prefactor_Header_adapter(preFactors, this);
+            PrefactorHeaderAdapter adapter = new PrefactorHeaderAdapter(preFactors, this);
             recyclerView.setAdapter(adapter);
         } else {
-            Prefactor_Header_Box_adapter adapter = new Prefactor_Header_Box_adapter(preFactors, this);
+            PrefactorHeaderOpenAdapter adapter = new PrefactorHeaderOpenAdapter(preFactors, this);
             recyclerView.setAdapter(adapter);
         }
         recyclerView.setItemAnimator(new DefaultItemAnimator());

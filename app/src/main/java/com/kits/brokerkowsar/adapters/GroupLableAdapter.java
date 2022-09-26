@@ -12,8 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.activity.SearchActivity;
 import com.kits.brokerkowsar.application.CallMethod;
@@ -23,7 +21,7 @@ import com.kits.brokerkowsar.model.NumberFunctions;
 
 import java.util.ArrayList;
 
-public class Grp_Vlist_detail_Adapter extends RecyclerView.Adapter<Grp_Vlist_detail_Adapter.GoodGroupViewHolder> {
+public class GroupLableAdapter extends RecyclerView.Adapter<GroupLableAdapter.GoodGroupViewHolder> {
 
     private final Context mContext;
     CallMethod callMethod;
@@ -31,7 +29,7 @@ public class Grp_Vlist_detail_Adapter extends RecyclerView.Adapter<Grp_Vlist_det
     private Intent intent;
     private final DatabaseHelper dbh;
 
-    public Grp_Vlist_detail_Adapter(ArrayList<GoodGroup> GoodGroups, Context mContext) {
+    public GroupLableAdapter(ArrayList<GoodGroup> GoodGroups, Context mContext) {
         this.mContext = mContext;
         this.GoodGroups = GoodGroups;
         this.callMethod = new CallMethod(mContext);

@@ -41,7 +41,6 @@ public class ConfigActivity extends AppCompatActivity {
     TextView tv_sum_factor;
     TextView tv_phonenumber;
     SwitchMaterial sw_regselloff;
-    SwitchMaterial sw_ArabicText;
     SwitchMaterial sw_autorep;
 
     @SuppressLint("WrongViewCast")
@@ -79,7 +78,6 @@ public class ConfigActivity extends AppCompatActivity {
         tv_sum_factor = findViewById(R.id.config_sum_factor);
         tv_phonenumber = findViewById(R.id.config_phonenumber);
         sw_regselloff = findViewById(R.id.config_selloff);
-        sw_ArabicText = findViewById(R.id.config_arabictext);
         sw_autorep = findViewById(R.id.config_autorep);
 
         auser = dbh.LoadPersonalInfo();
@@ -99,7 +97,6 @@ public class ConfigActivity extends AppCompatActivity {
         tv_phonenumber.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PhoneNumber")));
 
         sw_regselloff.setChecked(Integer.parseInt(callMethod.ReadString("SellOff")) != 0);
-        sw_ArabicText.setChecked(callMethod.ReadBoolan("ArabicText"));
         sw_autorep.setChecked(callMethod.ReadBoolan("AutoReplication"));
 
         btn_toreg.setOnClickListener(view -> {

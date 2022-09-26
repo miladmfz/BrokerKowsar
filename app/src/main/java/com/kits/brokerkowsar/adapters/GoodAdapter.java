@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,14 +22,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.activity.DetailActivity;
 import com.kits.brokerkowsar.activity.PrefactoropenActivity;
 import com.kits.brokerkowsar.activity.SearchActivity;
-import com.kits.brokerkowsar.activity.Search_date_detailActivity;
+import com.kits.brokerkowsar.activity.SearchByDateActivity;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
-import com.kits.brokerkowsar.application.Image_info;
+import com.kits.brokerkowsar.application.ImageInfo;
 import com.kits.brokerkowsar.model.Column;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
@@ -48,7 +46,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_Adapter.gooddetailHolder> {
+public class GoodAdapter extends RecyclerView.Adapter<GoodAdapter.gooddetailHolder> {
     private final Context mContext;
     CallMethod callMethod;
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
@@ -57,18 +55,18 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
     DatabaseHelper dbh;
 
     APIInterface apiInterface;
-    private final Image_info image_info;
+    private final ImageInfo image_info;
     Call<RetrofitResponse> call2;
     public boolean multi_select;
     Action action;
     ArrayList<Column> Columns;
 
 
-    public Good_ProSearch_Adapter(ArrayList<Good> goods, Context context) {
+    public GoodAdapter(ArrayList<Good> goods, Context context) {
         this.mContext = context;
         this.goods = goods;
         this.callMethod = new CallMethod(mContext);
-        this.image_info = new Image_info(mContext);
+        this.image_info = new ImageInfo(mContext);
         this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
         this.action = new Action(mContext);
         this.Columns = dbh.GetColumns("id", "", "1");
@@ -196,7 +194,7 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
                         activity.good_select_function(goods.get(position));
                     }
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
-                        Search_date_detailActivity activity = (Search_date_detailActivity) mContext;
+                        SearchByDateActivity activity = (SearchByDateActivity) mContext;
                         activity.good_select_function(goods.get(position));
                     }
 
@@ -206,7 +204,7 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
                         activity.good_select_function(goods.get(position));
                     }
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
-                        Search_date_detailActivity activity = (Search_date_detailActivity) mContext;
+                        SearchByDateActivity activity = (SearchByDateActivity) mContext;
                         activity.good_select_function(goods.get(position));
                     }
 
@@ -238,7 +236,7 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
                         activity.good_select_function(goods.get(position));
                     }
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
-                        Search_date_detailActivity activity = (Search_date_detailActivity) mContext;
+                        SearchByDateActivity activity = (SearchByDateActivity) mContext;
                         activity.good_select_function(goods.get(position));
                     }
 
@@ -248,7 +246,7 @@ public class Good_ProSearch_Adapter extends RecyclerView.Adapter<Good_ProSearch_
                         activity.good_select_function(goods.get(position));
                     }
                     if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
-                        Search_date_detailActivity activity = (Search_date_detailActivity) mContext;
+                        SearchByDateActivity activity = (SearchByDateActivity) mContext;
                         activity.good_select_function(goods.get(position));
                     }
 

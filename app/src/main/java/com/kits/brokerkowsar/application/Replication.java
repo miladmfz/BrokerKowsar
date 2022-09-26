@@ -45,7 +45,7 @@ public class Replication {
     CallMethod callMethod;
     APIInterface apiInterface;
     Intent intent;
-    Image_info image_info ;
+    ImageInfo image_info ;
 
     private SQLiteDatabase database;
     private final Integer RepRowCount = 100;
@@ -68,7 +68,7 @@ public class Replication {
         this.mContext = context;
         this.callMethod = new CallMethod(mContext);
         this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
-        this.image_info = new Image_info(mContext);
+        this.image_info = new ImageInfo(mContext);
         url = callMethod.ReadString("ServerURLUse");
         database = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
 

@@ -1,10 +1,9 @@
-package com.kits.brokerkowsar.application;
+package com.kits.brokerkowsar.adapters;
 
 import static android.view.animation.Animation.RELATIVE_TO_SELF;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
@@ -12,6 +11,7 @@ import android.widget.TextView;
 
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.activity.SearchActivity;
+import com.kits.brokerkowsar.model.Category;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 

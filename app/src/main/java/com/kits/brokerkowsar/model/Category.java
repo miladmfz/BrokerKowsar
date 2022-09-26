@@ -1,4 +1,4 @@
-package com.kits.brokerkowsar.application;
+package com.kits.brokerkowsar.model;
 
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 

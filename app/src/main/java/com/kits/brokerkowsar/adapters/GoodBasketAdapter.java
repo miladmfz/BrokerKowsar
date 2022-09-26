@@ -16,18 +16,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.activity.BuyActivity;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
-import com.kits.brokerkowsar.application.Image_info;
+import com.kits.brokerkowsar.application.ImageInfo;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.NumberFunctions;
@@ -44,10 +42,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class Good_buy_Adapter extends RecyclerView.Adapter<Good_buy_Adapter.GoodViewHolder> {
+public class GoodBasketAdapter extends RecyclerView.Adapter<GoodBasketAdapter.GoodViewHolder> {
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
     private APIInterface apiInterface;
-    private Image_info image_info;
+    private ImageInfo image_info;
     private final Context mContext;
     CallMethod callMethod;
     private final ArrayList<Good> goods;
@@ -56,11 +54,11 @@ public class Good_buy_Adapter extends RecyclerView.Adapter<Good_buy_Adapter.Good
     Intent intent;
     Action action;
 
-    public Good_buy_Adapter(ArrayList<Good> goods, Context mContext) {
+    public GoodBasketAdapter(ArrayList<Good> goods, Context mContext) {
         this.mContext = mContext;
         this.goods = goods;
         this.callMethod = new CallMethod(mContext);
-        this.image_info = new Image_info(mContext);
+        this.image_info = new ImageInfo(mContext);
         this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
         action = new Action(mContext);
@@ -77,7 +75,6 @@ public class Good_buy_Adapter extends RecyclerView.Adapter<Good_buy_Adapter.Good
     @Override
     public void onBindViewHolder(@NonNull final GoodViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
-        Log.e("test11","3");
 
 
         int maxsellprice = Integer.parseInt(goods.get(position).getGoodFieldValue("MaxSellPrice"));
