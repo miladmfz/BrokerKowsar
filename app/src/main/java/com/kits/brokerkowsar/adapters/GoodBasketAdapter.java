@@ -30,6 +30,7 @@ import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.RetrofitResponse;
+import com.kits.brokerkowsar.viewholder.GoodBasketViewHolder;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
@@ -42,10 +43,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class GoodBasketAdapter extends RecyclerView.Adapter<GoodBasketAdapter.GoodViewHolder> {
+public class GoodBasketAdapter extends RecyclerView.Adapter<GoodBasketViewHolder> {
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
-    private APIInterface apiInterface;
-    private ImageInfo image_info;
+    private final APIInterface apiInterface;
+    private final ImageInfo image_info;
     private final Context mContext;
     CallMethod callMethod;
     private final ArrayList<Good> goods;
@@ -66,14 +67,14 @@ public class GoodBasketAdapter extends RecyclerView.Adapter<GoodBasketAdapter.Go
 
     @NonNull
     @Override
-    public GoodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public GoodBasketViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.good_buy, parent, false);
-        return new GoodViewHolder(view);
+        return new GoodBasketViewHolder(view);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull final GoodViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull final GoodBasketViewHolder holder, @SuppressLint("RecyclerView") int position) {
 
 
 
@@ -194,40 +195,6 @@ public class GoodBasketAdapter extends RecyclerView.Adapter<GoodBasketAdapter.Go
     @Override
     public int getItemCount() {
         return goods.size();
-    }
-
-    static class GoodViewHolder extends RecyclerView.ViewHolder {
-        private final TextView goodnameTextView;
-        private final TextView maxsellpriceTextView;
-        private final TextView priceTextView;
-        private final TextView total;
-        private final TextView maxtotal;
-        private final TextView amount;
-        private final TextView good_buy_shortage_f1;
-        private final TextView good_buy_shortage_f2;
-        private final TextView offer;
-        private final Button btndlt;
-
-        private final ImageView img;
-        MaterialCardView rltv;
-
-        GoodViewHolder(View itemView) {
-            super(itemView);
-            goodnameTextView = itemView.findViewById(R.id.good_buy_name);
-            maxsellpriceTextView = itemView.findViewById(R.id.good_buy_maxprice);
-            priceTextView = itemView.findViewById(R.id.good_buy_price);
-            amount = itemView.findViewById(R.id.good_buy_amount);
-            good_buy_shortage_f1 = itemView.findViewById(R.id.good_buy_shortage_false1);
-            good_buy_shortage_f2 = itemView.findViewById(R.id.good_buy_shortage_false2);
-            total = itemView.findViewById(R.id.good_buy_total);
-            maxtotal = itemView.findViewById(R.id.good_buy_maxtotal);
-            img = itemView.findViewById(R.id.good_buy_img);
-            btndlt = itemView.findViewById(R.id.good_buy_btndlt);
-            offer = itemView.findViewById(R.id.good_buy_offer);
-
-
-            rltv = itemView.findViewById(R.id.good_buy);
-        }
     }
 
 

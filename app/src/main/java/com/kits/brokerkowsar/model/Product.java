@@ -42,4 +42,11 @@ public class Product implements Parcelable {
         dest.writeString(name);
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 }

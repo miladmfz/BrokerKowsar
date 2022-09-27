@@ -22,11 +22,12 @@ import com.kits.brokerkowsar.model.Customer;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.UserInfo;
+import com.kits.brokerkowsar.viewholder.CustomerViewHolder;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.facViewHolder> {
+public class CustomerAdapter extends RecyclerView.Adapter<CustomerViewHolder> {
     private final Context mContext;
     CallMethod callMethod;
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
@@ -51,39 +52,38 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.facVie
 
     @NonNull
     @Override
-    public facViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public CustomerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.customer, parent, false);
-        return new facViewHolder(view);
+        return new CustomerViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final facViewHolder holder, int position) {
-
-        final Customer Customerdetail = customers.get(position);
-
-        holder.cus_code.setText(NumberFunctions.PerisanNumber(Customerdetail.getCustomerFieldValue("CustomerCode")));
-        holder.cus_name.setText(NumberFunctions.PerisanNumber(Customerdetail.getCustomerFieldValue("CustomerName")));
-        holder.cus_manage.setText(NumberFunctions.PerisanNumber(Customerdetail.getCustomerFieldValue("Manager")));
+    public void onBindViewHolder(@NonNull final CustomerViewHolder holder, int position) {
 
 
-        if (Customerdetail.getCustomerFieldValue("Address").equals("null")) {
+        holder.cus_code.setText(NumberFunctions.PerisanNumber(customers.get(position).getCustomerFieldValue("CustomerCode")));
+        holder.cus_name.setText(NumberFunctions.PerisanNumber(customers.get(position).getCustomerFieldValue("CustomerName")));
+        holder.cus_manage.setText(NumberFunctions.PerisanNumber(customers.get(position).getCustomerFieldValue("Manager")));
+
+
+        if (customers.get(position).getCustomerFieldValue("Address").equals("null")) {
             holder.cus_addres.setText("");
         } else {
-            holder.cus_addres.setText(NumberFunctions.PerisanNumber(Customerdetail.getCustomerFieldValue("Address")));
+            holder.cus_addres.setText(NumberFunctions.PerisanNumber(customers.get(position).getCustomerFieldValue("Address")));
         }
 
-        if (Customerdetail.getCustomerFieldValue("Phone").equals("null")) {
+        if (customers.get(position).getCustomerFieldValue("Phone").equals("null")) {
             holder.cus_phone.setText("");
         } else {
-            holder.cus_phone.setText(NumberFunctions.PerisanNumber(Customerdetail.getCustomerFieldValue("Phone")));
+            holder.cus_phone.setText(NumberFunctions.PerisanNumber(customers.get(position).getCustomerFieldValue("Phone")));
         }
 
 
-        if (Integer.parseInt(Customerdetail.getCustomerFieldValue("Bestankar")) > -1) {
-            holder.cus_bes.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(Customerdetail.getCustomerFieldValue("Bestankar")))));
+        if (Integer.parseInt(customers.get(position).getCustomerFieldValue("Bestankar")) > -1) {
+            holder.cus_bes.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(customers.get(position).getCustomerFieldValue("Bestankar")))));
             holder.cus_bes.setTextColor(ContextCompat.getColor(mContext, R.color.green_900));
         } else {
-            int a = (Integer.parseInt(Customerdetail.getCustomerFieldValue("Bestankar"))) * (-1);
+            int a = (Integer.parseInt(customers.get(position).getCustomerFieldValue("Bestankar"))) * (-1);
             holder.cus_bes.setText(NumberFunctions.PerisanNumber(decimalFormat.format(a)));
             holder.cus_bes.setTextColor(ContextCompat.getColor(mContext, R.color.red_900));
         }
@@ -93,7 +93,7 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.facVie
 
                 UserInfo auser = dbh.LoadPersonalInfo();
                 if (Integer.parseInt(auser.getBrokerCode()) > 0) {
-                    action.addfactordialog(Customerdetail.getCustomerFieldValue("CustomerCode"));
+                    action.addfactordialog(customers.get(position).getCustomerFieldValue("CustomerCode"));
                 } else {
                     intent = new Intent(mContext, ConfigActivity.class);
                     callMethod.showToast( "کد بازاریاب را وارد کنید");
@@ -102,7 +102,7 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.facVie
                 }
 
             } else {
-                dbh.UpdatePreFactorHeader_Customer(factor_target, Customerdetail.getCustomerFieldValue("CustomerCode"));
+                dbh.UpdatePreFactorHeader_Customer(factor_target, customers.get(position).getCustomerFieldValue("CustomerCode"));
                 intent = new Intent(mContext, PrefactorActivity.class);
                 ((Activity) mContext).finish();
                 ((Activity) mContext).overridePendingTransition(0, 0);
@@ -117,25 +117,6 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.facVie
         return customers.size();
     }
 
-    static class facViewHolder extends RecyclerView.ViewHolder {
-        private final TextView cus_code;
-        private final TextView cus_name;
-        private final TextView cus_manage;
-        private final TextView cus_phone;
-        private final TextView cus_addres;
-        private final TextView cus_bes;
-        MaterialCardView fac_rltv;
 
-        facViewHolder(View itemView) {
-            super(itemView);
-            cus_code = itemView.findViewById(R.id.customer_code);
-            cus_name = itemView.findViewById(R.id.customer_name);
-            cus_manage = itemView.findViewById(R.id.customer_manage);
-            cus_phone = itemView.findViewById(R.id.customer_phone);
-            cus_addres = itemView.findViewById(R.id.customer_addres);
-            cus_bes = itemView.findViewById(R.id.customer_bes);
-            fac_rltv = itemView.findViewById(R.id.customer);
-        }
-    }
 
 }

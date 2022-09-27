@@ -9,6 +9,7 @@ public class Category extends ExpandableGroup<Product> {
     public int id ;
     public int childno ;
     public String name ;
+    public String imagestr ;
 
 
     public Category(String title, List<Product> items,int id,int childno) {
@@ -27,4 +28,11 @@ public class Category extends ExpandableGroup<Product> {
     }
 
 
+    public String getImagestr() {
+        return imagestr;
+    }
+
+    public void setImagestr(String imagestr) {
+        this.imagestr = imagestr;
+    }
 }

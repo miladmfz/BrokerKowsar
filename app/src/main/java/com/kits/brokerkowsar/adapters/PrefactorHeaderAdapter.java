@@ -28,12 +28,14 @@ import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.PreFactor;
+import com.kits.brokerkowsar.viewholder.PreFactorHeaderOpenViewHolder;
+import com.kits.brokerkowsar.viewholder.PreFactorHeaderViewHolder;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 
-public class PrefactorHeaderAdapter extends RecyclerView.Adapter<PrefactorHeaderAdapter.facViewHolder> {
+public class PrefactorHeaderAdapter extends RecyclerView.Adapter<PreFactorHeaderViewHolder> {
 
     private final Context mContext;
     CallMethod callMethod;
@@ -57,37 +59,36 @@ public class PrefactorHeaderAdapter extends RecyclerView.Adapter<PrefactorHeader
 
     @NonNull
     @Override
-    public facViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PreFactorHeaderViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.prefactor_header, parent, false);
-        return new facViewHolder(view);
+        return new PreFactorHeaderViewHolder(view);
     }
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull final facViewHolder holder, final int position) {
-
-        final PreFactor preFactordetail = PreFactors.get(position);
-
-        holder.fac_code.setText(NumberFunctions.PerisanNumber(String.valueOf(preFactordetail.getPreFactorFieldValue("PreFactorCode"))));
-        holder.fac_date.setText(NumberFunctions.PerisanNumber(String.valueOf(preFactordetail.getPreFactorFieldValue("PreFactorDate"))));
-        holder.fac_time.setText(NumberFunctions.PerisanNumber(String.valueOf(preFactordetail.getPreFactorFieldValue("PreFactorTime"))));
-        holder.fac_kowsardate.setText(NumberFunctions.PerisanNumber(String.valueOf(preFactordetail.getPreFactorFieldValue("PreFactorkowsarDate"))));
-        holder.fac_kowsarcode.setText(NumberFunctions.PerisanNumber(String.valueOf(preFactordetail.getPreFactorFieldValue("PreFactorKowsarCode"))));
-        holder.fac_detail.setText(NumberFunctions.PerisanNumber(String.valueOf(preFactordetail.getPreFactorFieldValue("PreFactorExplain"))));
-        holder.fac_customer.setText(NumberFunctions.PerisanNumber(String.valueOf(preFactordetail.getPreFactorFieldValue("Customer"))));
-        holder.fac_row.setText(NumberFunctions.PerisanNumber(String.valueOf(preFactordetail.getPreFactorFieldValue("RowCount"))));
-        holder.fac_count.setText(NumberFunctions.PerisanNumber(String.valueOf(preFactordetail.getPreFactorFieldValue("SumAmount"))));
-        holder.fac_price.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(String.valueOf(preFactordetail.getPreFactorFieldValue("SumPrice"))))));
+    public void onBindViewHolder(@NonNull final PreFactorHeaderViewHolder holder, final int position) {
 
 
-        if (Integer.parseInt(preFactordetail.getPreFactorFieldValue("PreFactorKowsarCode")) > 0) {
+        holder.fac_code.setText(NumberFunctions.PerisanNumber(String.valueOf(PreFactors.get(position).getPreFactorFieldValue("PreFactorCode"))));
+        holder.fac_date.setText(NumberFunctions.PerisanNumber(String.valueOf(PreFactors.get(position).getPreFactorFieldValue("PreFactorDate"))));
+        holder.fac_time.setText(NumberFunctions.PerisanNumber(String.valueOf(PreFactors.get(position).getPreFactorFieldValue("PreFactorTime"))));
+        holder.fac_kowsardate.setText(NumberFunctions.PerisanNumber(String.valueOf(PreFactors.get(position).getPreFactorFieldValue("PreFactorkowsarDate"))));
+        holder.fac_kowsarcode.setText(NumberFunctions.PerisanNumber(String.valueOf(PreFactors.get(position).getPreFactorFieldValue("PreFactorKowsarCode"))));
+        holder.fac_detail.setText(NumberFunctions.PerisanNumber(String.valueOf(PreFactors.get(position).getPreFactorFieldValue("PreFactorExplain"))));
+        holder.fac_customer.setText(NumberFunctions.PerisanNumber(String.valueOf(PreFactors.get(position).getPreFactorFieldValue("Customer"))));
+        holder.fac_row.setText(NumberFunctions.PerisanNumber(String.valueOf(PreFactors.get(position).getPreFactorFieldValue("RowCount"))));
+        holder.fac_count.setText(NumberFunctions.PerisanNumber(String.valueOf(PreFactors.get(position).getPreFactorFieldValue("SumAmount"))));
+        holder.fac_price.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(String.valueOf(PreFactors.get(position).getPreFactorFieldValue("SumPrice"))))));
+
+
+        if (Integer.parseInt(PreFactors.get(position).getPreFactorFieldValue("PreFactorKowsarCode")) > 0) {
             holder.fac_status.setVisibility(View.VISIBLE);
         } else {
             holder.fac_status.setVisibility(View.GONE);
         }
 
         holder.fac_history_good.setOnClickListener(view -> {
-            callMethod.EditString("PreFactorGood", preFactordetail.getPreFactorFieldValue("PreFactorCode"));
+            callMethod.EditString("PreFactorGood", PreFactors.get(position).getPreFactorFieldValue("PreFactorCode"));
             intent = new Intent(mContext, BuyHistoryActivity.class);
             mContext.startActivity(intent);
         });
@@ -103,27 +104,27 @@ public class PrefactorHeaderAdapter extends RecyclerView.Adapter<PrefactorHeader
 
         holder.fac_dlt.setOnClickListener(view -> {
 
-            if (Integer.parseInt(preFactordetail.getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
+            if (Integer.parseInt(PreFactors.get(position).getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
                 callMethod.showToast( "فاکتور بسته می باشد");
             } else {
 
-                callMethod.EditString("PreFactorCode", preFactordetail.getPreFactorFieldValue("PreFactorCode"));
+                callMethod.EditString("PreFactorCode", PreFactors.get(position).getPreFactorFieldValue("PreFactorCode"));
 
-                ArrayList<Good> goods = dbh.getAllPreFactorRows("", String.valueOf(preFactordetail.getPreFactorFieldValue("PreFactorCode")));
+                ArrayList<Good> goods = dbh.getAllPreFactorRows("", String.valueOf(PreFactors.get(position).getPreFactorFieldValue("PreFactorCode")));
                 if (goods.size() != 0) {
                     new AlertDialog.Builder(mContext)
                             .setTitle("توجه")
                             .setMessage("فاکتور دارای کالا می باشد،کالاها حذف شود؟")
                             .setPositiveButton("بله", (dialogInterface, i) -> {
                                 intent = new Intent(mContext, BuyActivity.class);
-                                intent.putExtra("PreFac", preFactordetail.getPreFactorFieldValue("PreFactorCode"));
+                                intent.putExtra("PreFac", PreFactors.get(position).getPreFactorFieldValue("PreFactorCode"));
                                 mContext.startActivity(intent);
                             })
                             .setNegativeButton("خیر", (dialogInterface, i) -> {
                             })
                             .show();
                 } else {
-                    dbh.DeletePreFactor(String.valueOf(preFactordetail.getPreFactorFieldValue("PreFactorCode")));
+                    dbh.DeletePreFactor(String.valueOf(PreFactors.get(position).getPreFactorFieldValue("PreFactorCode")));
                     callMethod.showToast( "فاکتور حذف گردید");
                     goods.size();
 
@@ -145,14 +146,14 @@ public class PrefactorHeaderAdapter extends RecyclerView.Adapter<PrefactorHeader
 
         holder.fac_good_edit.setOnClickListener(view -> {
 
-            if (Integer.parseInt(preFactordetail.getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
+            if (Integer.parseInt(PreFactors.get(position).getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
                 callMethod.showToast( "فاکتور بسته می باشد");
             } else {
 
-                callMethod.EditString("PreFactorCode", preFactordetail.getPreFactorFieldValue("PreFactorCode"));
+                callMethod.EditString("PreFactorCode", PreFactors.get(position).getPreFactorFieldValue("PreFactorCode"));
 
                 intent = new Intent(mContext, BuyActivity.class);
-                intent.putExtra("PreFac", preFactordetail.getPreFactorFieldValue("PreFactorCode"));
+                intent.putExtra("PreFac", PreFactors.get(position).getPreFactorFieldValue("PreFactorCode"));
 
                 mContext.startActivity(intent);
             }
@@ -161,12 +162,12 @@ public class PrefactorHeaderAdapter extends RecyclerView.Adapter<PrefactorHeader
 
         holder.fac_send.setOnClickListener(view -> {
 
-            ArrayList<Good> goods = dbh.getAllPreFactorRows("", String.valueOf(preFactordetail.getPreFactorFieldValue("PreFactorCode")));
+            ArrayList<Good> goods = dbh.getAllPreFactorRows("", String.valueOf(PreFactors.get(position).getPreFactorFieldValue("PreFactorCode")));
             if (goods.size() != 0) {
                 new AlertDialog.Builder(mContext)
                         .setTitle("توجه")
                         .setMessage("آیا فاکتور ارسال گردد؟")
-                        .setPositiveButton("بله", (dialogInterface, i) -> action.sendfactor(String.valueOf(preFactordetail.getPreFactorFieldValue("PreFactorCode"))))
+                        .setPositiveButton("بله", (dialogInterface, i) -> action.sendfactor(String.valueOf(PreFactors.get(position).getPreFactorFieldValue("PreFactorCode"))))
                         .setNegativeButton("خیر", (dialogInterface, i) -> {
                         })
                         .show();
@@ -179,7 +180,7 @@ public class PrefactorHeaderAdapter extends RecyclerView.Adapter<PrefactorHeader
 
 
         holder.fac_customer_edit.setOnClickListener(view -> {
-            if (Integer.parseInt(preFactordetail.getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
+            if (Integer.parseInt(PreFactors.get(position).getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
                 callMethod.showToast( "فاکتور بسته می باشد");
             } else {
                 new AlertDialog.Builder(mContext)
@@ -189,7 +190,7 @@ public class PrefactorHeaderAdapter extends RecyclerView.Adapter<PrefactorHeader
 
                             intent = new Intent(mContext, CustomerActivity.class);
                             intent.putExtra("edit", "1");
-                            intent.putExtra("factor_code", preFactordetail.getPreFactorFieldValue("PreFactorCode"));
+                            intent.putExtra("factor_code", PreFactors.get(position).getPreFactorFieldValue("PreFactorCode"));
                             intent.putExtra("id", "0");
 
                             ((Activity) mContext).finish();
@@ -205,13 +206,13 @@ public class PrefactorHeaderAdapter extends RecyclerView.Adapter<PrefactorHeader
 
 
         holder.fac_explain_edit.setOnClickListener(view -> {
-            if (Integer.parseInt(preFactordetail.getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
+            if (Integer.parseInt(PreFactors.get(position).getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
                 callMethod.showToast( "فاکتور بسته می باشد");
             } else {
                 new AlertDialog.Builder(mContext)
                         .setTitle("توجه")
                         .setMessage("آیا مایل به اصلاح توضیحات می باشید؟")
-                        .setPositiveButton("بله", (dialogInterface, i) -> action.edit_explain(String.valueOf(preFactordetail.getPreFactorFieldValue("PreFactorCode"))))
+                        .setPositiveButton("بله", (dialogInterface, i) -> action.edit_explain(String.valueOf(PreFactors.get(position).getPreFactorFieldValue("PreFactorCode"))))
                         .setNegativeButton("خیر", (dialogInterface, i) -> {
                         })
                         .show();
@@ -222,10 +223,10 @@ public class PrefactorHeaderAdapter extends RecyclerView.Adapter<PrefactorHeader
         holder.fac_select.setOnClickListener(v -> {
 
 
-            if (Integer.parseInt(preFactordetail.getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
+            if (Integer.parseInt(PreFactors.get(position).getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
                 callMethod.showToast( "فاکتور بسته می باشد");
             } else {
-                callMethod.EditString("PreFactorCode", preFactordetail.getPreFactorFieldValue("PreFactorCode"));
+                callMethod.EditString("PreFactorCode", PreFactors.get(position).getPreFactorFieldValue("PreFactorCode"));
 
                 callMethod.showToast( "فاکتور مورد نظر انتخاب شد");
                 intent = new Intent(mContext, SearchActivity.class);
@@ -248,53 +249,7 @@ public class PrefactorHeaderAdapter extends RecyclerView.Adapter<PrefactorHeader
         return PreFactors.size();
     }
 
-    static class facViewHolder extends RecyclerView.ViewHolder {
-        private final TextView fac_code;
-        private final TextView fac_date;
-        private final TextView fac_time;
-        private final TextView fac_kowsardate;
-        private final TextView fac_kowsarcode;
-        private final TextView fac_detail;
-        private final TextView fac_row;
-        private final TextView fac_count;
-        private final TextView fac_price;
-        private final TextView fac_customer;
-        private final TextView fac_status;
-        private final Button fac_history_good;
-        private final Button fac_send;
-        private final Button fac_dlt;
-        private final Button fac_customer_edit;
-        private final Button fac_explain_edit;
-        private final Button fac_excel;
-        private final Button fac_select;
-        private final Button fac_good_edit;
-        MaterialCardView fac_rltv;
 
-        facViewHolder(View itemView) {
-            super(itemView);
-            fac_code = itemView.findViewById(R.id.pf_header_code);
-            fac_date = itemView.findViewById(R.id.pf_header_date);
-            fac_time = itemView.findViewById(R.id.pf_header_time);
-            fac_kowsardate = itemView.findViewById(R.id.pf_header_kowsardate);
-            fac_row = itemView.findViewById(R.id.pf_header_row);
-            fac_count = itemView.findViewById(R.id.pf_header_count);
-            fac_price = itemView.findViewById(R.id.pf_header_price);
-            fac_kowsarcode = itemView.findViewById(R.id.pf_header_kowsarcode);
-            fac_detail = itemView.findViewById(R.id.pf_header_detail);
-            fac_customer = itemView.findViewById(R.id.pf_header_customer);
-            fac_history_good = itemView.findViewById(R.id.pf_header_histoy_good);
-            fac_send = itemView.findViewById(R.id.pf_header_send);
-            fac_dlt = itemView.findViewById(R.id.pf_header_dlt);
-            fac_customer_edit = itemView.findViewById(R.id.pf_header_customer_edit);
-            fac_explain_edit = itemView.findViewById(R.id.pf_header_explain_edit);
-            fac_excel = itemView.findViewById(R.id.pf_header__xls);
-            fac_select = itemView.findViewById(R.id.pf_header_select);
-            fac_status = itemView.findViewById(R.id.pf_header_status);
-            fac_good_edit = itemView.findViewById(R.id.pf_header_good_edit);
-
-            fac_rltv = itemView.findViewById(R.id.pf_header);
-        }
-    }
 
 
 }

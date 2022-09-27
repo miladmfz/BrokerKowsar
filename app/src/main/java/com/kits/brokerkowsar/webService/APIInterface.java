@@ -21,6 +21,16 @@ public interface APIInterface {
 
     @POST("index.php")
     @FormUrlEncoded
+    Call<RetrofitResponse> GetImageCustom(
+            @Field("tag")             String tag
+            , @Field("ClassName")    String ClassName
+            , @Field("ObjectRef")    String ObjectRef
+            , @Field("Scale")    String Scale
+    );
+
+
+    @POST("index.php")
+    @FormUrlEncoded
     Call<RetrofitResponse> Activation(
               @Field("tag")             String tag
             , @Field("ActivationCode")  String ActivationCode

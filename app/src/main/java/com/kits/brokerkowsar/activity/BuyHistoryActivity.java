@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,8 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.App;
-import com.kits.brokerkowsar.adapters.GoodBuyHistoryAdapter;
-import com.kits.brokerkowsar.application.App;
+import com.kits.brokerkowsar.adapters.GoodBasketHistoryAdapter;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
@@ -43,7 +41,7 @@ public class BuyHistoryActivity extends AppCompatActivity {
     Handler handler;
     RecyclerView recyclerView;
     GridLayoutManager gridLayoutManager;
-    GoodBuyHistoryAdapter adapter;
+    GoodBasketHistoryAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,7 +110,7 @@ public class BuyHistoryActivity extends AppCompatActivity {
                                 R.drawable.bg_round_green_history));
                     }
 
-                    adapter = new GoodBuyHistoryAdapter(goods, Itemposition, App.getContext());
+                    adapter = new GoodBasketHistoryAdapter(goods, Itemposition, App.getContext());
                     gridLayoutManager = new GridLayoutManager(App.getContext(), 1);
                     recyclerView.setLayoutManager(gridLayoutManager);
                     recyclerView.setAdapter(adapter);
@@ -123,7 +121,7 @@ public class BuyHistoryActivity extends AppCompatActivity {
 
         history_row.setOnClickListener(view -> {
 
-            adapter = new GoodBuyHistoryAdapter(goods, Itemposition, this);
+            adapter = new GoodBasketHistoryAdapter(goods, Itemposition, this);
             gridLayoutManager = new GridLayoutManager(this, 1);
             recyclerView.setLayoutManager(gridLayoutManager);
             recyclerView.setAdapter(adapter);
@@ -139,7 +137,7 @@ public class BuyHistoryActivity extends AppCompatActivity {
 
         goods = dbh.getAllPreFactorRows(srch, callMethod.ReadString("PreFactorGood"));
 
-        adapter = new GoodBuyHistoryAdapter(goods, Itemposition, this);
+        adapter = new GoodBasketHistoryAdapter(goods, Itemposition, this);
         gridLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(gridLayoutManager);
         recyclerView.setAdapter(adapter);

@@ -21,6 +21,7 @@ import com.kits.brokerkowsar.application.ImageInfo;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.NumberFunctions;
+import com.kits.brokerkowsar.viewholder.GoodBasketHistoryViewHolder;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
@@ -28,7 +29,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class GoodBuyHistoryAdapter extends RecyclerView.Adapter<GoodBuyHistoryAdapter.GoodViewHolder> {
+public class GoodBasketHistoryAdapter extends RecyclerView.Adapter<GoodBasketHistoryViewHolder> {
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
     private final ArrayList<Good> goods;
     private final Context mContext;
@@ -43,7 +44,7 @@ public class GoodBuyHistoryAdapter extends RecyclerView.Adapter<GoodBuyHistoryAd
 
 
 
-    public GoodBuyHistoryAdapter(ArrayList<Good> goods, String Itemposition, Context mContext) {
+    public GoodBasketHistoryAdapter(ArrayList<Good> goods, String Itemposition, Context mContext) {
         this.mContext = mContext;
         this.goods = goods;
         this.itemposition = Itemposition;
@@ -58,7 +59,7 @@ public class GoodBuyHistoryAdapter extends RecyclerView.Adapter<GoodBuyHistoryAd
 
     @NonNull
     @Override
-    public GoodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public GoodBasketHistoryViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
         if (itemposition.equals("0")) {
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.good_buy_history_line, parent, false);
@@ -66,11 +67,11 @@ public class GoodBuyHistoryAdapter extends RecyclerView.Adapter<GoodBuyHistoryAd
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.good_buy_history, parent, false);
 
         }
-        return new GoodViewHolder(view);
+        return new GoodBasketHistoryViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final GoodViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final GoodBasketHistoryViewHolder holder, int position) {
         Good gooddetail = goods.get(position);
 
 
@@ -114,32 +115,6 @@ public class GoodBuyHistoryAdapter extends RecyclerView.Adapter<GoodBuyHistoryAd
         return goods.size();
     }
 
-    static class GoodViewHolder extends RecyclerView.ViewHolder {
-        private final TextView goodnameTextView;
-        private final TextView priceTextView;
-        private final TextView total;
-        private final TextView amount;
-        private final TextView code;
-        MaterialCardView rltv;
-
-        private final TextView maxsellpriceTextView;
-        private final TextView maxtotal;
-        private final ImageView img;
-
-
-        GoodViewHolder(View itemView) {
-            super(itemView);
-            goodnameTextView = itemView.findViewById(R.id.good_buy_history_name);
-            maxsellpriceTextView = itemView.findViewById(R.id.good_buy_history_maxprice);
-            maxtotal = itemView.findViewById(R.id.good_buy_history_maxtotal);
-            priceTextView = itemView.findViewById(R.id.good_buy_history_price);
-            total = itemView.findViewById(R.id.good_buy_history_total);
-            amount = itemView.findViewById(R.id.good_buy_history_amount);
-            code = itemView.findViewById(R.id.good_buy_history_code);
-            img = itemView.findViewById(R.id.good_buy_history_img);
-            rltv = itemView.findViewById(R.id.good_buy_history);
-        }
-    }
 
 
 }

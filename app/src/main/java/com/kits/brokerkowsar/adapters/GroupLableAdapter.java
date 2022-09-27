@@ -18,10 +18,11 @@ import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.GoodGroup;
 import com.kits.brokerkowsar.model.NumberFunctions;
+import com.kits.brokerkowsar.viewholder.GroupLabelViewHolder;
 
 import java.util.ArrayList;
 
-public class GroupLableAdapter extends RecyclerView.Adapter<GroupLableAdapter.GoodGroupViewHolder> {
+public class GroupLableAdapter extends RecyclerView.Adapter<GroupLabelViewHolder> {
 
     private final Context mContext;
     CallMethod callMethod;
@@ -33,22 +34,20 @@ public class GroupLableAdapter extends RecyclerView.Adapter<GroupLableAdapter.Go
         this.mContext = mContext;
         this.GoodGroups = GoodGroups;
         this.callMethod = new CallMethod(mContext);
-
         this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
-
 
     }
 
     @NonNull
     @Override
-    public GoodGroupViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public GroupLabelViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.grp_v_list_detail, parent, false);
-        return new GoodGroupViewHolder(view);
+        return new GroupLabelViewHolder(view);
     }
 
 
     @Override
-    public void onBindViewHolder(@NonNull GoodGroupViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GroupLabelViewHolder holder, int position) {
 
 
         holder.grpname.setText(NumberFunctions.PerisanNumber(GoodGroups.get(position).getGoodGroupFieldValue("Name")));
@@ -77,17 +76,5 @@ public class GroupLableAdapter extends RecyclerView.Adapter<GroupLableAdapter.Go
         return GoodGroups.size();
     }
 
-    static class GoodGroupViewHolder extends RecyclerView.ViewHolder {
 
-        private final TextView grpname;
-        private final ImageView img;
-        FrameLayout rltv;
-
-        GoodGroupViewHolder(View itemView) {
-            super(itemView);
-            grpname = itemView.findViewById(R.id.grp_vlist_detail_name);
-            rltv = itemView.findViewById(R.id.grp_vlist_detail);
-            img = itemView.findViewById(R.id.grp_vlist_detail_image);
-        }
-    }
 }

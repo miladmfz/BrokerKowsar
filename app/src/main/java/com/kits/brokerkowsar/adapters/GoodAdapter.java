@@ -34,6 +34,7 @@ import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.RetrofitResponse;
+import com.kits.brokerkowsar.viewholder.GoodItemViewHolder;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
@@ -46,7 +47,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
-public class GoodAdapter extends RecyclerView.Adapter<GoodAdapter.gooddetailHolder> {
+public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     private final Context mContext;
     CallMethod callMethod;
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
@@ -76,21 +77,26 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodAdapter.gooddetailHold
 
     @NonNull
     @Override
-    public gooddetailHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public GoodItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.good_prosearch, parent, false);
-        return new gooddetailHolder(view);
+        return new GoodItemViewHolder(view);
     }
+
+
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull final gooddetailHolder holder, @SuppressLint("RecyclerView") final int position) {
-        final Good gooddetail = goods.get(position);
+    public void onBindViewHolder(@NonNull final GoodItemViewHolder holder, @SuppressLint("RecyclerView") final int position) {
+
+
+
+
         holder.mainline.removeAllViews();
 
         for (Column Column : Columns) {
             if (Integer.parseInt(Column.getSortOrder()) > 1) {
                 TextView extra_TextView = new TextView(mContext);
-                extra_TextView.setText(NumberFunctions.PerisanNumber(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))));
+                extra_TextView.setText(NumberFunctions.PerisanNumber(goods.get(position).getGoodFieldValue(Column.getColumnFieldValue("columnname"))));
                 extra_TextView.setBackgroundResource(R.color.white);
                 extra_TextView.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT));
                 extra_TextView.setTextSize(Integer.parseInt(callMethod.ReadString("BodySize")));
@@ -98,13 +104,13 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodAdapter.gooddetailHold
                 extra_TextView.setTextColor(mContext.getColor(R.color.grey_1000));
 
                 try {
-                    if(Integer.parseInt(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname")))>999) {
-                        extra_TextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))))));
+                    if(Integer.parseInt(goods.get(position).getGoodFieldValue(Column.getColumnFieldValue("columnname")))>999) {
+                        extra_TextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(goods.get(position).getGoodFieldValue(Column.getColumnFieldValue("columnname"))))));
                     }else {
-                        extra_TextView.setText(NumberFunctions.PerisanNumber(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))));
+                        extra_TextView.setText(NumberFunctions.PerisanNumber(goods.get(position).getGoodFieldValue(Column.getColumnFieldValue("columnname"))));
                     }
                 }catch (Exception e){
-                    extra_TextView.setText(NumberFunctions.PerisanNumber(gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))));
+                    extra_TextView.setText(NumberFunctions.PerisanNumber(goods.get(position).getGoodFieldValue(Column.getColumnFieldValue("columnname"))));
                 }
 
                 if (Column.getSortOrder().equals("2")) {
@@ -135,13 +141,11 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodAdapter.gooddetailHold
             }
         }
 
-
-
-        if (image_info.Image_exist(gooddetail.getGoodFieldValue("KsrImageCode"))) {
+        if (image_info.Image_exist(goods.get(position).getGoodFieldValue("KsrImageCode"))) {
             String root = Environment.getExternalStorageDirectory().getAbsolutePath();
             File imagefile = new File(root + "/Kowsar/" +
                     callMethod.ReadString("EnglishCompanyNameUse") + "/" +
-                    gooddetail.getGoodFieldValue("KsrImageCode") + ".jpg");
+                    goods.get(position).getGoodFieldValue("KsrImageCode") + ".jpg");
             Bitmap myBitmap = BitmapFactory.decodeFile(imagefile.getAbsolutePath());
             holder.img.setImageBitmap(myBitmap);
 
@@ -150,7 +154,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodAdapter.gooddetailHold
             byte[] imageByteArray1;
             imageByteArray1 = Base64.decode(mContext.getString(R.string.no_photo), Base64.DEFAULT);
             holder.img.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length), BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getWidth() * 2, BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getHeight() * 2, false));
-            call2 = apiInterface.GetImageFromKsr("GetImageFromKsr", gooddetail.getGoodFieldValue("KsrImageCode"));
+            call2 = apiInterface.GetImageFromKsr("GetImageFromKsr", goods.get(position).getGoodFieldValue("KsrImageCode"));
             call2.enqueue(new Callback<RetrofitResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<RetrofitResponse> call2, @NonNull Response<RetrofitResponse> response) {
@@ -164,7 +168,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodAdapter.gooddetailHold
                                             0,
                                             Base64.decode(response.body().getText(), Base64.DEFAULT).length
                                     ),
-                                    gooddetail.getGoodFieldValue("KsrImageCode")
+                                    goods.get(position).getGoodFieldValue("KsrImageCode")
                             );
 
                             notifyItemChanged(position);
@@ -278,6 +282,11 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodAdapter.gooddetailHold
 
             }
         });
+
+
+
+
+
     }
 
     public int getcolorresource(String colortarget) {
@@ -333,20 +342,5 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodAdapter.gooddetailHold
         return goods.size();
     }
 
-    static class gooddetailHolder extends RecyclerView.ViewHolder {
 
-        private final LinearLayoutCompat mainline;
-        private final Button btnadd;
-        private final ImageView img;
-        MaterialCardView rltv;
-
-        gooddetailHolder(View itemView) {
-            super(itemView);
-
-            mainline = itemView.findViewById(R.id.prosearch_mainline);
-            img = itemView.findViewById(R.id.good_prosearch_img);
-            rltv = itemView.findViewById(R.id.good_prosearch);
-            btnadd = itemView.findViewById(R.id.good_prosearch_btn);
-        }
-    }
 }
