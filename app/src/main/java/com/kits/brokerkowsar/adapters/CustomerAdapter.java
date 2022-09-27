@@ -28,15 +28,13 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class CustomerAdapter extends RecyclerView.Adapter<CustomerViewHolder> {
-    private final Context mContext;
+    Context mContext;
     CallMethod callMethod;
-    private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
-    private final ArrayList<Customer> customers;
-    private final String edit;
-    private final String factor_target;
-    private final DatabaseHelper dbh;
-    private final Action action;
-    private Intent intent;
+    ArrayList<Customer> customers;
+    String edit;
+    String factor_target;
+    DatabaseHelper dbh;
+    Action action;
 
 
     public CustomerAdapter(ArrayList<Customer> customers, Context mContext, String edit, String factor_target) {
@@ -61,55 +59,18 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerViewHolder> {
     public void onBindViewHolder(@NonNull final CustomerViewHolder holder, int position) {
 
 
-        holder.cus_code.setText(NumberFunctions.PerisanNumber(customers.get(position).getCustomerFieldValue("CustomerCode")));
-        holder.cus_name.setText(NumberFunctions.PerisanNumber(customers.get(position).getCustomerFieldValue("CustomerName")));
-        holder.cus_manage.setText(NumberFunctions.PerisanNumber(customers.get(position).getCustomerFieldValue("Manager")));
 
+        holder.bind(customers.get(position));
 
-        if (customers.get(position).getCustomerFieldValue("Address").equals("null")) {
-            holder.cus_addres.setText("");
-        } else {
-            holder.cus_addres.setText(NumberFunctions.PerisanNumber(customers.get(position).getCustomerFieldValue("Address")));
-        }
+        holder.Action(customers.get(position)
+                ,dbh
+                ,callMethod
+                ,action
+                ,edit
+                ,factor_target
+                ,mContext
+        );
 
-        if (customers.get(position).getCustomerFieldValue("Phone").equals("null")) {
-            holder.cus_phone.setText("");
-        } else {
-            holder.cus_phone.setText(NumberFunctions.PerisanNumber(customers.get(position).getCustomerFieldValue("Phone")));
-        }
-
-
-        if (Integer.parseInt(customers.get(position).getCustomerFieldValue("Bestankar")) > -1) {
-            holder.cus_bes.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(customers.get(position).getCustomerFieldValue("Bestankar")))));
-            holder.cus_bes.setTextColor(ContextCompat.getColor(mContext, R.color.green_900));
-        } else {
-            int a = (Integer.parseInt(customers.get(position).getCustomerFieldValue("Bestankar"))) * (-1);
-            holder.cus_bes.setText(NumberFunctions.PerisanNumber(decimalFormat.format(a)));
-            holder.cus_bes.setTextColor(ContextCompat.getColor(mContext, R.color.red_900));
-        }
-
-        holder.fac_rltv.setOnClickListener(v -> {
-            if (edit.equals("0")) {
-
-                UserInfo auser = dbh.LoadPersonalInfo();
-                if (Integer.parseInt(auser.getBrokerCode()) > 0) {
-                    action.addfactordialog(customers.get(position).getCustomerFieldValue("CustomerCode"));
-                } else {
-                    intent = new Intent(mContext, ConfigActivity.class);
-                    callMethod.showToast( "کد بازاریاب را وارد کنید");
-
-                    mContext.startActivity(intent);
-                }
-
-            } else {
-                dbh.UpdatePreFactorHeader_Customer(factor_target, customers.get(position).getCustomerFieldValue("CustomerCode"));
-                intent = new Intent(mContext, PrefactorActivity.class);
-                ((Activity) mContext).finish();
-                ((Activity) mContext).overridePendingTransition(0, 0);
-                mContext.startActivity(intent);
-                ((Activity) mContext).overridePendingTransition(0, 0);
-            }
-        });
     }
 
     @Override

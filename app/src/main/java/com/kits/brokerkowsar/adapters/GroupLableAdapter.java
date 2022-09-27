@@ -24,17 +24,15 @@ import java.util.ArrayList;
 
 public class GroupLableAdapter extends RecyclerView.Adapter<GroupLabelViewHolder> {
 
-    private final Context mContext;
+    Context mContext;
     CallMethod callMethod;
-    private final ArrayList<GoodGroup> GoodGroups;
-    private Intent intent;
-    private final DatabaseHelper dbh;
+    ArrayList<GoodGroup> GoodGroups;
+
 
     public GroupLableAdapter(ArrayList<GoodGroup> GoodGroups, Context mContext) {
         this.mContext = mContext;
         this.GoodGroups = GoodGroups;
         this.callMethod = new CallMethod(mContext);
-        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
 
     }
 
@@ -49,25 +47,8 @@ public class GroupLableAdapter extends RecyclerView.Adapter<GroupLabelViewHolder
     @Override
     public void onBindViewHolder(@NonNull GroupLabelViewHolder holder, int position) {
 
+        holder.bind(GoodGroups.get(position),mContext);
 
-        holder.grpname.setText(NumberFunctions.PerisanNumber(GoodGroups.get(position).getGoodGroupFieldValue("Name")));
-
-
-        if (Integer.parseInt(GoodGroups.get(position).getGoodGroupFieldValue("ChildNo"))>0) {
-            holder.img.setVisibility(View.VISIBLE);
-        } else
-            holder.img.setVisibility(View.GONE);
-
-
-
-        holder.grpname.setOnClickListener(v -> {
-
-            intent = new Intent(mContext, SearchActivity.class);
-            intent.putExtra("scan", "");
-            intent.putExtra("id", GoodGroups.get(position).getGoodGroupFieldValue("GroupCode"));
-            intent.putExtra("title", GoodGroups.get(position).getGoodGroupFieldValue("Name"));
-            mContext.startActivity(intent);
-        });
 
     }
 

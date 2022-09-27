@@ -1,29 +1,50 @@
 package com.kits.brokerkowsar.viewholder;
 ;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.activity.ConfigActivity;
+import com.kits.brokerkowsar.activity.PrefactorActivity;
+import com.kits.brokerkowsar.application.Action;
+import com.kits.brokerkowsar.application.App;
+import com.kits.brokerkowsar.application.CallMethod;
+import com.kits.brokerkowsar.application.ImageInfo;
+import com.kits.brokerkowsar.model.Customer;
+import com.kits.brokerkowsar.model.DatabaseHelper;
+import com.kits.brokerkowsar.model.Good;
+import com.kits.brokerkowsar.model.NumberFunctions;
+import com.kits.brokerkowsar.model.UserInfo;
+
+import java.io.File;
+import java.text.DecimalFormat;
 
 public class GoodBasketHistoryViewHolder extends RecyclerView.ViewHolder {
+    private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
 
 
-    public TextView goodnameTextView;
-    public TextView priceTextView;
-    public TextView total;
-    public TextView amount;
-    public TextView code;
-    public TextView maxsellpriceTextView;
-    public TextView maxtotal;
-    public ImageView img;
-    public MaterialCardView rltv;
+    private final  TextView goodnameTextView;
+    private final  TextView priceTextView;
+    private final  TextView total;
+    private final  TextView amount;
+    private final  TextView code;
+    private final  TextView maxsellpriceTextView;
+    private final  TextView maxtotal;
+    private final  ImageView img;
 
 
     public GoodBasketHistoryViewHolder(View itemView) {
@@ -36,8 +57,55 @@ public class GoodBasketHistoryViewHolder extends RecyclerView.ViewHolder {
         amount = itemView.findViewById(R.id.good_buy_history_amount);
         code = itemView.findViewById(R.id.good_buy_history_code);
         img = itemView.findViewById(R.id.good_buy_history_img);
-        rltv = itemView.findViewById(R.id.good_buy_history);
     }
+
+    public void bind (Good good, String itemposition){
+
+        int sellprice = Integer.parseInt(good.getGoodFieldValue("Price"));
+        int fac_amount = Integer.parseInt(good.getGoodFieldValue("FactorAmount"));
+        int unit_value = Integer.parseInt(good.getGoodFieldValue("DefaultUnitValue"));
+
+        long price = (long) sellprice * fac_amount * unit_value;
+        int maxsellprice = Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"));
+        long maxprice = (long) maxsellprice * fac_amount * unit_value;
+
+
+
+        goodnameTextView.setText(NumberFunctions.PerisanNumber(good.getGoodFieldValue("GoodName")));
+        priceTextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(good.getGoodFieldValue("Price")))));
+        amount.setText(NumberFunctions.PerisanNumber(good.getGoodFieldValue("FactorAmount")));
+        code.setText(NumberFunctions.PerisanNumber(good.getGoodFieldValue("GoodCode")));
+        total.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt("" + price))));
+
+        if (itemposition.equals("1")) {
+
+            maxsellpriceTextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")))));
+            maxtotal.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt("" + maxprice))));
+
+
+        }
+    }
+
+
+    public void Conditionbind (Good good, ImageInfo image_info,CallMethod callMethod){
+
+
+
+        if (image_info.Image_exist(good.getGoodFieldValue("KsrImageCode"))) {
+            String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+            File imagefile = new File(root + "/Kowsar/" +
+                    callMethod.ReadString("EnglishCompanyNameUse") + "/" +
+                    good.getGoodFieldValue("KsrImageCode") + ".jpg");
+            Bitmap myBitmap = BitmapFactory.decodeFile(imagefile.getAbsolutePath());
+            img.setImageBitmap(myBitmap);
+
+        }
+    }
+
+
+
+
+
 
 
 

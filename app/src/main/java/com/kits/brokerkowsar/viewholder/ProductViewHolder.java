@@ -27,8 +27,12 @@ import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
      public void bind(Product product){
          mtextView.setText(NumberFunctions.PerisanNumber(product.name));
      }
+
      public void bindimage (Bitmap myBitmap){
+
          image.setImageBitmap(myBitmap);
+
+
      }
      public void intent(final Product product,final  Context mContext){
 

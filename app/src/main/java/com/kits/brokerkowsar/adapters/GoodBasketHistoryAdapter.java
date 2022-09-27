@@ -30,15 +30,14 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class GoodBasketHistoryAdapter extends RecyclerView.Adapter<GoodBasketHistoryViewHolder> {
-    private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
-    private final ArrayList<Good> goods;
-    private final Context mContext;
+    DecimalFormat decimalFormat = new DecimalFormat("0,000");
+    ArrayList<Good> goods;
+    Context mContext;
     CallMethod callMethod;
-    private final String itemposition;
+    String itemposition;
     APIInterface apiInterface;
-    private final ImageInfo image_info;
-    private long sum = 0;
-    private final DatabaseHelper dbh;
+    ImageInfo image_info;
+    DatabaseHelper dbh;
     Action action;
 
 
@@ -72,41 +71,9 @@ public class GoodBasketHistoryAdapter extends RecyclerView.Adapter<GoodBasketHis
 
     @Override
     public void onBindViewHolder(@NonNull final GoodBasketHistoryViewHolder holder, int position) {
-        Good gooddetail = goods.get(position);
 
-
-        int sellprice = Integer.parseInt(goods.get(position).getGoodFieldValue("Price"));
-        int fac_amount = Integer.parseInt(goods.get(position).getGoodFieldValue("FactorAmount"));
-        int unit_value = Integer.parseInt(goods.get(position).getGoodFieldValue("DefaultUnitValue"));
-
-        long price = (long) sellprice * fac_amount * unit_value;
-
-
-        holder.goodnameTextView.setText(NumberFunctions.PerisanNumber(goods.get(position).getGoodFieldValue("GoodName")));
-        holder.priceTextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(goods.get(position).getGoodFieldValue("Price")))));
-        holder.amount.setText(NumberFunctions.PerisanNumber(goods.get(position).getGoodFieldValue("FactorAmount")));
-        holder.code.setText(NumberFunctions.PerisanNumber(goods.get(position).getGoodFieldValue("GoodCode")));
-        holder.total.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt("" + price))));
-
-
-        if (itemposition.equals("1")) {
-            int maxsellprice = Integer.parseInt(gooddetail.getGoodFieldValue("MaxSellPrice"));
-            long maxprice = (long) maxsellprice * fac_amount * unit_value;
-            holder.maxsellpriceTextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(gooddetail.getGoodFieldValue("MaxSellPrice")))));
-            holder.maxtotal.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt("" + maxprice))));
-
-
-        }
-
-        if (image_info.Image_exist(gooddetail.getGoodFieldValue("KsrImageCode"))) {
-            String root = Environment.getExternalStorageDirectory().getAbsolutePath();
-            File imagefile = new File(root + "/Kowsar/" +
-                    callMethod.ReadString("EnglishCompanyNameUse") + "/" +
-                    gooddetail.getGoodFieldValue("KsrImageCode") + ".jpg");
-            Bitmap myBitmap = BitmapFactory.decodeFile(imagefile.getAbsolutePath());
-            holder.img.setImageBitmap(myBitmap);
-
-        }
+        holder.bind(goods.get(position),itemposition);
+        holder.Conditionbind(goods.get(position),image_info,callMethod);
 
     }
 

@@ -1,6 +1,8 @@
 package com.kits.brokerkowsar.viewholder;
 ;
 
+import android.app.Activity;
+import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -11,8 +13,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.CallMethod;
+import com.kits.brokerkowsar.model.GoodGroup;
+import com.kits.brokerkowsar.model.NumberFunctions;
+import com.kits.brokerkowsar.model.PreFactor;
+
+import java.text.DecimalFormat;
 
 public class PreFactorHeaderOpenViewHolder extends RecyclerView.ViewHolder {
+    private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
 
     public TextView fac_code;
     public TextView fac_date;
@@ -41,7 +50,31 @@ public class PreFactorHeaderOpenViewHolder extends RecyclerView.ViewHolder {
 
     }
 
+    public void bind(PreFactor preFactor, Context mContext, CallMethod callMethod) {
 
+        fac_date.setText(NumberFunctions.PerisanNumber(String.valueOf(preFactor.getPreFactorFieldValue("PreFactorDate"))));
+        fac_time.setText(NumberFunctions.PerisanNumber(String.valueOf(preFactor.getPreFactorFieldValue("PreFactorTime"))));
+        fac_code.setText(NumberFunctions.PerisanNumber(String.valueOf(preFactor.getPreFactorFieldValue("PreFactorCode"))));
+        fac_detail.setText(NumberFunctions.PerisanNumber(String.valueOf(preFactor.getPreFactorFieldValue("PreFactorExplain"))));
+        fac_customer.setText(NumberFunctions.PerisanNumber(String.valueOf(preFactor.getPreFactorFieldValue("Customer"))));
+        fac_row.setText(NumberFunctions.PerisanNumber(String.valueOf(preFactor.getPreFactorFieldValue("RowCount"))));
+        fac_count.setText(NumberFunctions.PerisanNumber(String.valueOf(preFactor.getPreFactorFieldValue("SumAmount"))));
+        fac_price.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(String.valueOf(preFactor.getPreFactorFieldValue("SumPrice"))))));
+
+
+        fac_rltv.setOnClickListener(v -> {
+
+            final String prefactor_code = "PreFactorCode";
+            callMethod.EditString(prefactor_code, preFactor.getPreFactorFieldValue("PreFactorCode"));
+            callMethod.showToast( "فاکتور مورد نظر انتخاب شد");
+            ((Activity) mContext).overridePendingTransition(0, 0);
+            ((Activity) mContext).finish();
+            ((Activity) mContext).overridePendingTransition(0, 0);
+
+
+        });
+
+    }
 
 
 }
