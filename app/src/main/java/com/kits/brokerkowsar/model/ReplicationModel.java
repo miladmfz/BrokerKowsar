@@ -5,15 +5,24 @@ import com.google.gson.annotations.SerializedName;
 public class ReplicationModel {
 
 
-    @SerializedName("ReplicationCode")      private int ReplicationCode;
-    @SerializedName("ServerTable")          private String ServerTable;
-    @SerializedName("ClientTable")          private String ClientTable;
-    @SerializedName("ServerPrimaryKey")     private String ServerPrimaryKey;
-    @SerializedName("ClientPrimaryKey")     private String ClientPrimaryKey;
-    @SerializedName("Condition")            private String Condition;
-    @SerializedName("ConditionDelete")      private String ConditionDelete;
-    @SerializedName("LastRepLogCode")       private int LastRepLogCode;
-    @SerializedName("LastRepLogCodeDelete") private int LastRepLogCodeDelete;
+    @SerializedName("ReplicationCode")
+    private int ReplicationCode;
+    @SerializedName("ServerTable")
+    private String ServerTable;
+    @SerializedName("ClientTable")
+    private String ClientTable;
+    @SerializedName("ServerPrimaryKey")
+    private String ServerPrimaryKey;
+    @SerializedName("ClientPrimaryKey")
+    private String ClientPrimaryKey;
+    @SerializedName("Condition")
+    private String Condition;
+    @SerializedName("ConditionDelete")
+    private String ConditionDelete;
+    @SerializedName("LastRepLogCode")
+    private int LastRepLogCode;
+    @SerializedName("LastRepLogCodeDelete")
+    private int LastRepLogCodeDelete;
 
     public int getReplicationCode() {
         return ReplicationCode;

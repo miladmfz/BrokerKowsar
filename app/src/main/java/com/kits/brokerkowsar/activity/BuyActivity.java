@@ -58,9 +58,9 @@ public class BuyActivity extends AppCompatActivity {
         Config();
 
         try {
-            Handler handler =  new Handler();
+            Handler handler = new Handler();
             handler.postDelayed(this::init, 100);
-        }catch (Exception e){
+        } catch (Exception e) {
             callMethod.ErrorLog(e.getMessage());
         }
 
@@ -87,13 +87,13 @@ public class BuyActivity extends AppCompatActivity {
 
     }
 
-    public void init(){
+    public void init() {
 
 
         goods = dbh.getAllPreFactorRows("", PreFac);
         adapter = new GoodBasketAdapter(goods, this);
-        if (adapter.getItemCount()==0){
-            callMethod.showToast( "سبد خرید خالی می باشد");
+        if (adapter.getItemCount() == 0) {
+            callMethod.showToast("سبد خرید خالی می باشد");
         }
         gridLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -101,9 +101,9 @@ public class BuyActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setVisibility(View.VISIBLE);
 
-        try{
-            recyclerView.scrollToPosition(Integer.parseInt(callMethod.ReadString("BasketItemView"))-1);
-        }catch (Exception e){
+        try {
+            recyclerView.scrollToPosition(Integer.parseInt(callMethod.ReadString("BasketItemView")) - 1);
+        } catch (Exception e) {
             recyclerView.scrollToPosition(0);
             callMethod.EditString("BasketItemView", "0");
 
@@ -134,7 +134,8 @@ public class BuyActivity extends AppCompatActivity {
                             finish();
                             callMethod.showToast("سبد خرید با موفقیت حذف گردید!");
                         })
-                        .setNegativeButton("خیر", (dialogInterface, i) -> { })
+                        .setNegativeButton("خیر", (dialogInterface, i) -> {
+                        })
                         .show()
         );
 
@@ -144,7 +145,8 @@ public class BuyActivity extends AppCompatActivity {
                         .setTitle("توجه")
                         .setMessage("آیا فاکتور ارسال گردد؟")
                         .setPositiveButton("بله", (dialogInterface, i) -> action.sendfactor(PreFac))
-                        .setNegativeButton("خیر", (dialogInterface, i) -> { })
+                        .setNegativeButton("خیر", (dialogInterface, i) -> {
+                        })
                         .show()
         );
 
@@ -157,7 +159,6 @@ public class BuyActivity extends AppCompatActivity {
         assert data != null;
         PreFac = data.getString("PreFac");
     }
-
 
 
 }

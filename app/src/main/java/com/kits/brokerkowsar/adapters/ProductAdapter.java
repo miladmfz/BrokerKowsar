@@ -44,7 +44,7 @@ public class ProductAdapter extends ExpandableRecyclerViewAdapter<CategoryViewHo
 
     public ProductAdapter(List<? extends ExpandableGroup> groups, Context mContext) {
         super(groups);
-        this.mContext=mContext;
+        this.mContext = mContext;
         this.callMethod = new CallMethod(mContext);
         this.image_info = new ImageInfo(mContext);
         this.apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
@@ -54,13 +54,13 @@ public class ProductAdapter extends ExpandableRecyclerViewAdapter<CategoryViewHo
 
     @Override
     public CategoryViewHolder onCreateGroupViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item,parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
         return new CategoryViewHolder(v);
     }
 
     @Override
     public ProductViewHolder onCreateChildViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item2,parent,false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item2, parent, false);
         return new ProductViewHolder(v);
     }
 

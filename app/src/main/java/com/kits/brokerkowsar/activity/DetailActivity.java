@@ -38,8 +38,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 
-
-
 public class DetailActivity extends AppCompatActivity {
 
     private String id;
@@ -74,10 +72,9 @@ public class DetailActivity extends AppCompatActivity {
 
             Handler handler = new Handler();
             handler.postDelayed(this::init, 100);
-        }catch (Exception e){
+        } catch (Exception e) {
             callMethod.ErrorLog(e.getMessage());
         }
-
 
 
     }
@@ -127,7 +124,7 @@ public class DetailActivity extends AppCompatActivity {
 
         for (Column Column : Columns) {
             if (Integer.parseInt(Column.getColumnFieldValue("SortOrder")) > 0) {
-                Log.e("test11",Column.getColumnFieldValue("ColumnDesc")+" = "+gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname")));
+                Log.e("test11", Column.getColumnFieldValue("ColumnDesc") + " = " + gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname")));
                 CreateView(
                         Column.getColumnFieldValue("ColumnDesc"),
                         gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))
@@ -136,7 +133,7 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         prog.setVisibility(View.GONE);
-        imagelists=dbh.GetksrImageCodes(gooddetail.getGoodFieldValue("GoodCode"));
+        imagelists = dbh.GetksrImageCodes(gooddetail.getGoodFieldValue("GoodCode"));
         SliderView();
         btnbuy.setOnClickListener(view -> {
 
@@ -171,13 +168,13 @@ public class DetailActivity extends AppCompatActivity {
 
         TextView extra_TextView2 = new TextView(this);
         try {
-            Log.e("test",body);
-            if(Integer.parseInt(body)>999) {
+            Log.e("test", body);
+            if (Integer.parseInt(body) > 999) {
                 extra_TextView2.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(body))));
-            }else {
+            } else {
                 extra_TextView2.setText(NumberFunctions.PerisanNumber(body));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             extra_TextView2.setText(NumberFunctions.PerisanNumber(body));
         }
 
@@ -221,7 +218,7 @@ public class DetailActivity extends AppCompatActivity {
                     intent.putExtra("title", "جستجوی کالا");
 
                 } else {
-                    callMethod.showToast( "سبد خرید خالی می باشد");
+                    callMethod.showToast("سبد خرید خالی می باشد");
                     intent = new Intent(this, PrefactoropenActivity.class);
                 }
             }
@@ -235,7 +232,7 @@ public class DetailActivity extends AppCompatActivity {
     private void SliderView() {
 
         sliderView = findViewById(R.id.DetailActivity_imageSlider);
-        SliderAdapter adapter = new SliderAdapter(imagelists,true,this );
+        SliderAdapter adapter = new SliderAdapter(imagelists, true, this);
         sliderView.setSliderAdapter(adapter);
         sliderView.setIndicatorAnimation(IndicatorAnimations.SCALE); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
         sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);

@@ -4,41 +4,27 @@ package com.kits.brokerkowsar.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Environment;
 import android.util.Base64;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.activity.DetailActivity;
-import com.kits.brokerkowsar.activity.PrefactoropenActivity;
-import com.kits.brokerkowsar.activity.SearchActivity;
-import com.kits.brokerkowsar.activity.SearchByDateActivity;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.ImageInfo;
 import com.kits.brokerkowsar.model.Column;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
-import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.kits.brokerkowsar.viewholder.GoodItemViewHolder;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
-import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -83,26 +69,21 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     }
 
 
-
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull final GoodItemViewHolder holder, @SuppressLint("RecyclerView") final int position) {
-
 
 
         holder.bind(Columns, goods.get(position), mContext, callMethod);
 
         holder.Action(goods.get(position)
                 , mContext
-                ,  dbh
-                ,  callMethod
-                ,  action
+                , dbh
+                , callMethod
+                , action
                 , image_info
                 , multi_select
         );
-
-
-
 
 
         if (!image_info.Image_exist(goods.get(position).getGoodFieldValue("KsrImageCode"))) {
@@ -136,9 +117,6 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
                 }
             });
         }
-
-
-
 
 
     }

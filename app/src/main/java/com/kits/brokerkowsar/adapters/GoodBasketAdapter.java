@@ -1,40 +1,28 @@
 package com.kits.brokerkowsar.adapters;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.Environment;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.activity.BuyActivity;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.ImageInfo;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
-import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.kits.brokerkowsar.viewholder.GoodBasketViewHolder;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
-import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
@@ -77,9 +65,7 @@ public class GoodBasketAdapter extends RecyclerView.Adapter<GoodBasketViewHolder
 
 
         holder.bind(goods.get(position));
-        holder.Action(goods.get(position), mContext,  dbh,  callMethod,  action, image_info);
-
-
+        holder.Action(goods.get(position), mContext, dbh, callMethod, action, image_info);
 
 
         if (!image_info.Image_exist(goods.get(position).getGoodFieldValue("KsrImageCode"))) {
@@ -97,7 +83,7 @@ public class GoodBasketAdapter extends RecyclerView.Adapter<GoodBasketViewHolder
                                     BitmapFactory.decodeByteArray(
                                             Base64.decode(response.body().getText(), Base64.DEFAULT),
                                             0,
-                                            Base64.decode(response.body().getText(),Base64.DEFAULT).length
+                                            Base64.decode(response.body().getText(), Base64.DEFAULT).length
                                     ),
                                     goods.get(position).getGoodFieldValue("KsrImageCode")
                             );
@@ -114,8 +100,6 @@ public class GoodBasketAdapter extends RecyclerView.Adapter<GoodBasketViewHolder
             });
 
         }
-
-
 
 
     }

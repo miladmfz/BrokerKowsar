@@ -49,7 +49,7 @@ public class SearchActivity extends AppCompatActivity {
 
 
     public ArrayList<Good> goods = new ArrayList<>();
-    private ArrayList<Good>  Moregoods = new ArrayList<>();
+    private ArrayList<Good> Moregoods = new ArrayList<>();
     private Integer grid;
     public String id = "";
     public String title = "";
@@ -67,9 +67,9 @@ public class SearchActivity extends AppCompatActivity {
     int pastVisiblesItems = 0, visibleItemCount, totalItemCount;
     Menu item_multi;
     CallMethod callMethod;
-    public String proSearchCondition="";
-    public String AutoSearch="";
-    public String PageMoreData="0";
+    public String proSearchCondition = "";
+    public String AutoSearch = "";
+    public String PageMoreData = "0";
     private boolean loading = true;
 
     LottieAnimationView lottieAnimationView;
@@ -110,7 +110,7 @@ public class SearchActivity extends AppCompatActivity {
             Handler handler = new Handler();
             handler.postDelayed(this::init, 100);
             handler.postDelayed(dialog1::dismiss, 1000);
-        }catch (Exception e){
+        } catch (Exception e) {
             callMethod.ErrorLog(e.getMessage());
         }
 
@@ -132,7 +132,7 @@ public class SearchActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.SearchActivity_toolbar);
         recyclerView_grp = findViewById(R.id.SearchActivity_grp_recy);
         btn_scan = findViewById(R.id.SearchActivity_scan);
-        prog= findViewById(R.id.SearchActivity_prog);
+        prog = findViewById(R.id.SearchActivity_prog);
 
         tv_customer = findViewById(R.id.SearchActivity_customer);
         tv_sumfac = findViewById(R.id.SearchActivity_sum_factor);
@@ -155,18 +155,14 @@ public class SearchActivity extends AppCompatActivity {
     }
 
 
-
-
-
     @SuppressLint("SetTextI18n")
     public void init() {
-
 
 
         toolbar.setTitle(title);
 
 
-        Log.e("test_id",id);
+        Log.e("test_id", id);
         goodGroups = dbh.getAllGroups(id);
         grp_adapter = new GroupLableAdapter(goodGroups, this);
         recyclerView_grp.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false));
@@ -183,17 +179,21 @@ public class SearchActivity extends AppCompatActivity {
         edtsearch.addTextChangedListener(
                 new TextWatcher() {
                     @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
                     @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
                     @Override
                     public void afterTextChanged(final Editable editable) {
                         handler.removeCallbacksAndMessages(null);
                         handler.postDelayed(() -> {
                             goods.clear();
-                            AutoSearch=editable.toString();
-                            PageMoreData="0";
-                            proSearchCondition="";
+                            AutoSearch = editable.toString();
+                            PageMoreData = "0";
+                            proSearchCondition = "";
                             GetDataFromDataBase();
                         }, Integer.parseInt(callMethod.ReadString("Delay")));
 
@@ -216,7 +216,6 @@ public class SearchActivity extends AppCompatActivity {
         });
 
 
-
         btn_pro_search.setOnClickListener(view -> {
             Search_box search_box = new Search_box(this);
             search_box.search_pro();
@@ -232,7 +231,7 @@ public class SearchActivity extends AppCompatActivity {
                 callMethod.EditBoolan("ActiveStack", false);
             }
             goods.clear();
-            PageMoreData="0";
+            PageMoreData = "0";
             GetDataFromDataBase();
         });
         sm_goodamount.setOnCheckedChangeListener((compoundButton, b) -> {
@@ -244,7 +243,7 @@ public class SearchActivity extends AppCompatActivity {
                 callMethod.EditBoolan("GoodAmount", false);
             }
             goods.clear();
-            PageMoreData="0";
+            PageMoreData = "0";
             GetDataFromDataBase();
         });
         fab.setOnClickListener(v -> {
@@ -255,26 +254,26 @@ public class SearchActivity extends AppCompatActivity {
             final EditText amount_mlti = dialog.findViewById(R.id.box_multi_buy_amount);
             final EditText unitratio_mlti = dialog.findViewById(R.id.box_multi_unitratio);
             final TextView tv = dialog.findViewById(R.id.box_multi_buy_factor);
-            String tempvalue="";
-            defultenablesellprice=false;
+            String tempvalue = "";
+            defultenablesellprice = false;
 
             for (Good good : Multi_Good) {
-                Good goodtempdata= dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
+                Good goodtempdata = dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
 
-                if (Multi_Good.get(0).equals(good)){
+                if (Multi_Good.get(0).equals(good)) {
                     tempvalue = goodtempdata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
                 }
 
-                if(!tempvalue.equals(goodtempdata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))))){
-                    defultenablesellprice=true;
+                if (!tempvalue.equals(goodtempdata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))))) {
+                    defultenablesellprice = true;
                 }
 
             }
 
-            if (defultenablesellprice){
+            if (defultenablesellprice) {
                 unitratio_mlti.setHint(NumberFunctions.PerisanNumber("بر اساس نرخ فروش"));
-            }else {
-                unitratio_mlti.setText(NumberFunctions.PerisanNumber( String.valueOf(100-Integer.parseInt(tempvalue.substring(0,tempvalue.length()-2)))));
+            } else {
+                unitratio_mlti.setText(NumberFunctions.PerisanNumber(String.valueOf(100 - Integer.parseInt(tempvalue.substring(0, tempvalue.length() - 2)))));
             }
 
             tv.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
@@ -292,21 +291,21 @@ public class SearchActivity extends AppCompatActivity {
                     if (Integer.parseInt(AmountMulti) != 0) {
 
                         for (Good good : Multi_Good) {
-                            Good gooddata= dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
+                            Good gooddata = dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
                             String temppercent = gooddata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
-                            if(unitratio_mlti.getText().toString().equals("")){
-                                temppercent=String.valueOf(100-Integer.parseInt(temppercent.substring(0,temppercent.length()-2)));
-                            }else{
-                                temppercent=NumberFunctions.EnglishNumber(unitratio_mlti.getText().toString());
+                            if (unitratio_mlti.getText().toString().equals("")) {
+                                temppercent = String.valueOf(100 - Integer.parseInt(temppercent.substring(0, temppercent.length() - 2)));
+                            } else {
+                                temppercent = NumberFunctions.EnglishNumber(unitratio_mlti.getText().toString());
                             }
-                            if (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"))>0){
-                                long Pricetemp=(long) Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"))-((long) Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) *Integer.parseInt(temppercent)/100);
+                            if (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) > 0) {
+                                long Pricetemp = (long) Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) - ((long) Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) * Integer.parseInt(temppercent) / 100);
                                 dbh.InsertPreFactorwithPercent(callMethod.ReadString("PreFactorCode"),
                                         good.getGoodFieldValue("GoodCode"),
                                         AmountMulti,
                                         String.valueOf(Pricetemp),
                                         "0");
-                            }else{
+                            } else {
                                 dbh.InsertPreFactor(callMethod.ReadString("PreFactorCode"),
                                         good.getGoodFieldValue("GoodCode"),
                                         AmountMulti,
@@ -314,7 +313,7 @@ public class SearchActivity extends AppCompatActivity {
                                         "0");
                             }
                         }
-                        callMethod.showToast( "به سبد خرید اضافه شد");
+                        callMethod.showToast("به سبد خرید اضافه شد");
 
                         dialog.dismiss();
                         item_multi.findItem(R.id.menu_multi).setVisible(false);
@@ -322,7 +321,7 @@ public class SearchActivity extends AppCompatActivity {
                             good.setCheck(false);
                         }
                         Multi_Good.clear();
-                        adapter = new GoodAdapter(goods,this);
+                        adapter = new GoodAdapter(goods, this);
                         adapter.multi_select = false;
                         gridLayoutManager = new GridLayoutManager(this, grid);
                         gridLayoutManager.scrollToPosition(pastVisiblesItems + 2);
@@ -351,9 +350,9 @@ public class SearchActivity extends AppCompatActivity {
                     pastVisiblesItems = gridLayoutManager.findFirstVisibleItemPosition();
 
                     if (loading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount-1) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount - 1) {
                             loading = false;
-                            PageMoreData=String.valueOf(Integer.parseInt(PageMoreData) + 1);
+                            PageMoreData = String.valueOf(Integer.parseInt(PageMoreData) + 1);
                             prog.setVisibility(View.VISIBLE);
                             GetMoreDataFromDataBase();
                         }
@@ -364,7 +363,6 @@ public class SearchActivity extends AppCompatActivity {
         GetDataFromDataBase();
 
     }
-
 
 
     @Override
@@ -384,7 +382,7 @@ public class SearchActivity extends AppCompatActivity {
                 intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
                 startActivity(intent);
             } else {
-                callMethod.showToast( "فاکتوری انتخاب نشده است");
+                callMethod.showToast("فاکتوری انتخاب نشده است");
             }
             return true;
         }
@@ -396,7 +394,7 @@ public class SearchActivity extends AppCompatActivity {
             Multi_Good.clear();
             adapter.multi_select = false;
 
-            adapter = new GoodAdapter(goods,this);
+            adapter = new GoodAdapter(goods, this);
             gridLayoutManager = new GridLayoutManager(this, grid);
             gridLayoutManager.scrollToPosition(pastVisiblesItems + 2);
             recyclerView_good.setLayoutManager(gridLayoutManager);
@@ -409,14 +407,14 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void GetDataFromDataBase() {
-        loading=true;
+        loading = true;
         Moregoods.clear();
-        if(proSearchCondition.equals("")){
-            Moregoods = dbh.getAllGood(NumberFunctions.EnglishNumber(AutoSearch), id,PageMoreData);
-        }else {
-            Moregoods = dbh.getAllGood_Extended(NumberFunctions.EnglishNumber(proSearchCondition), id,PageMoreData);
+        if (proSearchCondition.equals("")) {
+            Moregoods = dbh.getAllGood(NumberFunctions.EnglishNumber(AutoSearch), id, PageMoreData);
+        } else {
+            Moregoods = dbh.getAllGood_Extended(NumberFunctions.EnglishNumber(proSearchCondition), id, PageMoreData);
         }
-        if(goods.isEmpty()){
+        if (goods.isEmpty()) {
             goods.addAll(Moregoods);
         }
         CallRecyclerView();
@@ -426,41 +424,41 @@ public class SearchActivity extends AppCompatActivity {
     public void GetMoreDataFromDataBase() {
         Moregoods.clear();
 
-                if(proSearchCondition.equals("")){
+        if (proSearchCondition.equals("")) {
 
-                    Moregoods = dbh.getAllGood(NumberFunctions.EnglishNumber(AutoSearch), id,PageMoreData);
-                }else {
-                    Moregoods = dbh.getAllGood_Extended(NumberFunctions.EnglishNumber(proSearchCondition), id,PageMoreData);
-                }
-                if(Moregoods.size()>0){
-                    if(goods.isEmpty()){
-                        goods.addAll(Moregoods);
-                    }
-                    if(goods.size()>(Integer.parseInt(callMethod.ReadString("Grid"))*10)){
-                        goods.addAll(Moregoods);
-                    }
-                    adapter.notifyDataSetChanged();
-                    prog.setVisibility(View.GONE);
-                    loading=true;
+            Moregoods = dbh.getAllGood(NumberFunctions.EnglishNumber(AutoSearch), id, PageMoreData);
+        } else {
+            Moregoods = dbh.getAllGood_Extended(NumberFunctions.EnglishNumber(proSearchCondition), id, PageMoreData);
+        }
+        if (Moregoods.size() > 0) {
+            if (goods.isEmpty()) {
+                goods.addAll(Moregoods);
+            }
+            if (goods.size() > (Integer.parseInt(callMethod.ReadString("Grid")) * 10)) {
+                goods.addAll(Moregoods);
+            }
+            adapter.notifyDataSetChanged();
+            prog.setVisibility(View.GONE);
+            loading = true;
 
-                }else{
-                    loading=false;
-                    prog.setVisibility(View.GONE);
-                    callMethod.showToast("کالای بیشتری یافت نشد");
-                    PageMoreData=String.valueOf(Integer.parseInt(PageMoreData) -1);
-                }
+        } else {
+            loading = false;
+            prog.setVisibility(View.GONE);
+            callMethod.showToast("کالای بیشتری یافت نشد");
+            PageMoreData = String.valueOf(Integer.parseInt(PageMoreData) - 1);
+        }
 
     }
 
     @SuppressLint("NotifyDataSetChanged")
     public void CallRecyclerView() {
 
-        adapter = new GoodAdapter(goods,this);
-        if (adapter.getItemCount()==0){
+        adapter = new GoodAdapter(goods, this);
+        if (adapter.getItemCount() == 0) {
             tvstatus.setText("کالایی یافت نشد");
             tvstatus.setVisibility(View.VISIBLE);
             lottieAnimationView.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             lottieAnimationView.setVisibility(View.GONE);
             tvstatus.setVisibility(View.GONE);
         }
@@ -473,8 +471,6 @@ public class SearchActivity extends AppCompatActivity {
 
 
     }
-
-
 
 
     public void good_select_function(Good good) {

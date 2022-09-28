@@ -9,8 +9,7 @@ public class Product implements Parcelable {
     public int ChildNo;
 
 
-
-    public Product(String name,Integer id,Integer ChildNo) {
+    public Product(String name, Integer id, Integer ChildNo) {
         this.name = name;
         this.id = id;
         this.ChildNo = ChildNo;

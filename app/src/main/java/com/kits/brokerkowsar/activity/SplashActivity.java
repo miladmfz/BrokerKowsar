@@ -1,10 +1,8 @@
 package com.kits.brokerkowsar.activity;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,11 +10,9 @@ import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -26,15 +22,8 @@ import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.model.DatabaseHelper;
-import com.kits.brokerkowsar.model.RetrofitResponse;
-import com.kits.brokerkowsar.webService.APIClient;
-import com.kits.brokerkowsar.webService.APIInterface;
 
 import java.io.File;
-import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -43,7 +32,7 @@ public class SplashActivity extends AppCompatActivity {
     CallMethod callMethod;
     Handler handler;
     final int PERMISSION_CODE = 1;
-    DatabaseHelper dbh,dbhbase;
+    DatabaseHelper dbh, dbhbase;
     final int PERMISSION_REQUEST_CODE = 1;
     WorkManager workManager;
 
@@ -56,7 +45,7 @@ public class SplashActivity extends AppCompatActivity {
         try {
             init();
 
-        }catch (Exception e){
+        } catch (Exception e) {
             callMethod.ErrorLog(e.getMessage());
         }
 
@@ -73,14 +62,15 @@ public class SplashActivity extends AppCompatActivity {
     public void init() {
         callMethod = new CallMethod(this);
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
-        if(callMethod.ReadBoolan("AutoReplication")) {
-            try{
-            workManager.cancelAllWork();
-            }catch (Exception ignored){}
+        if (callMethod.ReadBoolan("AutoReplication")) {
+            try {
+                workManager.cancelAllWork();
+            } catch (Exception ignored) {
+            }
         }
 
-        if(callMethod.ReadString("ServerURLUse").equals("")){
-            callMethod.EditString("DatabaseName","");
+        if (callMethod.ReadString("ServerURLUse").equals("")) {
+            callMethod.EditString("DatabaseName", "");
         }
         if (callMethod.firstStart()) {
             callMethod.EditBoolan("FirstStart", false);
@@ -106,9 +96,9 @@ public class SplashActivity extends AppCompatActivity {
 
 
             try {
-                dbh.SaveConfig("BrokerStack","0");
-                dbh.SaveConfig("MenuBroker","");
-            }catch (Exception e){
+                dbh.SaveConfig("BrokerStack", "0");
+                dbh.SaveConfig("MenuBroker", "");
+            } catch (Exception e) {
                 callMethod.ErrorLog(e.getMessage());
             }
 
@@ -126,7 +116,7 @@ public class SplashActivity extends AppCompatActivity {
     private void Startapplication() {
         File databasedir = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse"));
         File temp = new File(databasedir, "/tempDb");
-        if(!temp.exists()){
+        if (!temp.exists()) {
             if (callMethod.ReadString("DatabaseName").equals("")) {
                 handler = new Handler();
                 handler.postDelayed(() -> {
@@ -143,23 +133,16 @@ public class SplashActivity extends AppCompatActivity {
                     finish();
                 }, 2000);
             }
-        }else{
+        } else {
             deleteRecursive(databasedir);
             callMethod.EditString("ServerURLUse", "");
             callMethod.EditString("SQLiteURLUse", "");
             callMethod.EditString("PersianCompanyNameUse", "");
             callMethod.EditString("EnglishCompanyNameUse", "");
-            callMethod.EditString("DatabaseName","");
+            callMethod.EditString("DatabaseName", "");
             startActivity(getIntent());
             finish();
         }
-
-
-
-
-
-
-
 
 
     }
@@ -192,7 +175,7 @@ public class SplashActivity extends AppCompatActivity {
 
             if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-                            Startapplication();
+                    Startapplication();
 
                 } else {
                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CODE);
@@ -200,10 +183,11 @@ public class SplashActivity extends AppCompatActivity {
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CODE);
             }
-        }catch (Exception e){
-            Log.e("test",e.getMessage());
+        } catch (Exception e) {
+            Log.e("test", e.getMessage());
         }
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -211,7 +195,7 @@ public class SplashActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
                 if (Environment.isExternalStorageManager()) {
                     runtimePermission();
-                    callMethod.showToast( "مجوز صادر شد");
+                    callMethod.showToast("مجوز صادر شد");
 
                 } else {
                     handler = new Handler();
@@ -220,7 +204,7 @@ public class SplashActivity extends AppCompatActivity {
                         finish();
                         startActivity(intent);
                     }, 2000);
-                    callMethod.showToast( "مجوز مربوطه را فعال نمایید");
+                    callMethod.showToast("مجوز مربوطه را فعال نمایید");
                 }
             }
         }
@@ -231,9 +215,9 @@ public class SplashActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                callMethod.showToast( "permission granted");
+                callMethod.showToast("permission granted");
             } else {
-                callMethod.showToast( "permission denied");
+                callMethod.showToast("permission denied");
             }
             requestPermission();
         } else {
@@ -245,6 +229,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
     }
+
     void deleteRecursive(File fileOrDirectory) {
         if (fileOrDirectory.isDirectory())
             for (File child : fileOrDirectory.listFiles())

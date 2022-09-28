@@ -1,15 +1,11 @@
 package com.kits.brokerkowsar.viewholder;
-;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,14 +16,14 @@ import com.kits.brokerkowsar.activity.PrefactorActivity;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
-import com.kits.brokerkowsar.application.ImageInfo;
-import com.kits.brokerkowsar.model.Category;
 import com.kits.brokerkowsar.model.Customer;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.UserInfo;
 
 import java.text.DecimalFormat;
+
+;
 
 public class CustomerViewHolder extends RecyclerView.ViewHolder {
 
@@ -52,7 +48,7 @@ public class CustomerViewHolder extends RecyclerView.ViewHolder {
         fac_rltv = itemView.findViewById(R.id.customer);
     }
 
-    public void bind (Customer customer){
+    public void bind(Customer customer) {
         cus_code.setText(NumberFunctions.PerisanNumber(customer.getCustomerFieldValue("CustomerCode")));
         cus_name.setText(NumberFunctions.PerisanNumber(customer.getCustomerFieldValue("CustomerName")));
         cus_manage.setText(NumberFunctions.PerisanNumber(customer.getCustomerFieldValue("Manager")));
@@ -83,17 +79,16 @@ public class CustomerViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-
-    public void Action (Customer customer
+    public void Action(Customer customer
             , DatabaseHelper dbh
             , CallMethod callMethod
             , Action action
             , String edit
             , String factor_target
-            , Context mContext){
+            , Context mContext) {
 
 
-            fac_rltv.setOnClickListener(v -> {
+        fac_rltv.setOnClickListener(v -> {
             if (edit.equals("0")) {
 
                 UserInfo auser = dbh.LoadPersonalInfo();
@@ -101,7 +96,7 @@ public class CustomerViewHolder extends RecyclerView.ViewHolder {
                     action.addfactordialog(customer.getCustomerFieldValue("CustomerCode"));
                 } else {
                     Intent intent = new Intent(mContext, ConfigActivity.class);
-                    callMethod.showToast( "کد بازاریاب را وارد کنید");
+                    callMethod.showToast("کد بازاریاب را وارد کنید");
 
                     mContext.startActivity(intent);
                 }
@@ -118,7 +113,6 @@ public class CustomerViewHolder extends RecyclerView.ViewHolder {
 
 
     }
-
 
 
 }

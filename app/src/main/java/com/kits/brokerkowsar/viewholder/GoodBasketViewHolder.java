@@ -1,5 +1,4 @@
 package com.kits.brokerkowsar.viewholder;
-;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -14,8 +13,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
@@ -27,14 +24,11 @@ import com.kits.brokerkowsar.application.ImageInfo;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.NumberFunctions;
-import com.kits.brokerkowsar.model.RetrofitResponse;
 
 import java.io.File;
 import java.text.DecimalFormat;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+;
 
 public class GoodBasketViewHolder extends RecyclerView.ViewHolder {
 
@@ -75,31 +69,31 @@ public class GoodBasketViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-    public void bind(Good good){
+    public void bind(Good good) {
 
-        int maxsellprice = Integer.parseInt( good.getGoodFieldValue("MaxSellPrice"));
-        int sellprice = Integer.parseInt( good.getGoodFieldValue("Price"));
-        int fac_amount = Integer.parseInt( good.getGoodFieldValue("FactorAmount"));
-        int unit_value = Integer.parseInt( good.getGoodFieldValue("DefaultUnitValue"));
+        int maxsellprice = Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"));
+        int sellprice = Integer.parseInt(good.getGoodFieldValue("Price"));
+        int fac_amount = Integer.parseInt(good.getGoodFieldValue("FactorAmount"));
+        int unit_value = Integer.parseInt(good.getGoodFieldValue("DefaultUnitValue"));
 
 
         long maxprice = (long) maxsellprice * fac_amount * unit_value;
         final long price = (long) sellprice * fac_amount * unit_value;
         sum = sum + price;
-        int ws = Integer.parseInt( good.getGoodFieldValue("Shortage"));
+        int ws = Integer.parseInt(good.getGoodFieldValue("Shortage"));
 
 
-         goodnameTextView.setText(NumberFunctions.PerisanNumber( good.getGoodFieldValue("GoodName")));
-         amount.setText(NumberFunctions.PerisanNumber( good.getGoodFieldValue("FactorAmount")));
+        goodnameTextView.setText(NumberFunctions.PerisanNumber(good.getGoodFieldValue("GoodName")));
+        amount.setText(NumberFunctions.PerisanNumber(good.getGoodFieldValue("FactorAmount")));
 
-         maxsellpriceTextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt( good.getGoodFieldValue("MaxSellPrice")))));
-         priceTextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt( good.getGoodFieldValue("Price")))));
-         total.setText(NumberFunctions.PerisanNumber(decimalFormat.format(price)));
-         maxtotal.setText(NumberFunctions.PerisanNumber(decimalFormat.format(maxprice)));
+        maxsellpriceTextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")))));
+        priceTextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(good.getGoodFieldValue("Price")))));
+        total.setText(NumberFunctions.PerisanNumber(decimalFormat.format(price)));
+        maxtotal.setText(NumberFunctions.PerisanNumber(decimalFormat.format(maxprice)));
 
-        if( good.getGoodFieldValue("SellPriceType").equals("0")) {
+        if (good.getGoodFieldValue("SellPriceType").equals("0")) {
             offer.setText("");
-        }else {
+        } else {
             offer.setText(NumberFunctions.PerisanNumber((100 - ((sellprice * 100) / maxsellprice)) + " درصد تخفیف "));
         }
 
@@ -116,10 +110,9 @@ public class GoodBasketViewHolder extends RecyclerView.ViewHolder {
         }
 
 
-
     }
 
-    public void Action(Good good, Context mContext, DatabaseHelper dbh, CallMethod callMethod, Action action,ImageInfo imageInfo) {
+    public void Action(Good good, Context mContext, DatabaseHelper dbh, CallMethod callMethod, Action action, ImageInfo imageInfo) {
 
         if (imageInfo.Image_exist(good.getGoodFieldValue("KsrImageCode"))) {
             String root = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -128,7 +121,7 @@ public class GoodBasketViewHolder extends RecyclerView.ViewHolder {
                     good.getGoodFieldValue("KsrImageCode") + ".jpg");
             Bitmap myBitmap = BitmapFactory.decodeFile(imagefile.getAbsolutePath());
             img.setImageBitmap(myBitmap);
-        }else {
+        } else {
             byte[] imageByteArray1;
             imageByteArray1 = Base64.decode(mContext.getString(R.string.no_photo), Base64.DEFAULT);
             img.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length), BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getWidth() * 2, BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getHeight() * 2, false));
@@ -142,8 +135,8 @@ public class GoodBasketViewHolder extends RecyclerView.ViewHolder {
                         .setMessage("آیا کالا از لیست حذف گردد؟")
                         .setPositiveButton("بله", (dialogInterface, i) -> {
 
-                            dbh.DeletePreFactorRow(callMethod.ReadString("PreFactorCode"),  good.getGoodFieldValue("PreFactorRowCode"));
-                            callMethod.showToast( "از سبد خرید حذف گردید");
+                            dbh.DeletePreFactorRow(callMethod.ReadString("PreFactorCode"), good.getGoodFieldValue("PreFactorRowCode"));
+                            callMethod.showToast("از سبد خرید حذف گردید");
                             Intent intent = new Intent(mContext, BuyActivity.class);
                             intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
                             intent.putExtra("showflag", "2");
@@ -158,16 +151,15 @@ public class GoodBasketViewHolder extends RecyclerView.ViewHolder {
                         .show());
 
 
-         amount.setOnClickListener(view ->
+        amount.setOnClickListener(view ->
                 action.buydialog(
-                         good.getGoodFieldValue("GoodCode"),
-                         good.getGoodFieldValue("PrefactorRowCode")
+                        good.getGoodFieldValue("GoodCode"),
+                        good.getGoodFieldValue("PrefactorRowCode")
                 )
         );
 
 
     }
-
 
 
 }

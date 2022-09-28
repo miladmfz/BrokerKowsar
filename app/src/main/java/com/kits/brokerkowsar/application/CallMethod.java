@@ -73,7 +73,7 @@ public class CallMethod extends Application {
 
         Gson gson = new Gson();
         String json = gson.toJson(list);
-                EditString(key, json);
+        EditString(key, json);
     }
 
     public ArrayList<String> getArrayList(String key) {
@@ -95,20 +95,19 @@ public class CallMethod extends Application {
         @SuppressLint("HardwareIds") String android_id = Settings.Secure.getString(context
                 .getContentResolver(), Settings.Secure.ANDROID_ID);
 
-        Log.e("ErrorLog",ErrorStr);
+        Log.e("ErrorLog", ErrorStr);
 
         PersianCalendar calendar1 = new PersianCalendar();
-        String version= BuildConfig.VERSION_NAME;
+        String version = BuildConfig.VERSION_NAME;
 
         DatabaseHelper dbh = new DatabaseHelper(context, ReadString("DatabaseName"));
         UserInfo auser = new UserInfo();
-        try{
-            auser= dbh.LoadPersonalInfo();
-        }catch (Exception e)
-        {
+        try {
+            auser = dbh.LoadPersonalInfo();
+        } catch (Exception e) {
             auser.setBrokerCode("0");
         }
-        
+
 
         APIInterface apiInterface = APIClient_kowsar.getCleint_log().create(APIInterface.class);
         Call<RetrofitResponse> cl = apiInterface.Errorlog("Errorlog"
@@ -118,16 +117,17 @@ public class CallMethod extends Application {
                 , ReadString("PersianCompanyNameUse")
                 , calendar1.getPersianShortDateTime()
                 , version);
-        cl.enqueue(new Callback<RetrofitResponse>() {@Override
+        cl.enqueue(new Callback<RetrofitResponse>() {
+            @Override
             public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
-                assert response.body() != null; }
-
+                assert response.body() != null;
+            }
 
 
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-               //ErrorLog(t.getMessage());
-        }
+                //ErrorLog(t.getMessage());
+            }
         });
 
     }

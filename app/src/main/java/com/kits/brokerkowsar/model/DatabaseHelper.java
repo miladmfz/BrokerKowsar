@@ -65,9 +65,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         getWritableDatabase().execSQL("ATTACH DATABASE '" + tempDbPath + "' AS tempDb");
 
-        getWritableDatabase().execSQL("INSERT INTO main.Prefactor SELECT * FROM tempDb.Prefactor " );
-        getWritableDatabase().execSQL("INSERT INTO main.PreFactorRow SELECT * FROM tempDb.PreFactorRow " );
-        getWritableDatabase().execSQL("INSERT INTO main.Config SELECT * FROM tempDb.Config " );
+        getWritableDatabase().execSQL("INSERT INTO main.Prefactor SELECT * FROM tempDb.Prefactor ");
+        getWritableDatabase().execSQL("INSERT INTO main.PreFactorRow SELECT * FROM tempDb.PreFactorRow ");
+        getWritableDatabase().execSQL("INSERT INTO main.Config SELECT * FROM tempDb.Config ");
 
         getWritableDatabase().execSQL("DETACH DATABASE 'tempDb' ");
 
@@ -126,7 +126,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_Good_JobPersonRef ON JobPerson_Good (JobPersonRef)");
             getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_Good_GoodRef ON JobPerson_Good (GoodRef)");
 
-        }catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
 
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodName ON Good (GoodName)");
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain1 ON Good (GoodExplain1)");
@@ -170,13 +171,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-
-
-
-
     public void closedb() {
         getWritableDatabase().close();
     }
+
     @SuppressLint("Range")
     public ArrayList<ReplicationModel> GetReplicationTable() {
         query = "SELECT * from ReplicationTable";
@@ -199,7 +197,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     ReplicationModel.setLastRepLogCodeDelete(cursor.getInt(cursor.getColumnIndex("LastRepLogCodeDelete")));
 
 
-                }catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
                 replicationModels.add(ReplicationModel);
             }
         }
@@ -218,12 +217,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 TableDetail tableDetail = new TableDetail();
-                try{
+                try {
                     tableDetail.setCid(cursor.getInt(cursor.getColumnIndex("cid")));
                     tableDetail.setName(cursor.getString(cursor.getColumnIndex("name")));
                     tableDetail.setType(cursor.getString(cursor.getColumnIndex("type")));
                     tableDetail.setText(null);
-                }catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
                 tableDetails.add(tableDetail);
             }
         }
@@ -242,21 +242,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor.moveToFirst();
             String goodtypecount = cursor.getString(cursor.getColumnIndex("count"));
             cursor.close();
-            query = "select Count(*) count from BrokerColumn Where Replace(Replace(AppType,char(1740),char(1610)),char(1705),char(1603)) = Replace(Replace('"+AppType+"',char(1740),char(1610)),char(1705),char(1603))";
+            query = "select Count(*) count from BrokerColumn Where Replace(Replace(AppType,char(1740),char(1610)),char(1705),char(1603)) = Replace(Replace('" + AppType + "',char(1740),char(1610)),char(1705),char(1603))";
 
             cursor = getWritableDatabase().rawQuery(query, null);
             cursor.moveToFirst();
             String columnscount = cursor.getString(cursor.getColumnIndex("count"));
             cursor.close();
             limitcolumn = Integer.parseInt(columnscount) / Integer.parseInt(goodtypecount);
-        }catch (Exception e){
-            callMethod.showToast( "تنظیم جدول از سمت دیتابیس مشکل دارد");
-            Log.e("test",e.getMessage());
+        } catch (Exception e) {
+            callMethod.showToast("تنظیم جدول از سمت دیتابیس مشکل دارد");
+            Log.e("test", e.getMessage());
         }
     }
 
     public void GetPreference() {
-
 
 
         this.SH_brokerstack = ReadConfig("BrokerStack");
@@ -272,25 +271,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.SH_real_amount = callMethod.ReadBoolan("RealAmount");
         this.SH_goodamount = callMethod.ReadBoolan("GoodAmount");
         this.SH_ArabicText = callMethod.ReadBoolan("ArabicText");
-        LimitAmount=String.valueOf(Integer.parseInt(SH_grid)*11);
+        LimitAmount = String.valueOf(Integer.parseInt(SH_grid) * 11);
         sc = "Where StackRef in (" + SH_brokerstack + ")";
 
-        st="";
+        st = "";
 
 
-
-
-        joinbasket =" FROM Good g " +
+        joinbasket = " FROM Good g " +
                 " Join Units on UnitCode =GoodUnitRef " +
                 " Left Join (Select GoodRef, Sum(FactorAmount) FactorAmount , Sum(FactorAmount*Price) Price " +
-                " From PreFactorRow Where PreFactorRef = "+SH_prefactor_code+" Group BY GoodRef) pf on pf.GoodRef = g.GoodCode  " +
-                " Left Join PreFactor h on h.PreFactorCode = "+SH_prefactor_code+
-                " Left Join Customer c on c.CustomerCode=h.CustomerRef " ;
+                " From PreFactorRow Where PreFactorRef = " + SH_prefactor_code + " Group BY GoodRef) pf on pf.GoodRef = g.GoodCode  " +
+                " Left Join PreFactor h on h.PreFactorCode = " + SH_prefactor_code +
+                " Left Join Customer c on c.CustomerCode=h.CustomerRef ";
 
         joinDetail = " FROM Good g ,FilterTable Join Units u on u.UnitCode = g.GoodUnitRef " +
-                " Left Join CacheGoodGroup cgg on cgg.GoodRef = g.Goodcode " ;
-
-
+                " Left Join CacheGoodGroup cgg on cgg.GoodRef = g.Goodcode ";
 
 
     }
@@ -312,7 +307,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         switch (AppType) {
             case "0"://        0-detail
 
-                query = "Select * from BrokerColumn where Replace(Replace(GoodType,char(1740),char(1610)),char(1705),char(1603)) = '"+GetRegionText(GetGoodTypeFromGood(code))+"' And AppType = 0";
+                query = "Select * from BrokerColumn where Replace(Replace(GoodType,char(1740),char(1610)),char(1705),char(1603)) = '" + GetRegionText(GetGoodTypeFromGood(code)) + "' And AppType = 0";
 
                 break;
             case "1"://        1-list
@@ -322,18 +317,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 break;
             case "3"://        3-search
 
-                query = "Select * from BrokerColumn where Replace(Replace(GoodType,char(1740),char(1610)),char(1705),char(1603)) = '"+GetRegionText(goodtype)+"' And AppType = 3";
+                query = "Select * from BrokerColumn where Replace(Replace(GoodType,char(1740),char(1610)),char(1705),char(1603)) = '" + GetRegionText(goodtype) + "' And AppType = 3";
 
                 break;
         }
 
-        Log.e("test",query);
+        Log.e("test", query);
         columns = new ArrayList<>();
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 Column column = new Column();
-                try{
+                try {
                     column.setColumnCode(cursor.getString(cursor.getColumnIndex("ColumnCode")));
                     column.setSortOrder(cursor.getString(cursor.getColumnIndex("SortOrder")));
                     column.setColumnName(cursor.getString(cursor.getColumnIndex("ColumnName")));
@@ -343,7 +338,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     column.setColumnDefinition(cursor.getString(cursor.getColumnIndex("ColumnDefinition")));
                     column.setCondition(cursor.getString(cursor.getColumnIndex("Condition")));
                     column.setOrderIndex(cursor.getString(cursor.getColumnIndex("OrderIndex")));
-                }catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
                 columns.add(column);
             }
         }
@@ -351,10 +347,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return columns;
     }
+
     @SuppressLint("Range")
     public String GetColumnscount() {
 
-        query = "Select Count(*) result from BrokerColumn " ;
+        query = "Select Count(*) result from BrokerColumn ";
         cursor = getWritableDatabase().rawQuery(query, null);
         cursor.moveToFirst();
         int result = cursor.getInt(cursor.getColumnIndex("result"));
@@ -396,10 +393,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 column = new Column();
-                try{
+                try {
                     column.setGoodType(cursor.getString(cursor.getColumnIndex("GoodType")));
                     column.setIsDefault(cursor.getString(cursor.getColumnIndex("IsDefault")));
-                }catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
                 columns.add(column);
             }
         }
@@ -411,24 +409,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @SuppressLint({"Recycle", "Range"})
 
-    public ArrayList<Good> getAllGood(String search_target, String aGroupCode,String MoreCallData) {
+    public ArrayList<Good> getAllGood(String search_target, String aGroupCode, String MoreCallData) {
         goods.clear();
         GetPreference();
 
 
         columns = GetColumns("", "", "1");
 
-        String search=GetRegionText(search_target);
+        String search = GetRegionText(search_target);
         search = search.replaceAll(" ", "%").replaceAll("'", "%");
 
-        Search_Condition= " '%" + search + "%' ";
+        Search_Condition = " '%" + search + "%' ";
 
         query = " With FilterTable As (Select 0 as SecondField) SELECT ";
 
         k = 0;
 
         for (Column column : columns) {
-            if(!column.getColumnName().equals("")) {
+            if (!column.getColumnName().equals("")) {
                 if (k != 0) {
                     query = query + " , ";
                 }
@@ -441,23 +439,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         }
 
-        query = query + " FROM Good g , FilterTable " ;
+        query = query + " FROM Good g , FilterTable ";
         k = 0;
         boolean digitsOnly = TextUtils.isDigitsOnly(search);
-        if(!search.equals("")) {
+        if (!search.equals("")) {
             for (Column column : columns) {
 
                 if (!(!column.getColumnType().equals("0") && !digitsOnly)) {
-                    if((Integer.parseInt(column.getColumnFieldValue("SortOrder")) > 0)) {
+                    if ((Integer.parseInt(column.getColumnFieldValue("SortOrder")) > 0)) {
                         if (k == 0) {
                             query = query + " Where (";
                         } else {
                             query = query + " or ";
                         }
-                        if(column.getColumnType().equals("0")){
-                            query = query + "Replace(Replace("+column.getColumnName()+",char(1740),char(1610)),char(1705),char(1603)) Like '%" + search + "%' ";
-                        }else {
-                            query = query + column.getColumnName()+" Like '%" + search + "%' ";
+                        if (column.getColumnType().equals("0")) {
+                            query = query + "Replace(Replace(" + column.getColumnName() + ",char(1740),char(1610)),char(1705),char(1603)) Like '%" + search + "%' ";
+                        } else {
+                            query = query + column.getColumnName() + " Like '%" + search + "%' ";
                         }
                         k++;
                     }
@@ -467,24 +465,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
             for (Column column : columns) {
                 if (column.getColumnType().equals("")) {
-                    query = query + " or "+ column.getColumnDefinition();
+                    query = query + " or " + column.getColumnDefinition();
                 }
             }
 
             query = query + " )";
-        }else{
+        } else {
             query = query + "where 1=1 ";
         }
-        query=query+" And Exists(Select 1 From GoodStack stackCondition And GoodRef=GoodCode )";
+        query = query + " And Exists(Select 1 From GoodStack stackCondition And GoodRef=GoodCode )";
 
         if (SH_activestack) {
-            st = sc+ " And ActiveStack = 1 ";
-        }else{
+            st = sc + " And ActiveStack = 1 ";
+        } else {
             st = sc;
         }
 
-        query=query.replaceAll("stackCondition",st);
-        query=query.replaceAll("SearchCondition",Search_Condition);
+        query = query.replaceAll("stackCondition", st);
+        query = query.replaceAll("SearchCondition", Search_Condition);
 
         if (SH_goodamount) {
             query = query + " And StackAmount > 0 ";
@@ -509,39 +507,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     query = query + " , ";
                 }
                 if (Integer.parseInt(column.getOrderIndex()) > 0) {
-                    if(column.getColumnName().equals("Date")){
-                        String newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
-                        query=query+newSt;
+                    if (column.getColumnName().equals("Date")) {
+                        String newSt = column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then") + 5, column.getColumnDefinition().indexOf("Then") + 12);
+                        query = query + newSt;
                         //Case When SecondField=1 Then g.Date2 Else g.Date2 End
                         //query = query + column.getColumnName();
-                    }else{
+                    } else {
                         query = query + column.getColumnName();
                     }
                 } else {
-                    if(column.getColumnName().equals("Date")){
-                        String newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
-                        query=query+newSt + " DESC ";
-                    }else{
-                        query = query + column.getColumnName()+" DESC ";
+                    if (column.getColumnName().equals("Date")) {
+                        String newSt = column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then") + 5, column.getColumnDefinition().indexOf("Then") + 12);
+                        query = query + newSt + " DESC ";
+                    } else {
+                        query = query + column.getColumnName() + " DESC ";
                     }
                 }
                 k++;
             }
         }
 
-        query = query + " LIMIT  "+LimitAmount;
-        query = query + " OFFSET "+(Integer.parseInt(LimitAmount)*Integer.parseInt(MoreCallData));
+        query = query + " LIMIT  " + LimitAmount;
+        query = query + " OFFSET " + (Integer.parseInt(LimitAmount) * Integer.parseInt(MoreCallData));
 
         cursor = getWritableDatabase().rawQuery(query, null);
 
-        Log.e("test_query",query);
+        Log.e("test_query", query);
         if (cursor != null) {
 
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
                 for (Column column : columns) {
 
-                    try{
+                    try {
                         switch (column.getColumnType()) {
                             case "0":
                                 gooddetail.setGoodFieldValue(
@@ -562,7 +560,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                 );
                                 break;
                         }
-                    }catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                    }
                 }
                 gooddetail.setCheck(false);
 
@@ -575,11 +574,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public ArrayList<Good> getAllGood_Extended(String searchbox_result, String aGroupCode,String MoreCallData) {
+    public ArrayList<Good> getAllGood_Extended(String searchbox_result, String aGroupCode, String MoreCallData) {
         goods.clear();
         GetPreference();
         columns = GetColumns("", "", "1");
-
 
 
         query = "With FilterTable As (Select 0 as SecondField) SELECT ";
@@ -599,23 +597,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
 
-        query = query + " FROM Good g , FilterTable " ;
+        query = query + " FROM Good g , FilterTable ";
 
         query = query + " Where  1=1 ";
 
         query = query + searchbox_result;
 
-        query=query+" And Exists(Select 1 From GoodStack stackCondition And GoodRef=GoodCode )";
+        query = query + " And Exists(Select 1 From GoodStack stackCondition And GoodRef=GoodCode )";
 
 
         if (SH_activestack) {
-            st = sc+ " And ActiveStack = 1 ";
-        }else{
+            st = sc + " And ActiveStack = 1 ";
+        } else {
             st = sc;
         }
 
-        query=query.replaceAll("stackCondition",st);
-        query=query.replaceAll("SearchCondition",Search_Condition);
+        query = query.replaceAll("stackCondition", st);
+        query = query.replaceAll("SearchCondition", Search_Condition);
 
 
         if (SH_goodamount) {
@@ -644,38 +642,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     query = query + " , ";
                 }
                 if (Integer.parseInt(column.getOrderIndex()) > 0) {
-                    if(column.getColumnName().equals("Date")){
-                        String newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
-                        query=query+newSt;
-                    }else{
+                    if (column.getColumnName().equals("Date")) {
+                        String newSt = column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then") + 5, column.getColumnDefinition().indexOf("Then") + 12);
+                        query = query + newSt;
+                    } else {
                         query = query + column.getColumnName();
                     }
                 } else {
-                    if(column.getColumnName().equals("Date")){
-                        String newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
-                        query=query+newSt + " DESC ";
-                    }else{
-                        query = query + column.getColumnName()+" DESC ";
+                    if (column.getColumnName().equals("Date")) {
+                        String newSt = column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then") + 5, column.getColumnDefinition().indexOf("Then") + 12);
+                        query = query + newSt + " DESC ";
+                    } else {
+                        query = query + column.getColumnName() + " DESC ";
                     }
                 }
                 k++;
             }
         }
-        query = query + " LIMIT  "+LimitAmount;
-        query = query + " OFFSET "+(Integer.parseInt(LimitAmount)*Integer.parseInt(MoreCallData));
+        query = query + " LIMIT  " + LimitAmount;
+        query = query + " OFFSET " + (Integer.parseInt(LimitAmount) * Integer.parseInt(MoreCallData));
 
-        Log.e("test_",query);
+        Log.e("test_", query);
         cursor = getWritableDatabase().rawQuery(query, null);
 
-        Log.e("test_",query);
+        Log.e("test_", query);
         if (cursor != null) {
 
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
                 for (Column column : columns) {
-                    Log.e("test_",column.getColumnName());
+                    Log.e("test_", column.getColumnName());
 
-                    try{
+                    try {
                         switch (column.getColumnType()) {
                             case "0":
                                 gooddetail.setGoodFieldValue(
@@ -696,7 +694,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                 );
                                 break;
                         }
-                    }catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                    }
                 }
                 gooddetail.setCheck(false);
 
@@ -709,14 +708,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public ArrayList<Good> getAllGood_ByDate(String xDayAgo,String MoreCallData) {
+    public ArrayList<Good> getAllGood_ByDate(String xDayAgo, String MoreCallData) {
         goods.clear();
         GetPreference();
         columns = GetColumns("", "", "1");
         query = "  With FilterTable As (Select 1 as SecondField) SELECT ";
         k = 0;
         for (Column column : columns) {
-            if(!column.getColumnName().equals("")) {
+            if (!column.getColumnName().equals("")) {
                 if (k != 0) {
                     query = query + " , ";
                 }
@@ -728,27 +727,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 k++;
             }
         }
-        String newSt="Date";
+        String newSt = "Date";
         for (Column column : columns) {
 
-            if(column.getColumnName().equals("Date")) {
-                newSt= column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then") + 5, column.getColumnDefinition().indexOf("Then") + 12);
+            if (column.getColumnName().equals("Date")) {
+                newSt = column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then") + 5, column.getColumnDefinition().indexOf("Then") + 12);
             }
         }
 
 
+        query = query + " FROM Good g , FilterTable Where " + newSt + ">='" + xDayAgo + "' ";
 
-        query = query + " FROM Good g , FilterTable Where "+newSt+">='" + xDayAgo + "' ";
-
-        query=query+" And Exists(Select 1 From GoodStack stackCondition And GoodRef=GoodCode )";
+        query = query + " And Exists(Select 1 From GoodStack stackCondition And GoodRef=GoodCode )";
 
         if (SH_activestack) {
-            st = sc+ " And ActiveStack = 1 ";
-        }else{
+            st = sc + " And ActiveStack = 1 ";
+        } else {
             st = sc;
         }
 
-        query=query.replaceAll("stackCondition",st);
+        query = query.replaceAll("stackCondition", st);
 
 
         if (SH_goodamount) {
@@ -767,34 +765,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     query = query + " , ";
                 }
                 if (Integer.parseInt(column.getOrderIndex()) > 0) {
-                    if(column.getColumnName().equals("Date")){
-                        newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
-                        query=query+newSt;
-                    }else{
+                    if (column.getColumnName().equals("Date")) {
+                        newSt = column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then") + 5, column.getColumnDefinition().indexOf("Then") + 12);
+                        query = query + newSt;
+                    } else {
                         query = query + column.getColumnName();
                     }
                 } else {
-                    if(column.getColumnName().equals("Date")){
-                        newSt=column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then")+5,column.getColumnDefinition().indexOf("Then")+12);
-                        query=query+newSt + " DESC ";
-                    }else{
-                        query = query + column.getColumnName()+" DESC ";
+                    if (column.getColumnName().equals("Date")) {
+                        newSt = column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then") + 5, column.getColumnDefinition().indexOf("Then") + 12);
+                        query = query + newSt + " DESC ";
+                    } else {
+                        query = query + column.getColumnName() + " DESC ";
                     }
                 }
                 k++;
             }
         }
-        query = query + " LIMIT  "+LimitAmount;
-        query = query + " OFFSET "+(Integer.parseInt(LimitAmount)*Integer.parseInt(MoreCallData));
+        query = query + " LIMIT  " + LimitAmount;
+        query = query + " OFFSET " + (Integer.parseInt(LimitAmount) * Integer.parseInt(MoreCallData));
 
-        Log.e("test",query);
+        Log.e("test", query);
         goods = new ArrayList<>();
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
                 for (Column column : columns) {
-                    try{
+                    try {
                         switch (column.getColumnType()) {
                             case "0":
                                 gooddetail.setGoodFieldValue(
@@ -815,7 +813,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                 );
                                 break;
                         }
-                    }catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                    }
                 }
 
                 gooddetail.setCheck(false);
@@ -848,21 +847,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             k++;
         }
-        query = query + joinDetail ;
+        query = query + joinDetail;
 
         if (SH_activestack) {
-            st = sc+ " And ActiveStack = 1 ";
-        }else{
+            st = sc + " And ActiveStack = 1 ";
+        } else {
             st = sc;
         }
-        Search_Condition="'%%'";
-        query=query.replaceAll("stackCondition",st);
-        query=query.replaceAll("SearchCondition",Search_Condition);
+        Search_Condition = "'%%'";
+        query = query.replaceAll("stackCondition", st);
+        query = query.replaceAll("SearchCondition", Search_Condition);
 
 
         query = query + " WHERE GoodCode = " + code;
 
-        Log.e("test",query);
+        Log.e("test", query);
         gooddetail = new Good();
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor.getCount() > 0) {
@@ -890,7 +889,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                             );
                             break;
                     }
-                }catch (Exception ignored){ }
+                } catch (Exception ignored) {
+                }
             }
             gooddetail.setCheck(false);
         }
@@ -901,16 +901,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void InsertActivation(@NotNull Activation activation) {
 
-        query="select * from Activation Where ActivationCode= '"+activation.getActivationCode()+"'";
+        query = "select * from Activation Where ActivationCode= '" + activation.getActivationCode() + "'";
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor.getCount() > 0) {
             getWritableDatabase().execSQL("Update Activation set " +
                     "ServerURL = '" + activation.getServerURL() + "' " +
-                    "Where ActivationCode= '"+activation.getActivationCode()+"'");
+                    "Where ActivationCode= '" + activation.getActivationCode() + "'");
 
             getWritableDatabase().execSQL("Update Activation set " +
                     "SQLiteURL = '" + activation.getSQLiteURL() + "' " +
-                    "Where ActivationCode= '"+activation.getActivationCode()+"'");
+                    "Where ActivationCode= '" + activation.getActivationCode() + "'");
 
         } else {
             getWritableDatabase().execSQL(" Insert Into Activation(AppBrokerCustomerCode,ActivationCode,PersianCompanyName, EnglishCompanyName,ServerURL,SQLiteURL,MaxDevice)" +
@@ -921,19 +921,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
 
-
     }
+
     @SuppressLint("Range")
     public ArrayList<Activation> getActivation() {
 
-        query="Select * From Activation";
+        query = "Select * From Activation";
         cursor = getWritableDatabase().rawQuery(query, null);
         ArrayList<Activation> activations = new ArrayList<>();
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 Activation activation = new Activation();
-                try{
+                try {
                     activation.setAppBrokerCustomerCode(cursor.getString(cursor.getColumnIndex("AppBrokerCustomerCode")));
                     activation.setActivationCode(cursor.getString(cursor.getColumnIndex("ActivationCode")));
                     activation.setPersianCompanyName(cursor.getString(cursor.getColumnIndex("PersianCompanyName")));
@@ -941,7 +941,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     activation.setServerURL(cursor.getString(cursor.getColumnIndex("ServerURL")));
                     activation.setSQLiteURL(cursor.getString(cursor.getColumnIndex("SQLiteURL")));
                     activation.setMaxDevice(cursor.getString(cursor.getColumnIndex("MaxDevice")));
-                }catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
                 activations.add(activation);
 
             }
@@ -964,71 +965,74 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " FROM Good g " +
                 " Join Units on UnitCode =GoodUnitRef " +
                 " Left Join (Select GoodRef, Sum(FactorAmount) FactorAmount , Sum(FactorAmount*Price) Price " +
-                " From PreFactorRow Where PreFactorRef = "+SH_prefactor_code+" Group BY GoodRef) pf on pf.GoodRef = g.GoodCode  " +
-                " Left Join PreFactor h on h.PreFactorCode = "+SH_prefactor_code+
+                " From PreFactorRow Where PreFactorRef = " + SH_prefactor_code + " Group BY GoodRef) pf on pf.GoodRef = g.GoodCode  " +
+                " Left Join PreFactor h on h.PreFactorCode = " + SH_prefactor_code +
                 " Left Join Customer c on c.CustomerCode=h.CustomerRef " +
-                " WHERE GoodCode = "+code;
+                " WHERE GoodCode = " + code;
 
 
-        Log.e("test",query);
+        Log.e("test", query);
         gooddetail = new Good();
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            try{
-                gooddetail.setGoodFieldValue("FactorAmount",cursor.getString(cursor.getColumnIndex("FactorAmount")));
-                gooddetail.setGoodFieldValue("UnitName",cursor.getString(cursor.getColumnIndex("UnitName")));
-                gooddetail.setGoodFieldValue("Price",cursor.getString(cursor.getColumnIndex("Price")));
-                gooddetail.setGoodFieldValue("MaxSellPrice",cursor.getLong(cursor.getColumnIndex("MaxSellPrice"))+"");
-                gooddetail.setGoodFieldValue("SellPrice",cursor.getLong(cursor.getColumnIndex("SellPrice"))+"");
-                gooddetail.setGoodFieldValue("SellPriceType",cursor.getLong(cursor.getColumnIndex("SellPriceType"))+"");
-                gooddetail.setGoodFieldValue("DefaultUnitValue",cursor.getLong(cursor.getColumnIndex("DefaultUnitValue"))+"");
-            }catch (Exception ignored) {}
+            try {
+                gooddetail.setGoodFieldValue("FactorAmount", cursor.getString(cursor.getColumnIndex("FactorAmount")));
+                gooddetail.setGoodFieldValue("UnitName", cursor.getString(cursor.getColumnIndex("UnitName")));
+                gooddetail.setGoodFieldValue("Price", cursor.getString(cursor.getColumnIndex("Price")));
+                gooddetail.setGoodFieldValue("MaxSellPrice", cursor.getLong(cursor.getColumnIndex("MaxSellPrice")) + "");
+                gooddetail.setGoodFieldValue("SellPrice", cursor.getLong(cursor.getColumnIndex("SellPrice")) + "");
+                gooddetail.setGoodFieldValue("SellPriceType", cursor.getLong(cursor.getColumnIndex("SellPriceType")) + "");
+                gooddetail.setGoodFieldValue("DefaultUnitValue", cursor.getLong(cursor.getColumnIndex("DefaultUnitValue")) + "");
+            } catch (Exception ignored) {
+            }
         }
         cursor.close();
-        Log.e("test",gooddetail.getGoodFieldValue("SellPrice"));
+        Log.e("test", gooddetail.getGoodFieldValue("SellPrice"));
         return gooddetail;
     }
+
     @SuppressLint("Range")
     public Good getGooddata(String code) {
         GetPreference();
 
-        query = " SELECT * FROM Good g WHERE GoodCode = "+code;
+        query = " SELECT * FROM Good g WHERE GoodCode = " + code;
 
 
-        Log.e("test",query);
+        Log.e("test", query);
         gooddetail = new Good();
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            try{
-                gooddetail.setGoodFieldValue("GoodCode",cursor.getString(cursor.getColumnIndex("GoodCode")));
-                gooddetail.setGoodFieldValue("GoodMainCode",cursor.getString(cursor.getColumnIndex("GoodMainCode")));
-                gooddetail.setGoodFieldValue("GoodName",cursor.getString(cursor.getColumnIndex("GoodName")));
-                gooddetail.setGoodFieldValue("GoodType",cursor.getString(cursor.getColumnIndex("GoodType")));
-                gooddetail.setGoodFieldValue("GoodExplain1",cursor.getString(cursor.getColumnIndex("GoodExplain1")));
-                gooddetail.setGoodFieldValue("GoodExplain2",cursor.getString(cursor.getColumnIndex("GoodExplain2")));
-                gooddetail.setGoodFieldValue("GoodExplain3",cursor.getString(cursor.getColumnIndex("GoodExplain3")));
-                gooddetail.setGoodFieldValue("GoodExplain4",cursor.getString(cursor.getColumnIndex("GoodExplain4")));
-                gooddetail.setGoodFieldValue("GoodExplain5",cursor.getString(cursor.getColumnIndex("GoodExplain5")));
-                gooddetail.setGoodFieldValue("GoodExplain6",cursor.getString(cursor.getColumnIndex("GoodExplain6")));
-                gooddetail.setGoodFieldValue("SellPriceType",cursor.getString(cursor.getColumnIndex("SellPriceType")));
-                gooddetail.setGoodFieldValue("MaxSellPrice",cursor.getString(cursor.getColumnIndex("MaxSellPrice")));
-                gooddetail.setGoodFieldValue("MinSellPrice",cursor.getString(cursor.getColumnIndex("MinSellPrice")));
-                gooddetail.setGoodFieldValue("SellPrice1",cursor.getString(cursor.getColumnIndex("SellPrice1")));
-                gooddetail.setGoodFieldValue("SellPrice2",cursor.getString(cursor.getColumnIndex("SellPrice2")));
-                gooddetail.setGoodFieldValue("SellPrice3",cursor.getString(cursor.getColumnIndex("SellPrice3")));
-                gooddetail.setGoodFieldValue("SellPrice4",cursor.getString(cursor.getColumnIndex("SellPrice4")));
-                gooddetail.setGoodFieldValue("SellPrice5",cursor.getString(cursor.getColumnIndex("SellPrice5")));
-                gooddetail.setGoodFieldValue("SellPrice6",cursor.getString(cursor.getColumnIndex("SellPrice6")));
-                gooddetail.setGoodFieldValue("FirstBarCode",cursor.getString(cursor.getColumnIndex("FirstBarCode")));
-                gooddetail.setGoodFieldValue("GoodUnitRef",cursor.getString(cursor.getColumnIndex("GoodUnitRef")));
-                gooddetail.setGoodFieldValue("DefaultUnitValue",cursor.getString(cursor.getColumnIndex("DefaultUnitValue")));
-                gooddetail.setGoodFieldValue("ISBN",cursor.getString(cursor.getColumnIndex("ISBN")));
-                }catch (Exception ignored) {}
+            try {
+                gooddetail.setGoodFieldValue("GoodCode", cursor.getString(cursor.getColumnIndex("GoodCode")));
+                gooddetail.setGoodFieldValue("GoodMainCode", cursor.getString(cursor.getColumnIndex("GoodMainCode")));
+                gooddetail.setGoodFieldValue("GoodName", cursor.getString(cursor.getColumnIndex("GoodName")));
+                gooddetail.setGoodFieldValue("GoodType", cursor.getString(cursor.getColumnIndex("GoodType")));
+                gooddetail.setGoodFieldValue("GoodExplain1", cursor.getString(cursor.getColumnIndex("GoodExplain1")));
+                gooddetail.setGoodFieldValue("GoodExplain2", cursor.getString(cursor.getColumnIndex("GoodExplain2")));
+                gooddetail.setGoodFieldValue("GoodExplain3", cursor.getString(cursor.getColumnIndex("GoodExplain3")));
+                gooddetail.setGoodFieldValue("GoodExplain4", cursor.getString(cursor.getColumnIndex("GoodExplain4")));
+                gooddetail.setGoodFieldValue("GoodExplain5", cursor.getString(cursor.getColumnIndex("GoodExplain5")));
+                gooddetail.setGoodFieldValue("GoodExplain6", cursor.getString(cursor.getColumnIndex("GoodExplain6")));
+                gooddetail.setGoodFieldValue("SellPriceType", cursor.getString(cursor.getColumnIndex("SellPriceType")));
+                gooddetail.setGoodFieldValue("MaxSellPrice", cursor.getString(cursor.getColumnIndex("MaxSellPrice")));
+                gooddetail.setGoodFieldValue("MinSellPrice", cursor.getString(cursor.getColumnIndex("MinSellPrice")));
+                gooddetail.setGoodFieldValue("SellPrice1", cursor.getString(cursor.getColumnIndex("SellPrice1")));
+                gooddetail.setGoodFieldValue("SellPrice2", cursor.getString(cursor.getColumnIndex("SellPrice2")));
+                gooddetail.setGoodFieldValue("SellPrice3", cursor.getString(cursor.getColumnIndex("SellPrice3")));
+                gooddetail.setGoodFieldValue("SellPrice4", cursor.getString(cursor.getColumnIndex("SellPrice4")));
+                gooddetail.setGoodFieldValue("SellPrice5", cursor.getString(cursor.getColumnIndex("SellPrice5")));
+                gooddetail.setGoodFieldValue("SellPrice6", cursor.getString(cursor.getColumnIndex("SellPrice6")));
+                gooddetail.setGoodFieldValue("FirstBarCode", cursor.getString(cursor.getColumnIndex("FirstBarCode")));
+                gooddetail.setGoodFieldValue("GoodUnitRef", cursor.getString(cursor.getColumnIndex("GoodUnitRef")));
+                gooddetail.setGoodFieldValue("DefaultUnitValue", cursor.getString(cursor.getColumnIndex("DefaultUnitValue")));
+                gooddetail.setGoodFieldValue("ISBN", cursor.getString(cursor.getColumnIndex("ISBN")));
+            } catch (Exception ignored) {
+            }
         }
         cursor.close();
-        Log.e("test",gooddetail.getGoodFieldValue("SellPrice"));
+        Log.e("test", gooddetail.getGoodFieldValue("SellPrice"));
         return gooddetail;
     }
 
@@ -1049,9 +1053,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return goods;
     }
+
     @SuppressLint("Range")
     public void InsertPreFactorHeader(String Search_target, String CustomerRef) {
-        String Customer=GetRegionText(Search_target);
+        String Customer = GetRegionText(Search_target);
 
         String Date = Utilities.getCurrentShamsidate();
         Calendar calendar = Calendar.getInstance();
@@ -1103,33 +1108,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 cursor.moveToFirst();
                 getWritableDatabase().execSQL("Update PreFactorRow set FactorAmount = FactorAmount +" + FactorAmount + " Where PreFactorRowCode=" + cursor.getString(cursor.getColumnIndex("PreFactorRowCode")) + ";");
             } else {
-                query="INSERT INTO PreFactorRow(PreFactorRef, GoodRef, FactorAmount, Price) "
+                query = "INSERT INTO PreFactorRow(PreFactorRef, GoodRef, FactorAmount, Price) "
                         //Select " + pfcode + "," + goodcode + ", " + FactorAmount + "," +price
-                        + "select PreFactorCode ,GoodCode," + FactorAmount + ", Case When "+price+">0 Then "+price
-                        +" When g.SellPrice1>0 And c.PriceTip= 1 Then Case When g.SellPriceType = 0 Then g.SellPrice1 Else g.SellPrice1 * g.MaxSellPrice /100 End "
-                        +" When g.SellPrice2>0 And c.PriceTip= 2 Then Case When g.SellPriceType = 0 Then g.SellPrice2 Else g.SellPrice2 * g.MaxSellPrice /100 End "
-                        +" When g.SellPrice3>0 And c.PriceTip= 3 Then Case When g.SellPriceType = 0 Then g.SellPrice3 Else g.SellPrice3 * g.MaxSellPrice /100 End "
-                        +" When g.SellPrice4>0 And c.PriceTip= 4 Then Case When g.SellPriceType = 0 Then g.SellPrice4 Else g.SellPrice4 * g.MaxSellPrice /100 End "
-                        +" When g.SellPrice5>0 And c.PriceTip= 5 Then Case When g.SellPriceType = 0 Then g.SellPrice5 Else g.SellPrice5 * g.MaxSellPrice /100 End "
-                        +" When g.SellPrice6>0 And c.PriceTip= 6 Then Case When g.SellPriceType = 0 Then g.SellPrice6 Else g.SellPrice6 * g.MaxSellPrice /100 End "
-                        +" Else MaxSellPrice End "
-                        +" From PreFactor p Join Customer c on p.CustomerRef = c.CustomerCode "
-                        +" Join Good g on GoodCode="+ goodcode
-                        +" Where PreFactorCode="+pfcode+" Limit 1 ";
+                        + "select PreFactorCode ,GoodCode," + FactorAmount + ", Case When " + price + ">0 Then " + price
+                        + " When g.SellPrice1>0 And c.PriceTip= 1 Then Case When g.SellPriceType = 0 Then g.SellPrice1 Else g.SellPrice1 * g.MaxSellPrice /100 End "
+                        + " When g.SellPrice2>0 And c.PriceTip= 2 Then Case When g.SellPriceType = 0 Then g.SellPrice2 Else g.SellPrice2 * g.MaxSellPrice /100 End "
+                        + " When g.SellPrice3>0 And c.PriceTip= 3 Then Case When g.SellPriceType = 0 Then g.SellPrice3 Else g.SellPrice3 * g.MaxSellPrice /100 End "
+                        + " When g.SellPrice4>0 And c.PriceTip= 4 Then Case When g.SellPriceType = 0 Then g.SellPrice4 Else g.SellPrice4 * g.MaxSellPrice /100 End "
+                        + " When g.SellPrice5>0 And c.PriceTip= 5 Then Case When g.SellPriceType = 0 Then g.SellPrice5 Else g.SellPrice5 * g.MaxSellPrice /100 End "
+                        + " When g.SellPrice6>0 And c.PriceTip= 6 Then Case When g.SellPriceType = 0 Then g.SellPrice6 Else g.SellPrice6 * g.MaxSellPrice /100 End "
+                        + " Else MaxSellPrice End "
+                        + " From PreFactor p Join Customer c on p.CustomerRef = c.CustomerCode "
+                        + " Join Good g on GoodCode=" + goodcode
+                        + " Where PreFactorCode=" + pfcode + " Limit 1 ";
 
 //                query = "INSERT INTO PreFactorRow(PreFactorRef, GoodRef, FactorAmount, Price) Select " + pfcode + "," + goodcode + ", " + FactorAmount + "," +
 //                        "Case When " + price + ">=0 Then " + price + " Else Case PriceTip When 1 Then SellPrice1 When 2 Then SellPrice2 When 3 Then SellPrice3 When 4 Then SellPrice4 When 5 Then SellPrice5 When 6 Then SellPrice6 End" +
 //                        "* Case When SellPriceType = 1 Then MaxSellPrice/100 Else 1 End End " +
 //                        "From Good g Join PreFactor h on 1=1 Join Customer c on h.CustomerRef=c.CustomerCode " +
 //                        "Where h.PreFactorCode =" + pfcode + " And GoodCode = " + goodcode;
-                Log.e("test_",query);
+                Log.e("test_", query);
                 getWritableDatabase().execSQL(query);
             }
             cursor.close();
         }
     }
-
-
 
 
     @SuppressLint("Range")
@@ -1152,14 +1155,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 cursor.moveToFirst();
                 getWritableDatabase().execSQL("Update PreFactorRow set FactorAmount = FactorAmount +" + FactorAmount + " Where PreFactorRowCode=" + cursor.getString(cursor.getColumnIndex("PreFactorRowCode")) + ";");
             } else {
-                query="INSERT INTO PreFactorRow(PreFactorRef, GoodRef, FactorAmount, Price) "
-                        + "select PreFactorCode ,GoodCode," + FactorAmount + "," +price
-                        +" From PreFactor "
-                        +" Join Good g on GoodCode="+ goodcode
-                        +" Where PreFactorCode="+pfcode+" Limit 1 ";
+                query = "INSERT INTO PreFactorRow(PreFactorRef, GoodRef, FactorAmount, Price) "
+                        + "select PreFactorCode ,GoodCode," + FactorAmount + "," + price
+                        + " From PreFactor "
+                        + " Join Good g on GoodCode=" + goodcode
+                        + " Where PreFactorCode=" + pfcode + " Limit 1 ";
 
 
-                Log.e("test_",query);
+                Log.e("test_", query);
                 getWritableDatabase().execSQL(query);
             }
             cursor.close();
@@ -1167,12 +1170,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-
-
     @SuppressLint("Range")
     public ArrayList<PreFactor> getAllPrefactorHeader(String Search_target) {
 
-        String name=GetRegionText(Search_target);
+        String name = GetRegionText(Search_target);
 
         query = " SELECT h.*, s.SumAmount , s.SumPrice , s.RowCount ,n.Title || ' ' || n.FName|| ' ' || n.Name CustomerName FROM PreFactor h Join Customer c  on c.CustomerCode = h.CustomerRef " +
                 " join Central n on c.CentralRef=n.CentralCode "
@@ -1189,7 +1190,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 PreFactor prefactor = new PreFactor();
-                try{
+                try {
                     prefactor.setPreFactorCode(cursor.getInt(cursor.getColumnIndex("PreFactorCode")));
                     prefactor.setPreFactorDate(cursor.getString(cursor.getColumnIndex("PreFactorDate")));
                     prefactor.setPreFactorTime(cursor.getString(cursor.getColumnIndex("PreFactorTime")));
@@ -1200,7 +1201,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     prefactor.setSumAmount(cursor.getInt(cursor.getColumnIndex("SumAmount")));
                     prefactor.setSumPrice(cursor.getInt(cursor.getColumnIndex("SumPrice")));
                     prefactor.setRowCount(cursor.getInt(cursor.getColumnIndex("RowCount")));
-                }catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
                 prefactor_header.add(prefactor);
             }
         }
@@ -1208,6 +1210,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return prefactor_header;
     }
+
     @SuppressLint("Range")
     public ArrayList<PreFactor> getAllPrefactorHeaderopen() {
         query = "SELECT h.*, s.SumAmount , s.SumPrice, s.RowCount ,n.Title || ' ' || n.FName|| ' ' || n.Name CustomerName  " +
@@ -1238,7 +1241,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     prefactor.setSumAmount(cursor.getInt(cursor.getColumnIndex("SumAmount")));
                     prefactor.setSumPrice(cursor.getInt(cursor.getColumnIndex("SumPrice")));
                     prefactor.setRowCount(cursor.getInt(cursor.getColumnIndex("RowCount")));
-                }catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
                 prefactor_header.add(prefactor);
             }
         }
@@ -1249,7 +1253,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @SuppressLint("Range")
     public ArrayList<Good> getAllPreFactorRows(String Search_target, String aPreFactorCode) {
-        String name=GetRegionText(Search_target);
+        String name = GetRegionText(Search_target);
         name = name.replaceAll(" ", "%");
         GetPreference();
         columns = GetColumns("", "", "2");
@@ -1276,14 +1280,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Where (Replace(Replace(GoodName,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%' and PreFactorRef = " + aPreFactorCode + ") order by PreFactorRowCode DESC ";
 
 
-
         cursor = getWritableDatabase().rawQuery(query, null);
-        Log.e("test_1",query);
+        Log.e("test_1", query);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
                 for (Column column : columns) {
-                    try{
+                    try {
                         switch (column.getColumnType()) {
                             case "0":
                                 gooddetail.setGoodFieldValue(
@@ -1304,7 +1307,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                 );
                                 break;
                         }
-                    }catch (Exception ignored) {}
+                    } catch (Exception ignored) {
+                    }
                 }
 
                 goods.add(gooddetail);
@@ -1315,9 +1319,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return goods;
     }
+
     @SuppressLint("Range")
     public void UpdatePreFactorHeader_Customer(String pfcode, String Search_target) {
-        String Customer=GetRegionText(Search_target);
+        String Customer = GetRegionText(Search_target);
 
         query = "Update Prefactor set CustomerRef='" + Customer + "' where PreFactorCode = " + pfcode;
         getWritableDatabase().execSQL(query);
@@ -1346,6 +1351,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         assert cursor != null;
         cursor.close();
     }
+
     @SuppressLint("Range")
     public Integer GetLastPreFactorHeader() {
 
@@ -1386,10 +1392,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         query = "Update PreFactor Set PreFactorKowsarCode = " + PreFactorKowsarCode + ", PreFactorKowsarDate = '" + PreFactorDate + "' Where ifnull(PreFactorCode ,0)= " + PreFactorCode + ";";
         getWritableDatabase().execSQL(query);
     }
+
     @SuppressLint("Range")
     public String getFactorSum(String pfcode) {
         query = " select sum(FactorAmount*price*DefaultUnitValue) as result From PreFactorRow join Good on GoodRef=GoodCode Where IfNull(PreFactorRef,0)=" + pfcode;
-        Log.e("test",query);
+        Log.e("test", query);
         cursor = getWritableDatabase().rawQuery(query, null);
         cursor.moveToFirst();
         long result = cursor.getLong(cursor.getColumnIndex("result"));
@@ -1397,6 +1404,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return String.valueOf(result);
     }
+
     @SuppressLint("Range")
     public String getFactorSumAmount(String pfcode) {
         query = "select sum(FactorAmount) as result From PreFactorRow join Good on GoodRef=GoodCode Where IfNull(PreFactorRef,0)=" + pfcode;
@@ -1416,9 +1424,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return result;
     }
+
     @SuppressLint("Range")
     public String getPricetipCustomer(String pfcode) {
-     int resultint = 0;
+        int resultint = 0;
         query = "SELECT PriceTip  FROM PreFactor h " +
                 " Join Customer c  on c.CustomerCode = h.CustomerRef " +
                 " join Central n on c.CentralRef=n.CentralCode " +
@@ -1434,6 +1443,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return String.valueOf(resultint);
     }
+
     @SuppressLint("Range")
     public String getFactorCustomer(String pfcode) {
 
@@ -1452,6 +1462,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return result;
     }
+
     @SuppressLint("Range")
     public long getsum_sumfactor() {
         query = "select sum(price) as sm From PreFactorRow";
@@ -1465,10 +1476,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return Res;
     }
+
     @SuppressLint("Range")
     public ArrayList<Customer> AllCustomer(String search_target, boolean aOnlyActive) {
 
-        String name= GetRegionText(search_target);
+        String name = GetRegionText(search_target);
 
         query = "SELECT u.CustomerCode,u.PriceTip,c.Title || ' ' || c.FName|| ' ' || c.Name CentralName,Address,Manager,Mobile,Phone,Delegacy,y.Name CityName, CustomerBestankar - CustomerBedehkar Bestankar, Active, CentralPrivateCode, EtebarNaghd" +
                 ",EtebarCheck, Takhfif, MobileName, Email, Fax, ZipCode, PostCode FROM Customer u " +
@@ -1484,20 +1496,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         query = query + " order by CustomerCode DESC  LIMIT 200";
         ArrayList<Customer> Customers = new ArrayList<>();
-        Log.e("test",query);
+        Log.e("test", query);
         cursor = getWritableDatabase().rawQuery(query, null);
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 Customer customerdetail = new Customer();
-                try{
+                try {
                     customerdetail.setCustomerCode(cursor.getInt(cursor.getColumnIndex("CustomerCode")));
                     customerdetail.setCustomerName(cursor.getString(cursor.getColumnIndex("CentralName")));
                     customerdetail.setManager(cursor.getString(cursor.getColumnIndex("Manager")));
                     customerdetail.setAddress(cursor.getString(cursor.getColumnIndex("Address")));
                     customerdetail.setPhone(cursor.getString(cursor.getColumnIndex("Phone")));
                     customerdetail.setBestankar(cursor.getInt(cursor.getColumnIndex("Bestankar")));
-                }catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
 
                 Customers.add(customerdetail);
             }
@@ -1506,6 +1519,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return Customers;
     }
+
     @SuppressLint("Range")
     public Integer Customer_check(String name) {
         int res = 0;
@@ -1522,6 +1536,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return res;
     }
+
     @SuppressLint("Range")
     public ArrayList<Customer> city() {
 
@@ -1531,10 +1546,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 Customer customerdetail = new Customer();
-                try{
+                try {
                     customerdetail.setCityName(cursor.getString(cursor.getColumnIndex("CityName")));
                     customerdetail.setCityCode(cursor.getString(cursor.getColumnIndex("CityCode")));
-                }catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
                 city.add(customerdetail);
             }
         }
@@ -1542,9 +1558,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return city;
     }
+
     @SuppressLint("Range")
     public String GetksrImage(String code) {
-        query = "select ksrImageCode from ksrImage where ObjectRef = " + code+ " limit 1";
+        query = "select ksrImageCode from ksrImage where ObjectRef = " + code + " limit 1";
         cursor = getWritableDatabase().rawQuery(query, null);
         cursor.moveToFirst();
         result = cursor.getString(cursor.getColumnIndex("KsrImageCode"));
@@ -1557,14 +1574,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<Good> GetksrImageCodes(String code) {
         query = "SELECT ksrImageCode from KsrImage where ObjectRef = " + code;
         ArrayList<Good> Goods = new ArrayList<>();
-        Log.e("test11",query);
+        Log.e("test11", query);
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 Good gooddetail = new Good();
-                try{
-                    gooddetail.setGoodFieldValue("KsrImageCode",cursor.getString(cursor.getColumnIndex("KsrImageCode")));
-                }catch (Exception ignored) {}
+                try {
+                    gooddetail.setGoodFieldValue("KsrImageCode", cursor.getString(cursor.getColumnIndex("KsrImageCode")));
+                } catch (Exception ignored) {
+                }
                 Goods.add(gooddetail);
             }
         }
@@ -1572,6 +1590,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return Goods;
     }
+
     @SuppressLint("Range")
     public ArrayList<GoodGroup> getAllGroups(String GL) {
 
@@ -1591,13 +1610,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ArrayList<GoodGroup> groups = new ArrayList<>();
 
-        Log.e("test_query",query);
+        Log.e("test_query", query);
         cursor = getWritableDatabase().rawQuery(query, null);
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 GoodGroup grp = new GoodGroup();
-                try{
+                try {
                     grp.setGroupCode(cursor.getInt(cursor.getColumnIndex("GroupCode")));
                     grp.setName(cursor.getString(cursor.getColumnIndex("Name")));
                     grp.setL1(cursor.getInt(cursor.getColumnIndex("L1")));
@@ -1606,7 +1625,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     grp.setL4(cursor.getInt(cursor.getColumnIndex("L4")));
                     grp.setL5(cursor.getInt(cursor.getColumnIndex("L5")));
                     grp.setChildNo(cursor.getInt(cursor.getColumnIndex("ChildNo")));
-                }catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
                 groups.add(grp);
 
             }
@@ -1615,6 +1635,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return groups;
     }
+
     @SuppressLint("Range")
     public ArrayList<GoodGroup> getmenuGroups() {
         GetPreference();
@@ -1627,14 +1648,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Log.e("test", query);
         try {
             cursor = getWritableDatabase().rawQuery(query, null);
-        }catch (Exception e){
+        } catch (Exception e) {
             query = "SELECT * FROM GoodsGrp Where Groupcode in (9999)";
             cursor = getWritableDatabase().rawQuery(query, null);
         }
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 GoodGroup grp = new GoodGroup();
-                try{
+                try {
                     grp.setGroupCode(cursor.getInt(cursor.getColumnIndex("GroupCode")));
 
                     grp.setName(cursor.getString(cursor.getColumnIndex("Name")));
@@ -1643,7 +1664,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     grp.setL3(cursor.getInt(cursor.getColumnIndex("L3")));
                     grp.setL4(cursor.getInt(cursor.getColumnIndex("L4")));
                     grp.setL5(cursor.getInt(cursor.getColumnIndex("L5")));
-                }catch (Exception ignored) {}
+                } catch (Exception ignored) {
+                }
                 groups.add(grp);
 
             }
@@ -1652,6 +1674,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return groups;
     }
+
     @SuppressLint("Range")
     public UserInfo LoadPersonalInfo() {
         UserInfo user = new UserInfo();
@@ -1694,7 +1717,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         user.setActiveCode(val);
                         break;
                     case "BrokerCode":
-                        Log.e("test_setBrokerCode",val);
+                        Log.e("test_setBrokerCode", val);
                         user.setBrokerCode(val);
                         break;
                 }
@@ -1715,18 +1738,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     }
 
-    public void SaveConfig(String key,String Value) {
+    public void SaveConfig(String key, String Value) {
 
-        query = " Insert Into Config(KeyValue, DataValue) Select '"+key+"', '" + Value + "' Where Not Exists(Select * From Config Where KeyValue = '"+key+"');";
+        query = " Insert Into Config(KeyValue, DataValue) Select '" + key + "', '" + Value + "' Where Not Exists(Select * From Config Where KeyValue = '" + key + "');";
         getWritableDatabase().execSQL(query);
-        query = " Update Config set DataValue = '" + Value + "' Where KeyValue = '"+key+"' ;";
+        query = " Update Config set DataValue = '" + Value + "' Where KeyValue = '" + key + "' ;";
         getWritableDatabase().execSQL(query);
 
     }
+
     @SuppressLint("Range")
     public String ReadConfig(String key) {
 
-        query = "SELECT DataValue  FROM Config  Where KeyValue= '"+key+"' ;";
+        query = "SELECT DataValue  FROM Config  Where KeyValue= '" + key + "' ;";
 
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor.getCount() > 0) {
@@ -1737,6 +1761,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return result;
 
     }
+
     @SuppressLint("Range")
     public void ReplicateGoodtype(Column column) {
         cursor = getWritableDatabase().rawQuery("Select Count(*) AS cntRec From GoodType Where GoodType = '" + column.getColumnFieldValue("GoodType") + "'", null);

@@ -45,7 +45,7 @@ public class Replication {
     CallMethod callMethod;
     APIInterface apiInterface;
     Intent intent;
-    ImageInfo image_info ;
+    ImageInfo image_info;
 
     private SQLiteDatabase database;
     private final Integer RepRowCount = 100;
@@ -53,8 +53,8 @@ public class Replication {
     String LastRepCode = "0";
     Dialog dialog;
     private final DatabaseHelper dbh;
-    ArrayList<TableDetail> tableDetails=new ArrayList<>();
-    ArrayList<ReplicationModel> replicationModels=new ArrayList<>();
+    ArrayList<TableDetail> tableDetails = new ArrayList<>();
+    ArrayList<ReplicationModel> replicationModels = new ArrayList<>();
 
     String url;
     Integer replicatelevel;
@@ -78,7 +78,7 @@ public class Replication {
 
 
     public void DoingReplicate() {
-        Log.e("test","0");
+        Log.e("test", "0");
         dialog = new Dialog(mContext);
         dialog();
 
@@ -87,10 +87,10 @@ public class Replication {
             @Override
             public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
                 assert response.body() != null;
-                Log.e("test","1");
-                Log.e("test_+_+_",response.body().getText());
+                Log.e("test", "1");
+                Log.e("test_+_+_", response.body().getText());
 
-                dbh.SaveConfig("MaxRepLogCode",response.body().getText());
+                dbh.SaveConfig("MaxRepLogCode", response.body().getText());
                 RetrofitReplicate(0);
             }
 
@@ -100,9 +100,10 @@ public class Replication {
             }
         });
 
-        Log.e("test","0");
+        Log.e("test", "0");
 
     }
+
     public void DoingReplicateAuto() {
 
         Call<RetrofitResponse> call1 = apiInterface.MaxRepLogCode("MaxRepLogCode");
@@ -110,7 +111,7 @@ public class Replication {
             @Override
             public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
                 assert response.body() != null;
-                dbh.SaveConfig("MaxRepLogCode",response.body().getText());
+                dbh.SaveConfig("MaxRepLogCode", response.body().getText());
                 RetrofitReplicateAuto(0);
             }
 
@@ -131,27 +132,27 @@ public class Replication {
 
     public void RetrofitReplicate(Integer replevel) {
         dbh.closedb();
-        replicatelevel=replevel;
+        replicatelevel = replevel;
 
         replicationModels = dbh.GetReplicationTable();
-        Log.e("test","______");
-        Log.e("test","replicatelevel");
+        Log.e("test", "______");
+        Log.e("test", "replicatelevel");
         if (replicatelevel < replicationModels.size()) {
-            Log.e("test","replicatelevel");
+            Log.e("test", "replicatelevel");
 
             ReplicationModel replicatedetail = replicationModels.get(replicatelevel);
-            tv_rep.setText(NumberFunctions.PerisanNumber(replicationModels.size()+"/" + replicatedetail.getReplicationCode() + "در حال بروز رسانی"));
+            tv_rep.setText(NumberFunctions.PerisanNumber(replicationModels.size() + "/" + replicatedetail.getReplicationCode() + "در حال بروز رسانی"));
             tableDetails = dbh.GetTableDetail(replicatedetail.getClientTable());
-            Log.e("test","0");
+            Log.e("test", "0");
             FinalStep = 0;
-            LastRepCode=String.valueOf(replicatedetail.getLastRepLogCode());
+            LastRepCode = String.valueOf(replicatedetail.getLastRepLogCode());
 
-            UserInfo userInfo=dbh.LoadPersonalInfo();
+            UserInfo userInfo = dbh.LoadPersonalInfo();
 
-            String where =replicatedetail.getCondition().replace("BrokerCondition",userInfo.getBrokerCode());
+            String where = replicatedetail.getCondition().replace("BrokerCondition", userInfo.getBrokerCode());
 
-            Log.e("test","1");
-            Log.e("test","1");
+            Log.e("test", "1");
+            Log.e("test", "1");
 
             Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
                     "repinfo",
@@ -161,8 +162,8 @@ public class Replication {
                     "1",
                     String.valueOf(RepRowCount)
             );
-            Log.e("test_1",LastRepCode);
-            Log.e("test_1",replicatedetail.getServerTable());
+            Log.e("test_1", LastRepCode);
+            Log.e("test_1", replicatedetail.getServerTable());
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
@@ -216,21 +217,21 @@ public class Replication {
 
 
                                                     qCol = new StringBuilder("INSERT INTO " + replicatedetail.getClientTable() + " ( ");
-                                                    int QueryConditionCount=0;
+                                                    int QueryConditionCount = 0;
                                                     for (int z = 0; z < columnDetail; z++) {
                                                         if (tableDetails.get(z).getText() != null) {
-                                                            if (QueryConditionCount>0)
+                                                            if (QueryConditionCount > 0)
                                                                 qCol.append(" , ");
                                                             qCol.append(" ").append(tableDetails.get(z).getName());
                                                             QueryConditionCount++;
                                                         }
                                                     }
                                                     qCol.append(" ) Select  ");
-                                                    QueryConditionCount=0;
+                                                    QueryConditionCount = 0;
 
                                                     for (int z = 0; z < columnDetail; z++) {
                                                         if (tableDetails.get(z).getText() != null) {
-                                                            if (QueryConditionCount>0)
+                                                            if (QueryConditionCount > 0)
                                                                 qCol.append(" , ");
                                                             String valuetype = tableDetails.get(z).getType().substring(0, 2);
                                                             if (!tableDetails.get(z).getText().equals("null")) {
@@ -251,10 +252,10 @@ public class Replication {
                                                 } else {
 
                                                     qCol = new StringBuilder("Update " + replicatedetail.getClientTable() + "  Set ");
-                                                    int QueryConditionCount=0;
+                                                    int QueryConditionCount = 0;
                                                     for (int z = 1; z < columnDetail; z++) {
                                                         if (tableDetails.get(z).getText() != null) {
-                                                            if (QueryConditionCount>0)
+                                                            if (QueryConditionCount > 0)
                                                                 qCol.append(" , ");
                                                             if (!tableDetails.get(z).getText().equals("null")) {
                                                                 String valuetype = tableDetails.get(z).getType().substring(0, 2);
@@ -274,7 +275,7 @@ public class Replication {
                                                 }
 
                                                 try {
-                                                    Log.e("test_qCol=", repcode +" = "+qCol.toString());
+                                                    Log.e("test_qCol=", repcode + " = " + qCol.toString());
                                                     database.execSQL(qCol.toString());
                                                     LastRepCode = repcode;
                                                 } catch (Exception e) {
@@ -292,12 +293,12 @@ public class Replication {
                             if (arrayobject.length() >= RepRowCount) {
                                 RetrofitReplicate(replicatelevel);
                             } else {
-                                if(Integer.parseInt(LastRepCode)<0){
+                                if (Integer.parseInt(LastRepCode) < 0) {
 
                                     database.execSQL("Update ReplicationTable Set LastRepLogCode = " + dbh.ReadConfig("MaxRepLogCode") + " Where ServerTable = '" + replicatedetail.getServerTable() + "' ");
 
                                     RetrofitReplicate(replicatelevel);
-                                }else {
+                                } else {
                                     tv_step.setVisibility(View.GONE);
                                     RetrofitReplicate(replicatelevel + 1);
                                 }
@@ -314,7 +315,7 @@ public class Replication {
                 }
             });
 
-        }else {
+        } else {
             replicateGoodImageChange();
         }
     }
@@ -328,11 +329,11 @@ public class Replication {
             tableDetails = dbh.GetTableDetail(replicatedetail.getClientTable());
 
             FinalStep = 0;
-            LastRepCode=String.valueOf(replicatedetail.getLastRepLogCode());
+            LastRepCode = String.valueOf(replicatedetail.getLastRepLogCode());
 
-            UserInfo userInfo=dbh.LoadPersonalInfo();
+            UserInfo userInfo = dbh.LoadPersonalInfo();
 
-            String where =replicatedetail.getCondition().replace("BrokerCondition",userInfo.getBrokerCode());
+            String where = replicatedetail.getCondition().replace("BrokerCondition", userInfo.getBrokerCode());
 
             Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
                     "repinfo",
@@ -395,21 +396,21 @@ public class Replication {
 
 
                                                         qCol = new StringBuilder("INSERT INTO " + replicatedetail.getClientTable() + " ( ");
-                                                        int QueryConditionCount=0;
+                                                        int QueryConditionCount = 0;
                                                         for (int z = 0; z < columnDetail; z++) {
                                                             if (tableDetails.get(z).getText() != null) {
-                                                                if (QueryConditionCount>0)
+                                                                if (QueryConditionCount > 0)
                                                                     qCol.append(" , ");
                                                                 qCol.append(" ").append(tableDetails.get(z).getName());
                                                                 QueryConditionCount++;
                                                             }
                                                         }
                                                         qCol.append(" ) Select  ");
-                                                        QueryConditionCount=0;
+                                                        QueryConditionCount = 0;
 
                                                         for (int z = 0; z < columnDetail; z++) {
                                                             if (tableDetails.get(z).getText() != null) {
-                                                                if (QueryConditionCount>0)
+                                                                if (QueryConditionCount > 0)
                                                                     qCol.append(" , ");
                                                                 String valuetype = tableDetails.get(z).getType().substring(0, 2);
                                                                 if (!tableDetails.get(z).getText().equals("null")) {
@@ -430,10 +431,10 @@ public class Replication {
                                                     } else {
 
                                                         qCol = new StringBuilder("Update " + replicatedetail.getClientTable() + "  Set ");
-                                                        int QueryConditionCount=0;
+                                                        int QueryConditionCount = 0;
                                                         for (int z = 1; z < columnDetail; z++) {
                                                             if (tableDetails.get(z).getText() != null) {
-                                                                if (QueryConditionCount>0)
+                                                                if (QueryConditionCount > 0)
                                                                     qCol.append(" , ");
                                                                 if (!tableDetails.get(z).getText().equals("null")) {
                                                                     String valuetype = tableDetails.get(z).getType().substring(0, 2);
@@ -453,7 +454,7 @@ public class Replication {
                                                     }
 
                                                     try {
-                                                        Log.e("test_qCol=", repcode +" = "+qCol.toString());
+                                                        Log.e("test_qCol=", repcode + " = " + qCol.toString());
                                                         database.execSQL(qCol.toString());
                                                         LastRepCode = repcode;
 
@@ -472,14 +473,15 @@ public class Replication {
                                 if (arrayobject.length() >= RepRowCount) {
                                     RetrofitReplicateAuto(replevel);
                                 } else {
-                                    if(Integer.parseInt(LastRepCode)<0){
+                                    if (Integer.parseInt(LastRepCode) < 0) {
 
                                         database.execSQL("Update ReplicationTable Set LastRepLogCode = " + dbh.ReadConfig("MaxRepLogCode") + " Where ServerTable = '" + replicatedetail.getServerTable() + "' ");
 
                                         RetrofitReplicateAuto(replevel);
-                                    }else {
+                                    } else {
                                         RetrofitReplicateAuto(replevel + 1);
-                                    }                                }
+                                    }
+                                }
                             } catch (JSONException ignored) {
                             }
 
@@ -494,7 +496,6 @@ public class Replication {
             });
 
         }
-
 
 
     }
@@ -512,7 +513,7 @@ public class Replication {
                 "repinfo"
                 , LastRepCode
                 , RepTable
-                ,""
+                , ""
                 , "1"
                 , String.valueOf(400)
         );
@@ -568,9 +569,9 @@ public class Replication {
 
                                             try {
                                                 database.execSQL(qCol);
-                                                Log.e("test_qCol=",qCol);
-                                            }catch (Exception e){
-                                                Log.e("test_qCol=",e.getMessage());
+                                                Log.e("test_qCol=", qCol);
+                                            } catch (Exception e) {
+                                                Log.e("test_qCol=", e.getMessage());
                                             }
                                             d.close();
                                             break;
@@ -578,15 +579,15 @@ public class Replication {
                                         case "D":
                                         case "d":
 
-                                                qCol = "Delete from KsrImage Where KsrImageCode= " + code ;
-                                                image_info.DeleteImage(code);
+                                            qCol = "Delete from KsrImage Where KsrImageCode= " + code;
+                                            image_info.DeleteImage(code);
 
 
                                             try {
                                                 database.execSQL(qCol);
-                                                Log.e("test_qCol=",qCol);
-                                            }catch (Exception e){
-                                                Log.e("test_qCol=",e.getMessage());
+                                                Log.e("test_qCol=", qCol);
+                                            } catch (Exception e) {
+                                                Log.e("test_qCol=", e.getMessage());
                                             }
                                             d.close();
                                             break;
@@ -602,14 +603,14 @@ public class Replication {
                         } else {
                             tv_step.setVisibility(View.GONE);
                             MenuBroker();
-                            if(dbh.GetColumnscount().equals("0")){
+                            if (dbh.GetColumnscount().equals("0")) {
                                 tv_rep.setText(NumberFunctions.PerisanNumber("در حال بروز رسانی تنظیم جدول"));
                                 GoodTypeReplication();
-                            }else{
+                            } else {
                                 intent = new Intent(mContext, NavActivity.class);
                                 mContext.startActivity(intent);
                                 ((Activity) mContext).finish();
-                                callMethod.showToast( "بروز رسانی انجام شد");
+                                callMethod.showToast("بروز رسانی انجام شد");
                             }
 
                         }
@@ -617,6 +618,7 @@ public class Replication {
                     }
                 }
             }
+
             @Override
             public void onFailure(@NotNull Call<RetrofitResponse> call, @NotNull Throwable t) {
                 replicateGoodImageChange();
@@ -633,15 +635,16 @@ public class Replication {
             public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
                 if (response.isSuccessful()) {
                     assert response.body() != null;
-                    Log.e("test_BrokerStack",response.body().getText());
+                    Log.e("test_BrokerStack", response.body().getText());
                     if (!response.body().getText().equals(dbh.ReadConfig("BrokerStack"))) {
-                        dbh.SaveConfig("BrokerStack",response.body().getText());
+                        dbh.SaveConfig("BrokerStack", response.body().getText());
                     }
                 }
             }
+
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                Log.e("test_Retrofitbroker",t.getMessage());
+                Log.e("test_Retrofitbroker", t.getMessage());
             }
         });
         MenuBroker();
@@ -655,7 +658,7 @@ public class Replication {
                 if (response.isSuccessful()) {
                     assert response.body() != null;
                     if (!response.body().getText().equals(dbh.ReadConfig("MenuBroker"))) {
-                        dbh.SaveConfig("MenuBroker",response.body().getText());
+                        dbh.SaveConfig("MenuBroker", response.body().getText());
                     }
                 }
             }
@@ -688,7 +691,6 @@ public class Replication {
                 Log.e("onFailure_t", t.getMessage());
             }
         });
-
 
 
     }

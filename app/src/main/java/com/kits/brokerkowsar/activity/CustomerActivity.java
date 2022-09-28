@@ -84,7 +84,7 @@ public class CustomerActivity extends AppCompatActivity {
         Config();
         try {
             init();
-        }catch (Exception e){
+        } catch (Exception e) {
             callMethod.ErrorLog(e.getMessage());
         }
 
@@ -129,7 +129,7 @@ public class CustomerActivity extends AppCompatActivity {
 
     public void init() {
 
-        switch (id){
+        switch (id) {
             case "0":
                 Customer_search();
                 break;
@@ -153,10 +153,12 @@ public class CustomerActivity extends AppCompatActivity {
         li_search.setVisibility(View.VISIBLE);
         edtsearch.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
 
             @Override
             public void afterTextChanged(Editable editable) {
@@ -194,7 +196,7 @@ public class CustomerActivity extends AppCompatActivity {
 
     public void Customer_new() {
         li_new.setVisibility(View.VISIBLE);
-       // replication.replicate_customer();
+        // replication.replicate_customer();
 
 
         citys = dbh.city();

@@ -82,9 +82,6 @@ public class Good implements Serializable {
     private String Extera10;
 
 
-
-
-
     @SerializedName("Nvarchar1")
     private String Nvarchar1;
     @SerializedName("Nvarchar2")
@@ -303,7 +300,7 @@ public class Good implements Serializable {
                 break;
             case "sellpricetype":
                 if (SellPriceType == null) Res = "";
-                else Res = SellPriceType+"";
+                else Res = SellPriceType + "";
                 break;
             case "maxsellprice":
                 if (MaxSellPrice == null) Res = "";
@@ -541,43 +538,44 @@ public class Good implements Serializable {
                 break;
             case "float1":
                 if (Float1 == null) Res = "";
-                else Res = String.valueOf(Float1).substring(0,String.valueOf(Float1).length()-2);
+                else Res = String.valueOf(Float1).substring(0, String.valueOf(Float1).length() - 2);
                 break;
             case "float2":
                 if (Float2 == null) Res = "";
-                else Res = String.valueOf(Float2).substring(0,String.valueOf(Float2).length()-2);
+                else Res = String.valueOf(Float2).substring(0, String.valueOf(Float2).length() - 2);
                 break;
             case "float3":
                 if (Float3 == null) Res = "";
-                else Res = String.valueOf(Float3).substring(0,String.valueOf(Float3).length()-2);
+                else Res = String.valueOf(Float3).substring(0, String.valueOf(Float3).length() - 2);
                 break;
             case "float4":
                 if (Float4 == null) Res = "";
-                else Res = String.valueOf(Float4).substring(0,String.valueOf(Float4).length()-2);
+                else Res = String.valueOf(Float4).substring(0, String.valueOf(Float4).length() - 2);
                 break;
             case "float5":
                 if (Float5 == null) Res = "";
-                else Res = String.valueOf(Float5).substring(0,String.valueOf(Float5).length()-2);
+                else Res = String.valueOf(Float5).substring(0, String.valueOf(Float5).length() - 2);
                 break;
             case "float6":
                 if (Float6 == null) Res = "";
-                else Res = String.valueOf(Float6).substring(0,String.valueOf(Float6).length()-2);
+                else Res = String.valueOf(Float6).substring(0, String.valueOf(Float6).length() - 2);
                 break;
             case "float7":
                 if (Float7 == null) Res = "";
-                else Res = String.valueOf(Float7).substring(0,String.valueOf(Float7).length()-2);
+                else Res = String.valueOf(Float7).substring(0, String.valueOf(Float7).length() - 2);
                 break;
             case "float8":
                 if (Float8 == null) Res = "";
-                else Res = String.valueOf(Float8).substring(0,String.valueOf(Float8).length()-2);
+                else Res = String.valueOf(Float8).substring(0, String.valueOf(Float8).length() - 2);
                 break;
             case "float9":
                 if (Float9 == null) Res = "";
-                else Res = String.valueOf(Float9).substring(0,String.valueOf(Float9).length()-2);
+                else Res = String.valueOf(Float9).substring(0, String.valueOf(Float9).length() - 2);
                 break;
             case "float10":
                 if (Float10 == null) Res = "";
-                else Res = String.valueOf(Float10).substring(0,String.valueOf(Float10).length()-2);
+                else
+                    Res = String.valueOf(Float10).substring(0, String.valueOf(Float10).length() - 2);
                 break;
             case "date1":
                 if (Date1 == null) Res = "";

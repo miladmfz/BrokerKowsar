@@ -25,9 +25,6 @@ public class GoodGroup {
     private Integer ChildNo;
 
 
-
-
-
     public String getGoodGroupFieldValue(String AKey) {
 
         String iKey = AKey.toLowerCase();

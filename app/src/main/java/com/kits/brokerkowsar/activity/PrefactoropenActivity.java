@@ -39,6 +39,7 @@ public class PrefactoropenActivity extends AppCompatActivity {
     Button btn_refresh;
     Button btn_dltempty;
     TextView tv_prefactorcount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +61,7 @@ public class PrefactoropenActivity extends AppCompatActivity {
             Handler handler = new Handler();
             handler.postDelayed(this::init, 100);
             handler.postDelayed(dialog1::dismiss, 1000);
-        }catch (Exception e){
+        } catch (Exception e) {
             callMethod.ErrorLog(e.getMessage());
         }
 
@@ -68,7 +69,6 @@ public class PrefactoropenActivity extends AppCompatActivity {
     }
 
     //*********************************************
-
 
 
     public void Config() {
@@ -85,7 +85,6 @@ public class PrefactoropenActivity extends AppCompatActivity {
     public void init() {
 
 
-
         preFactors = dbh.getAllPrefactorHeaderopen();
         tv_prefactorcount.setText((NumberFunctions.PerisanNumber("" + preFactors.size())));
 
@@ -100,7 +99,6 @@ public class PrefactoropenActivity extends AppCompatActivity {
             recyclerView.setAdapter(adapter);
         }
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-
 
 
         btn_refresh.setOnClickListener(view -> {

@@ -10,8 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.application.App;
-import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.Replication;
 import com.kits.brokerkowsar.model.DatabaseHelper;
@@ -52,7 +50,7 @@ public class ConfigActivity extends AppCompatActivity {
 
         try {
             init();
-        }catch (Exception e){
+        } catch (Exception e) {
             callMethod.ErrorLog(e.getMessage());
         }
 
@@ -105,6 +103,7 @@ public class ConfigActivity extends AppCompatActivity {
         });
 
     }
+
     @Override
     public void onRestart() {
         finish();

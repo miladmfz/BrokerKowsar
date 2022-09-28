@@ -47,7 +47,8 @@ public class PrefactorActivity extends AppCompatActivity {
     TextView tv_lastfactor;
     Button btn_addfactor;
     Button btn_refresh;
-    String search_target="";
+    String search_target = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,7 +69,7 @@ public class PrefactorActivity extends AppCompatActivity {
             Handler handler = new Handler();
             handler.postDelayed(this::init, 100);
             handler.postDelayed(dialog1::dismiss, 1000);
-        }catch (Exception e){
+        } catch (Exception e) {
             callMethod.ErrorLog(e.getMessage());
         }
 
@@ -151,7 +152,7 @@ public class PrefactorActivity extends AppCompatActivity {
     }
 
 
-        @Override
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.options_menu, menu);
         BadgeCounter.hide(menu.findItem(R.id.bag_shop));
@@ -182,7 +183,7 @@ public class PrefactorActivity extends AppCompatActivity {
                     intent.putExtra("title", "جستجوی کالا");
 
                 } else {
-                    callMethod.showToast( "سبد خرید خالی می باشد");
+                    callMethod.showToast("سبد خرید خالی می باشد");
                     intent = new Intent(this, PrefactoropenActivity.class);
                 }
             }

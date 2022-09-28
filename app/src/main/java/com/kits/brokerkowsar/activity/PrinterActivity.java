@@ -39,7 +39,7 @@ import java.util.Set;
 
 public class PrinterActivity extends AppCompatActivity {
     CallMethod callMethod;
-    ArrayList<Good> goods=new ArrayList<>();
+    ArrayList<Good> goods = new ArrayList<>();
 
     //The columns of your printer. We only tried the Bixolon 300 and the Bixolon 200II, so there are the values.
     //private final int LINE_CHARS = 42 + 22; // Bixolon 300
@@ -219,7 +219,7 @@ public class PrinterActivity extends AppCompatActivity {
                             total_price_tv.setGravity(Gravity.RIGHT);
 
                             TextView phone_tv = new TextView(App.getContext());
-                            phone_tv.setText(NumberFunctions.PerisanNumber( callMethod.ReadString("PhoneNumber")+"\n تلفن سفارشات"));
+                            phone_tv.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PhoneNumber") + "\n تلفن سفارشات"));
                             phone_tv.setLayoutParams(new LinearLayoutCompat.LayoutParams(350, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
                             phone_tv.setTextSize(16);
                             phone_tv.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
@@ -295,7 +295,7 @@ public class PrinterActivity extends AppCompatActivity {
                                 good_amount_tv.setTextColor(getResources().getColor(R.color.colorPrimaryDark));
                                 good_amount_tv.setGravity(Gravity.CENTER);
 
-                                long tprice=  Integer.parseInt(gooddetail.getGoodFieldValue("FactorAmount")) * Integer.parseInt(gooddetail.getGoodFieldValue("Price"));
+                                long tprice = Integer.parseInt(gooddetail.getGoodFieldValue("FactorAmount")) * Integer.parseInt(gooddetail.getGoodFieldValue("Price"));
 
 
                                 TextView good_totalprice_tv = new TextView(App.getContext());
@@ -344,10 +344,10 @@ public class PrinterActivity extends AppCompatActivity {
                             main_layout.addView(good_layout);
                             main_layout.addView(total_layout);
 
-                            int i=(loadBitmapFromView(main_layout).getHeight()/500)+1;
+                            int i = (loadBitmapFromView(main_layout).getHeight() / 500) + 1;
 
-                            for(int g =0; g < i; g++){
-                                Bitmap btm=Bitmap.createBitmap(loadBitmapFromView(main_layout), 0,g*500,loadBitmapFromView(main_layout).getWidth(), 500);
+                            for (int g = 0; g < i; g++) {
+                                Bitmap btm = Bitmap.createBitmap(loadBitmapFromView(main_layout), 0, g * 500, loadBitmapFromView(main_layout).getWidth(), 500);
                                 bixolonPrinterApi.printBitmap(btm
                                         , BixolonPrinter.ALIGNMENT_CENTER
                                         , 400
@@ -359,7 +359,7 @@ public class PrinterActivity extends AppCompatActivity {
                             image_info.SaveImage_factor(loadBitmapFromView(main_layout), PreFac);
 
                         } catch (Exception e) {
-                            Log.e("test1",e.getMessage());
+                            Log.e("test1", e.getMessage());
                         }
                     }
                 };
@@ -384,7 +384,7 @@ public class PrinterActivity extends AppCompatActivity {
         Bundle data = getIntent().getExtras();
         assert data != null;
         PreFac = data.getString("PreFac");
-        Log.e("test_PreFac",PreFac);
+        Log.e("test_PreFac", PreFac);
     }
 
     private void updateScreenStatus(View viewToShow) {
@@ -685,9 +685,9 @@ public class PrinterActivity extends AppCompatActivity {
 
     public Bitmap loadBitmapFromView(View v) {
         v.measure(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
-        int x=500-(v.getMeasuredHeight()%500);
+        int x = 500 - (v.getMeasuredHeight() % 500);
 
-        Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight()+x, Bitmap.Config.ARGB_8888);
+        Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight() + x, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
         v.layout(0, 0, v.getMeasuredWidth(), v.getMeasuredHeight());
         v.draw(c);

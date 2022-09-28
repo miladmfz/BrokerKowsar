@@ -48,9 +48,9 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
 
     public SliderAdapter(ArrayList<Good> Goods, boolean zoom, Context context) {
 
-        this.mcontext=context;
-        this.goods=Goods;
-        this.image_zoom=zoom;
+        this.mcontext = context;
+        this.goods = Goods;
+        this.image_zoom = zoom;
         this.callMethod = new CallMethod(mcontext);
         image_info = new ImageInfo(mcontext);
         url = callMethod.ReadString("ServerURLUse");
@@ -66,8 +66,8 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
     }
 
     @Override
-    public void onBindViewHolder(final GoodViewHolder holder,final  int position) {
-         Good gooddetail=goods.get(position);
+    public void onBindViewHolder(final GoodViewHolder holder, final int position) {
+        Good gooddetail = goods.get(position);
 
 
         if (image_info.Image_exist(gooddetail.getGoodFieldValue("KsrImageCode"))) {
@@ -140,12 +140,13 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
         }
 
         holder.fl.setOnClickListener(v -> {
-            if(image_zoom) {
+            if (image_zoom) {
                 image_zome_view();
             }
         });
 
     }
+
     @Override
     public int getCount() {
         return goods.size();
@@ -166,12 +167,13 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
             this.itemView = itemView;
         }
     }
+
     public void image_zome_view() {
         final Dialog dialog = new Dialog(mcontext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);//title laye nadashte bashim
         dialog.setContentView(R.layout.image_zoom);
-        SliderView sliderView =  dialog.findViewById(R.id.imageSlider_zoom_view);
-        SliderAdapter adapter = new SliderAdapter(goods,false,mcontext);
+        SliderView sliderView = dialog.findViewById(R.id.imageSlider_zoom_view);
+        SliderAdapter adapter = new SliderAdapter(goods, false, mcontext);
         sliderView.setSliderAdapter(adapter);
         sliderView.setIndicatorAnimation(IndicatorAnimations.SCALE); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
         sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);

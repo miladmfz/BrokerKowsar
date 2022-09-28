@@ -107,23 +107,23 @@ public class Search_box {
 
     public void pro_c(String Goodtype) {
 
-        try{
+        try {
             Columns = dbh.GetColumns("", Goodtype, "3");
-        }catch (Exception E){
-            Log.e("test",E.getMessage());
+        } catch (Exception E) {
+            Log.e("test", E.getMessage());
 
         }
-        Log.e("test","0");
-        Log.e("test",Columns.size()+"");
+        Log.e("test", "0");
+        Log.e("test", Columns.size() + "");
 
         for (Column Column : Columns) {
-            Log.e("test","1");
+            Log.e("test", "1");
 
             Column.setSearch("");
-            Log.e("test","2");
+            Log.e("test", "2");
 
             if (Integer.parseInt(Column.getColumnFieldValue("SortOrder")) > 1) {
-                Log.e("test","3");
+                Log.e("test", "3");
 
                 layout_view.setOrientation(LinearLayoutCompat.VERTICAL);
                 LinearLayoutCompat layout_view_child = new LinearLayoutCompat(mContext);
@@ -161,7 +161,7 @@ public class Search_box {
 
             }
         }
-        Log.e("test","4");
+        Log.e("test", "4");
 
 
         btn_search = new MaterialButton(mContext);
@@ -192,30 +192,30 @@ public class Search_box {
                     }
                 }
             }
-            Where=" And Replace(Replace(GoodType,char(1740),char(1610)),char(1705),char(1603))= Replace(Replace('"+Goodtype+"',char(1740),char(1610)),char(1705),char(1603)) ";
+            Where = " And Replace(Replace(GoodType,char(1740),char(1610)),char(1705),char(1603))= Replace(Replace('" + Goodtype + "',char(1740),char(1610)),char(1705),char(1603)) ";
             for (Column Column : Columns) {
                 if (!Column.getColumnFieldValue("search").equals("")) {
-                    if(Column.getColumnType().equals("0")){
-                        if (!Column.getColumnName().equals("")){
+                    if (Column.getColumnType().equals("0")) {
+                        if (!Column.getColumnName().equals("")) {
                             if (!Column.getColumnFieldValue("columndefinition").equals(""))
                                 Where = Where + " And Replace(Replace(" + Column.getColumnFieldValue("columndefinition") + ",char(1740),char(1610)),char(1705),char(1603)) Like '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%'  ";
                             else
                                 Where = Where + " And Replace(Replace(" + Column.getColumnFieldValue("ColumnName") + ",char(1740),char(1610)),char(1705),char(1603)) Like '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%' ";
-                        }else{
-                            String search_condition= " Replace(Replace('%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%',char(1740),char(1610)),char(1705),char(1603)) ";
-                            Where = Where + " And " + Column.getColumnFieldValue("columndefinition") ;
-                            Where=Where.replace("SearchCondition",search_condition);
+                        } else {
+                            String search_condition = " Replace(Replace('%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%',char(1740),char(1610)),char(1705),char(1603)) ";
+                            Where = Where + " And " + Column.getColumnFieldValue("columndefinition");
+                            Where = Where.replace("SearchCondition", search_condition);
                         }
-                    }else{
-                        if (!Column.getColumnName().equals("")){
+                    } else {
+                        if (!Column.getColumnName().equals("")) {
                             if (!Column.getColumnFieldValue("columndefinition").equals(""))
                                 Where = Where + " And " + Column.getColumnFieldValue("columndefinition") + " Like '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%'  ";
                             else
                                 Where = Where + " And " + Column.getColumnFieldValue("ColumnName") + " Like '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%' ";
-                        }else{
-                            String search_condition= " '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%' ";
-                            Where = Where + " And " + Column.getColumnFieldValue("columndefinition") ;
-                            Where=Where.replace("SearchCondition",search_condition);
+                        } else {
+                            String search_condition = " '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%' ";
+                            Where = Where + " And " + Column.getColumnFieldValue("columndefinition");
+                            Where = Where.replace("SearchCondition", search_condition);
                         }
                     }
                 }

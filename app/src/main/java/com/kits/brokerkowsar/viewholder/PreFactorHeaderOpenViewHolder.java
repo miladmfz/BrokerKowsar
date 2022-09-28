@@ -1,24 +1,21 @@
 package com.kits.brokerkowsar.viewholder;
-;
 
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.CallMethod;
-import com.kits.brokerkowsar.model.GoodGroup;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.PreFactor;
 
 import java.text.DecimalFormat;
+
+;
 
 public class PreFactorHeaderOpenViewHolder extends RecyclerView.ViewHolder {
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
@@ -66,7 +63,7 @@ public class PreFactorHeaderOpenViewHolder extends RecyclerView.ViewHolder {
 
             final String prefactor_code = "PreFactorCode";
             callMethod.EditString(prefactor_code, preFactor.getPreFactorFieldValue("PreFactorCode"));
-            callMethod.showToast( "فاکتور مورد نظر انتخاب شد");
+            callMethod.showToast("فاکتور مورد نظر انتخاب شد");
             ((Activity) mContext).overridePendingTransition(0, 0);
             ((Activity) mContext).finish();
             ((Activity) mContext).overridePendingTransition(0, 0);

@@ -4,24 +4,16 @@ package com.kits.brokerkowsar.viewholder;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.activity.SearchActivity;
-import com.kits.brokerkowsar.application.CallMethod;
-import com.kits.brokerkowsar.model.Column;
-import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.GoodGroup;
 import com.kits.brokerkowsar.model.NumberFunctions;
-
-import java.util.ArrayList;
 
 public class GroupLabelViewHolder extends RecyclerView.ViewHolder {
 
@@ -38,14 +30,11 @@ public class GroupLabelViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-
-
-
-    public void bind(GoodGroup goodGroup,Context mContext){
+    public void bind(GoodGroup goodGroup, Context mContext) {
         grpname.setText(NumberFunctions.PerisanNumber(goodGroup.getGoodGroupFieldValue("Name")));
 
 
-        if (Integer.parseInt(goodGroup.getGoodGroupFieldValue("ChildNo"))>0) {
+        if (Integer.parseInt(goodGroup.getGoodGroupFieldValue("ChildNo")) > 0) {
             img.setVisibility(View.VISIBLE);
         } else
             img.setVisibility(View.GONE);
@@ -60,8 +49,6 @@ public class GroupLabelViewHolder extends RecyclerView.ViewHolder {
             mContext.startActivity(intent);
         });
     }
-
-
 
 
 }

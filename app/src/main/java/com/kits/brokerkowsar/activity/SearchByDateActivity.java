@@ -42,12 +42,12 @@ import java.util.Objects;
 public class SearchByDateActivity extends AppCompatActivity {
 
     CallMethod callMethod;
-    private ArrayList<Good>  Moregoods = new ArrayList<>();
+    private ArrayList<Good> Moregoods = new ArrayList<>();
 
     private final Integer conter = 0;
     private Integer grid;
     private String date;
-    public String PageMoreData="0";
+    public String PageMoreData = "0";
     private boolean loading = true;
     private String lastDate;
     ArrayList<String[]> Multi_buy = new ArrayList<>();
@@ -85,6 +85,7 @@ public class SearchByDateActivity extends AppCompatActivity {
 
 
     boolean defultenablesellprice;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +107,7 @@ public class SearchByDateActivity extends AppCompatActivity {
             Handler handler = new Handler();
             handler.postDelayed(this::init, 100);
             handler.postDelayed(dialog1::dismiss, 1000);
-        }catch (Exception e){
+        } catch (Exception e) {
             callMethod.ErrorLog(e.getMessage());
         }
 
@@ -148,28 +149,27 @@ public class SearchByDateActivity extends AppCompatActivity {
     public void init() {
 
 
-
         calendar1.setPersianDate(
                 calendar1.getPersianYear(),
                 calendar1.getPersianMonth(),
-                calendar1.getPersianDay()  - Integer.parseInt(date)
+                calendar1.getPersianDay() - Integer.parseInt(date)
         );
 
-        year="";
-        mount="0";
-        day="0";
+        year = "";
+        mount = "0";
+        day = "0";
 
-        year=year+calendar1.getPersianYear();
+        year = year + calendar1.getPersianYear();
 
-        if(String.valueOf(calendar1.getPersianMonth()).equals("11")){
-            mount="12";
-        }else if(String.valueOf(calendar1.getPersianMonth()).equals("00")){
-            mount="01";
-        }else{
-            mount=mount+(calendar1.getPersianMonth()+1);
+        if (String.valueOf(calendar1.getPersianMonth()).equals("11")) {
+            mount = "12";
+        } else if (String.valueOf(calendar1.getPersianMonth()).equals("00")) {
+            mount = "01";
+        } else {
+            mount = mount + (calendar1.getPersianMonth() + 1);
         }
-        day=day+(calendar1.getPersianDay());
-        lastDate = year+"/"+mount.substring(mount.length()-2)+"/"+day.substring(day.length()-2);
+        day = day + (calendar1.getPersianDay());
+        lastDate = year + "/" + mount.substring(mount.length() - 2) + "/" + day.substring(day.length() - 2);
 
 
         grid = Integer.parseInt(callMethod.ReadString("Grid"));
@@ -177,9 +177,8 @@ public class SearchByDateActivity extends AppCompatActivity {
         GetDataFromDataBase();
 
 
-
         btn_search.setOnClickListener(view -> {
-            calendar1=new PersianCalendar();
+            calendar1 = new PersianCalendar();
             if (!ed_search.getText().toString().equals("")) {
                 date = ed_search.getText().toString();
             } else {
@@ -189,29 +188,27 @@ public class SearchByDateActivity extends AppCompatActivity {
             calendar1.setPersianDate(
                     calendar1.getPersianYear(),
                     calendar1.getPersianMonth(),
-                    calendar1.getPersianDay()  - Integer.parseInt(date)
+                    calendar1.getPersianDay() - Integer.parseInt(date)
             );
 
-            year="";
-            mount="0";
-            day="0";
+            year = "";
+            mount = "0";
+            day = "0";
 
-            year=year+calendar1.getPersianYear();
+            year = year + calendar1.getPersianYear();
 
-            if(String.valueOf(calendar1.getPersianMonth()).equals("11")){
-                mount="12";
-            }else if(String.valueOf(calendar1.getPersianMonth()).equals("00")){
-                mount="01";
-            }else{
-                mount=mount+(calendar1.getPersianMonth()+1);
+            if (String.valueOf(calendar1.getPersianMonth()).equals("11")) {
+                mount = "12";
+            } else if (String.valueOf(calendar1.getPersianMonth()).equals("00")) {
+                mount = "01";
+            } else {
+                mount = mount + (calendar1.getPersianMonth() + 1);
             }
-            day=day+(calendar1.getPersianDay());
-            lastDate = year+"/"+mount.substring(mount.length()-2)+"/"+day.substring(day.length()-2);
+            day = day + (calendar1.getPersianDay());
+            lastDate = year + "/" + mount.substring(mount.length() - 2) + "/" + day.substring(day.length() - 2);
             GetDataFromDataBase();
 
         });
-
-
 
 
         if (callMethod.ReadBoolan("GoodAmount")) {
@@ -232,7 +229,7 @@ public class SearchByDateActivity extends AppCompatActivity {
             }
             if (conter == 0) {
                 goods.clear();
-                PageMoreData="0";
+                PageMoreData = "0";
                 GetDataFromDataBase();
             }
         });
@@ -247,26 +244,26 @@ public class SearchByDateActivity extends AppCompatActivity {
             final EditText unitratio_mlti = dialog.findViewById(R.id.box_multi_unitratio);
             final TextView tv = dialog.findViewById(R.id.box_multi_buy_factor);
 
-            String tempvalue="";
-            defultenablesellprice=false;
+            String tempvalue = "";
+            defultenablesellprice = false;
 
             for (Good good : Multi_Good) {
-                Good goodtempdata= dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
+                Good goodtempdata = dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
 
-                if (Multi_Good.get(0).equals(good)){
+                if (Multi_Good.get(0).equals(good)) {
                     tempvalue = goodtempdata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
                 }
 
-                if(!tempvalue.equals(goodtempdata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))))){
-                    defultenablesellprice=true;
+                if (!tempvalue.equals(goodtempdata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))))) {
+                    defultenablesellprice = true;
                 }
 
             }
 
-            if (defultenablesellprice){
+            if (defultenablesellprice) {
                 unitratio_mlti.setHint(NumberFunctions.PerisanNumber("بر اساس نرخ فروش"));
-            }else {
-                unitratio_mlti.setText(NumberFunctions.PerisanNumber( String.valueOf(100-Integer.parseInt(tempvalue.substring(0,tempvalue.length()-2)))));
+            } else {
+                unitratio_mlti.setText(NumberFunctions.PerisanNumber(String.valueOf(100 - Integer.parseInt(tempvalue.substring(0, tempvalue.length() - 2)))));
             }
 
             tv.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
@@ -282,23 +279,23 @@ public class SearchByDateActivity extends AppCompatActivity {
                 if (!AmountMulti.equals("")) {
                     if (Integer.parseInt(AmountMulti) != 0) {
                         for (Good good : Multi_Good) {
-                            Good gooddata= dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
+                            Good gooddata = dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
                             String temppercent = gooddata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
 
-                            if(unitratio_mlti.getText().toString().equals("")){
-                                temppercent=String.valueOf(100-Integer.parseInt(temppercent.substring(0,temppercent.length()-2)));
-                            }else{
-                                temppercent=NumberFunctions.EnglishNumber(unitratio_mlti.getText().toString());
+                            if (unitratio_mlti.getText().toString().equals("")) {
+                                temppercent = String.valueOf(100 - Integer.parseInt(temppercent.substring(0, temppercent.length() - 2)));
+                            } else {
+                                temppercent = NumberFunctions.EnglishNumber(unitratio_mlti.getText().toString());
                             }
-                            if (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"))>0){
-                                long Pricetemp=(long) Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"))-((long) Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) *Integer.parseInt(temppercent)/100);
+                            if (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) > 0) {
+                                long Pricetemp = (long) Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) - ((long) Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) * Integer.parseInt(temppercent) / 100);
                                 dbh.InsertPreFactorwithPercent(callMethod.ReadString("PreFactorCode"),
                                         good.getGoodFieldValue("GoodCode"),
                                         AmountMulti,
                                         String.valueOf(Pricetemp),
                                         "0");
 
-                            }else{
+                            } else {
                                 dbh.InsertPreFactor(callMethod.ReadString("PreFactorCode"),
                                         good.getGoodFieldValue("GoodCode"),
                                         AmountMulti,
@@ -306,7 +303,7 @@ public class SearchByDateActivity extends AppCompatActivity {
                                         "0");
                             }
                         }
-                        callMethod.showToast( "به سبد خرید اضافه شد");
+                        callMethod.showToast("به سبد خرید اضافه شد");
 
                         dialog.dismiss();
                         item_multi.findItem(R.id.menu_multi).setVisible(false);
@@ -314,7 +311,7 @@ public class SearchByDateActivity extends AppCompatActivity {
                             good.setCheck(false);
                         }
                         Multi_Good.clear();
-                        adapter = new GoodAdapter(goods,this);
+                        adapter = new GoodAdapter(goods, this);
                         adapter.multi_select = false;
                         gridLayoutManager = new GridLayoutManager(this, grid);
                         gridLayoutManager.scrollToPosition(pastVisiblesItems + 2);
@@ -335,7 +332,6 @@ public class SearchByDateActivity extends AppCompatActivity {
         });
 
 
-
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -345,9 +341,9 @@ public class SearchByDateActivity extends AppCompatActivity {
                     pastVisiblesItems = gridLayoutManager.findFirstVisibleItemPosition();
 
                     if (loading) {
-                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount-1) {
+                        if ((visibleItemCount + pastVisiblesItems) >= totalItemCount - 1) {
                             loading = false;
-                            PageMoreData=String.valueOf(Integer.parseInt(PageMoreData) + 1);
+                            PageMoreData = String.valueOf(Integer.parseInt(PageMoreData) + 1);
                             GetMoreDataFromDataBase();
                         }
                     }
@@ -377,7 +373,7 @@ public class SearchByDateActivity extends AppCompatActivity {
                 startActivity(intent);
 
             } else {
-                callMethod.showToast( "فاکتوری انتخاب نشده است");
+                callMethod.showToast("فاکتوری انتخاب نشده است");
             }
             return true;
         }
@@ -387,7 +383,7 @@ public class SearchByDateActivity extends AppCompatActivity {
                 good.setCheck(false);
             }
             Multi_buy.clear();
-            adapter = new GoodAdapter(goods,this);
+            adapter = new GoodAdapter(goods, this);
             adapter.multi_select = false;
 
             gridLayoutManager = new GridLayoutManager(this, grid);
@@ -404,12 +400,12 @@ public class SearchByDateActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void CallRecyclerView() {
-        adapter = new GoodAdapter(goods,this);
-        if (adapter.getItemCount()==0){
+        adapter = new GoodAdapter(goods, this);
+        if (adapter.getItemCount() == 0) {
             tvstatus.setText("کالایی یافت نشد");
             tvstatus.setVisibility(View.VISIBLE);
             lottieAnimationView.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             lottieAnimationView.setVisibility(View.GONE);
             tvstatus.setVisibility(View.GONE);
         }
@@ -421,39 +417,33 @@ public class SearchByDateActivity extends AppCompatActivity {
 
     public void GetDataFromDataBase() {
         Moregoods.clear();
-        Moregoods=dbh.getAllGood_ByDate(lastDate,PageMoreData);
-        if(goods.isEmpty()){
+        Moregoods = dbh.getAllGood_ByDate(lastDate, PageMoreData);
+        if (goods.isEmpty()) {
             goods.addAll(Moregoods);
         }
         CallRecyclerView();
     }
+
     @SuppressLint("NotifyDataSetChanged")
     public void GetMoreDataFromDataBase() {
-        loading=true;
+        loading = true;
         Moregoods.clear();
-        Moregoods=dbh.getAllGood_ByDate(lastDate,PageMoreData);
+        Moregoods = dbh.getAllGood_ByDate(lastDate, PageMoreData);
 
-        if(Moregoods.size()>0){
-            if(goods.isEmpty()){
+        if (Moregoods.size() > 0) {
+            if (goods.isEmpty()) {
                 goods.addAll(Moregoods);
             }
-            if(goods.size()>(Integer.parseInt(callMethod.ReadString("Grid"))*10)){
+            if (goods.size() > (Integer.parseInt(callMethod.ReadString("Grid")) * 10)) {
                 goods.addAll(Moregoods);
             }
             adapter.notifyDataSetChanged();
-        }else{
+        } else {
             callMethod.showToast("کالایی بیشتری یافت نشد");
-            PageMoreData=String.valueOf(Integer.parseInt(PageMoreData) -1);
+            PageMoreData = String.valueOf(Integer.parseInt(PageMoreData) - 1);
         }
 
     }
-
-
-
-
-
-
-
 
 
     public void good_select_function(Good good) {
@@ -473,6 +463,7 @@ public class SearchByDateActivity extends AppCompatActivity {
             }
         }
     }
+
     public void factorState() {
         if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
             tv_customer.setText("فاکتوری انتخاب نشده");
@@ -485,14 +476,11 @@ public class SearchByDateActivity extends AppCompatActivity {
     }
 
 
-
-
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         factorState();
         super.onWindowFocusChanged(hasFocus);
     }
-
 
 
 }

@@ -1,6 +1,5 @@
 package com.kits.brokerkowsar.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
@@ -17,7 +15,6 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.Action;
-import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.Replication;
 import com.kits.brokerkowsar.model.DatabaseHelper;
@@ -25,12 +22,7 @@ import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.UserInfo;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -59,6 +51,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private LinearLayoutCompat ll_dbname;
     boolean doubletouchdbanme = false;
     Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,7 +60,7 @@ public class RegistrationActivity extends AppCompatActivity {
         Config();
         try {
             init();
-        }catch (Exception e){
+        } catch (Exception e) {
             callMethod.ErrorLog(e.getMessage());
         }
 
@@ -116,7 +109,7 @@ public class RegistrationActivity extends AppCompatActivity {
         tv_dbname.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PersianCompanyNameUse")));
 
         tv_dbname.setOnClickListener(v -> {
-            if(doubletouchdbanme){
+            if (doubletouchdbanme) {
                 ll_dbname.setVisibility(View.VISIBLE);
             }
             doubletouchdbanme = true;
@@ -131,7 +124,8 @@ public class RegistrationActivity extends AppCompatActivity {
                         File databasedir = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse"));
                         deleteRecursive(databasedir);
                     })
-                    .setNegativeButton("خیر", (dialogInterface, i) -> {})
+                    .setNegativeButton("خیر", (dialogInterface, i) -> {
+                    })
                     .show();
         });
 
@@ -141,8 +135,8 @@ public class RegistrationActivity extends AppCompatActivity {
                     .setMessage("آیا نیازمند بارگیری مجدد اطلاعات هستید؟")
                     .setPositiveButton("بله", (dialogInterface, i) -> {
 
-                        File currentFile = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse")+"/KowsarDb.sqlite");
-                        File newFile = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse")+"/tempDb");
+                        File currentFile = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse") + "/KowsarDb.sqlite");
+                        File newFile = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse") + "/tempDb");
 
                         if (rename(currentFile, newFile)) {
                             callMethod.EditString("PersianCompanyNameUse", "");
@@ -156,7 +150,8 @@ public class RegistrationActivity extends AppCompatActivity {
                         }
 
                     })
-                    .setNegativeButton("خیر", (dialogInterface, i) -> {})
+                    .setNegativeButton("خیر", (dialogInterface, i) -> {
+                    })
                     .show();
         });
 
@@ -176,23 +171,22 @@ public class RegistrationActivity extends AppCompatActivity {
         sm_regselloff.setOnCheckedChangeListener((compoundButton, b) -> {
             if (Integer.parseInt(callMethod.ReadString("SellOff")) == 0) {
                 callMethod.EditString("SellOff", "1");
-                callMethod.showToast( "بله");
+                callMethod.showToast("بله");
             } else {
                 callMethod.EditString("SellOff", "0");
-                callMethod.showToast( "خیر");
+                callMethod.showToast("خیر");
             }
         });
-
 
 
         sm_autorep.setOnCheckedChangeListener((compoundButton, b) -> {
             if (callMethod.ReadBoolan("AutoReplication")) {
                 callMethod.EditBoolan("AutoReplication", false);
-                callMethod.showToast( "خیر");
+                callMethod.showToast("خیر");
 
             } else {
                 callMethod.EditBoolan("AutoReplication", true);
-                callMethod.showToast( "بله");
+                callMethod.showToast("بله");
             }
         });
 
@@ -227,7 +221,7 @@ public class RegistrationActivity extends AppCompatActivity {
             action.app_info();
             replication.DoingReplicate();
 
-        }else {
+        } else {
             finish();
         }
     }
@@ -247,6 +241,7 @@ public class RegistrationActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
+
     private boolean rename(File from, File to) {
         return Objects.requireNonNull(from.getParentFile()).exists() && from.exists() && from.renameTo(to);
     }

@@ -5,60 +5,51 @@ import static android.view.animation.Animation.RELATIVE_TO_SELF;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
 import android.view.View;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.activity.SearchActivity;
 import com.kits.brokerkowsar.model.Category;
 import com.kits.brokerkowsar.model.NumberFunctions;
-import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class CategoryViewHolder extends GroupViewHolder {
 
-    private final TextView textView ;
+    private final TextView textView;
     private final ImageView arrow;
     private final ImageView image;
 
 
     public CategoryViewHolder(View itemView) {
         super(itemView);
-        textView=itemView.findViewById(R.id.item1_tv);
-        arrow=itemView.findViewById(R.id.item1_img);
-        image=itemView.findViewById(R.id.item1_image);
+        textView = itemView.findViewById(R.id.item1_tv);
+        arrow = itemView.findViewById(R.id.item1_img);
+        image = itemView.findViewById(R.id.item1_image);
     }
 
-    public void bind (Category company){
+    public void bind(Category company) {
         textView.setText(NumberFunctions.PerisanNumber(company.getTitle()));
     }
-    public void bindimage (Bitmap myBitmap){
+
+    public void bindimage(Bitmap myBitmap) {
         image.setImageBitmap(myBitmap);
     }
 
-    public void hide (Category company){
+    public void hide(Category company) {
 
-        if(company.childno>0) {
+        if (company.childno > 0) {
             arrow.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             arrow.setVisibility(View.GONE);
         }
     }
 
 
-
-    public void intent(final Category company, final  Context mContext){
+    public void intent(final Category company, final Context mContext) {
 
 
         textView.setOnClickListener(v -> {

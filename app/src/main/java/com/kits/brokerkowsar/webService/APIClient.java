@@ -13,7 +13,7 @@ public class APIClient {
     public static String apiBaseUrl = "";
 
     public static Retrofit getCleint(String BASE_URL) {
-        apiBaseUrl=BASE_URL;
+        apiBaseUrl = BASE_URL;
         if (retrofit == null) {
 
             retrofit = new Retrofit.Builder()
@@ -21,13 +21,13 @@ public class APIClient {
                     .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create()))
                     .build();
         } else {
-        if (!retrofit.baseUrl().equals(BASE_URL)) {
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(BASE_URL)
-                    .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create()))
-                    .build();
+            if (!retrofit.baseUrl().equals(BASE_URL)) {
+                retrofit = new Retrofit.Builder()
+                        .baseUrl(BASE_URL)
+                        .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create()))
+                        .build();
+            }
         }
-    }
         return retrofit;
     }
 

@@ -1,43 +1,38 @@
 package com.kits.brokerkowsar.activity;
 
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Handler;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Handler;
-
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.adapters.ProductAdapter;
 import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.model.Category;
-import com.kits.brokerkowsar.model.Product;
-import com.kits.brokerkowsar.adapters.ProductAdapter;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.GoodGroup;
+import com.kits.brokerkowsar.model.Product;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
-
 import java.util.ArrayList;
-
 
 
 public class AllViewActivity extends AppCompatActivity {
 
 
     APIInterface apiInterface;
-
     CallMethod callMethod;
     DatabaseHelper dbh;
     Toolbar toolbar;
-
-
-    ArrayList<Category> categories=new ArrayList<>();
+    ArrayList<Category> categories = new ArrayList<>();
     RecyclerView rc;
-    Category category ;
+    Category category;
 
 
     @Override
@@ -51,13 +46,12 @@ public class AllViewActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 handler.postDelayed(this::init, 100);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             callMethod.ErrorLog(e.getMessage());
         }
 
 
     }
-
 
 
     public void Config() {
@@ -73,12 +67,10 @@ public class AllViewActivity extends AppCompatActivity {
     }
 
 
-
     public void init() {
 
 
         categories = new ArrayList<>();
-
 
 
         ArrayList<GoodGroup> groupsHeader = dbh.getAllGroups("0");
@@ -103,16 +95,12 @@ public class AllViewActivity extends AppCompatActivity {
         }
 
 
-
-    ProductAdapter adapter = new ProductAdapter(categories, App.getContext());
-    rc.setAdapter(adapter);
-    rc.setLayoutManager(new LinearLayoutManager(this));
-
+        ProductAdapter adapter = new ProductAdapter(categories, App.getContext());
+        rc.setAdapter(adapter);
+        rc.setLayoutManager(new LinearLayoutManager(this));
 
 
     }
-
-
 
 
 }

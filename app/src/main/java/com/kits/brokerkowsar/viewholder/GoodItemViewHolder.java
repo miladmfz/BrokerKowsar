@@ -1,4 +1,5 @@
 package com.kits.brokerkowsar.viewholder;
+
 ;
 
 import android.content.Context;
@@ -54,8 +55,7 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
     }
 
 
-
-    public void bind(ArrayList<Column> Columns,Good good,Context mContext,CallMethod callMethod){
+    public void bind(ArrayList<Column> Columns, Good good, Context mContext, CallMethod callMethod) {
         mainline.removeAllViews();
 
         for (Column Column : Columns) {
@@ -69,26 +69,26 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
                 extra_TextView.setTextColor(mContext.getColor(R.color.grey_1000));
 
                 try {
-                    if(Integer.parseInt(good.getGoodFieldValue(Column.getColumnFieldValue("columnname")))>999) {
+                    if (Integer.parseInt(good.getGoodFieldValue(Column.getColumnFieldValue("columnname"))) > 999) {
                         extra_TextView.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(good.getGoodFieldValue(Column.getColumnFieldValue("columnname"))))));
-                    }else {
+                    } else {
                         extra_TextView.setText(NumberFunctions.PerisanNumber(good.getGoodFieldValue(Column.getColumnFieldValue("columnname"))));
                     }
-                }catch (Exception e){
+                } catch (Exception e) {
                     extra_TextView.setText(NumberFunctions.PerisanNumber(good.getGoodFieldValue(Column.getColumnFieldValue("columnname"))));
                 }
 
                 if (Column.getSortOrder().equals("2")) {
                     extra_TextView.setLines(3);
-                    if (extra_TextView.getText().toString().length()>50){
-                        String lowText=extra_TextView.getText().toString().substring(0,50)+"...";
+                    if (extra_TextView.getText().toString().length() > 50) {
+                        String lowText = extra_TextView.getText().toString().substring(0, 50) + "...";
                         extra_TextView.setText(lowText);
                     }
                 }
 
                 if (Column.getSortOrder().equals("3")) {
-                    if (extra_TextView.getText().toString().length()>30){
-                        String lowText=extra_TextView.getText().toString().substring(0,30)+"...";
+                    if (extra_TextView.getText().toString().length() > 30) {
+                        String lowText = extra_TextView.getText().toString().substring(0, 30) + "...";
                         extra_TextView.setText(lowText);
                     }
                     extra_TextView.setTextSize(14);
@@ -98,16 +98,13 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
 
                 if (Column.getColumnName().equals("MaxSellPrice")) {
 
-                    extra_TextView.setTextColor(getcolorresource("3",mContext));
+                    extra_TextView.setTextColor(getcolorresource("3", mContext));
                 }
 
 
                 mainline.addView(extra_TextView);
             }
         }
-
-
-
 
 
     }
@@ -118,10 +115,9 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
             , CallMethod callMethod
             , Action action
             , ImageInfo imageInfo
-            , boolean multi_select)
-    {
+            , boolean multi_select) {
 
-        this.multi_select1=multi_select;
+        this.multi_select1 = multi_select;
 
 
         if (imageInfo.Image_exist(good.getGoodFieldValue("KsrImageCode"))) {
@@ -139,8 +135,6 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
             img.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length), BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getWidth() * 2, BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getHeight() * 2, false));
 
         }
-
-
 
 
         rltv.setOnClickListener(v -> {
@@ -240,53 +234,48 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
         });
 
 
-
-
-
-
     }
 
 
-    public int getcolorresource(String colortarget,Context mContext) {
+    public int getcolorresource(String colortarget, Context mContext) {
         int intcolor;
-        switch(colortarget)
-        {
+        switch (colortarget) {
             case ("2"):
-                intcolor=mContext.getColor(R.color.colorAccent);
+                intcolor = mContext.getColor(R.color.colorAccent);
                 break;
             case ("3"):
-                intcolor=mContext.getColor(R.color.color_red);
+                intcolor = mContext.getColor(R.color.color_red);
                 break;
             case ("4"):
-                intcolor=mContext.getColor(R.color.color_sky);
+                intcolor = mContext.getColor(R.color.color_sky);
                 break;
             case ("5"):
-                intcolor=mContext.getColor(R.color.color_green);
+                intcolor = mContext.getColor(R.color.color_green);
                 break;
             case ("6"):
-                intcolor=mContext.getColor(R.color.color_yellow);
+                intcolor = mContext.getColor(R.color.color_yellow);
                 break;
             case ("7"):
-                intcolor=mContext.getColor(R.color.color_pink);
+                intcolor = mContext.getColor(R.color.color_pink);
                 break;
             case ("8"):
-                intcolor=mContext.getColor(R.color.color_indigo);
+                intcolor = mContext.getColor(R.color.color_indigo);
                 break;
             case ("9"):
-                intcolor=mContext.getColor(R.color.color_brown);
+                intcolor = mContext.getColor(R.color.color_brown);
                 break;
             case ("10"):
-                intcolor=mContext.getColor(R.color.color_purple);
+                intcolor = mContext.getColor(R.color.color_purple);
                 break;
             case ("11"):
-                intcolor=mContext.getColor(R.color.color_blue);
+                intcolor = mContext.getColor(R.color.color_blue);
                 break;
             case ("12"):
-                intcolor=mContext.getColor(R.color.color_orange);
+                intcolor = mContext.getColor(R.color.color_orange);
                 break;
 
             default:
-                intcolor=mContext.getColor(R.color.color_black);
+                intcolor = mContext.getColor(R.color.color_black);
 
                 break;
         }

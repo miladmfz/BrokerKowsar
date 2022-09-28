@@ -2,12 +2,16 @@ package com.kits.brokerkowsar.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class  TableDetail {
+public class TableDetail {
 
-    @SerializedName("cid")  private int cid;
-    @SerializedName("name")  private String name;
-    @SerializedName("type")  private String type;
-    @SerializedName("Text")  private String Text;
+    @SerializedName("cid")
+    private int cid;
+    @SerializedName("name")
+    private String name;
+    @SerializedName("type")
+    private String type;
+    @SerializedName("Text")
+    private String Text;
 
     public int getCid() {
         return cid;
