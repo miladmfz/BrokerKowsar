@@ -43,7 +43,7 @@
             android:background="@color/white">
 
             <Button
-                android:id="@+id/config_to_reg"
+                android:id="@+id/config_btn_to_reg"
                 android:layout_margin="5dp"
                 android:layout_width="match_parent"
                 android:text="@string/config_change"

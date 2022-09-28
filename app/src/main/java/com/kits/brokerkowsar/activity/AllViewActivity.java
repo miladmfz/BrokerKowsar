@@ -40,6 +40,7 @@ public class AllViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_view);
 
+
         Config();
         try {
             Handler handler = new Handler();

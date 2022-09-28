@@ -9,20 +9,18 @@ import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.juanlabrador.badgecounter.BadgeCounter;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.adapters.PreFactorHeaderAdapter;
 import com.kits.brokerkowsar.application.CallMethod;
+import com.kits.brokerkowsar.databinding.ActivityPrefactorBinding;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.PreFactor;
@@ -37,22 +35,22 @@ public class PrefactorActivity extends AppCompatActivity {
     private Intent intent;
     private Handler handler;
 
-    private EditText edtsearch;
     private ArrayList<PreFactor> preFactors = new ArrayList<>();
     private DatabaseHelper dbh;
-    private RecyclerView recyclerView;
     PreFactorHeaderAdapter adapter;
     GridLayoutManager gridLayoutManager;
     CallMethod callMethod;
-    TextView tv_lastfactor;
-    Button btn_addfactor;
-    Button btn_refresh;
+
     String search_target = "";
+
+    ActivityPrefactorBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_prefactor);
+
+        binding = ActivityPrefactorBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
 
         final Dialog dialog1;
@@ -88,27 +86,21 @@ public class PrefactorActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.PrefactorActivity_toolbar);
         setSupportActionBar(toolbar);
 
-        edtsearch = findViewById(R.id.PrefactorActivity_edtsearch);
-        tv_lastfactor = findViewById(R.id.PrefactorActivity_lastfactor);
-        btn_addfactor = findViewById(R.id.PrefactorActivity_addfactor);
-        btn_refresh = findViewById(R.id.PrefactorActivity_refresh);
-        recyclerView = findViewById(R.id.PrefactorActivity_recyclerView);
-
 
     }
 
     public void init() {
 
 
-        tv_lastfactor.setText(NumberFunctions.PerisanNumber(String.valueOf(pfcode)));
+        binding.PrefactorActivityLastfactor.setText(NumberFunctions.PerisanNumber(String.valueOf(pfcode)));
         callfactor();
 
-        btn_refresh.setOnClickListener(view -> {
+        binding.PrefactorActivityRefresh.setOnClickListener(view -> {
             finish();
             startActivity(getIntent());
         });
 
-        edtsearch.addTextChangedListener(
+        binding.PrefactorActivityEdtsearch.addTextChangedListener(
                 new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -125,11 +117,11 @@ public class PrefactorActivity extends AppCompatActivity {
                             search_target = NumberFunctions.EnglishNumber(editable.toString());
                             callfactor();
                         }, Integer.parseInt(callMethod.ReadString("Delay")));
-                        handler.postDelayed(() -> edtsearch.selectAll(), 5000);
+                        handler.postDelayed(() -> binding.PrefactorActivityEdtsearch.selectAll(), 5000);
                     }
                 });
 
-        btn_addfactor.setOnClickListener(view -> {
+        binding.PrefactorActivityAddfactor.setOnClickListener(view -> {
             intent = new Intent(this, CustomerActivity.class);
             intent.putExtra("edit", "0");
             intent.putExtra("factor_code", "0");
@@ -146,9 +138,9 @@ public class PrefactorActivity extends AppCompatActivity {
         preFactors = dbh.getAllPrefactorHeader(search_target);
         adapter = new PreFactorHeaderAdapter(preFactors, this);
         gridLayoutManager = new GridLayoutManager(this, 1);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        binding.PrefactorActivityRecyclerView.setLayoutManager(gridLayoutManager);
+        binding.PrefactorActivityRecyclerView.setAdapter(adapter);
+        binding.PrefactorActivityRecyclerView.setItemAnimator(new DefaultItemAnimator());
     }
 
 

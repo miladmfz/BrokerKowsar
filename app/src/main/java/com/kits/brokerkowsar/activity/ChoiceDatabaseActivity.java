@@ -21,6 +21,7 @@ import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
+import com.kits.brokerkowsar.databinding.ActivityChoiceDatabaseBinding;
 import com.kits.brokerkowsar.model.Activation;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.NumberFunctions;
@@ -30,6 +31,7 @@ import com.kits.brokerkowsar.webService.APIInterface;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,20 +46,22 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     DatabaseHelper dbhbase;
     TextView tv_rep;
     TextView tv_step;
-    TextView tv_versionname;
     Dialog dialog;
     ArrayList<Activation> activations;
-    LinearLayoutCompat active_line;
-    TextView active_edt;
-    Button active_btn;
     Button btn_prog;
     Intent intent;
     int downloadId;
 
+
+    ActivityChoiceDatabaseBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_choice_database);
+
+        binding = ActivityChoiceDatabaseBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
         Config();
 
         try {
@@ -76,15 +80,11 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         dialog = new Dialog(this);
         activation = new Activation();
         dbhbase = new DatabaseHelper(App.getContext(), "/data/data/com.kits.brokerkowsar/databases/KowsarDb.sqlite");
-        active_line = findViewById(R.id.activition_line);
-        active_edt = findViewById(R.id.activition_edittext);
-        active_btn = findViewById(R.id.activition_btn);
+
         dialog.setContentView(R.layout.rep_prog);
         tv_rep = dialog.findViewById(R.id.rep_prog_text);
         tv_step = dialog.findViewById(R.id.rep_prog_step);
         btn_prog = dialog.findViewById(R.id.rep_prog_btn);
-        tv_versionname = findViewById(R.id.activition_Version);
-
 
     }
 
@@ -92,15 +92,15 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     public void init() {
         activations = dbhbase.getActivation();
 
-        tv_versionname.setText(NumberFunctions.PerisanNumber("نسخه نرم افزار : " + BuildConfig.VERSION_NAME));
+        binding.activitionVersion.setText(NumberFunctions.PerisanNumber("نسخه نرم افزار : " + BuildConfig.VERSION_NAME));
         for (Activation singleactive : activations) {
             CreateView(singleactive);
         }
 
 
-        active_btn.setOnClickListener(v -> {
+        binding.activitionBtn.setOnClickListener(v -> {
 
-            Call<RetrofitResponse> call1 = apiInterface.Activation("ActivationCode", active_edt.getText().toString());
+            Call<RetrofitResponse> call1 = apiInterface.Activation("ActivationCode", Objects.requireNonNull(binding.activitionEdittext.getText()).toString());
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
@@ -324,7 +324,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         ll_main.addView(ll_tv);
 
 
-        active_line.addView(ll_main, margin_10);
+        binding.activitionLine.addView(ll_main, margin_10);
     }
 
 

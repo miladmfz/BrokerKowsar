@@ -21,8 +21,6 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -38,6 +36,7 @@ import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.Replication;
 import com.kits.brokerkowsar.application.WManager;
+import com.kits.brokerkowsar.databinding.ActivityMainBinding;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.GoodGroup;
 import com.kits.brokerkowsar.model.NumberFunctions;
@@ -45,7 +44,6 @@ import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.kits.brokerkowsar.model.UserInfo;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
-
 
 import org.jetbrains.annotations.NotNull;
 
@@ -69,30 +67,26 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     private Replication replication;
     DatabaseHelper dbh;
     ArrayList<GoodGroup> menugrp;
-    LinearLayoutCompat llsumfactor;
-    Toolbar toolbar;
     NavigationView navigationView;
+
     TextView tv_versionname;
     TextView tv_dbname;
     TextView tv_brokercode;
     Button btn_changedb;
-    TextView customer;
-    TextView sumfac;
-    Button create_factor;
-    Button good_search;
-    Button open_factor;
-    Button all_factor;
-
-    Button btn_test;
-    TextView tv_test;
 
 
     WorkManager workManager;
 
+    ActivityMainBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_nav);
+
+
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
+
 
         Config();
         try {
@@ -116,7 +110,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
         LocationListener mLocationListener = location -> {
 
-            tv_test.setText("lati=" + location.getLatitude() + "\nlong=" + location.getLongitude());
+            binding.mainactivityTestTv.setText("lati=" + location.getLatitude() + "\nlong=" + location.getLongitude());
             Call<RetrofitResponse> call1 = apiInterface.Location(
                     "Location",
                     String.valueOf(location.getLongitude()),
@@ -158,14 +152,15 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         replication = new Replication(this);
         dbh.ClearSearchColumn();
 
-        toolbar = findViewById(R.id.NavActivity_toolbar);
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
 
-        setSupportActionBar(toolbar);
+        setSupportActionBar(binding.MainActivityToolbar);
         DrawerLayout drawer = findViewById(R.id.NavActivity_drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, binding.MainActivityToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+
         navigationView = findViewById(R.id.NavActivity_nav);
         navigationView.setNavigationItemSelectedListener(this);
         View hView = navigationView.getHeaderView(0);
@@ -173,19 +168,6 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         tv_dbname = hView.findViewById(R.id.header_dbname);
         tv_brokercode = hView.findViewById(R.id.header_brokercode);
         btn_changedb = hView.findViewById(R.id.header_changedb);
-        btn_changedb = hView.findViewById(R.id.header_changedb);
-
-        customer = findViewById(R.id.MainActivity_customer);
-        sumfac = findViewById(R.id.MainActivity_sum_factor);
-        create_factor = findViewById(R.id.mainactivity_create_factor);
-        good_search = findViewById(R.id.mainactivity_good_search);
-        open_factor = findViewById(R.id.mainactivity_open_factor);
-        all_factor = findViewById(R.id.mainactivity_all_factor);
-        btn_test = findViewById(R.id.mainactivity_test_btn);
-        tv_test = findViewById(R.id.mainactivity_test_tv);
-
-        llsumfactor = findViewById(R.id.MainActivity_ll_sum_factor);
-
 
     }
 
@@ -263,7 +245,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
         tv_versionname.setText(NumberFunctions.PerisanNumber(BuildConfig.VERSION_NAME));
         tv_dbname.setText(callMethod.ReadString("PersianCompanyNameUse"));
-        toolbar.setTitle(callMethod.ReadString("PersianCompanyNameUse"));
+        binding.MainActivityToolbar.setTitle(callMethod.ReadString("PersianCompanyNameUse"));
         menugrp = dbh.getmenuGroups();
 
 
@@ -284,13 +266,12 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
 
         if (callMethod.ReadString("PersianCompanyNameUse").equals("اصلی")) {
-            btn_test.setVisibility(View.VISIBLE);
-            tv_test.setVisibility(View.VISIBLE);
-            //dbh.SaveConfig("BrokerStack","1");
+            binding.mainactivityTestBtn.setVisibility(View.VISIBLE);
+            binding.mainactivityTestTv.setVisibility(View.VISIBLE);
         }
 
 
-        create_factor.setOnClickListener(view -> {
+        binding.mainactivityCreateFactor.setOnClickListener(view -> {
             intent = new Intent(this, CustomerActivity.class);
             intent.putExtra("edit", "0");
             intent.putExtra("id", "0");
@@ -299,7 +280,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         });
 
 
-        good_search.setOnClickListener(view -> {
+        binding.mainactivityGoodSearch.setOnClickListener(view -> {
             intent = new Intent(this, SearchActivity.class);
             intent.putExtra("scan", "");
             intent.putExtra("id", "0");
@@ -307,13 +288,13 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             startActivity(intent);
         });
 
-        open_factor.setOnClickListener(view -> {
+        binding.mainactivityOpenFactor.setOnClickListener(view -> {
             intent = new Intent(this, PrefactoropenActivity.class);
             intent.putExtra("fac", "1");
             startActivity(intent);
         });
 
-        all_factor.setOnClickListener(view -> {
+        binding.mainactivityAllFactor.setOnClickListener(view -> {
             intent = new Intent(this, PrefactorActivity.class);
             startActivity(intent);
         });
@@ -441,12 +422,12 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
     public void factorState() {
         if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
-            customer.setText("فاکتوری انتخاب نشده");
-            llsumfactor.setVisibility(View.GONE);
+            binding.MainActivityCustomer.setText("فاکتوری انتخاب نشده");
+            binding.mainactivityAllFactor.setVisibility(View.GONE);
         } else {
-            llsumfactor.setVisibility(View.VISIBLE);
-            customer.setText(NumberFunctions.PerisanNumber(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode"))));
-            sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorCode"))))));
+            binding.mainactivityAllFactor.setVisibility(View.VISIBLE);
+            binding.MainActivityCustomer.setText(NumberFunctions.PerisanNumber(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode"))));
+            binding.MainActivitySumFactor.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorCode"))))));
         }
     }
 

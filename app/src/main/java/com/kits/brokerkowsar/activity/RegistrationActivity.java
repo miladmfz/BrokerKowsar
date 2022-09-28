@@ -5,18 +5,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.LinearLayoutCompat;
 
-import com.google.android.material.switchmaterial.SwitchMaterial;
-import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.Replication;
+import com.kits.brokerkowsar.databinding.ActivityRegistrationBinding;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.UserInfo;
@@ -31,31 +26,17 @@ public class RegistrationActivity extends AppCompatActivity {
     CallMethod callMethod;
     Action action;
     Replication replication;
-    SwitchMaterial sm_regselloff;
-    SwitchMaterial sm_autorep;
-    Button btn_register;
     UserInfo auser;
-
-
-    private EditText ed_reg_borker;
-    private EditText ed_reg_grid;
-    private EditText ed_reg_delay;
-    private EditText ed_reg_itemamount;
-    private EditText ed_reg_titlesize;
-    private EditText ed_reg_bodysize;
-    private EditText ed_reg_phonenumber;
-    private TextView tv_dbname;
-    private Button btn_totaldelete;
-    private Button btn_basedelete;
-    private Button btn_repcol;
-    private LinearLayoutCompat ll_dbname;
     boolean doubletouchdbanme = false;
     Intent intent;
+    ActivityRegistrationBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registration);
+
+        binding = ActivityRegistrationBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         Config();
         try {
@@ -75,48 +56,30 @@ public class RegistrationActivity extends AppCompatActivity {
         replication = new Replication(this);
         action = new Action(this);
 
-        btn_register = findViewById(R.id.registr_btn);
-        btn_totaldelete = findViewById(R.id.registr_totaldelete);
-        btn_basedelete = findViewById(R.id.registr_basedelete);
-        btn_repcol = findViewById(R.id.registr_replicationcolumn);
-
-        ed_reg_borker = findViewById(R.id.registr_borker);
-        ed_reg_grid = findViewById(R.id.registr_grid);
-        ed_reg_delay = findViewById(R.id.registr_delay);
-        ed_reg_titlesize = findViewById(R.id.registr_titlesize);
-        ed_reg_bodysize = findViewById(R.id.registr_bodysize);
-        ed_reg_itemamount = findViewById(R.id.registr_itemamount);
-        ed_reg_phonenumber = findViewById(R.id.registr_phonenumber);
-
-        tv_dbname = findViewById(R.id.registr_dbname);
-        ll_dbname = findViewById(R.id.registr_line_manage);
-
-        sm_regselloff = findViewById(R.id.registr_selloff);
-        sm_autorep = findViewById(R.id.registr_autorep);
     }
 
     public void init() {
 
         auser = dbh.LoadPersonalInfo();
 
-        ed_reg_borker.setText(NumberFunctions.PerisanNumber(auser.getBrokerCode()));
-        ed_reg_grid.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Grid")));
-        ed_reg_delay.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Delay")));
-        ed_reg_itemamount.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("ItemAmount")));
-        ed_reg_titlesize.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("TitleSize")));
-        ed_reg_bodysize.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("BodySize")));
-        ed_reg_phonenumber.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PhoneNumber")));
-        tv_dbname.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PersianCompanyNameUse")));
+        binding.registrBroker.setText(NumberFunctions.PerisanNumber(auser.getBrokerCode()));
+        binding.registrGrid.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Grid")));
+        binding.registrDelay.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Delay")));
+        binding.registrItemamount.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("ItemAmount")));
+        binding.registrTitlesize.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("TitleSize")));
+        binding.registrBodysize.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("BodySize")));
+        binding.registrPhonenumber.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PhoneNumber")));
+        binding.registrDbname.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PersianCompanyNameUse")));
 
-        tv_dbname.setOnClickListener(v -> {
+        binding.registrDbname.setOnClickListener(v -> {
             if (doubletouchdbanme) {
-                ll_dbname.setVisibility(View.VISIBLE);
+                binding.registrLineManage.setVisibility(View.VISIBLE);
             }
             doubletouchdbanme = true;
             new Handler().postDelayed(() -> doubletouchdbanme = false, 1000);
         });
 
-        btn_totaldelete.setOnClickListener(v -> {
+        binding.registrTotaldelete.setOnClickListener(v -> {
             new android.app.AlertDialog.Builder(this)
                     .setTitle("توجه")
                     .setMessage("آیا اطلاعات نرم افزار به صورت کلی حذف شود؟")
@@ -129,7 +92,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     .show();
         });
 
-        btn_basedelete.setOnClickListener(v -> {
+        binding.registrBasedelete.setOnClickListener(v -> {
             new android.app.AlertDialog.Builder(this)
                     .setTitle("توجه")
                     .setMessage("آیا نیازمند بارگیری مجدد اطلاعات هستید؟")
@@ -155,7 +118,7 @@ public class RegistrationActivity extends AppCompatActivity {
                     .show();
         });
 
-        btn_repcol.setOnClickListener(v -> {
+        binding.registrReplicationcolumn.setOnClickListener(v -> {
             dbh.deleteColumn();
             replication.GoodTypeReplication();
             replication.MenuBroker();
@@ -164,11 +127,11 @@ public class RegistrationActivity extends AppCompatActivity {
         });
 
 
-        sm_regselloff.setChecked(Integer.parseInt(callMethod.ReadString("SellOff")) != 0);
-        sm_autorep.setChecked(callMethod.ReadBoolan("AutoReplication"));
+        binding.registrSelloff.setChecked(Integer.parseInt(callMethod.ReadString("SellOff")) != 0);
+        binding.registrAutorep.setChecked(callMethod.ReadBoolan("AutoReplication"));
 
 
-        sm_regselloff.setOnCheckedChangeListener((compoundButton, b) -> {
+        binding.registrSelloff.setOnCheckedChangeListener((compoundButton, b) -> {
             if (Integer.parseInt(callMethod.ReadString("SellOff")) == 0) {
                 callMethod.EditString("SellOff", "1");
                 callMethod.showToast("بله");
@@ -179,7 +142,7 @@ public class RegistrationActivity extends AppCompatActivity {
         });
 
 
-        sm_autorep.setOnCheckedChangeListener((compoundButton, b) -> {
+        binding.registrAutorep.setOnCheckedChangeListener((compoundButton, b) -> {
             if (callMethod.ReadBoolan("AutoReplication")) {
                 callMethod.EditBoolan("AutoReplication", false);
                 callMethod.showToast("خیر");
@@ -191,14 +154,15 @@ public class RegistrationActivity extends AppCompatActivity {
         });
 
 
-        btn_register.setOnClickListener(view -> {
-            callMethod.EditString("Grid", NumberFunctions.EnglishNumber(ed_reg_grid.getText().toString()));
-            callMethod.EditString("Delay", NumberFunctions.EnglishNumber(ed_reg_delay.getText().toString()));
-            callMethod.EditString("ItemAmount", NumberFunctions.EnglishNumber(ed_reg_itemamount.getText().toString()));
-            callMethod.EditString("TitleSize", NumberFunctions.EnglishNumber(ed_reg_titlesize.getText().toString()));
-            callMethod.EditString("BodySize", NumberFunctions.EnglishNumber(ed_reg_bodysize.getText().toString()));
-            callMethod.EditString("PhoneNumber", NumberFunctions.EnglishNumber(ed_reg_phonenumber.getText().toString()));
+        binding.registrBtn.setOnClickListener(view -> {
+            callMethod.EditString("Grid", NumberFunctions.EnglishNumber(binding.registrGrid.getText().toString()));
+            callMethod.EditString("Delay", NumberFunctions.EnglishNumber(binding.registrDelay.getText().toString()));
+            callMethod.EditString("ItemAmount", NumberFunctions.EnglishNumber(binding.registrItemamount.getText().toString()));
+            callMethod.EditString("TitleSize", NumberFunctions.EnglishNumber(binding.registrTitlesize.getText().toString()));
+            callMethod.EditString("BodySize", NumberFunctions.EnglishNumber(binding.registrBodysize.getText().toString()));
+            callMethod.EditString("PhoneNumber", NumberFunctions.EnglishNumber(binding.registrPhonenumber.getText().toString()));
             Registration();
+
 
         });
 
@@ -209,9 +173,9 @@ public class RegistrationActivity extends AppCompatActivity {
     public void Registration() {
 
 
-        if (!auser.getBrokerCode().equals(ed_reg_borker.getText().toString())) {
+        if (!auser.getBrokerCode().equals(binding.registrBroker.getText().toString())) {
             UserInfo UserInfoNew = new UserInfo();
-            UserInfoNew.setBrokerCode(NumberFunctions.EnglishNumber(ed_reg_borker.getText().toString()));
+            UserInfoNew.setBrokerCode(NumberFunctions.EnglishNumber(binding.registrBroker.getText().toString()));
             dbh.SavePersonalInfo(UserInfoNew);
 
             dbh.ExecQuery("delete from customer");

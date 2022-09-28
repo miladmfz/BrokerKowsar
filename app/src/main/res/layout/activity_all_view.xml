@@ -5,7 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layoutDirection="rtl">
+    android:layoutDirection="rtl"
+    tools:viewBindingIgnore="true"
+    tools:context=".activity.AllViewActivity"
+
+    >
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/GrpActivity_appbar"

@@ -5,18 +5,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.Window;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.adapters.PreFactorHeaderOpenAdapter;
 import com.kits.brokerkowsar.adapters.PreFactorHeaderAdapter;
+import com.kits.brokerkowsar.adapters.PreFactorHeaderOpenAdapter;
 import com.kits.brokerkowsar.application.CallMethod;
+import com.kits.brokerkowsar.databinding.ActivityPrefactoropenBinding;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.PreFactor;
@@ -31,20 +30,18 @@ public class PrefactoropenActivity extends AppCompatActivity {
     DatabaseHelper dbh;
     private String fac;
     private Intent intent;
-    RecyclerView recyclerView;
     GridLayoutManager gridLayoutManager;
     CallMethod callMethod;
     ArrayList<PreFactor> preFactors;
-    Button btn_addfactor;
-    Button btn_refresh;
-    Button btn_dltempty;
-    TextView tv_prefactorcount;
 
+
+    ActivityPrefactoropenBinding binding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_prefactoropen);
 
+        binding = ActivityPrefactoropenBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         final Dialog dialog1;
         dialog1 = new Dialog(this);
@@ -74,11 +71,7 @@ public class PrefactoropenActivity extends AppCompatActivity {
     public void Config() {
         callMethod = new CallMethod(this);
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
-        btn_addfactor = findViewById(R.id.PrefactoropenActivity_btn);
-        btn_refresh = findViewById(R.id.PrefactoropenActivity_refresh);
-        btn_dltempty = findViewById(R.id.PrefactoropenActivity_deleteempty);
-        tv_prefactorcount = findViewById(R.id.PrefactoropenActivity_amount);
-        recyclerView = findViewById(R.id.PrefactoropenActivity_recyclerView);
+
 
     }
 
@@ -86,34 +79,34 @@ public class PrefactoropenActivity extends AppCompatActivity {
 
 
         preFactors = dbh.getAllPrefactorHeaderopen();
-        tv_prefactorcount.setText((NumberFunctions.PerisanNumber("" + preFactors.size())));
+        binding.PrefactoropenActivityAmount.setText((NumberFunctions.PerisanNumber("" + preFactors.size())));
 
 
         gridLayoutManager = new GridLayoutManager(this, 1);
-        recyclerView.setLayoutManager(gridLayoutManager);
+        binding.PrefactoropenActivityRecyclerView.setLayoutManager(gridLayoutManager);
         if (Integer.parseInt(fac) != 0) {
             PreFactorHeaderAdapter adapter = new PreFactorHeaderAdapter(preFactors, this);
-            recyclerView.setAdapter(adapter);
+            binding.PrefactoropenActivityRecyclerView.setAdapter(adapter);
         } else {
             PreFactorHeaderOpenAdapter adapter = new PreFactorHeaderOpenAdapter(preFactors, this);
-            recyclerView.setAdapter(adapter);
+            binding.PrefactoropenActivityRecyclerView.setAdapter(adapter);
         }
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        binding.PrefactoropenActivityRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
 
-        btn_refresh.setOnClickListener(view -> {
+        binding.PrefactoropenActivityRefresh.setOnClickListener(view -> {
             finish();
             startActivity(getIntent());
         });
 
-        btn_dltempty.setOnClickListener(view -> {
+        binding.PrefactoropenActivityDeleteempty.setOnClickListener(view -> {
             dbh.DeleteEmptyPreFactor();
             finish();
             startActivity(getIntent());
         });
 
 
-        btn_addfactor.setOnClickListener(view -> {
+        binding.PrefactoropenActivityBtn.setOnClickListener(view -> {
             intent = new Intent(this, CustomerActivity.class);
             intent.putExtra("edit", "0");
             intent.putExtra("factor_code", "0");

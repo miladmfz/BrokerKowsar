@@ -3,27 +3,24 @@ package com.kits.brokerkowsar.activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-
 import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.appcompat.widget.Toolbar;
 import androidx.viewpager.widget.ViewPager;
 
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.adapters.SliderAdapter;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
+import com.kits.brokerkowsar.databinding.ActivityDetailTBinding;
 import com.kits.brokerkowsar.model.Column;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
@@ -49,22 +46,20 @@ public class DetailActivity extends AppCompatActivity {
     DatabaseHelper dbh;
     ArrayList<Column> Columns;
     ArrayList<Good> imagelists;
-    LinearLayoutCompat mainviewline;
     Action action;
-    SliderView sliderView;
     ProgressBar prog;
 
-    Toolbar toolbar;
-    TextView tv_customer;
-    TextView tv_sumfac;
-    Button btnbuy;
-    LinearLayoutCompat llsumfactor;
 
+    ActivityDetailTBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail_t);
+
+
+        binding = ActivityDetailTBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         intent();
         Config();
@@ -90,41 +85,28 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     public void Config() {
-
         callMethod = new CallMethod(this);
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
         action = new Action(this);
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
         Columns = dbh.GetColumns(id, "", "0");
         gooddetail = dbh.getGoodByCode(id);
-
-        toolbar = findViewById(R.id.DetailActivity_toolbar);
-        tv_customer = findViewById(R.id.DetailActivity_customer);
-        tv_sumfac = findViewById(R.id.DetailActivity_sum_factor);
-        llsumfactor = findViewById(R.id.DetailActivity_ll_sum_factor);
-        mainviewline = findViewById(R.id.DetailActivity_line_property);
-        prog = findViewById(R.id.DetailActivity_prog);
-
-        btnbuy = findViewById(R.id.DetailActivity_btnbuy);
-        setSupportActionBar(toolbar);
-
-
+        setSupportActionBar(binding.DetailActivityToolbar);
     }
 
 
     public void init() {
         if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
-            tv_customer.setText("فاکتوری انتخاب نشده");
-            llsumfactor.setVisibility(View.GONE);
+            binding.DetailActivityCustomer.setText("فاکتوری انتخاب نشده");
+            binding.DetailActivityLlSumFactor.setVisibility(View.GONE);
         } else {
-            llsumfactor.setVisibility(View.VISIBLE);
-            tv_customer.setText(NumberFunctions.PerisanNumber(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode"))));
-            tv_sumfac.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorCode"))))));
+            binding.DetailActivityLlSumFactor.setVisibility(View.VISIBLE);
+            binding.DetailActivityCustomer.setText(NumberFunctions.PerisanNumber(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode"))));
+            binding.DetailActivitySumFactor.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorCode"))))));
         }
 
         for (Column Column : Columns) {
             if (Integer.parseInt(Column.getColumnFieldValue("SortOrder")) > 0) {
-                Log.e("test11", Column.getColumnFieldValue("ColumnDesc") + " = " + gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname")));
                 CreateView(
                         Column.getColumnFieldValue("ColumnDesc"),
                         gooddetail.getGoodFieldValue(Column.getColumnFieldValue("columnname"))
@@ -135,7 +117,7 @@ public class DetailActivity extends AppCompatActivity {
         prog.setVisibility(View.GONE);
         imagelists = dbh.GetksrImageCodes(gooddetail.getGoodFieldValue("GoodCode"));
         SliderView();
-        btnbuy.setOnClickListener(view -> {
+        binding.DetailActivityBtnbuy.setOnClickListener(view -> {
 
             if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
                 action.buydialog(gooddetail.getGoodFieldValue("GoodCode"), "0");
@@ -190,8 +172,8 @@ public class DetailActivity extends AppCompatActivity {
         extra_ViewPager.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, 3));
         extra_ViewPager.setBackgroundResource(R.color.grey_40);
 
-        mainviewline.addView(ll_1);
-        mainviewline.addView(extra_ViewPager);
+        binding.DetailActivityLineProperty.addView(ll_1);
+        binding.DetailActivityLineProperty.addView(extra_ViewPager);
 
     }
 
@@ -231,16 +213,16 @@ public class DetailActivity extends AppCompatActivity {
 
     private void SliderView() {
 
-        sliderView = findViewById(R.id.DetailActivity_imageSlider);
+
         SliderAdapter adapter = new SliderAdapter(imagelists, true, this);
-        sliderView.setSliderAdapter(adapter);
-        sliderView.setIndicatorAnimation(IndicatorAnimations.SCALE); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
-        sliderView.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
-        sliderView.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_BACK_AND_FORTH);
-        sliderView.setIndicatorSelectedColor(Color.WHITE);
-        sliderView.setIndicatorUnselectedColor(Color.GRAY);
-        sliderView.setScrollTimeInSec(3); //set scroll delay in seconds :
-        sliderView.startAutoCycle();
+        binding.DetailActivityImageSlider.setSliderAdapter(adapter);
+        binding.DetailActivityImageSlider.setIndicatorAnimation(IndicatorAnimations.SCALE); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+        binding.DetailActivityImageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
+        binding.DetailActivityImageSlider.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_BACK_AND_FORTH);
+        binding.DetailActivityImageSlider.setIndicatorSelectedColor(Color.WHITE);
+        binding.DetailActivityImageSlider.setIndicatorUnselectedColor(Color.GRAY);
+        binding.DetailActivityImageSlider.setScrollTimeInSec(3); //set scroll delay in seconds :
+        binding.DetailActivityImageSlider.startAutoCycle();
     }
 
     @Override

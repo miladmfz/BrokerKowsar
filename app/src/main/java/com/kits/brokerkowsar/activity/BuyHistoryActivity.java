@@ -6,20 +6,18 @@ import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Window;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.adapters.GoodBasketHistoryAdapter;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
+import com.kits.brokerkowsar.databinding.ActivityBuyhistoryBinding;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.NumberFunctions;
@@ -39,14 +37,17 @@ public class BuyHistoryActivity extends AppCompatActivity {
     private DatabaseHelper dbh;
     DecimalFormat decimalFormat;
     Handler handler;
-    RecyclerView recyclerView;
     GridLayoutManager gridLayoutManager;
     GoodBasketHistoryAdapter adapter;
+
+    ActivityBuyhistoryBinding binding;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_buyhistory);
+        binding = ActivityBuyhistoryBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -74,19 +75,10 @@ public class BuyHistoryActivity extends AppCompatActivity {
         decimalFormat = new DecimalFormat("0,000");
         callMethod = new CallMethod(this);
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
-
         handler = new Handler();
 
 
-        TextView row = findViewById(R.id.Buy_history_Activity_total_row_buy);
-        TextView price = findViewById(R.id.Buy_history_Activity_total_price_buy);
-        TextView amount = findViewById(R.id.Buy_history_Activity_total_amount_buy);
-        EditText edtse = findViewById(R.id.Buy_history_Activity_edtsearch);
-        Button history_row = findViewById(R.id.Buy_history_Activity_row);
-        recyclerView = findViewById(R.id.Buy_history_Activity_R1);
-
-
-        edtse.addTextChangedListener(new TextWatcher() {
+        binding.BuyHistoryActivityEdtsearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
@@ -103,35 +95,35 @@ public class BuyHistoryActivity extends AppCompatActivity {
                     goods = dbh.getAllPreFactorRows(srch, callMethod.ReadString("PreFactorGood"));
 
                     if (Itemposition.equals("1")) {
-                        history_row.setBackground(ContextCompat.getDrawable(App.getContext(),
+                        binding.BuyHistoryActivityRow.setBackground(ContextCompat.getDrawable(App.getContext(),
                                 R.drawable.bg_round_green_history_line));
                     } else {
-                        history_row.setBackground(ContextCompat.getDrawable(App.getContext(),
+                        binding.BuyHistoryActivityRow.setBackground(ContextCompat.getDrawable(App.getContext(),
                                 R.drawable.bg_round_green_history));
                     }
 
                     adapter = new GoodBasketHistoryAdapter(goods, Itemposition, App.getContext());
                     gridLayoutManager = new GridLayoutManager(App.getContext(), 1);
-                    recyclerView.setLayoutManager(gridLayoutManager);
-                    recyclerView.setAdapter(adapter);
-                    recyclerView.setItemAnimator(new DefaultItemAnimator());
+                    binding.BuyHistoryActivityR1.setLayoutManager(gridLayoutManager);
+                    binding.BuyHistoryActivityR1.setAdapter(adapter);
+                    binding.BuyHistoryActivityR1.setItemAnimator(new DefaultItemAnimator());
                 }, Integer.parseInt(callMethod.ReadString("Delay")));
             }
         });
 
-        history_row.setOnClickListener(view -> {
+        binding.BuyHistoryActivityRow.setOnClickListener(view -> {
 
             adapter = new GoodBasketHistoryAdapter(goods, Itemposition, this);
             gridLayoutManager = new GridLayoutManager(this, 1);
-            recyclerView.setLayoutManager(gridLayoutManager);
-            recyclerView.setAdapter(adapter);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
+            binding.BuyHistoryActivityR1.setLayoutManager(gridLayoutManager);
+            binding.BuyHistoryActivityR1.setAdapter(adapter);
+            binding.BuyHistoryActivityR1.setItemAnimator(new DefaultItemAnimator());
             if (Itemposition.equals("1")) {
                 Itemposition = "0";
-                history_row.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_round_green_history_line));
+                binding.BuyHistoryActivityRow.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_round_green_history_line));
             } else {
                 Itemposition = "1";
-                history_row.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_round_green_history));
+                binding.BuyHistoryActivityRow.setBackground(ContextCompat.getDrawable(this, R.drawable.bg_round_green_history));
             }
         });
 
@@ -139,13 +131,13 @@ public class BuyHistoryActivity extends AppCompatActivity {
 
         adapter = new GoodBasketHistoryAdapter(goods, Itemposition, this);
         gridLayoutManager = new GridLayoutManager(this, 1);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        binding.BuyHistoryActivityR1.setLayoutManager(gridLayoutManager);
+        binding.BuyHistoryActivityR1.setAdapter(adapter);
+        binding.BuyHistoryActivityR1.setItemAnimator(new DefaultItemAnimator());
 
-        price.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorGood"))))));
-        amount.setText(NumberFunctions.PerisanNumber(dbh.getFactorSumAmount(callMethod.ReadString("PreFactorGood"))));
-        row.setText(NumberFunctions.PerisanNumber(String.valueOf(goods.size())));
+        binding.BuyHistoryActivityTotalPriceBuy.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(callMethod.ReadString("PreFactorGood"))))));
+        binding.BuyHistoryActivityTotalAmountBuy.setText(NumberFunctions.PerisanNumber(dbh.getFactorSumAmount(callMethod.ReadString("PreFactorGood"))));
+        binding.BuyHistoryActivityTotalRowBuy.setText(NumberFunctions.PerisanNumber(String.valueOf(goods.size())));
 
 
     }

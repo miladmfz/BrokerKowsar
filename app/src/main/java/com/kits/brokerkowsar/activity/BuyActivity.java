@@ -4,20 +4,17 @@ package com.kits.brokerkowsar.activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.adapters.GoodBasketAdapter;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
+import com.kits.brokerkowsar.databinding.ActivityBuyBinding;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.NumberFunctions;
@@ -37,21 +34,24 @@ public class BuyActivity extends AppCompatActivity {
     ArrayList<Good> goods;
     GoodBasketAdapter adapter;
     GridLayoutManager gridLayoutManager;
-    RecyclerView recyclerView;
     CallMethod callMethod;
 
-    Toolbar toolbar;
-    TextView tv_row;
-    TextView tv_price;
-    TextView tv_customer;
-    TextView tv_amount;
-    Button btn_total_delete;
-    Button btn_final_buy_test;
+    //    Toolbar toolbar;
+//    TextView tv_row;
+//    TextView tv_price;
+//    TextView tv_customer;
+//    TextView tv_amount;
+//    Button btn_total_delete;
+//    Button btn_final_buy_test;
+    ActivityBuyBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_buy);
+
+
+        binding = ActivityBuyBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
 
         intent();
@@ -75,15 +75,8 @@ public class BuyActivity extends AppCompatActivity {
         callMethod = new CallMethod(this);
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
 
-        toolbar = findViewById(R.id.BuyActivity_toolbar);
-        tv_row = findViewById(R.id.BuyActivity_total_row_buy);
-        tv_price = findViewById(R.id.BuyActivity_total_price_buy);
-        tv_customer = findViewById(R.id.BuyActivity_total_customer_buy);
-        tv_amount = findViewById(R.id.BuyActivity_total_amount_buy);
-        btn_total_delete = findViewById(R.id.BuyActivity_total_delete);
-        btn_final_buy_test = findViewById(R.id.BuyActivity_test);
-        recyclerView = findViewById(R.id.BuyActivity_R1);
-        setSupportActionBar(toolbar);
+
+        setSupportActionBar(binding.BuyActivityToolbar);
 
     }
 
@@ -96,21 +89,21 @@ public class BuyActivity extends AppCompatActivity {
             callMethod.showToast("سبد خرید خالی می باشد");
         }
         gridLayoutManager = new GridLayoutManager(this, 1);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setVisibility(View.VISIBLE);
+        binding.BuyActivityR1.setLayoutManager(gridLayoutManager);
+        binding.BuyActivityR1.setAdapter(adapter);
+        binding.BuyActivityR1.setItemAnimator(new DefaultItemAnimator());
+        binding.BuyActivityR1.setVisibility(View.VISIBLE);
 
         try {
-            recyclerView.scrollToPosition(Integer.parseInt(callMethod.ReadString("BasketItemView")) - 1);
+            binding.BuyActivityR1.scrollToPosition(Integer.parseInt(callMethod.ReadString("BasketItemView")) - 1);
         } catch (Exception e) {
-            recyclerView.scrollToPosition(0);
+            binding.BuyActivityR1.scrollToPosition(0);
             callMethod.EditString("BasketItemView", "0");
 
         }
 
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.BuyActivityR1.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NotNull RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
@@ -119,13 +112,14 @@ public class BuyActivity extends AppCompatActivity {
             }
         });
 
-        tv_price.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(PreFac)))));
-        tv_amount.setText(NumberFunctions.PerisanNumber(dbh.getFactorSumAmount(PreFac)));
-        tv_customer.setText(NumberFunctions.PerisanNumber(dbh.getFactorCustomer(PreFac)));
-        tv_row.setText(NumberFunctions.PerisanNumber(String.valueOf(goods.size())));
+
+        binding.BuyActivityTotalPriceBuy.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(dbh.getFactorSum(PreFac)))));
+        binding.BuyActivityTotalAmountBuy.setText(NumberFunctions.PerisanNumber(dbh.getFactorSumAmount(PreFac)));
+        binding.BuyActivityTotalCustomerBuy.setText(NumberFunctions.PerisanNumber(dbh.getFactorCustomer(PreFac)));
+        binding.BuyActivityTotalRowBuy.setText(NumberFunctions.PerisanNumber(String.valueOf(goods.size())));
 
 
-        btn_total_delete.setOnClickListener(view ->
+        binding.BuyActivityTotalDelete.setOnClickListener(view ->
                 new AlertDialog.Builder(this)
                         .setTitle("توجه")
                         .setMessage("آیا مایل به خالی کردن سبد خرید می باشید؟")
@@ -140,7 +134,7 @@ public class BuyActivity extends AppCompatActivity {
         );
 
 
-        btn_final_buy_test.setOnClickListener(view ->
+        binding.BuyActivityTest.setOnClickListener(view ->
                 new android.app.AlertDialog.Builder(this)
                         .setTitle("توجه")
                         .setMessage("آیا فاکتور ارسال گردد؟")
