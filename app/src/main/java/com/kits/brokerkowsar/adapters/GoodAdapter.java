@@ -3,7 +3,6 @@ package com.kits.brokerkowsar.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -25,7 +24,6 @@ import com.kits.brokerkowsar.viewholder.GoodItemViewHolder;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -36,9 +34,7 @@ import retrofit2.Response;
 public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     private final Context mContext;
     CallMethod callMethod;
-    private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
     private final ArrayList<Good> goods;
-    private Intent intent;
     DatabaseHelper dbh;
 
     APIInterface apiInterface;
@@ -72,6 +68,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull final GoodItemViewHolder holder, @SuppressLint("RecyclerView") final int position) {
+
 
 
         holder.bind(Columns, goods.get(position), mContext, callMethod);

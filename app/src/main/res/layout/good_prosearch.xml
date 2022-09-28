@@ -26,14 +26,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:layout_margin="1dp"
+                <ImageView
                     android:id="@+id/good_prosearch_img"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:layout_gravity="center"
                     android:scaleType="centerInside"
-                    android:contentDescription="@string/no_photo" />
+                    android:layout_margin="2dp"
+
+                    />
             </FrameLayout>
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"

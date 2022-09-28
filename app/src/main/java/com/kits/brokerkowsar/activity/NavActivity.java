@@ -86,10 +86,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     Button btn_test;
     TextView tv_test;
 
-    private static final int REQUEST_LOCATION = 1;
 
-    LocationManager locationManager;
-    String latitude, longitude;
     WorkManager workManager;
 
     @Override

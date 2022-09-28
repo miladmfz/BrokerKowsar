@@ -30,6 +30,7 @@ import com.smarteist.autoimageslider.SliderViewAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -67,10 +68,9 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
 
     @Override
     public void onBindViewHolder(final GoodViewHolder holder, final int position) {
-        Good gooddetail = goods.get(position);
 
 
-        if (image_info.Image_exist(gooddetail.getGoodFieldValue("KsrImageCode"))) {
+        if (image_info.Image_exist(goods.get(position).getGoodFieldValue("KsrImageCode"))) {
 
             String root = Environment.getExternalStorageDirectory().getAbsolutePath();
             File imagefile = new File(
@@ -78,7 +78,7 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
                             "/Kowsar/" +
                             callMethod.ReadString("EnglishCompanyNameUse") +
                             "/" +
-                            gooddetail.getGoodFieldValue("KsrImageCode") +
+                            goods.get(position).getGoodFieldValue("KsrImageCode") +
                             ".jpg");
             Bitmap myBitmap = BitmapFactory.decodeFile(imagefile.getAbsolutePath());
             holder.imageViewBackground.setImageBitmap(myBitmap);
@@ -94,7 +94,7 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
                             false)
             );
 
-            Call<RetrofitResponse> call2 = apiInterface.GetImageFromKsr("GetImageFromKsr", gooddetail.getGoodFieldValue("KsrImageCode")
+            Call<RetrofitResponse> call2 = apiInterface.GetImageFromKsr("GetImageFromKsr", goods.get(position).getGoodFieldValue("KsrImageCode")
             );
             call2.enqueue(new Callback<RetrofitResponse>() {
                 @Override
@@ -126,7 +126,7 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
                                             Base64.decode(response.body().getText(), Base64.DEFAULT),
                                             0,
                                             Base64.decode(response.body().getText(), Base64.DEFAULT).length),
-                                    gooddetail.getGoodFieldValue("KsrImageCode"));
+                                    goods.get(position).getGoodFieldValue("KsrImageCode"));
                         }
                     }
                 }
@@ -169,10 +169,18 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
     }
 
     public void image_zome_view() {
+
+
+
         final Dialog dialog = new Dialog(mcontext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);//title laye nadashte bashim
         dialog.setContentView(R.layout.image_zoom);
         SliderView sliderView = dialog.findViewById(R.id.imageSlider_zoom_view);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
+
+
+
+
         SliderAdapter adapter = new SliderAdapter(goods, false, mcontext);
         sliderView.setSliderAdapter(adapter);
         sliderView.setIndicatorAnimation(IndicatorAnimations.SCALE); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!

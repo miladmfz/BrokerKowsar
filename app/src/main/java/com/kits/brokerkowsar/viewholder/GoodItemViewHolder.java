@@ -1,7 +1,5 @@
 package com.kits.brokerkowsar.viewholder;
 
-;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -35,6 +33,8 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+;
+
 public class GoodItemViewHolder extends RecyclerView.ViewHolder {
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
 
@@ -56,6 +56,9 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
 
 
     public void bind(ArrayList<Column> Columns, Good good, Context mContext, CallMethod callMethod) {
+
+
+
         mainline.removeAllViews();
 
         for (Column Column : Columns) {
@@ -105,6 +108,8 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
                 mainline.addView(extra_TextView);
             }
         }
+
+
 
 
     }
