@@ -9,7 +9,6 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,8 +46,8 @@ public class DetailActivity extends AppCompatActivity {
     ArrayList<Column> Columns;
     ArrayList<Good> imagelists;
     Action action;
-    ProgressBar prog;
 
+    SliderView sliderView;
 
     ActivityDetailTBinding binding;
 
@@ -114,8 +113,8 @@ public class DetailActivity extends AppCompatActivity {
             }
         }
 
-        prog.setVisibility(View.GONE);
         imagelists = dbh.GetksrImageCodes(gooddetail.getGoodFieldValue("GoodCode"));
+        Log.e("test11",imagelists.size()+"");
         SliderView();
         binding.DetailActivityBtnbuy.setOnClickListener(view -> {
 
@@ -214,15 +213,17 @@ public class DetailActivity extends AppCompatActivity {
     private void SliderView() {
 
 
+
         SliderAdapter adapter = new SliderAdapter(imagelists, true, this);
         binding.DetailActivityImageSlider.setSliderAdapter(adapter);
-        binding.DetailActivityImageSlider.setIndicatorAnimation(IndicatorAnimations.SCALE); //set indicator animation by using SliderLayout.IndicatorAnimations. :WORM or THIN_WORM or COLOR or DROP or FILL or NONE or SCALE or SCALE_DOWN or SLIDE and SWAP!!
+        binding.DetailActivityImageSlider.setIndicatorAnimation(IndicatorAnimations.SCALE);
         binding.DetailActivityImageSlider.setSliderTransformAnimation(SliderAnimations.SIMPLETRANSFORMATION);
         binding.DetailActivityImageSlider.setAutoCycleDirection(SliderView.AUTO_CYCLE_DIRECTION_BACK_AND_FORTH);
         binding.DetailActivityImageSlider.setIndicatorSelectedColor(Color.WHITE);
         binding.DetailActivityImageSlider.setIndicatorUnselectedColor(Color.GRAY);
-        binding.DetailActivityImageSlider.setScrollTimeInSec(3); //set scroll delay in seconds :
+        binding.DetailActivityImageSlider.setScrollTimeInSec(3);
         binding.DetailActivityImageSlider.startAutoCycle();
+
     }
 
     @Override

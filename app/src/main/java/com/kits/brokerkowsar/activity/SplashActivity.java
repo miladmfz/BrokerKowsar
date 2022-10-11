@@ -35,12 +35,13 @@ public class SplashActivity extends AppCompatActivity {
     DatabaseHelper dbh, dbhbase;
     final int PERMISSION_REQUEST_CODE = 1;
     WorkManager workManager;
-
+        int i=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_splash);
+
         Config();
         try {
             init();
@@ -58,6 +59,7 @@ public class SplashActivity extends AppCompatActivity {
     public void Config() {
 
     }
+
 
     public void init() {
         callMethod = new CallMethod(this);
@@ -81,11 +83,13 @@ public class SplashActivity extends AppCompatActivity {
             callMethod.EditString("TitleSize", "18");
             callMethod.EditString("BodySize", "18");
             callMethod.EditString("PhoneNumber", "");
+            callMethod.EditString("Theme", "Green");
             callMethod.EditBoolan("RealAmount", false);
             callMethod.EditBoolan("ActiveStack", false);
             callMethod.EditBoolan("GoodAmount", false);
             callMethod.EditBoolan("AutoReplication", false);
             callMethod.EditBoolan("SellPriceTypeDeactivate", true);
+            //callMethod.EditBoolan("SellPriceTypeDeactivate", true);
 
             callMethod.EditString("ServerURLUse", "");
             callMethod.EditString("SQLiteURLUse", "");
@@ -128,6 +132,8 @@ public class SplashActivity extends AppCompatActivity {
 
                 handler = new Handler();
                 handler.postDelayed(() -> {
+
+
                     intent = new Intent(this, NavActivity.class);
                     startActivity(intent);
                     finish();

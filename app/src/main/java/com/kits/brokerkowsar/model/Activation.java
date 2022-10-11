@@ -1,5 +1,7 @@
 package com.kits.brokerkowsar.model;
 
+import android.annotation.SuppressLint;
+
 import com.google.gson.annotations.SerializedName;
 import com.kits.brokerkowsar.application.App;
 
@@ -20,11 +22,13 @@ public class Activation {
     @SerializedName("MaxDevice")
     private String MaxDevice;
 
+    @SuppressLint("SdCardPath")
     public String getDatabaseFolderPath() {
         return "/data/data/" + App.getContext().getPackageName() + "/databases/" + EnglishCompanyName;
     }
 
 
+    @SuppressLint("SdCardPath")
     public String getDatabaseFilePath() {
         return "/data/data/" + App.getContext().getPackageName() + "/databases/" + EnglishCompanyName + "/KowsarDb.sqlite";
     }

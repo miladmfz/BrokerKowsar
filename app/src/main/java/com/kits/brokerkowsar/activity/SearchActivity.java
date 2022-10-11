@@ -92,11 +92,20 @@ public class SearchActivity extends AppCompatActivity {
 
         try {
             Handler handler = new Handler();
-            handler.postDelayed(this::init, 100);
+            handler.postDelayed(() -> {
+                if (dbh.GetColumnscount().equals("0")) {
+                    callMethod.showToast("تنظیم جدول از سمت دیتابیس مشکل دارد");
+                    finish();
+                    dialog1.dismiss();
+                }else {
+                    init();
+                }
+            }, 100);
             handler.postDelayed(dialog1::dismiss, 1000);
         } catch (Exception e) {
             callMethod.ErrorLog(e.getMessage());
         }
+
 
     }
 
@@ -115,14 +124,16 @@ public class SearchActivity extends AppCompatActivity {
         assert data != null;
         AutoSearch = data.getString("scan");
         id = data.getString("id");
-        title = data.getString("title");
 
+        title = data.getString("title");
     }
 
 
     @SuppressLint("SetTextI18n")
     public void init() {
-
+        if (id.equals("0")) {
+            id = dbh.ReadConfig("GroupCodeDefult");
+        }
 
         binding.SearchActivityToolbar.setTitle(title);
 

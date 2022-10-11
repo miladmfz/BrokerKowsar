@@ -56,7 +56,7 @@
     <string name="customerfactorheader">مشتری :</string>
     <string name="detail_buy">افزودن ️</string>
     <string name="detail_price">قیمت</string>
-    <string name="detail_empty">------------</string>
+
     <string name="detail_good">جزئیات محصول</string>
     <string name="detail_category">موضوع</string>
     <string name="deatil_goodcode">کد محصول</string>

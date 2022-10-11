@@ -129,7 +129,8 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
             String root = Environment.getExternalStorageDirectory().getAbsolutePath();
             File imagefile = new File(root + "/Kowsar/" +
                     callMethod.ReadString("EnglishCompanyNameUse") + "/" +
-                    good.getGoodFieldValue("KsrImageCode") + ".jpg");
+                    good.getGoodFieldValue("KsrImageCode") + ".jpg"
+            );
             Bitmap myBitmap = BitmapFactory.decodeFile(imagefile.getAbsolutePath());
             img.setImageBitmap(myBitmap);
 

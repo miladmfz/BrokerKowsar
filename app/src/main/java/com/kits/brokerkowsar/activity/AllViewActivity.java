@@ -74,7 +74,7 @@ public class AllViewActivity extends AppCompatActivity {
         categories = new ArrayList<>();
 
 
-        ArrayList<GoodGroup> groupsHeader = dbh.getAllGroups("0");
+        ArrayList<GoodGroup> groupsHeader = dbh.getAllGroups(dbh.ReadConfig("GroupCodeDefult"));
 
         for (GoodGroup groupHeader : groupsHeader) {
             ArrayList<Product> Product_child = new ArrayList<>();

@@ -153,6 +153,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
 
                 .setOnProgressListener(progress -> {
                     tv_rep.setText("در حال بارگیری...");
+                    tv_step.setVisibility(View.VISIBLE);
                     tv_step.setText(NumberFunctions.PerisanNumber((((progress.currentBytes) * 100) / progress.totalBytes) + "/100"));
                 })
                 .start(new OnDownloadListener() {

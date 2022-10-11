@@ -3,6 +3,7 @@ package com.kits.brokerkowsar.application;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -86,6 +87,7 @@ public class ImageInfo {
     public Boolean Image_exist(String code) {
         String root = Environment.getExternalStorageDirectory() + "/Kowsar";
         File imagefile = new File(root + "/" + callMethod.ReadString("EnglishCompanyNameUse") + "/" + code + ".jpg");
+        Log.e("test_1",imagefile.getAbsolutePath());
         return imagefile.exists();
 
     }

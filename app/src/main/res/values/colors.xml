@@ -6,6 +6,7 @@
 
 
     <color name="white">#ffffff</color>
+    <color name="black">#FF000000</color>
 
     <color name="overlay_dark_10">#1A000000</color>
     <color name="overlay_dark_20">#33000000</color>

@@ -47,7 +47,7 @@ public class Replication {
     Intent intent;
     ImageInfo image_info;
 
-    private SQLiteDatabase database;
+    private final SQLiteDatabase database;
     private final Integer RepRowCount = 100;
     private Integer FinalStep = 0;
     String LastRepCode = "0";
@@ -78,29 +78,33 @@ public class Replication {
 
 
     public void DoingReplicate() {
-        Log.e("test", "0");
+
         dialog = new Dialog(mContext);
         dialog();
 
-        Call<RetrofitResponse> call1 = apiInterface.MaxRepLogCode("MaxRepLogCode");
-        call1.enqueue(new Callback<RetrofitResponse>() {
-            @Override
-            public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
-                assert response.body() != null;
-                Log.e("test", "1");
-                Log.e("test_+_+_", response.body().getText());
+        if (dbh.GetColumnscount().equals("0")) {
+            tv_rep.setText(NumberFunctions.PerisanNumber("در حال بروز رسانی تنظیم جدول"));
+            GoodTypeReplication();
+        } else {
+            Call<RetrofitResponse> call1 = apiInterface.MaxRepLogCode("MaxRepLogCode");
+            call1.enqueue(new Callback<RetrofitResponse>() {
+                @Override
+                public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
+                    assert response.body() != null;
+                    Log.e("test", "1");
+                    Log.e("test_+_+_", response.body().getText());
 
-                dbh.SaveConfig("MaxRepLogCode", response.body().getText());
-                RetrofitReplicate(0);
-            }
+                    dbh.SaveConfig("MaxRepLogCode", response.body().getText());
+                    RetrofitReplicate(0);
+                }
 
-            @Override
-            public void onFailure(Call<RetrofitResponse> call, Throwable t) {
+                @Override
+                public void onFailure(Call<RetrofitResponse> call, Throwable t) {
 
-            }
-        });
+                }
+            });
+        }
 
-        Log.e("test", "0");
 
     }
 
@@ -135,15 +139,12 @@ public class Replication {
         replicatelevel = replevel;
 
         replicationModels = dbh.GetReplicationTable();
-        Log.e("test", "______");
-        Log.e("test", "replicatelevel");
+
         if (replicatelevel < replicationModels.size()) {
-            Log.e("test", "replicatelevel");
 
             ReplicationModel replicatedetail = replicationModels.get(replicatelevel);
             tv_rep.setText(NumberFunctions.PerisanNumber(replicationModels.size() + "/" + replicatedetail.getReplicationCode() + "در حال بروز رسانی"));
             tableDetails = dbh.GetTableDetail(replicatedetail.getClientTable());
-            Log.e("test", "0");
             FinalStep = 0;
             LastRepCode = String.valueOf(replicatedetail.getLastRepLogCode());
 
@@ -151,8 +152,6 @@ public class Replication {
 
             String where = replicatedetail.getCondition().replace("BrokerCondition", userInfo.getBrokerCode());
 
-            Log.e("test", "1");
-            Log.e("test", "1");
 
             Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
                     "repinfo",
@@ -162,8 +161,7 @@ public class Replication {
                     "1",
                     String.valueOf(RepRowCount)
             );
-            Log.e("test_1", LastRepCode);
-            Log.e("test_1", replicatedetail.getServerTable());
+
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
@@ -311,7 +309,6 @@ public class Replication {
                 @Override
                 public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
                     RetrofitReplicate(replicatelevel);
-                    Log.e("test_object.length", t.getMessage());
                 }
             });
 
@@ -602,17 +599,10 @@ public class Replication {
                             replicateGoodImageChange();
                         } else {
                             tv_step.setVisibility(View.GONE);
-                            MenuBroker();
-                            if (dbh.GetColumnscount().equals("0")) {
-                                tv_rep.setText(NumberFunctions.PerisanNumber("در حال بروز رسانی تنظیم جدول"));
-                                GoodTypeReplication();
-                            } else {
-                                intent = new Intent(mContext, NavActivity.class);
-                                mContext.startActivity(intent);
-                                ((Activity) mContext).finish();
-                                callMethod.showToast("بروز رسانی انجام شد");
-                            }
-
+                            intent = new Intent(mContext, NavActivity.class);
+                            mContext.startActivity(intent);
+                            ((Activity) mContext).finish();
+                            callMethod.showToast("بروز رسانی انجام شد");
                         }
                     } catch (JSONException ignored) {
                     }
@@ -650,6 +640,28 @@ public class Replication {
         MenuBroker();
     }
 
+    public void GroupCodeDefult() {
+
+        Call<RetrofitResponse> call1 = apiInterface.info("kowsar_info", "AppBroker_DefaultGroupCode");
+        call1.enqueue(new Callback<RetrofitResponse>() {
+            @Override
+            public void onResponse(@NotNull Call<RetrofitResponse> call, @NotNull Response<RetrofitResponse> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    if (!response.body().getText().equals(dbh.ReadConfig("GroupCodeDefult"))) {
+                        Log.e("test_group", response.body().getText());
+                        dbh.SaveConfig("GroupCodeDefult", response.body().getText());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<RetrofitResponse> call, @NotNull Throwable t) {
+                Log.e("onFailure", t.toString());
+            }
+        });
+    }
+
     public void MenuBroker() {
         Call<RetrofitResponse> call1 = apiInterface.MenuBroker("GetMenuBroker");
         call1.enqueue(new Callback<RetrofitResponse>() {
@@ -667,7 +679,7 @@ public class Replication {
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
             }
         });
-
+        GroupCodeDefult();
     }
 
     public void GoodTypeReplication() {
@@ -723,10 +735,8 @@ public class Replication {
                 }
             });
         } else {
-            callMethod.EditBoolan("AutoReplication", true);
-            intent = new Intent(mContext, NavActivity.class);
-            mContext.startActivity(intent);
-            ((Activity) mContext).finish();
+            DoingReplicate();
+
         }
     }
 

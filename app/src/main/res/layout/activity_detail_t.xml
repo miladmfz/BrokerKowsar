@@ -5,9 +5,9 @@
     android:id="@+id/DetailActivity_scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.DetailActivity"
     android:background="#ffffff"
-    android:layoutDirection="rtl">
+    android:layoutDirection="rtl"
+    tools:context=".activity.DetailActivity">
 
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -31,8 +31,8 @@
                 android:layout_weight="1"
                 android:background="?attr/colorPrimary"
 
-                app:titleTextColor="@color/white"
-                app:title="@string/detail_toolbarname">
+                app:title="@string/detail_toolbarname"
+                app:titleTextColor="@color/white">
 
             </androidx.appcompat.widget.Toolbar>
 
@@ -42,10 +42,10 @@
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:orientation="horizontal"
+            android:layout_margin="4dp"
             android:layout_marginBottom="5dp"
             android:background="@drawable/bg_round_selected"
-            android:layout_margin="4dp">
+            android:orientation="horizontal">
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
@@ -55,18 +55,18 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="@string/customerfactorheader"
-                    android:textSize="14sp"
                     android:layout_weight="0.7"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:text="@string/customerfactorheader"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/DetailActivity_customer"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="0.3"
-                    android:textSize="18sp"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:textSize="18sp" />
 
 
             </androidx.appcompat.widget.LinearLayoutCompat>
@@ -81,18 +81,18 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="@string/totalfactorheader"
-                    android:textSize="14sp"
                     android:layout_weight="0.7"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:text="@string/totalfactorheader"
+                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/DetailActivity_sum_factor"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="0.3"
-                    android:textSize="18sp"
-                    android:gravity="center" />
+                    android:gravity="center"
+                    android:textSize="18sp" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 
@@ -103,17 +103,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center">
-
-            <androidx.core.widget.ContentLoadingProgressBar
-                android:id="@+id/DetailActivity_prog"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:indeterminate="true"
-                />
 
 
             <com.smarteist.autoimageslider.SliderView
@@ -132,19 +121,19 @@
 
             <Button
                 android:id="@+id/DetailActivity_btnbuy"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:text="@string/detail_buy"
-                android:textSize="25sp"
-                android:textColor="#ffffff"
                 android:layout_weight="0.75"
+                android:text="@string/detail_buy"
+                android:textColor="#ffffff"
+                android:textSize="25sp"
                 app:backgroundTint="@color/green_600"
-                app:strokeColor="@color/grey_1000"
-                app:strokeWidth="1dp"
                 app:icon="@drawable/ic_add_shopping_black"
                 app:iconTint="@color/white"
-                style="?attr/materialButtonOutlinedStyle"
+                app:strokeColor="@color/grey_1000"
+                app:strokeWidth="1dp"
 
 
                 />
@@ -158,9 +147,10 @@
             android:layout_height="match_parent"
             android:layout_margin="5dp"
             app:cardCornerRadius="3dp"
-            app:strokeWidth="1dp"
+            app:cardElevation="4dp"
             app:strokeColor="@color/grey_1000"
-            app:cardElevation="4dp">
+            app:strokeWidth="1dp">
+
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/DetailActivity_line_property"
                 android:layout_width="match_parent"
@@ -171,11 +161,11 @@
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="match_parent"
                     android:layout_height="45dp"
-                    android:textColor="@color/white"
-                    android:textSize="26sp"
-                    android:text="@string/detail_good"
+                    android:background="@color/grey_60"
                     android:padding="5dp"
-                    android:background="@color/grey_60" />
+                    android:text="@string/detail_good"
+                    android:textColor="@color/white"
+                    android:textSize="26sp" />
 
 
             </androidx.appcompat.widget.LinearLayoutCompat>

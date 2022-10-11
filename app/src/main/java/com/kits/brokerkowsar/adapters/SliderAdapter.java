@@ -1,5 +1,6 @@
 package com.kits.brokerkowsar.adapters;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -11,18 +12,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
+import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.ImageInfo;
 import com.kits.brokerkowsar.model.Good;
+import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
-import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.smarteist.autoimageslider.IndicatorAnimations;
 import com.smarteist.autoimageslider.SliderAnimations;
 import com.smarteist.autoimageslider.SliderView;
@@ -62,12 +62,13 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
 
     @Override
     public GoodViewHolder onCreateViewHolder(ViewGroup parent) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_slider_layout_item, null);
+        @SuppressLint("InflateParams") View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_slider_layout_item, null);
         return new GoodViewHolder(inflate);
     }
 
     @Override
     public void onBindViewHolder(final GoodViewHolder holder, final int position) {
+
 
 
         if (image_info.Image_exist(goods.get(position).getGoodFieldValue("KsrImageCode"))) {
@@ -84,7 +85,11 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
             holder.imageViewBackground.setImageBitmap(myBitmap);
 
 
-        } else {
+
+        }
+        else
+        {
+
             byte[] imageByteArray1;
             imageByteArray1 = Base64.decode(mcontext.getString(R.string.no_photo), Base64.DEFAULT);
             holder.imageViewBackground.setImageBitmap(
@@ -139,7 +144,7 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
 
         }
 
-        holder.fl.setOnClickListener(v -> {
+        holder.imageViewBackground.setOnClickListener(v -> {
             if (image_zoom) {
                 image_zome_view();
             }
@@ -155,16 +160,12 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
 
     static class GoodViewHolder extends ViewHolder {
 
-        View itemView;
         ImageView imageViewBackground;
-        FrameLayout fl;
 
         public GoodViewHolder(View itemView) {
 
             super(itemView);
             imageViewBackground = itemView.findViewById(R.id.iv_auto_image_slider);
-            fl = itemView.findViewById(R.id.iv_main_slider);
-            this.itemView = itemView;
         }
     }
 

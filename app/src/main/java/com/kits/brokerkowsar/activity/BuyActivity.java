@@ -36,13 +36,6 @@ public class BuyActivity extends AppCompatActivity {
     GridLayoutManager gridLayoutManager;
     CallMethod callMethod;
 
-    //    Toolbar toolbar;
-//    TextView tv_row;
-//    TextView tv_price;
-//    TextView tv_customer;
-//    TextView tv_amount;
-//    Button btn_total_delete;
-//    Button btn_final_buy_test;
     ActivityBuyBinding binding;
 
     @Override

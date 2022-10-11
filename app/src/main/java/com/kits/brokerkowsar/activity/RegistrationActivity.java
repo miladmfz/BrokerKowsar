@@ -119,11 +119,27 @@ public class RegistrationActivity extends AppCompatActivity {
         });
 
         binding.registrReplicationcolumn.setOnClickListener(v -> {
-            dbh.deleteColumn();
-            replication.GoodTypeReplication();
-            replication.MenuBroker();
-            replication.BrokerStack();
-            dbh.DatabaseCreate();
+            new android.app.AlertDialog.Builder(this)
+                    .setTitle("توجه")
+                    .setMessage("آیا تنظیمات پیش فرض مجددا گرفته شود ؟")
+                    .setPositiveButton("بله", (dialogInterface, i) -> {
+                        dbh.deleteColumn();
+                        replication.GoodTypeReplication();
+                        replication.BrokerStack();
+                        dbh.DatabaseCreate();
+
+                        dbh.ExecQuery("delete from customer");
+                        dbh.ExecQuery("Update ReplicationTable Set LastRepLogCode = -1 Where ServerTable = 'Customer' ");
+
+                        action.app_info();
+                        replication.DoingReplicate();
+
+
+                    })
+                    .setNegativeButton("خیر", (dialogInterface, i) -> {
+                    })
+                    .show();
+
         });
 
 

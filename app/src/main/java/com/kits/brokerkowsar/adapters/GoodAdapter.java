@@ -60,7 +60,11 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     @NonNull
     @Override
     public GoodItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.good_prosearch, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.good_item_cardview, parent, false);
+//        GoodItemCardviewBinding binding = GoodItemCardviewBinding.inflate(
+//                LayoutInflater.from(parent.getContext())
+//        );
+//        return new GoodItemViewHolder(binding);
         return new GoodItemViewHolder(view);
     }
 
@@ -68,7 +72,6 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull final GoodItemViewHolder holder, @SuppressLint("RecyclerView") final int position) {
-
 
 
         holder.bind(Columns, goods.get(position), mContext, callMethod);

@@ -65,6 +65,16 @@ public interface APIInterface {
 
     @POST("index.php")
     @FormUrlEncoded
+    Call<RetrofitResponse> info(
+            @Field("tag") String tag,
+            @Field("Where") String Where
+    );
+
+
+
+
+    @POST("index.php")
+    @FormUrlEncoded
     Call<RetrofitResponse> MaxRepLogCode(
             @Field("tag") String tag
     );

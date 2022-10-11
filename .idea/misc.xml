@@ -45,11 +45,14 @@
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/box_buy_percent.xml" value="0.1765625" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/box_multi_buy.xml" value="0.33" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/customer.xml" value="0.264" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/good_buy.xml" value="0.1" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/good_buy_history.xml" value="0.1" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/good_buy_history_line.xml" value="0.11458333333333333" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/good_item_cardview.xml" value="0.15715579710144928" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/good_prosearch.xml" value="0.12635869565217392" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/grp_v_list_detail.xml" value="0.152" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/header.xml" value="0.4" />
-        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/image_slider_layout_item.xml" value="0.19166666666666668" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/image_slider_layout_item.xml" value="0.1" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/image_zoom.xml" value="0.19166666666666668" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/item.xml" value="0.2" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/item2.xml" value="0.2" />
