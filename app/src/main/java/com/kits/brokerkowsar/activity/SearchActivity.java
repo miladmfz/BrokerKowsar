@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -221,6 +222,8 @@ public class SearchActivity extends AppCompatActivity {
             PageMoreData = "0";
             GetDataFromDataBase();
         });
+
+
         binding.SearchActivityFab.setOnClickListener(v -> {
             final Dialog dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -233,10 +236,19 @@ public class SearchActivity extends AppCompatActivity {
             defultenablesellprice = false;
 
             for (Good good : Multi_Good) {
+                Log.e("test_",Multi_Good.size()+"");
+                Log.e("test_",good.getGoodFieldValue("GoodCode")+"");
+
                 Good goodtempdata = dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
 
+
+
                 if (Multi_Good.get(0).equals(good)) {
-                    tempvalue = goodtempdata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
+                    if(goodtempdata.getGoodFieldValue("SellPrice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))).equals("")){
+                        tempvalue ="100.0";
+                    }else{
+                        tempvalue = goodtempdata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
+                    }
                 }
 
                 if (!tempvalue.equals(goodtempdata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))))) {
@@ -260,6 +272,9 @@ public class SearchActivity extends AppCompatActivity {
             }, 500);
 
             boxbuy.setOnClickListener(view -> {
+                if(unitratio_mlti.getText().toString().equals("بر اساس نرخ فروش")){
+                    unitratio_mlti.setText("100.0");
+                }
                 String AmountMulti = amount_mlti.getText().toString();
                 if (!AmountMulti.equals("")) {
 
@@ -267,7 +282,13 @@ public class SearchActivity extends AppCompatActivity {
 
                         for (Good good : Multi_Good) {
                             Good gooddata = dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
-                            String temppercent = gooddata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
+                            String temppercent;
+                            if(gooddata.getGoodFieldValue("SellPrice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))).equals("")){
+                                temppercent ="100.0";
+                            }else{
+                                temppercent = gooddata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
+                            }
+
                             if (unitratio_mlti.getText().toString().equals("")) {
                                 temppercent = String.valueOf(100 - Integer.parseInt(temppercent.substring(0, temppercent.length() - 2)));
                             } else {

@@ -124,7 +124,6 @@ public class RegistrationActivity extends AppCompatActivity {
                     .setMessage("آیا تنظیمات پیش فرض مجددا گرفته شود ؟")
                     .setPositiveButton("بله", (dialogInterface, i) -> {
                         dbh.deleteColumn();
-                        replication.GoodTypeReplication();
                         replication.BrokerStack();
                         dbh.DatabaseCreate();
 

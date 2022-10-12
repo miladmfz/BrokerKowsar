@@ -3,6 +3,7 @@ package com.kits.brokerkowsar.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -13,6 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.activity.DetailActivity;
+import com.kits.brokerkowsar.activity.PrefactoropenActivity;
+import com.kits.brokerkowsar.activity.SearchActivity;
+import com.kits.brokerkowsar.activity.SearchByDateActivity;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.ImageInfo;
@@ -117,6 +122,87 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
                 }
             });
         }
+
+
+        holder.rltv.setOnClickListener(v -> {
+            if (multi_select) {
+                holder.rltv.setChecked(!holder.rltv.isChecked());
+                goods.get(position).setCheck(!goods.get(position).isCheck());
+                if (goods.get(position).isCheck()) {
+
+                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
+                        SearchActivity activity = (SearchActivity) mContext;
+
+                        activity.good_select_function(goods.get(position));
+                    }
+                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
+                        SearchByDateActivity activity = (SearchByDateActivity) mContext;
+                        activity.good_select_function(goods.get(position));
+                    }
+
+                } else {
+                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
+                        SearchActivity activity = (SearchActivity) mContext;
+                        activity.good_select_function(goods.get(position));
+                    }
+                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
+                        SearchByDateActivity activity = (SearchByDateActivity) mContext;
+                        activity.good_select_function(goods.get(position));
+                    }
+
+
+                }
+
+            } else {
+                Intent intent = new Intent(mContext, DetailActivity.class);
+                intent.putExtra("id", goods.get(position).getGoodFieldValue("GoodCode"));
+                intent.putExtra("ws", goods.get(position).getGoodFieldValue("Shortage"));
+                mContext.startActivity(intent);
+            }
+
+        });
+
+
+        holder.rltv.setChecked(goods.get(position).isCheck());
+
+        holder.rltv.setOnLongClickListener(view -> {
+            if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
+                multi_select = true;
+                holder.rltv.setChecked(!holder.rltv.isChecked());
+                goods.get(position).setCheck(!goods.get(position).isCheck());
+
+                if (goods.get(position).isCheck()) {
+                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
+                        SearchActivity activity = (SearchActivity) mContext;
+                        activity.good_select_function(goods.get(position));
+                    }
+                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
+                        SearchByDateActivity activity = (SearchByDateActivity) mContext;
+                        activity.good_select_function(goods.get(position));
+                    }
+
+                } else {
+                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
+                        SearchActivity activity = (SearchActivity) mContext;
+                        activity.good_select_function(goods.get(position));
+                    }
+                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
+                        SearchByDateActivity activity = (SearchByDateActivity) mContext;
+                        activity.good_select_function(goods.get(position));
+                    }
+
+
+                }
+            } else {
+
+                Intent intent = new Intent(mContext, PrefactoropenActivity.class);
+                intent.putExtra("fac", "0");
+                mContext.startActivity(intent);
+
+            }
+
+            return true;
+        });
 
 
     }

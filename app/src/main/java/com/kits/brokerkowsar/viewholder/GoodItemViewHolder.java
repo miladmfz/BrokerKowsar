@@ -17,10 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.activity.DetailActivity;
 import com.kits.brokerkowsar.activity.PrefactoropenActivity;
-import com.kits.brokerkowsar.activity.SearchActivity;
-import com.kits.brokerkowsar.activity.SearchByDateActivity;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.ImageInfo;
@@ -40,7 +37,7 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
 
     private final LinearLayoutCompat mainline;
     private final ImageView img;
-    private final MaterialCardView rltv;
+    public MaterialCardView rltv;
     private final Button btnadd;
 
     boolean multi_select1;
@@ -141,87 +138,6 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
             img.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length), BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getWidth() * 2, BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getHeight() * 2, false));
 
         }
-
-
-        rltv.setOnClickListener(v -> {
-            if (multi_select1) {
-                rltv.setChecked(!rltv.isChecked());
-                good.setCheck(!good.isCheck());
-                if (good.isCheck()) {
-
-                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
-                        SearchActivity activity = (SearchActivity) mContext;
-
-                        activity.good_select_function(good);
-                    }
-                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
-                        SearchByDateActivity activity = (SearchByDateActivity) mContext;
-                        activity.good_select_function(good);
-                    }
-
-                } else {
-                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
-                        SearchActivity activity = (SearchActivity) mContext;
-                        activity.good_select_function(good);
-                    }
-                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
-                        SearchByDateActivity activity = (SearchByDateActivity) mContext;
-                        activity.good_select_function(good);
-                    }
-
-
-                }
-
-            } else {
-                Intent intent = new Intent(mContext, DetailActivity.class);
-                intent.putExtra("id", good.getGoodFieldValue("GoodCode"));
-                intent.putExtra("ws", good.getGoodFieldValue("Shortage"));
-                mContext.startActivity(intent);
-            }
-
-        });
-
-
-        rltv.setChecked(good.isCheck());
-
-        rltv.setOnLongClickListener(view -> {
-            if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
-                multi_select1 = true;
-                rltv.setChecked(!rltv.isChecked());
-                good.setCheck(!good.isCheck());
-
-                if (good.isCheck()) {
-                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
-                        SearchActivity activity = (SearchActivity) mContext;
-                        activity.good_select_function(good);
-                    }
-                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
-                        SearchByDateActivity activity = (SearchByDateActivity) mContext;
-                        activity.good_select_function(good);
-                    }
-
-                } else {
-                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
-                        SearchActivity activity = (SearchActivity) mContext;
-                        activity.good_select_function(good);
-                    }
-                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
-                        SearchByDateActivity activity = (SearchByDateActivity) mContext;
-                        activity.good_select_function(good);
-                    }
-
-
-                }
-            } else {
-
-                Intent intent = new Intent(mContext, PrefactoropenActivity.class);
-                intent.putExtra("fac", "0");
-                mContext.startActivity(intent);
-
-            }
-
-            return true;
-        });
 
 
         btnadd.setOnClickListener(view -> {
