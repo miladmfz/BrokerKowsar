@@ -154,8 +154,13 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void requestPermission() {
+        Log.e("test_","0");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Log.e("test_","1");
+
             if (!Environment.isExternalStorageManager()) {
+                Log.e("test_","2");
+
                 try {
                     intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
                     intent.addCategory("android.intent.category.DEFAULT");
@@ -167,10 +172,14 @@ public class SplashActivity extends AppCompatActivity {
                     startActivityForResult(intent, 2296);
                 }
             } else {
+                Log.e("test_","3");
+
                 runtimePermission();
             }
 
         } else {
+            Log.e("test_","4");
+
             runtimePermission();
         }
     }
@@ -198,7 +207,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 2296) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 if (Environment.isExternalStorageManager()) {
                     runtimePermission();
                     callMethod.showToast("مجوز صادر شد");

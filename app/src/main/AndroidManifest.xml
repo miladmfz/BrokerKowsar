@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="com.kits.brokerkowsar">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <uses-permission
@@ -40,8 +39,8 @@
             android:exported="false" />
         <activity android:name=".activity.ChoiceDatabaseActivity" />
         <activity android:name=".activity.AboutUsActivity" />
-        <activity android:name=".activity.BuyActivity" />
-        <activity android:name=".activity.BuyHistoryActivity" />
+        <activity android:name=".activity.BasketActivity" />
+        <activity android:name=".activity.BasketHistoryActivity" />
         <activity android:name=".activity.ConfigActivity" />
         <activity android:name=".activity.CustomerActivity" />
         <activity android:name=".activity.DetailActivity" />

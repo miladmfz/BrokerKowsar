@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.activity.BuyActivity;
+import com.kits.brokerkowsar.activity.BasketActivity;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.ImageInfo;
@@ -137,7 +137,7 @@ public class GoodBasketViewHolder extends RecyclerView.ViewHolder {
 
                             dbh.DeletePreFactorRow(callMethod.ReadString("PreFactorCode"), good.getGoodFieldValue("PreFactorRowCode"));
                             callMethod.showToast("از سبد خرید حذف گردید");
-                            Intent intent = new Intent(mContext, BuyActivity.class);
+                            Intent intent = new Intent(mContext, BasketActivity.class);
                             intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
                             intent.putExtra("showflag", "2");
                             ((Activity) mContext).finish();

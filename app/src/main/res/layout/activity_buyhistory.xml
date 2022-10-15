@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/kowsar_back"
-    tools:context=".activity.BuyHistoryActivity"
+    tools:context=".activity.BasketHistoryActivity"
     android:orientation="vertical"
     android:layoutDirection="rtl">
 
@@ -13,7 +13,7 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activity.BuyActivity"
+        tools:context=".activity.BasketActivity"
         android:orientation="vertical">
 
         <com.google.android.material.appbar.AppBarLayout

@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-public class BuyActivity extends AppCompatActivity {
+public class BasketActivity extends AppCompatActivity {
 
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
 

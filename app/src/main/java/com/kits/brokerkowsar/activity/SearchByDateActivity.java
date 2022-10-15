@@ -371,7 +371,7 @@ ActivitySearchDateDetailBinding binding;
 
         if (item.getItemId() == R.id.bag_shop) {
             if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
-                intent = new Intent(this, BuyActivity.class);
+                intent = new Intent(this, BasketActivity.class);
                 intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
                 intent.putExtra("showflag", "2");
                 startActivity(intent);

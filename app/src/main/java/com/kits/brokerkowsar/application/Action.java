@@ -27,7 +27,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.activity.BuyActivity;
+import com.kits.brokerkowsar.activity.BasketActivity;
 import com.kits.brokerkowsar.activity.CustomerActivity;
 import com.kits.brokerkowsar.activity.NavActivity;
 import com.kits.brokerkowsar.activity.PrefactorActivity;
@@ -245,7 +245,7 @@ public class Action {
 
                             callMethod.showToast("به سبد کالا اضافه شد");
                             if (!Basketflag.equals("0")) {
-                                intent = new Intent(mContext, BuyActivity.class);
+                                intent = new Intent(mContext, BasketActivity.class);
                                 intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
                                 ((Activity) mContext).finish();
                                 ((Activity) mContext).overridePendingTransition(0, 0);
@@ -371,7 +371,7 @@ public class Action {
 
                                     callMethod.showToast("به سبد کالا اضافه شد");
                                     if (!Basketflag.equals("0")) {
-                                        intent = new Intent(mContext, BuyActivity.class);
+                                        intent = new Intent(mContext, BasketActivity.class);
                                         intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
                                         ((Activity) mContext).finish();
                                         ((Activity) mContext).overridePendingTransition(0, 0);
@@ -559,7 +559,7 @@ public class Action {
 
                                 callMethod.showToast("به سبد کالا اضافه شد");
                                 if (!Basketflag.equals("0")) {
-                                    intent = new Intent(mContext, BuyActivity.class);
+                                    intent = new Intent(mContext, BasketActivity.class);
                                     intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
                                     ((Activity) mContext).finish();
                                     ((Activity) mContext).overridePendingTransition(0, 0);
@@ -628,7 +628,7 @@ public class Action {
                         dtb.execSQL("Update PreFactorRow set Shortage = " + flag + " Where IfNull(PreFactorCode,0)=" + factor_code + " And GoodRef = " + code);
                     }
                     callMethod.showToast("کالاهای مورد نظر کسر موجودی دارند!");
-                    intent = new Intent(mContext, BuyActivity.class);
+                    intent = new Intent(mContext, BasketActivity.class);
                     intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
                     ((Activity) mContext).finish();
                     ((Activity) mContext).overridePendingTransition(0, 0);

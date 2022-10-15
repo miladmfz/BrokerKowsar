@@ -45,19 +45,13 @@
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/box_buy_percent.xml" value="0.1765625" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/box_multi_buy.xml" value="0.33" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/customer.xml" value="0.264" />
-        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/good_buy.xml" value="0.1" />
-        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/good_buy_history.xml" value="0.1" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/good_buy_history_line.xml" value="0.11458333333333333" />
-        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/good_item_cardview.xml" value="0.15715579710144928" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/good_prosearch.xml" value="0.12635869565217392" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/grp_v_list_detail.xml" value="0.152" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/header.xml" value="0.4" />
-        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/image_slider_layout_item.xml" value="0.1" />
-        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/image_zoom.xml" value="0.19166666666666668" />
-        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/item.xml" value="0.2" />
+        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/item.xml" value="0.12" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/item2.xml" value="0.2" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/item3.xml" value="0.14635416666666667" />
-        <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/pf_detail.xml" value="0.10677083333333333" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/prefactor_header.xml" value="0.1984375" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/prefactor_header_box.xml" value="0.1984375" />
         <entry key="..\:/Users/milad/AndroidStudioProjects/BrokerKowsar/app/src/main/res/layout/rep_prog.xml" value="0.33" />
@@ -66,7 +60,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

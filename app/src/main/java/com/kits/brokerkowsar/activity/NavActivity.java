@@ -68,10 +68,6 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
     private Replication replication;
     DatabaseHelper dbh;
-    String GroupCodeDefult_value="0";
-
-
-
     ArrayList<GoodGroup> menugrp;
     LinearLayoutCompat llsumfactor;
     Toolbar toolbar;
@@ -107,7 +103,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 handler.postDelayed(this::init, 100);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             callMethod.ErrorLog(e.getMessage());
         }
 
@@ -118,12 +114,12 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
     public void Gpslocation() {
 
-        int LOCATION_REFRESH_TIME =2000; // 15 seconds to update
+        int LOCATION_REFRESH_TIME = 2000; // 15 seconds to update
         int LOCATION_REFRESH_DISTANCE = 3; // 500 meters to update
 
         LocationListener mLocationListener = location -> {
 
-            tv_test.setText("lati="+location.getLatitude()+"\nlong="+location.getLongitude());
+            tv_test.setText("lati=" + location.getLatitude() + "\nlong=" + location.getLongitude());
             Call<RetrofitResponse> call1 = apiInterface.Location(
                     "Location",
                     String.valueOf(location.getLongitude()),
@@ -149,7 +145,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
 
-        }else {
+        } else {
             mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
                     LOCATION_REFRESH_DISTANCE, mLocationListener);
         }
@@ -163,11 +159,11 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
         replication = new Replication(this);
-
         dbh.ClearSearchColumn();
 
-        apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
         toolbar = findViewById(R.id.MainActivity_toolbar);
+        apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
+
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.NavActivity_drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -182,29 +178,26 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         btn_changedb = hView.findViewById(R.id.header_changedb);
         btn_changedb = hView.findViewById(R.id.header_changedb);
 
-        customer= findViewById(R.id.MainActivity_customer);
-        sumfac= findViewById(R.id.MainActivity_sum_factor);
-        create_factor= findViewById(R.id.mainactivity_create_factor);
-        good_search= findViewById(R.id.mainactivity_good_search);
-        open_factor= findViewById(R.id.mainactivity_open_factor);
-        all_factor= findViewById(R.id.mainactivity_all_factor);
-        btn_test= findViewById(R.id.mainactivity_test_btn);
-        tv_test= findViewById(R.id.mainactivity_test_tv);
+        customer = findViewById(R.id.MainActivity_customer);
+        sumfac = findViewById(R.id.MainActivity_sum_factor);
+        create_factor = findViewById(R.id.mainactivity_create_factor);
+        good_search = findViewById(R.id.mainactivity_good_search);
+        open_factor = findViewById(R.id.mainactivity_open_factor);
+        all_factor = findViewById(R.id.mainactivity_all_factor);
+        btn_test = findViewById(R.id.mainactivity_test_btn);
+        tv_test = findViewById(R.id.mainactivity_test_tv);
 
-        llsumfactor= findViewById(R.id.MainActivity_ll_sum_factor);
+        llsumfactor = findViewById(R.id.MainActivity_ll_sum_factor);
 
 
     }
 
 
-
     public void test_fun(View v) {
-//
-//        replication.BrokerStack();
-//        replication.MenuBroker();
-//        replication.GoodTypeReplication();
-        replication.GroupCodeDefult();
 
+        replication.BrokerStack();
+        replication.MenuBroker();
+        replication.GoodTypeReplication();
 
 
     }
@@ -215,12 +208,11 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         UserInfo auser = dbh.LoadPersonalInfo();
 
 
-
-        if (Integer.parseInt(auser.getBrokerCode())!=0) {
+        if (Integer.parseInt(auser.getBrokerCode()) != 0) {
 
             tv_brokercode.setText(" کد بازاریاب : " + NumberFunctions.PerisanNumber(auser.getBrokerCode()));
             if (dbh.ReadConfig("BrokerStack").equals("0")) {
-                if(callMethod.ReadBoolan("AutoReplication")) {
+                if (callMethod.ReadBoolan("AutoReplication")) {
                     workManager.cancelAllWork();
                 }
                 new AlertDialog.Builder(this)
@@ -235,7 +227,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
                         })
                         .show();
             }
-        }else {
+        } else {
 
             tv_brokercode.setText("کد بازاریاب ندارد");
             new AlertDialog.Builder(this)
@@ -243,7 +235,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
                     .setMessage("آیا مایل به تعریف کد بازاریاب می باشید ؟")
                     .setPositiveButton("بله", (dialogInterface, i) -> {
                         intent = new Intent(this, ConfigActivity.class);
-                        callMethod.showToast( "کد بازاریاب را وارد کنید");
+                        callMethod.showToast("کد بازاریاب را وارد کنید");
                         startActivity(intent);
                     })
                     .setNegativeButton("خیر", (dialogInterface, i) -> {
@@ -251,7 +243,6 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
                     })
                     .show();
         }
-
 
 
     }
@@ -262,7 +253,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         noti();
         CheckConfig();
 
-        if(callMethod.ReadBoolan("AutoReplication")) {
+        if (callMethod.ReadBoolan("AutoReplication")) {
 
             Constraints conster = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
             PeriodicWorkRequest req = new PeriodicWorkRequest.Builder(WManager.class, 15, TimeUnit.MINUTES)
@@ -293,8 +284,6 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         }
 
         navigationView.inflateMenu(R.menu.activity_navigation_drawer);
-
-
 
 
         if (callMethod.ReadString("PersianCompanyNameUse").equals("اصلی")) {
@@ -392,14 +381,14 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             try {
                 workManager.cancelAllWork();
                 replication.DoingReplicate();
-            }catch (Exception e){
+            } catch (Exception e) {
                 replication.DoingReplicate();
 
             }
 
         } else if (id == R.id.nav_buy) {
             if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) > 0) {
-                intent = new Intent(this, BuyActivity.class);
+                intent = new Intent(this, BasketActivity.class);
                 intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
                 intent.putExtra("showflag", "2");
                 startActivity(intent);
@@ -433,7 +422,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.bag_shop) {
             if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
-                intent = new Intent(this, BuyActivity.class);
+                intent = new Intent(this, BasketActivity.class);
                 intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
                 intent.putExtra("showflag", "2");
                 startActivity(intent);
@@ -450,7 +439,8 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     }
 
 
-    private void noti() {  }
+    private void noti() {
+    }
 
     public void factorState() {
         if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
@@ -468,16 +458,16 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         factorState();
         super.onWindowFocusChanged(hasFocus);
     }
+
     @Override
     protected void onStop() {
-        if(callMethod.ReadBoolan("AutoReplication")) {
+        if (callMethod.ReadBoolan("AutoReplication")) {
             workManager.cancelAllWork();
         }
         super.onStop();
     }
 
 
-
-
 }
+
 

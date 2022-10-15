@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.BuyActivity"
+    tools:context=".activity.BasketActivity"
     android:background="@drawable/kowsar_back"
     android:orientation="vertical"
     android:layoutDirection="rtl">
@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context=".activity.BuyActivity">
+        tools:context=".activity.BasketActivity">
 
 
         <androidx.appcompat.widget.LinearLayoutCompat

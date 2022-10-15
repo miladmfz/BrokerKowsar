@@ -12,8 +12,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.activity.BuyActivity;
-import com.kits.brokerkowsar.activity.BuyHistoryActivity;
+import com.kits.brokerkowsar.activity.BasketActivity;
+import com.kits.brokerkowsar.activity.BasketHistoryActivity;
 import com.kits.brokerkowsar.activity.CustomerActivity;
 import com.kits.brokerkowsar.activity.PrefactorActivity;
 import com.kits.brokerkowsar.activity.PrinterActivity;
@@ -113,7 +113,7 @@ public class PreFactorHeaderViewHolder extends RecyclerView.ViewHolder {
     ) {
         fac_history_good.setOnClickListener(view -> {
             callMethod.EditString("PreFactorGood", preFactor.getPreFactorFieldValue("PreFactorCode"));
-            intent = new Intent(mContext, BuyHistoryActivity.class);
+            intent = new Intent(mContext, BasketHistoryActivity.class);
             mContext.startActivity(intent);
         });
 
@@ -140,7 +140,7 @@ public class PreFactorHeaderViewHolder extends RecyclerView.ViewHolder {
                             .setTitle("توجه")
                             .setMessage("فاکتور دارای کالا می باشد،کالاها حذف شود؟")
                             .setPositiveButton("بله", (dialogInterface, i) -> {
-                                intent = new Intent(mContext, BuyActivity.class);
+                                intent = new Intent(mContext, BasketActivity.class);
                                 intent.putExtra("PreFac", preFactor.getPreFactorFieldValue("PreFactorCode"));
                                 mContext.startActivity(intent);
                             })
@@ -176,7 +176,7 @@ public class PreFactorHeaderViewHolder extends RecyclerView.ViewHolder {
 
                 callMethod.EditString("PreFactorCode", preFactor.getPreFactorFieldValue("PreFactorCode"));
 
-                intent = new Intent(mContext, BuyActivity.class);
+                intent = new Intent(mContext, BasketActivity.class);
                 intent.putExtra("PreFac", preFactor.getPreFactorFieldValue("PreFactorCode"));
 
                 mContext.startActivity(intent);
