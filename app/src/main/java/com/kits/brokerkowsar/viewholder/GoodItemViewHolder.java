@@ -117,16 +117,17 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
             , CallMethod callMethod
             , Action action
             , ImageInfo imageInfo
-            , boolean multi_select) {
+            , boolean multi_select,
+                       String ImageCode) {
 
         this.multi_select1 = multi_select;
 
 
-        if (imageInfo.Image_exist(good.getGoodFieldValue("KsrImageCode"))) {
+        if (imageInfo.Image_exist(ImageCode)) {
             String root = Environment.getExternalStorageDirectory().getAbsolutePath();
             File imagefile = new File(root + "/Kowsar/" +
                     callMethod.ReadString("EnglishCompanyNameUse") + "/" +
-                    good.getGoodFieldValue("KsrImageCode") + ".jpg"
+                    ImageCode + ".jpg"
             );
             Bitmap myBitmap = BitmapFactory.decodeFile(imagefile.getAbsolutePath());
             img.setImageBitmap(myBitmap);

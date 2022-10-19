@@ -619,6 +619,7 @@ public class Replication {
     public void BrokerStack() {
 
         UserInfo userInfo = dbh.LoadPersonalInfo();
+        dbh.DatabaseCreate();
         Call<RetrofitResponse> call1 = apiInterface.BrokerStack("BrokerStack", userInfo.getBrokerCode());
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
@@ -649,8 +650,9 @@ public class Replication {
                 if (response.isSuccessful()) {
                     assert response.body() != null;
                     if (!response.body().getText().equals(dbh.ReadConfig("GroupCodeDefult"))) {
-                        Log.e("test_group", response.body().getText());
-                        dbh.SaveConfig("GroupCodeDefult", response.body().getText());
+                        if (!response.body().getText().equals("")) {
+                            dbh.SaveConfig("GroupCodeDefult", response.body().getText());
+                        }
                     }
                 }
             }

@@ -1,6 +1,7 @@
 package com.kits.brokerkowsar.activity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -61,6 +62,7 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("SdCardPath")
     public void init() {
         callMethod = new CallMethod(this);
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
@@ -78,7 +80,7 @@ public class SplashActivity extends AppCompatActivity {
             callMethod.EditBoolan("FirstStart", false);
             callMethod.EditString("SellOff", "1");
             callMethod.EditString("Grid", "3");
-            callMethod.EditString("Delay", "1000");
+            callMethod.EditString("Delay", "500");
             callMethod.EditString("ItemAmount", "200");
             callMethod.EditString("TitleSize", "18");
             callMethod.EditString("BodySize", "18");
@@ -89,7 +91,6 @@ public class SplashActivity extends AppCompatActivity {
             callMethod.EditBoolan("GoodAmount", false);
             callMethod.EditBoolan("AutoReplication", false);
             callMethod.EditBoolan("SellPriceTypeDeactivate", true);
-            //callMethod.EditBoolan("SellPriceTypeDeactivate", true);
 
             callMethod.EditString("ServerURLUse", "");
             callMethod.EditString("SQLiteURLUse", "");
@@ -118,6 +119,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void Startapplication() {
+        Log.e("test_","34");
+
         File databasedir = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse"));
         File temp = new File(databasedir, "/tempDb");
         if (!temp.exists()) {
@@ -155,7 +158,7 @@ public class SplashActivity extends AppCompatActivity {
 
     private void requestPermission() {
         Log.e("test_","0");
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        if (Build.VERSION_CODES.R <= Build.VERSION.SDK_INT) {
             Log.e("test_","1");
 
             if (!Environment.isExternalStorageManager()) {
@@ -187,16 +190,22 @@ public class SplashActivity extends AppCompatActivity {
     private void runtimePermission() {
         try {
 
+            Log.e("test_","31");
 
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+            if (androidx.core.content.ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+
+                if (androidx.core.content.ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+
+                    Log.e("test_","33");
                     Startapplication();
 
                 } else {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CODE);
+                    androidx.core.app.ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CODE);
                 }
             } else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CODE);
+                Log.e("test_","32");
+
+                androidx.core.app.ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CODE);
             }
         } catch (Exception e) {
             Log.e("test", e.getMessage());

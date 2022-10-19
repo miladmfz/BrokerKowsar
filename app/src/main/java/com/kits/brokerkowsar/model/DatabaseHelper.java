@@ -18,8 +18,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
-
-
     CallMethod callMethod;
     ArrayList<Column> columns;
     ArrayList<Good> goods;
@@ -111,6 +109,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL("Create Index IF Not Exists IX_PreFactorRow_PreFactorRef on PreFactorRow (PreFactorRef)");
 
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_GoodRef_stackref ON GoodStack (GoodRef,StackRef)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_GoodRef ON GoodStack (GoodRef)");
 
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_KsrImage_ObjectRef ON KsrImage (ObjectRef)");
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_KsrImage_IsDefaultImage ON KsrImage (IsDefaultImage)");
@@ -365,16 +364,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         query = "Select Replace(Replace(Cast('" + String + "' as nvarchar(500)),char(1740),char(1610)),char(1705),char(1603)) result  ";
 
-
-//        GetPreference();
-//        if(SH_ArabicText) {
-//            //arabic
-//            query = "Select Replace(Replace(Cast('" + String + "' as nvarchar(500)),char(1740),char(1610)),char(1705),char(1603)) result  ";
-//        }else{
-//            //Persian
-//            query = "Select Replace(Replace(Cast('" + String + "' as nvarchar(500)),char(1610),char(1740)),char(1603),char(1705)) result  " ;
-//        }
-
         cursor = getWritableDatabase().rawQuery(query, null);
         cursor.moveToFirst();
         String result = cursor.getString(cursor.getColumnIndex("result"));
@@ -425,17 +414,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         k = 0;
 
         for (Column column : columns) {
-            if (!column.getColumnName().equals("")) {
-                if (k != 0) {
-                    query = query + " , ";
+
+                if (!column.getColumnName().equals("")) {
+                    if (k != 0) {
+                        query = query + " , ";
+                    }
+                    if (!column.getColumnDefinition().equals("")) {
+                        query = query + column.getColumnDefinition() + " as " + column.getColumnName();
+                    } else {
+                        query = query + column.getColumnName();
+                    }
+                    k++;
                 }
-                if (!column.getColumnDefinition().equals("")) {
-                    query = query + column.getColumnDefinition() + " as " + column.getColumnName();
-                } else {
-                    query = query + column.getColumnName();
-                }
-                k++;
-            }
+
         }
 
         query = query + " FROM Good g , FilterTable ";
@@ -445,7 +436,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             for (Column column : columns) {
 
                 if (!(!column.getColumnType().equals("0") && !digitsOnly)) {
-                    if ((Integer.parseInt(column.getColumnFieldValue("SortOrder")) > 0)) {
+                    if (Integer.parseInt(column.getColumnFieldValue("SortOrder")) > 0 && Integer.parseInt(column.getColumnFieldValue("SortOrder")) < 10) {
                         if (k == 0) {
                             query = query + " Where (";
                         } else {
@@ -528,10 +519,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         query = query + " LIMIT  " + LimitAmount;
         query = query + " OFFSET " + (Integer.parseInt(LimitAmount) * Integer.parseInt(MoreCallData));
-
+        Log.e("test_query", "start");
         cursor = getWritableDatabase().rawQuery(query, null);
-
         Log.e("test_query", query);
+        Log.e("test_query", "end");
+
         if (cursor != null) {
 
             while (cursor.moveToNext()) {
@@ -569,6 +561,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         assert cursor != null;
         cursor.close();
+        Log.e("test_query", "dataset done");
+
         return goods;
     }
 
@@ -836,15 +830,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         query = "With FilterTable As (Select 0 as SecondField) SELECT ";
         k = 0;
         for (Column column : columns) {
-            if (k != 0) {
-                query = query + " , ";
+            if (!column.getColumnName().equals("ksrImageCode")) {
+                if (k != 0) {
+                    query = query + " , ";
+                }
+                if (!column.getColumnDefinition().equals("")) {
+                    query = query + column.getColumnDefinition() + " as " + column.getColumnName();
+                } else {
+                    query = query + column.getColumnName();
+                }
+                k++;
             }
-            if (!column.getColumnDefinition().equals("")) {
-                query = query + column.getColumnDefinition() + " as " + column.getColumnName();
-            } else {
-                query = query + column.getColumnName();
-            }
-            k++;
         }
         query = query + joinDetail;
 
@@ -860,7 +856,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         query = query + " WHERE GoodCode = " + code;
 
-        Log.e("test", query);
+        Log.e("test_query", query);
         gooddetail = new Good();
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor.getCount() > 0) {
@@ -1588,6 +1584,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         assert cursor != null;
         cursor.close();
         return Goods;
+    }
+
+    @SuppressLint("Range")
+    public String GetLastksrImageCode(String code) {
+        query = "SELECT ksrImageCode from KsrImage where ObjectRef = " + code + " limit 1 ";
+        String ksrimageCode = "";
+
+        cursor = getWritableDatabase().rawQuery(query, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                ksrimageCode = String.valueOf(cursor.getInt(cursor.getColumnIndex("KsrImageCode")));
+            }
+        }
+        assert cursor != null;
+        cursor.close();
+        return ksrimageCode;
     }
 
     @SuppressLint("Range")

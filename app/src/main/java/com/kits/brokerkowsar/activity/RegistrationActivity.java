@@ -192,7 +192,7 @@ public class RegistrationActivity extends AppCompatActivity {
             UserInfo UserInfoNew = new UserInfo();
             UserInfoNew.setBrokerCode(NumberFunctions.EnglishNumber(binding.registrBroker.getText().toString()));
             dbh.SavePersonalInfo(UserInfoNew);
-
+            dbh.DatabaseCreate();
             dbh.ExecQuery("delete from customer");
             dbh.ExecQuery("Update ReplicationTable Set LastRepLogCode = -1 Where ServerTable = 'Customer' ");
 

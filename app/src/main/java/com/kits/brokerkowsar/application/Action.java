@@ -625,7 +625,7 @@ public class Action {
                         jo = object.getJSONObject(i);
                         code = jo.getInt("GoodCode");
                         int flag = jo.getInt("Flag");
-                        dtb.execSQL("Update PreFactorRow set Shortage = " + flag + " Where IfNull(PreFactorCode,0)=" + factor_code + " And GoodRef = " + code);
+                        dtb.execSQL("Update PreFactorRow set Shortage = " + flag + " Where IfNull(PreFactorRef,0)=" + factor_code + " And GoodRef = " + code);
                     }
                     callMethod.showToast("کالاهای مورد نظر کسر موجودی دارند!");
                     intent = new Intent(mContext, BasketActivity.class);

@@ -78,6 +78,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final GoodItemViewHolder holder, @SuppressLint("RecyclerView") final int position) {
 
+        String imagecode=dbh.GetLastksrImageCode(goods.get(position).getGoodFieldValue("GoodCode"));
 
         holder.bind(Columns, goods.get(position), mContext, callMethod);
 
@@ -87,11 +88,11 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
                 , callMethod
                 , action
                 , image_info
-                , multi_select
+                , multi_select,imagecode
         );
 
 
-        if (!image_info.Image_exist(goods.get(position).getGoodFieldValue("KsrImageCode"))) {
+        if (!image_info.Image_exist(imagecode)) {
 
             call2 = apiInterface.GetImageFromKsr("GetImageFromKsr", goods.get(position).getGoodFieldValue("KsrImageCode"));
             call2.enqueue(new Callback<RetrofitResponse>() {
@@ -107,7 +108,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
                                             0,
                                             Base64.decode(response.body().getText(), Base64.DEFAULT).length
                                     ),
-                                    goods.get(position).getGoodFieldValue("KsrImageCode")
+                                    imagecode
                             );
 
                             notifyItemChanged(position);

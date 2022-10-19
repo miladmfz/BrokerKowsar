@@ -208,7 +208,7 @@ public class SearchActivity extends AppCompatActivity {
             }
             goods.clear();
             PageMoreData = "0";
-            GetDataFromDataBase();
+            binding.SearchActivityEdtsearch.setText(AutoSearch);
         });
         binding.SearchActivityswitchAmount.setOnCheckedChangeListener((compoundButton, b) -> {
             if (b) {
@@ -220,7 +220,7 @@ public class SearchActivity extends AppCompatActivity {
             }
             goods.clear();
             PageMoreData = "0";
-            GetDataFromDataBase();
+            binding.SearchActivityEdtsearch.setText(AutoSearch);
         });
 
 
@@ -356,7 +356,8 @@ public class SearchActivity extends AppCompatActivity {
                 }
             }
         });
-        GetDataFromDataBase();
+        binding.SearchActivityEdtsearch.setText(AutoSearch);
+        //GetDataFromDataBase();
 
     }
 
@@ -403,16 +404,29 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void GetDataFromDataBase() {
+        Log.e("test_query","0");
+
         loading = true;
         Moregoods.clear();
+        Log.e("test_query","1");
+
         if (proSearchCondition.equals("")) {
+            Log.e("test_query","2");
+
+
             Moregoods = dbh.getAllGood(NumberFunctions.EnglishNumber(AutoSearch), id, PageMoreData);
         } else {
+            Log.e("test_query","3");
+
             Moregoods = dbh.getAllGood_Extended(NumberFunctions.EnglishNumber(proSearchCondition), id, PageMoreData);
         }
         if (goods.isEmpty()) {
+            Log.e("test_query","4");
+
             goods.addAll(Moregoods);
         }
+        Log.e("test_query","5");
+
         CallRecyclerView();
     }
 
@@ -448,6 +462,8 @@ public class SearchActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void CallRecyclerView() {
+
+        Log.e("test_query","6");
 
         adapter = new GoodAdapter(goods, this);
         if (adapter.getItemCount() == 0) {
