@@ -25,7 +25,10 @@ import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Objects;
 
+@SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
 
 
@@ -36,7 +39,8 @@ public class SplashActivity extends AppCompatActivity {
     DatabaseHelper dbh, dbhbase;
     final int PERMISSION_REQUEST_CODE = 1;
     WorkManager workManager;
-        int i=0;
+    int i = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +85,6 @@ public class SplashActivity extends AppCompatActivity {
             callMethod.EditString("SellOff", "1");
             callMethod.EditString("Grid", "3");
             callMethod.EditString("Delay", "500");
-            callMethod.EditString("ItemAmount", "200");
             callMethod.EditString("TitleSize", "18");
             callMethod.EditString("BodySize", "18");
             callMethod.EditString("PhoneNumber", "");
@@ -98,14 +101,9 @@ public class SplashActivity extends AppCompatActivity {
             callMethod.EditString("EnglishCompanyNameUse", "");
             dbhbase = new DatabaseHelper(App.getContext(), "/data/data/com.kits.brokerkowsar/databases/KowsarDb.sqlite");
             dbhbase.CreateActivationDb();
+            dbh.SaveConfig("BrokerStack", "0");
+            dbh.SaveConfig("MenuBroker", "0");
 
-
-            try {
-                dbh.SaveConfig("BrokerStack", "0");
-                dbh.SaveConfig("MenuBroker", "");
-            } catch (Exception e) {
-                callMethod.ErrorLog(e.getMessage());
-            }
 
         }
 
@@ -119,51 +117,52 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void Startapplication() {
-        Log.e("test_","34");
 
-        File databasedir = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse"));
-        File temp = new File(databasedir, "/tempDb");
-        if (!temp.exists()) {
-            if (callMethod.ReadString("DatabaseName").equals("")) {
-                handler = new Handler();
-                handler.postDelayed(() -> {
-                    intent = new Intent(this, ChoiceDatabaseActivity.class);
-                    startActivity(intent);
-                    finish();
-                }, 2000);
+
+        if (androidx.core.content.ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+
+            File databasedir = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse"));
+            File temp = new File(databasedir, "/tempDb");
+            if (!temp.exists()) {
+                if (callMethod.ReadString("DatabaseName").equals("")) {
+                    handler = new Handler();
+                    handler.postDelayed(() -> {
+                        intent = new Intent(this, ChoiceDatabaseActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }, 2000);
+                } else {
+
+                    handler = new Handler();
+                    handler.postDelayed(() -> {
+
+
+                        intent = new Intent(this, NavActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }, 2000);
+                }
             } else {
-
-                handler = new Handler();
-                handler.postDelayed(() -> {
-
-
-                    intent = new Intent(this, NavActivity.class);
-                    startActivity(intent);
-                    finish();
-                }, 2000);
+                deleteRecursive(databasedir);
+                callMethod.EditString("ServerURLUse", "");
+                callMethod.EditString("SQLiteURLUse", "");
+                callMethod.EditString("PersianCompanyNameUse", "");
+                callMethod.EditString("EnglishCompanyNameUse", "");
+                callMethod.EditString("DatabaseName", "");
+                startActivity(getIntent());
+                finish();
             }
+
         } else {
-            deleteRecursive(databasedir);
-            callMethod.EditString("ServerURLUse", "");
-            callMethod.EditString("SQLiteURLUse", "");
-            callMethod.EditString("PersianCompanyNameUse", "");
-            callMethod.EditString("EnglishCompanyNameUse", "");
-            callMethod.EditString("DatabaseName", "");
-            startActivity(getIntent());
-            finish();
+            androidx.core.app.ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CODE);
         }
 
 
     }
 
     private void requestPermission() {
-        Log.e("test_","0");
         if (Build.VERSION_CODES.R <= Build.VERSION.SDK_INT) {
-            Log.e("test_","1");
-
             if (!Environment.isExternalStorageManager()) {
-                Log.e("test_","2");
-
                 try {
                     intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
                     intent.addCategory("android.intent.category.DEFAULT");
@@ -175,36 +174,18 @@ public class SplashActivity extends AppCompatActivity {
                     startActivityForResult(intent, 2296);
                 }
             } else {
-                Log.e("test_","3");
-
-                runtimePermission();
+                Startapplication();
             }
-
         } else {
-            Log.e("test_","4");
-
             runtimePermission();
         }
     }
 
     private void runtimePermission() {
         try {
-
-            Log.e("test_","31");
-
             if (androidx.core.content.ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-
-                if (androidx.core.content.ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
-
-                    Log.e("test_","33");
-                    Startapplication();
-
-                } else {
-                    androidx.core.app.ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CODE);
-                }
+                Startapplication();
             } else {
-                Log.e("test_","32");
-
                 androidx.core.app.ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CODE);
             }
         } catch (Exception e) {
@@ -237,6 +218,7 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
         if (requestCode == PERMISSION_REQUEST_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 callMethod.showToast("permission granted");
@@ -256,14 +238,13 @@ public class SplashActivity extends AppCompatActivity {
 
     void deleteRecursive(File fileOrDirectory) {
         if (fileOrDirectory.isDirectory())
-            for (File child : fileOrDirectory.listFiles())
+            for (File child : Objects.requireNonNull(fileOrDirectory.listFiles()))
                 deleteRecursive(child);
 
         fileOrDirectory.delete();
         callMethod.EditString("PersianCompanyNameUse", "");
         callMethod.EditString("EnglishCompanyNameUse", "");
         callMethod.EditString("ServerURLUse", "");
-        //callMethod.EditString("DatabaseName", "");
         callMethod.EditString("DatabaseName", "");
         intent = new Intent(this, SplashActivity.class);
         finish();

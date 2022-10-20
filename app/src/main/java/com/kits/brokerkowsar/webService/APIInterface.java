@@ -82,6 +82,14 @@ public interface APIInterface {
 
     @POST("index.php")
     @FormUrlEncoded
+    Call<RetrofitResponse> Notification(
+            @Field("tag") String tag,
+            @Field("Condition") String Condition
+    );
+
+
+    @POST("index.php")
+    @FormUrlEncoded
     Call<RetrofitResponse> Kowsar_log(
             @Field("tag") String tag
             , @Field("Device_Id") String Device_Id

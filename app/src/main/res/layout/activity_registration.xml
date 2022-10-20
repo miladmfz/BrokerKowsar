@@ -196,11 +196,11 @@
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="@string/config_searchitem" />
+                            android:text="@string/config_delay" />
 
                         <EditText
                             android:layout_weight="0.5"
-                            android:id="@+id/registr_itemamount"
+                            android:id="@+id/registr_delay"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:background="@drawable/edittest1"
@@ -303,32 +303,6 @@
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:padding="5dp">
-
-                        <TextView
-                            android:layout_weight="0.5"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:text="@string/config_delay" />
-
-                        <EditText
-                            android:layout_weight="0.5"
-                            android:id="@+id/registr_delay"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/edittest1"
-
-                            android:inputType="text"
-                            tools:ignore="LabelFor"
-                            android:gravity="center" />
-
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
                     <androidx.appcompat.widget.LinearLayoutCompat

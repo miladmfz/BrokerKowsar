@@ -37,7 +37,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     String SH_brokerstack;
     String SH_prefactor_code;
     String SH_prefactor_good;
-    String SH_itemamount;
     String SH_MenuBroker;
     boolean SH_activestack;
     boolean SH_real_amount;
@@ -264,7 +263,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.SH_delay = callMethod.ReadString("Delay");
         this.SH_prefactor_code = callMethod.ReadString("PreFactorCode");
         this.SH_prefactor_good = callMethod.ReadString("PreFactorGood");
-        this.SH_itemamount = callMethod.ReadString("ItemAmount");
         this.SH_activestack = callMethod.ReadBoolan("ActiveStack");
         this.SH_real_amount = callMethod.ReadBoolan("RealAmount");
         this.SH_goodamount = callMethod.ReadBoolan("GoodAmount");

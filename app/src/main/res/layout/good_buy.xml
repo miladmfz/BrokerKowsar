@@ -171,39 +171,6 @@
                 android:background="@color/grey_900" />
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_weight="1"
-                android:layout_margin="5dp">
-
-                <TextView
-                    android:id="@+id/good_buy_shortage_false1"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:gravity="center"
-                    android:layout_weight="0.5"
-                    android:textColor="#FF0000"
-                    android:textSize="12sp"
-                    android:text="@string/good_buy_shortage"
-                    android:textStyle="bold"
-                    android:background="#ffffff" />
-
-                <TextView
-                    android:id="@+id/good_buy_shortage_false2"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:gravity="center"
-                    android:text="@string/good_buy_shortage"
-                    android:layout_weight="0.5"
-                    android:textColor="#FF0000"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:background="#ffffff" />
-
-
-            </LinearLayout>
 
 
             <LinearLayout
@@ -222,7 +189,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="0.4"
-                    android:background="#FFFFFF"
                     android:gravity="center"
                     android:textColor="#000000"
                     android:text="@string/good_buy_amount"
@@ -237,12 +203,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="0.4"
-                    android:background="#FFFFFF"
                     android:gravity="center"
                     android:textColor="@color/red_900"
                     android:text="@string/good_buy_amount"
                     android:textSize="24sp"
-
                     android:textStyle="bold" />
 
 

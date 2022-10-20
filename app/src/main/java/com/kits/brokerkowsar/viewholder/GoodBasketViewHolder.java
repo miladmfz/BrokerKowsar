@@ -41,8 +41,6 @@ public class GoodBasketViewHolder extends RecyclerView.ViewHolder {
     private final TextView total;
     private final TextView maxtotal;
     private final TextView amount;
-    private final TextView good_buy_shortage_f1;
-    private final TextView good_buy_shortage_f2;
     private final TextView offer;
     private final Button btndlt;
     private final ImageView img;
@@ -56,8 +54,6 @@ public class GoodBasketViewHolder extends RecyclerView.ViewHolder {
         maxsellpriceTextView = itemView.findViewById(R.id.good_buy_maxprice);
         priceTextView = itemView.findViewById(R.id.good_buy_price);
         amount = itemView.findViewById(R.id.good_buy_amount);
-        good_buy_shortage_f1 = itemView.findViewById(R.id.good_buy_shortage_false1);
-        good_buy_shortage_f2 = itemView.findViewById(R.id.good_buy_shortage_false2);
         total = itemView.findViewById(R.id.good_buy_total);
         maxtotal = itemView.findViewById(R.id.good_buy_maxtotal);
         img = itemView.findViewById(R.id.good_buy_img);
@@ -97,18 +93,12 @@ public class GoodBasketViewHolder extends RecyclerView.ViewHolder {
             offer.setText(NumberFunctions.PerisanNumber((100 - ((sellprice * 100) / maxsellprice)) + " درصد تخفیف "));
         }
 
-        if (ws == 1) {
-            good_buy_shortage_f1.getLayoutParams().height = 30;
-        } else {
-            good_buy_shortage_f1.getLayoutParams().height = 1;
-        }
 
-        if (ws == 2) {
-            good_buy_shortage_f2.getLayoutParams().height = 30;
+        if (ws == 1 ||ws == 2) {
+            rltv.setBackgroundResource(R.drawable.bg_round_red);
         } else {
-            good_buy_shortage_f2.getLayoutParams().height = 1;
+            rltv.setBackgroundResource(R.drawable.bg_round_green);
         }
-
 
     }
 

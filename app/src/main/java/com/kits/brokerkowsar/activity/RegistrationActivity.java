@@ -65,7 +65,6 @@ public class RegistrationActivity extends AppCompatActivity {
         binding.registrBroker.setText(NumberFunctions.PerisanNumber(auser.getBrokerCode()));
         binding.registrGrid.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Grid")));
         binding.registrDelay.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Delay")));
-        binding.registrItemamount.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("ItemAmount")));
         binding.registrTitlesize.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("TitleSize")));
         binding.registrBodysize.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("BodySize")));
         binding.registrPhonenumber.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PhoneNumber")));
@@ -172,12 +171,14 @@ public class RegistrationActivity extends AppCompatActivity {
         binding.registrBtn.setOnClickListener(view -> {
             callMethod.EditString("Grid", NumberFunctions.EnglishNumber(binding.registrGrid.getText().toString()));
             callMethod.EditString("Delay", NumberFunctions.EnglishNumber(binding.registrDelay.getText().toString()));
-            callMethod.EditString("ItemAmount", NumberFunctions.EnglishNumber(binding.registrItemamount.getText().toString()));
             callMethod.EditString("TitleSize", NumberFunctions.EnglishNumber(binding.registrTitlesize.getText().toString()));
             callMethod.EditString("BodySize", NumberFunctions.EnglishNumber(binding.registrBodysize.getText().toString()));
             callMethod.EditString("PhoneNumber", NumberFunctions.EnglishNumber(binding.registrPhonenumber.getText().toString()));
-            Registration();
-
+            if(!auser.getBrokerCode().equals(NumberFunctions.EnglishNumber(binding.registrBroker.getText().toString()))){
+                Registration();
+            }else {
+                finish();
+            }
 
         });
 
@@ -188,7 +189,7 @@ public class RegistrationActivity extends AppCompatActivity {
     public void Registration() {
 
 
-        if (!auser.getBrokerCode().equals(binding.registrBroker.getText().toString())) {
+
             UserInfo UserInfoNew = new UserInfo();
             UserInfoNew.setBrokerCode(NumberFunctions.EnglishNumber(binding.registrBroker.getText().toString()));
             dbh.SavePersonalInfo(UserInfoNew);
@@ -200,9 +201,6 @@ public class RegistrationActivity extends AppCompatActivity {
             action.app_info();
             replication.DoingReplicate();
 
-        } else {
-            finish();
-        }
     }
 
     void deleteRecursive(File fileOrDirectory) {

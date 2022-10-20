@@ -11,6 +11,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -44,11 +46,13 @@ import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.kits.brokerkowsar.model.UserInfo;
 import com.kits.brokerkowsar.webService.APIClient;
+import com.kits.brokerkowsar.webService.APIClient_kowsar;
 import com.kits.brokerkowsar.webService.APIInterface;
 
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -440,6 +444,51 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
 
     private void noti() {
+        Call<RetrofitResponse> call1 = apiInterface.Notification("Notification", "");
+        call1.enqueue(new Callback<RetrofitResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    if (!response.body().getText().equals("")) {
+                        new android.app.AlertDialog.Builder(NavActivity.this)
+                                .setTitle("توجه")
+                                .setMessage(response.body().getText())
+                                .show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+                Log.e("test_Retrofitbroker", t.getMessage());
+            }
+        });
+
+        APIInterface apiInterface2 = APIClient_kowsar.getCleint_log().create(APIInterface.class);
+        Call<RetrofitResponse> call2 = apiInterface2.Notification("Notification_kowsar",callMethod.ReadString("EnglishCompanyNameUse")
+        );
+        call2.enqueue(new Callback<RetrofitResponse>() {
+            @Override
+            public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    if (!response.body().getText().equals("")) {
+                        new android.app.AlertDialog.Builder(NavActivity.this)
+                                .setTitle("توجه")
+                                .setMessage(NumberFunctions.PerisanNumber(response.body().getText()))
+                                .show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+                Log.e("test_Retrofitbroker", t.getMessage());
+            }
+        });
+
+
     }
 
     public void factorState() {

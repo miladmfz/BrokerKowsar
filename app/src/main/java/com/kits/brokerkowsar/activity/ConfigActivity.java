@@ -63,7 +63,6 @@ public class ConfigActivity extends AppCompatActivity {
         binding.configBorker.setText(NumberFunctions.PerisanNumber(auser.getBrokerCode()));
         binding.configGrid.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Grid")));
         binding.configDelay.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Delay")));
-        binding.configItemamount.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("ItemAmount")));
         binding.configTitlesize.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("TitleSize")));
         binding.configBodysize.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("BodySize")));
         binding.configPhonenumber.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PhoneNumber")));
