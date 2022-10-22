@@ -33,6 +33,7 @@ public class CallMethod extends Application {
     private SharedPreferences.Editor sEdit;
     Context context;
 
+    Toast toast;
     public CallMethod(Context mContext) {
         this.context = mContext;
         this.shPref = context.getSharedPreferences("profile", Context.MODE_PRIVATE);
@@ -65,8 +66,10 @@ public class CallMethod extends Application {
     }
 
     public void showToast(String string) {
-
-        Toast.makeText(context, string, Toast.LENGTH_SHORT).show();
+        if (toast!=null)
+            toast.cancel();
+        toast = Toast.makeText(context, string, Toast.LENGTH_LONG);
+        toast.show();
     }
 
     public void saveArrayList(ArrayList<String> list, String key) {

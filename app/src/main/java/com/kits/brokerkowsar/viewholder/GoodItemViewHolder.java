@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -86,15 +87,7 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
                     }
                 }
 
-                if (Column.getSortOrder().equals("3")) {
-                    if (extra_TextView.getText().toString().length() > 30) {
-                        String lowText = extra_TextView.getText().toString().substring(0, 30) + "...";
-                        extra_TextView.setText(lowText);
-                    }
-                    extra_TextView.setTextSize(14);
-                    extra_TextView.setLines(2);
 
-                }
 
                 if (Column.getColumnName().equals("MaxSellPrice")) {
 

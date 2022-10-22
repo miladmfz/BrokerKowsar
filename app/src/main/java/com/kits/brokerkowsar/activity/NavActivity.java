@@ -444,7 +444,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
 
     private void noti() {
-        Call<RetrofitResponse> call1 = apiInterface.Notification("Notification", "");
+        Call<RetrofitResponse> call1 = apiInterface.Notification("Notification", "Broker");
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
@@ -461,7 +461,6 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                Log.e("test_Retrofitbroker", t.getMessage());
             }
         });
 
@@ -484,7 +483,6 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                Log.e("test_Retrofitbroker", t.getMessage());
             }
         });
 

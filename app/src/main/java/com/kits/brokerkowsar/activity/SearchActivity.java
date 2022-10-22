@@ -79,7 +79,7 @@ public class SearchActivity extends AppCompatActivity {
         binding = ActivitySearchBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //setContentView(R.layout.activity_search);
+
 
         dialog1 = new Dialog(this);
         dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -125,7 +125,6 @@ public class SearchActivity extends AppCompatActivity {
         assert data != null;
         AutoSearch = data.getString("scan");
         id = data.getString("id");
-
         title = data.getString("title");
     }
 
@@ -236,8 +235,6 @@ public class SearchActivity extends AppCompatActivity {
             defultenablesellprice = false;
 
             for (Good good : Multi_Good) {
-                Log.e("test_",Multi_Good.size()+"");
-                Log.e("test_",good.getGoodFieldValue("GoodCode")+"");
 
                 Good goodtempdata = dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
 
@@ -357,7 +354,6 @@ public class SearchActivity extends AppCompatActivity {
             }
         });
         binding.SearchActivityEdtsearch.setText(AutoSearch);
-        //GetDataFromDataBase();
 
     }
 
@@ -404,38 +400,23 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void GetDataFromDataBase() {
-        Log.e("test_query","0");
-
         loading = true;
         Moregoods.clear();
-        Log.e("test_query","1");
-
         if (proSearchCondition.equals("")) {
-            Log.e("test_query","2");
-
-
             Moregoods = dbh.getAllGood(NumberFunctions.EnglishNumber(AutoSearch), id, PageMoreData);
         } else {
-            Log.e("test_query","3");
-
             Moregoods = dbh.getAllGood_Extended(NumberFunctions.EnglishNumber(proSearchCondition), id, PageMoreData);
         }
         if (goods.isEmpty()) {
-            Log.e("test_query","4");
-
             goods.addAll(Moregoods);
         }
-        Log.e("test_query","5");
-
         CallRecyclerView();
     }
 
     @SuppressLint("NotifyDataSetChanged")
     public void GetMoreDataFromDataBase() {
         Moregoods.clear();
-
         if (proSearchCondition.equals("")) {
-
             Moregoods = dbh.getAllGood(NumberFunctions.EnglishNumber(AutoSearch), id, PageMoreData);
         } else {
             Moregoods = dbh.getAllGood_Extended(NumberFunctions.EnglishNumber(proSearchCondition), id, PageMoreData);
@@ -450,21 +431,16 @@ public class SearchActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
             binding.SearchActivityProg.setVisibility(View.GONE);
             loading = true;
-
         } else {
             loading = false;
             binding.SearchActivityProg.setVisibility(View.GONE);
             callMethod.showToast("کالای بیشتری یافت نشد");
             PageMoreData = String.valueOf(Integer.parseInt(PageMoreData) - 1);
         }
-
     }
 
     @SuppressLint("NotifyDataSetChanged")
     public void CallRecyclerView() {
-
-        Log.e("test_query","6");
-
         adapter = new GoodAdapter(goods, this);
         if (adapter.getItemCount() == 0) {
             binding.SearchActivityTvstatus.setText("کالایی یافت نشد");
@@ -474,14 +450,11 @@ public class SearchActivity extends AppCompatActivity {
             binding.SearchActivityLottie.setVisibility(View.GONE);
             binding.SearchActivityTvstatus.setVisibility(View.GONE);
         }
-
         gridLayoutManager = new GridLayoutManager(this, grid);
         binding.SearchActivityAllgood.setLayoutManager(gridLayoutManager);
         binding.SearchActivityAllgood.setAdapter(adapter);
         binding.SearchActivityAllgood.setItemAnimator(new DefaultItemAnimator());
         binding.SearchActivityProg.setVisibility(View.GONE);
-
-
     }
 
 
@@ -489,12 +462,10 @@ public class SearchActivity extends AppCompatActivity {
 
         if (!Multi_Good.contains(good)) {
             Multi_Good.add(good);
-
             binding.SearchActivityFab.setVisibility(View.VISIBLE);
             item_multi.findItem(R.id.menu_multi).setVisible(true);
         } else {
             Multi_Good.remove(good);
-
             if (Multi_Good.size() < 1) {
                 binding.SearchActivityFab.setVisibility(View.GONE);
                 adapter.multi_select = false;
