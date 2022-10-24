@@ -170,17 +170,11 @@ public class PreFactorHeaderViewHolder extends RecyclerView.ViewHolder {
 
         fac_good_edit.setOnClickListener(view -> {
 
-            if (Integer.parseInt(preFactor.getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
-                callMethod.showToast("فاکتور بسته می باشد");
-            } else {
-
                 callMethod.EditString("PreFactorCode", preFactor.getPreFactorFieldValue("PreFactorCode"));
-
                 intent = new Intent(mContext, BasketActivity.class);
                 intent.putExtra("PreFac", preFactor.getPreFactorFieldValue("PreFactorCode"));
-
                 mContext.startActivity(intent);
-            }
+
         });
 
 
