@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.application.CallMethod;
 
@@ -297,7 +299,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public ArrayList<Column> GetColumns(String code, String goodtype, String AppType) {
+    public ArrayList<Column> GetColumns(String code, String goodtype, @NonNull String AppType) {
 
 
         switch (AppType) {
@@ -394,7 +396,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     @SuppressLint({"Recycle", "Range"})
-
     public ArrayList<Good> getAllGood(String search_target, String aGroupCode, String MoreCallData) {
         goods.clear();
         GetPreference();
@@ -517,10 +518,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         query = query + " LIMIT  " + LimitAmount;
         query = query + " OFFSET " + (Integer.parseInt(LimitAmount) * Integer.parseInt(MoreCallData));
-        Log.e("test_query", "start");
         cursor = getWritableDatabase().rawQuery(query, null);
         Log.e("test_query", query);
-        Log.e("test_query", "end");
 
         if (cursor != null) {
 
@@ -553,13 +552,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     }
                 }
                 gooddetail.setCheck(false);
+                gooddetail.setGoodFieldValue("ActiveStack",String.valueOf(cursor.getInt(cursor.getColumnIndex("ActiveStack"))));
 
                 goods.add(gooddetail);
             }
         }
         assert cursor != null;
         cursor.close();
-        Log.e("test_query", "dataset done");
+
 
         return goods;
     }
@@ -689,7 +689,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     }
                 }
                 gooddetail.setCheck(false);
-
+                gooddetail.setGoodFieldValue("ActiveStack",cursor.getString(cursor.getColumnIndex("ActiveStack")));
                 goods.add(gooddetail);
             }
         }
@@ -744,9 +744,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             query = query + " And StackAmount > 0 ";
         }
 
-        if (SH_activestack) {
-            query = query + " And ActiveStack > 0 ";
-        }
 
         query = query + " order by ";
         int k = 0;
@@ -809,7 +806,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
 
                 gooddetail.setCheck(false);
-
+                gooddetail.setGoodFieldValue("ActiveStack",cursor.getString(cursor.getColumnIndex("ActiveStack")));
                 goods.add(gooddetail);
             }
         }
@@ -886,6 +883,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
             }
             gooddetail.setCheck(false);
+            gooddetail.setGoodFieldValue("ActiveStack",cursor.getString(cursor.getColumnIndex("ActiveStack")));
+
         }
         cursor.close();
         return gooddetail;

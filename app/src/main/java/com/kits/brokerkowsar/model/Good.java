@@ -19,6 +19,8 @@ public class Good implements Serializable {
     private Integer GoodSubCode;
     @SerializedName("GoodName")
     private String GoodName;
+    @SerializedName("ActiveStack")
+    private String ActiveStack;
     @SerializedName("GoodExplain1")
     private String GoodExplain1;
     @SerializedName("GoodExplain2")
@@ -273,6 +275,10 @@ public class Good implements Serializable {
             case "goodsubcode":
                 if (GoodSubCode == null) Res = "";
                 else Res = GoodSubCode.toString();
+                break;
+            case "activestack":
+                if (ActiveStack == null) Res = "0";
+                else Res = ActiveStack;
                 break;
             case "goodexplain1":
                 if (GoodExplain1 == null) Res = "";
@@ -726,6 +732,9 @@ public class Good implements Serializable {
                 break;
             case "goodsubcode":
                 GoodSubCode = Integer.parseInt(Res);
+                break;
+            case "activestack":
+                ActiveStack = Res;
                 break;
             case "goodexplain1":
                 GoodExplain1 = Res;

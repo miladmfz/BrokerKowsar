@@ -165,10 +165,8 @@ public class SearchActivity extends AppCompatActivity {
                     public void afterTextChanged(final Editable editable) {
                         handler.removeCallbacksAndMessages(null);
                         handler.postDelayed(() -> {
-                            goods.clear();
                             AutoSearch = editable.toString();
-                            PageMoreData = "0";
-                            proSearchCondition = "";
+
                             GetDataFromDataBase();
                         }, Integer.parseInt(callMethod.ReadString("Delay")));
 
@@ -205,8 +203,7 @@ public class SearchActivity extends AppCompatActivity {
                 binding.SearchActivityswitch.setText("فعال -غیرفعال");
                 callMethod.EditBoolan("ActiveStack", false);
             }
-            goods.clear();
-            PageMoreData = "0";
+
             binding.SearchActivityEdtsearch.setText(AutoSearch);
         });
         binding.SearchActivityswitchAmount.setOnCheckedChangeListener((compoundButton, b) -> {
@@ -217,8 +214,7 @@ public class SearchActivity extends AppCompatActivity {
                 binding.SearchActivityswitchAmount.setText("هردو");
                 callMethod.EditBoolan("GoodAmount", false);
             }
-            goods.clear();
-            PageMoreData = "0";
+
             binding.SearchActivityEdtsearch.setText(AutoSearch);
         });
 
@@ -400,8 +396,16 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void GetDataFromDataBase() {
+        goods.clear();
+        Multi_Good.clear();
+        PageMoreData = "0";
+        proSearchCondition = "";
+        binding.SearchActivityFab.setVisibility(View.GONE);
+        item_multi.findItem(R.id.menu_multi).setVisible(false);
+
         loading = true;
         Moregoods.clear();
+
         if (proSearchCondition.equals("")) {
             Moregoods = dbh.getAllGood(NumberFunctions.EnglishNumber(AutoSearch), id, PageMoreData);
         } else {

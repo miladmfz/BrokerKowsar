@@ -91,9 +91,6 @@ public class Replication {
                 @Override
                 public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
                     assert response.body() != null;
-                    Log.e("test", "1");
-                    Log.e("test_+_+_", response.body().getText());
-
                     dbh.SaveConfig("MaxRepLogCode", response.body().getText());
                     RetrofitReplicate(0);
                 }
@@ -649,8 +646,8 @@ public class Replication {
             public void onResponse(@NotNull Call<RetrofitResponse> call, @NotNull Response<RetrofitResponse> response) {
                 if (response.isSuccessful()) {
                     assert response.body() != null;
-                    if (!response.body().getText().equals(dbh.ReadConfig("GroupCodeDefult"))) {
-                        if (!response.body().getText().equals("")) {
+                    if (!response.body().getText().equals("")) {
+                        if (!response.body().getText().equals(dbh.ReadConfig("GroupCodeDefult"))) {
                             dbh.SaveConfig("GroupCodeDefult", response.body().getText());
                         }
                     }

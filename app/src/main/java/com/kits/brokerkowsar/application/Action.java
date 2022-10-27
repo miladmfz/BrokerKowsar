@@ -66,7 +66,7 @@ public class Action {
     Integer il;
     String url;
 
-    public Action(Context mContext) {
+    public Action(Context mContext)   {
         this.mContext = mContext;
         this.il = 0;
         this.callMethod = new CallMethod(mContext);
@@ -801,11 +801,16 @@ public class Action {
 
     }
 
+    @SuppressLint("HardwareIds")
     public void app_info() {
 
-        @SuppressLint("HardwareIds") String android_id = Settings.Secure.getString(mContext
-                .getContentResolver(), Settings.Secure.ANDROID_ID);
+        String android_id = "";
 
+        if (BuildConfig.BUILD_TYPE.equals("release")){
+            android_id= Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
+        }else if (BuildConfig.BUILD_TYPE.equals("debug")){
+            android_id="debug";
+        }
 
         PersianCalendar calendar1 = new PersianCalendar();
         String version = BuildConfig.VERSION_NAME;

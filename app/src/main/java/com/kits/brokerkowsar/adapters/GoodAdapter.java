@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +79,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final GoodItemViewHolder holder, @SuppressLint("RecyclerView") final int position) {
 
-        String imagecode=dbh.GetLastksrImageCode(goods.get(position).getGoodFieldValue("GoodCode"));
+        String imagecode = dbh.GetLastksrImageCode(goods.get(position).getGoodFieldValue("GoodCode"));
 
         holder.bind(Columns, goods.get(position), mContext, callMethod);
 
@@ -88,7 +89,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
                 , callMethod
                 , action
                 , image_info
-                , multi_select,imagecode
+                , multi_select, imagecode
         );
 
 
@@ -126,34 +127,33 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
 
 
         holder.rltv.setOnClickListener(v -> {
+
             if (multi_select) {
-                holder.rltv.setChecked(!holder.rltv.isChecked());
-                goods.get(position).setCheck(!goods.get(position).isCheck());
-                if (goods.get(position).isCheck()) {
-
-                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
-                        SearchActivity activity = (SearchActivity) mContext;
-
-                        activity.good_select_function(goods.get(position));
+                if (goods.get(position).getGoodFieldValue("ActiveStack").equals("1")) {
+                    holder.rltv.setChecked(!holder.rltv.isChecked());
+                    goods.get(position).setCheck(!goods.get(position).isCheck());
+                    if (goods.get(position).isCheck()) {
+                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
+                            SearchActivity activity = (SearchActivity) mContext;
+                            activity.good_select_function(goods.get(position));
+                        }
+                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
+                            SearchByDateActivity activity = (SearchByDateActivity) mContext;
+                            activity.good_select_function(goods.get(position));
+                        }
+                    } else {
+                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
+                            SearchActivity activity = (SearchActivity) mContext;
+                            activity.good_select_function(goods.get(position));
+                        }
+                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
+                            SearchByDateActivity activity = (SearchByDateActivity) mContext;
+                            activity.good_select_function(goods.get(position));
+                        }
                     }
-                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
-                        SearchByDateActivity activity = (SearchByDateActivity) mContext;
-                        activity.good_select_function(goods.get(position));
-                    }
-
-                } else {
-                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
-                        SearchActivity activity = (SearchActivity) mContext;
-                        activity.good_select_function(goods.get(position));
-                    }
-                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
-                        SearchByDateActivity activity = (SearchByDateActivity) mContext;
-                        activity.good_select_function(goods.get(position));
-                    }
-
-
+                }else{
+                    callMethod.showToast("این کالا غیر فعال می باشد");
                 }
-
             } else {
                 Intent intent = new Intent(mContext, DetailActivity.class);
                 intent.putExtra("id", goods.get(position).getGoodFieldValue("GoodCode"));
@@ -166,40 +166,45 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
 
         holder.rltv.setChecked(goods.get(position).isCheck());
 
-        holder.rltv.setOnLongClickListener(view -> {
-            if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
-                multi_select = true;
-                holder.rltv.setChecked(!holder.rltv.isChecked());
-                goods.get(position).setCheck(!goods.get(position).isCheck());
+        holder.rltv.setOnLongClickListener(view ->
+        {
+            if (goods.get(position).getGoodFieldValue("ActiveStack").equals("1")) {
+                if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
+                    multi_select = true;
+                    holder.rltv.setChecked(!holder.rltv.isChecked());
+                    goods.get(position).setCheck(!goods.get(position).isCheck());
 
-                if (goods.get(position).isCheck()) {
-                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
-                        SearchActivity activity = (SearchActivity) mContext;
-                        activity.good_select_function(goods.get(position));
-                    }
-                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
-                        SearchByDateActivity activity = (SearchByDateActivity) mContext;
-                        activity.good_select_function(goods.get(position));
-                    }
+                    if (goods.get(position).isCheck()) {
+                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
+                            SearchActivity activity = (SearchActivity) mContext;
+                            activity.good_select_function(goods.get(position));
+                        }
+                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
+                            SearchByDateActivity activity = (SearchByDateActivity) mContext;
+                            activity.good_select_function(goods.get(position));
+                        }
 
+                    } else {
+                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
+                            SearchActivity activity = (SearchActivity) mContext;
+                            activity.good_select_function(goods.get(position));
+                        }
+                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
+                            SearchByDateActivity activity = (SearchByDateActivity) mContext;
+                            activity.good_select_function(goods.get(position));
+                        }
+
+
+                    }
                 } else {
-                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
-                        SearchActivity activity = (SearchActivity) mContext;
-                        activity.good_select_function(goods.get(position));
-                    }
-                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
-                        SearchByDateActivity activity = (SearchByDateActivity) mContext;
-                        activity.good_select_function(goods.get(position));
-                    }
 
+                    Intent intent = new Intent(mContext, PrefactoropenActivity.class);
+                    intent.putExtra("fac", "0");
+                    mContext.startActivity(intent);
 
                 }
-            } else {
-
-                Intent intent = new Intent(mContext, PrefactoropenActivity.class);
-                intent.putExtra("fac", "0");
-                mContext.startActivity(intent);
-
+            }else{
+                callMethod.showToast("این کالا غیر فعال می باشد");
             }
 
             return true;

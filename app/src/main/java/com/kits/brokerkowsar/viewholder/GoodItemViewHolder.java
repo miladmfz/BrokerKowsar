@@ -1,7 +1,9 @@
 package com.kits.brokerkowsar.viewholder;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
@@ -31,7 +33,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
-;
+
 
 public class GoodItemViewHolder extends RecyclerView.ViewHolder {
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
@@ -39,13 +41,12 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
     private final LinearLayoutCompat mainline;
     private final ImageView img;
     public MaterialCardView rltv;
-    private final Button btnadd;
+    public final Button btnadd;
 
     boolean multi_select1;
 
     public GoodItemViewHolder(View itemView) {
         super(itemView);
-
         mainline = itemView.findViewById(R.id.prosearch_mainline);
         img = itemView.findViewById(R.id.good_prosearch_img);
         rltv = itemView.findViewById(R.id.good_prosearch);
@@ -87,23 +88,16 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
                     }
                 }
 
-
-
                 if (Column.getColumnName().equals("MaxSellPrice")) {
 
                     extra_TextView.setTextColor(getcolorresource("3", mContext));
                 }
-
-
                 mainline.addView(extra_TextView);
             }
         }
-
-
-
-
     }
 
+    @SuppressLint({"ResourceAsColor", "UseCompatLoadingForColorStateLists"})
     public void Action(Good good
             , Context mContext
             , DatabaseHelper dbh
@@ -114,7 +108,6 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
                        String ImageCode) {
 
         this.multi_select1 = multi_select;
-
 
         if (imageInfo.Image_exist(ImageCode)) {
             String root = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -134,18 +127,25 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
         }
 
 
+        if (good.getGoodFieldValue("ActiveStack").equals("1")){
+            btnadd.setBackgroundTintList(mContext.getResources().getColorStateList(R.color.green_600));
+        }else{
+            btnadd.setBackgroundTintList(mContext.getResources().getColorStateList(R.color.grey_700));
+        }
+
+
+
         btnadd.setOnClickListener(view -> {
-
-
-            if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
-                action.buydialog(good.getGoodFieldValue("GoodCode"), "0");
-
-            } else {
-
-                Intent intent = new Intent(mContext, PrefactoropenActivity.class);
-                intent.putExtra("fac", "0");
-                mContext.startActivity(intent);
-
+            if (good.getGoodFieldValue("ActiveStack").equals("1")) {
+                if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
+                    action.buydialog(good.getGoodFieldValue("GoodCode"), "0");
+                } else {
+                    Intent intent = new Intent(mContext, PrefactoropenActivity.class);
+                    intent.putExtra("fac", "0");
+                    mContext.startActivity(intent);
+                }
+            }else{
+                callMethod.showToast("این کالا غیر فعال می باشد");
             }
         });
 

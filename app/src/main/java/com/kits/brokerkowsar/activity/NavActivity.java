@@ -199,9 +199,8 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
     public void test_fun(View v) {
 
-        replication.BrokerStack();
-        replication.MenuBroker();
-        replication.GoodTypeReplication();
+        callMethod.showToast("TestFunction");
+        Log.e("test__",BuildConfig.BUILD_TYPE);
 
 
     }

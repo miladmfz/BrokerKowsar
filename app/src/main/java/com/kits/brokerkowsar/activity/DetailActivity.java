@@ -1,5 +1,6 @@
 package com.kits.brokerkowsar.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -94,6 +95,7 @@ public class DetailActivity extends AppCompatActivity {
     }
 
 
+    @SuppressLint("UseCompatLoadingForColorStateLists")
     public void init() {
         if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
             binding.DetailActivityCustomer.setText("فاکتوری انتخاب نشده");
@@ -114,16 +116,26 @@ public class DetailActivity extends AppCompatActivity {
         }
 
         imagelists = dbh.GetksrImageCodes(gooddetail.getGoodFieldValue("GoodCode"));
-        Log.e("test11",imagelists.size()+"");
         SliderView();
-        binding.DetailActivityBtnbuy.setOnClickListener(view -> {
 
-            if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
-                action.buydialog(gooddetail.getGoodFieldValue("GoodCode"), "0");
-            } else {
-                intent = new Intent(this, PrefactoropenActivity.class);
-                intent.putExtra("fac", "0");
-                startActivity(intent);
+        if (gooddetail.getGoodFieldValue("ActiveStack").equals("1")){
+            binding.DetailActivityBtnbuy.setBackgroundTintList(getResources().getColorStateList(R.color.green_600));
+        }else{
+            binding.DetailActivityBtnbuy.setBackgroundTintList(getResources().getColorStateList(R.color.grey_700));
+        }
+
+        binding.DetailActivityBtnbuy.setOnClickListener(view -> {
+            if (gooddetail.getGoodFieldValue("ActiveStack").equals("1")) {
+
+                if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
+                    action.buydialog(gooddetail.getGoodFieldValue("GoodCode"), "0");
+                } else {
+                    intent = new Intent(this, PrefactoropenActivity.class);
+                    intent.putExtra("fac", "0");
+                    startActivity(intent);
+                }
+            }else{
+                callMethod.showToast("این کالا غیر فعال می باشد");
             }
         });
     }
