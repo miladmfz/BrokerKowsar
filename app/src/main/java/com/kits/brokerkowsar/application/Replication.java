@@ -186,6 +186,7 @@ public class Replication {
                                         singleobject = arrayobject.getJSONObject(i);
                                         String reptype = singleobject.getString("RLOpType");
                                         String repcode = singleobject.getString("RepLogDataCode");
+                                        String repObjectCode = singleobject.getString("RLObjectRef");
                                         String code = singleobject.getString(replicatedetail.getServerPrimaryKey());
                                         int columnDetail = tableDetails.size();
                                         StringBuilder qCol = new StringBuilder();
@@ -280,6 +281,18 @@ public class Replication {
 
                                                 d.close();
                                                 break;
+                                            case "D":
+                                            case "d":
+                                                qCol = new StringBuilder("Delete from " + replicatedetail.getClientTable() + "  Where ").append(replicatedetail.getClientPrimaryKey()).append(" = ").append(repObjectCode);
+                                                try {
+                                                    Log.e("test_qCol=", repcode + " = " + qCol);
+                                                    database.execSQL(qCol.toString());
+                                                    LastRepCode = repcode;
+                                                } catch (Exception e) {
+                                                    Log.e("test_qCol=", e.getMessage());
+                                                }
+
+                                                break;
                                         }
                                     }
                                     database.execSQL("Update ReplicationTable Set LastRepLogCode = " + LastRepCode + " Where ServerTable = '" + replicatedetail.getServerTable() + "' ");
@@ -329,6 +342,7 @@ public class Replication {
 
             String where = replicatedetail.getCondition().replace("BrokerCondition", userInfo.getBrokerCode());
 
+            Log.e("test_qCol",LastRepCode);
             Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
                     "repinfo",
                     LastRepCode,
@@ -337,7 +351,6 @@ public class Replication {
                     "1",
                     "100"
             );
-
 
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
@@ -364,7 +377,9 @@ public class Replication {
                                             singleobject = arrayobject.getJSONObject(i);
                                             String reptype = singleobject.getString("RLOpType");
                                             String repcode = singleobject.getString("RepLogDataCode");
+                                            String repObjectCode = singleobject.getString("RLObjectRef");
                                             String code = singleobject.getString(replicatedetail.getServerPrimaryKey());
+
                                             int columnDetail = tableDetails.size();
                                             StringBuilder qCol = new StringBuilder();
 
@@ -422,7 +437,8 @@ public class Replication {
                                                         }
 
 
-                                                    } else {
+                                                    } else
+                                                    {
 
                                                         qCol = new StringBuilder("Update " + replicatedetail.getClientTable() + "  Set ");
                                                         int QueryConditionCount = 0;
@@ -459,6 +475,19 @@ public class Replication {
                                                     d.close();
                                                     break;
 
+                                                case "D":
+                                                case "d":
+
+                                                    qCol = new StringBuilder("Delete from " + replicatedetail.getClientTable() + "  Where ").append(replicatedetail.getClientPrimaryKey()).append(" = ").append(repObjectCode);
+                                                    try {
+                                                        Log.e("test_qCol=", repcode + " = " + qCol);
+                                                        database.execSQL(qCol.toString());
+                                                        LastRepCode = repcode;
+                                                    } catch (Exception e) {
+                                                        Log.e("test_qCol=", e.getMessage());
+                                                    }
+
+                                                    break;
                                             }
                                         }
                                         database.execSQL("Update ReplicationTable Set LastRepLogCode = " + LastRepCode + " Where ServerTable = '" + replicatedetail.getServerTable() + "' ");
