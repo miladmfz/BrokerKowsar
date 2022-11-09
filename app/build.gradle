@@ -10,11 +10,10 @@ android {
         minSdk 23
         targetSdk 33
         versionCode 1
-        versionName "11.08.02"
+        versionName "11.08.07"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
-
+    
     buildTypes {
         release {
             minifyEnabled false

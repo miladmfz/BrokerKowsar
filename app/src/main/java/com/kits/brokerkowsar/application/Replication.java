@@ -163,10 +163,10 @@ public class Replication {
                 @Override
                 public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
 
-
                     if (response.isSuccessful()) {
                         assert response.body() != null;
                         try {
+
                             JSONArray arrayobject = new JSONArray(response.body().getText());
                             int ObjectSize = arrayobject.length();
                             JSONObject singleobject = arrayobject.getJSONObject(0);
@@ -295,29 +295,43 @@ public class Replication {
                                                 break;
                                         }
                                     }
+                                    Log.e("test_","3");
+
                                     database.execSQL("Update ReplicationTable Set LastRepLogCode = " + LastRepCode + " Where ServerTable = '" + replicatedetail.getServerTable() + "' ");
                                     break;
                             }
+                            Log.e("test_","4");
+
                             if (arrayobject.length() >= RepRowCount) {
                                 RetrofitReplicate(replicatelevel);
                             } else {
+                                Log.e("test_","5");
+
                                 if (Integer.parseInt(LastRepCode) < 0) {
+                                    Log.e("test_","6");
 
                                     database.execSQL("Update ReplicationTable Set LastRepLogCode = " + dbh.ReadConfig("MaxRepLogCode") + " Where ServerTable = '" + replicatedetail.getServerTable() + "' ");
 
                                     RetrofitReplicate(replicatelevel);
                                 } else {
+                                    Log.e("test_","7");
+
                                     tv_step.setVisibility(View.GONE);
                                     RetrofitReplicate(replicatelevel + 1);
                                 }
                             }
                         } catch (JSONException ignored) {
+                            Log.e("test_","8");
+                            Log.e("test_",ignored.getMessage());
+
                         }
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+                    Log.e("test_",t.getMessage());
+
                     RetrofitReplicate(replicatelevel);
                 }
             });
@@ -631,7 +645,9 @@ public class Replication {
                             callMethod.showToast("بروز رسانی انجام شد");
                         }
                     } catch (JSONException ignored) {
+
                     }
+
                 }
             }
 

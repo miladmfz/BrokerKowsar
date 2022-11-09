@@ -166,6 +166,8 @@ ActivitySearchDateDetailBinding binding;
 
 
         binding.searchbydateactivityBtn.setOnClickListener(view -> {
+            goods.clear();
+
             calendar1 = new PersianCalendar();
             if (!binding.searchbydateactivityDate.getText().toString().equals("")) {
                 date = binding.searchbydateactivityDate.getText().toString();

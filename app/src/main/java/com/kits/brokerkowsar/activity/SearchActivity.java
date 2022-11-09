@@ -166,7 +166,7 @@ public class SearchActivity extends AppCompatActivity {
                         handler.removeCallbacksAndMessages(null);
                         handler.postDelayed(() -> {
                             AutoSearch = editable.toString();
-
+                            proSearchCondition = "";
                             GetDataFromDataBase();
                         }, Integer.parseInt(callMethod.ReadString("Delay")));
 
@@ -399,7 +399,7 @@ public class SearchActivity extends AppCompatActivity {
         goods.clear();
         Multi_Good.clear();
         PageMoreData = "0";
-        proSearchCondition = "";
+
         binding.SearchActivityFab.setVisibility(View.GONE);
         item_multi.findItem(R.id.menu_multi).setVisible(false);
 

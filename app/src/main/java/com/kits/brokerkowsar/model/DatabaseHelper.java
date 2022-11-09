@@ -45,8 +45,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     boolean SH_goodamount;
     boolean SH_ArabicText;
     int k = 0;
-    String sc;
-    String st;
+
+    String StackAmountString;
+    String BrokerStackString;
     String joinDetail;
     String joinbasket;
 
@@ -111,6 +112,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_GoodRef_stackref ON GoodStack (GoodRef,StackRef)");
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_GoodRef ON GoodStack (GoodRef)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_StackRef ON GoodStack (StackRef)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_Amount ON GoodStack (Amount)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_ReservedAmount ON GoodStack (ReservedAmount)");
 
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_KsrImage_ObjectRef ON KsrImage (ObjectRef)");
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_KsrImage_IsDefaultImage ON KsrImage (IsDefaultImage)");
@@ -270,9 +274,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.SH_goodamount = callMethod.ReadBoolan("GoodAmount");
         this.SH_ArabicText = callMethod.ReadBoolan("ArabicText");
         LimitAmount = String.valueOf(Integer.parseInt(SH_grid) * 11);
-        sc = "Where StackRef in (" + SH_brokerstack + ")";
 
-        st = "";
+
+        BrokerStackString = "Where StackRef in (" + SH_brokerstack + ")";
+        StackAmountString = "";
 
 
         joinbasket = " FROM Good g " +
@@ -414,18 +419,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         for (Column column : columns) {
 
-                if (!column.getColumnName().equals("")) {
-                    if (k != 0) {
-                        query = query + " , ";
-                    }
-                    if (!column.getColumnDefinition().equals("")) {
-                        query = query + column.getColumnDefinition() + " as " + column.getColumnName();
-                    } else {
-                        query = query + column.getColumnName();
-                    }
-                    k++;
-                }
+            if (column.getColumnDefinition().indexOf("Sum") > 0) {
+                StackAmountString = column.getColumnDefinition().substring(
+                        column.getColumnDefinition().indexOf("Sum"),
+                        column.getColumnDefinition().indexOf(")") + 1
+                );
+            }
 
+            if (!column.getColumnName().equals("")) {
+                if (k != 0) {
+                    query = query + " , ";
+                }
+                if (!column.getColumnDefinition().equals("")) {
+                    query = query + column.getColumnDefinition() + " as " + column.getColumnName();
+                } else {
+                    query = query + column.getColumnName();
+                }
+                k++;
+            }
         }
 
         query = query + " FROM Good g , FilterTable ";
@@ -433,6 +444,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         boolean digitsOnly = TextUtils.isDigitsOnly(search);
         if (!search.equals("")) {
             for (Column column : columns) {
+
 
                 if (!(!column.getColumnType().equals("0") && !digitsOnly)) {
                     if (Integer.parseInt(column.getColumnFieldValue("SortOrder")) > 0 && Integer.parseInt(column.getColumnFieldValue("SortOrder")) < 10) {
@@ -462,24 +474,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         } else {
             query = query + "where 1=1 ";
         }
-        query = query + " And Exists(Select 1 From GoodStack stackCondition And GoodRef=GoodCode )";
+
+        query = query + " And Exists(Select 1 From GoodStack stackCondition ActiveCondition And GoodRef=GoodCode AmountCondition)";
+
 
         if (SH_activestack) {
-            st = sc + " And ActiveStack = 1 ";
+            query = query.replaceAll("ActiveCondition", " And ActiveStack = 1 ");
         } else {
-            st = sc;
+            query = query.replaceAll("ActiveCondition", " ");
         }
-
-        query = query.replaceAll("stackCondition", st);
-        query = query.replaceAll("SearchCondition", Search_Condition);
 
         if (SH_goodamount) {
-            query = query + " And StackAmount > 0 ";
+            query = query.replaceAll("AmountCondition", " GROUP BY GoodRef HAVING " + StackAmountString + " > 0 ");
+        } else {
+            query = query.replaceAll("AmountCondition", " ");
         }
 
-        if (SH_activestack) {
-            query = query + " And ActiveStack > 0 ";
-        }
+        query = query.replaceAll("stackCondition", BrokerStackString);
+
+        query = query.replaceAll("SearchCondition", Search_Condition);
+
 
         if (Integer.parseInt(aGroupCode) > 0) {
             query = query + " And GoodCode in(Select GoodRef From GoodGroup p "
@@ -552,7 +566,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     }
                 }
                 gooddetail.setCheck(false);
-                gooddetail.setGoodFieldValue("ActiveStack",String.valueOf(cursor.getInt(cursor.getColumnIndex("ActiveStack"))));
+                gooddetail.setGoodFieldValue("ActiveStack", String.valueOf(cursor.getInt(cursor.getColumnIndex("ActiveStack"))));
 
                 goods.add(gooddetail);
             }
@@ -574,6 +588,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         query = "With FilterTable As (Select 0 as SecondField) SELECT ";
         k = 0;
         for (Column column : columns) {
+            if (column.getColumnDefinition().indexOf("Sum") > 0) {
+                StackAmountString = column.getColumnDefinition().substring(
+                        column.getColumnDefinition().indexOf("Sum"),
+                        column.getColumnDefinition().indexOf(")") + 1
+                );
+            }
             if (!column.getColumnName().equals("")) {
                 if (k != 0) {
                     query = query + " , ";
@@ -594,26 +614,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         query = query + searchbox_result;
 
-        query = query + " And Exists(Select 1 From GoodStack stackCondition And GoodRef=GoodCode )";
+        query = query + " And Exists(Select 1 From GoodStack stackCondition ActiveCondition And GoodRef=GoodCode AmountCondition)";
 
 
         if (SH_activestack) {
-            st = sc + " And ActiveStack = 1 ";
+            query = query.replaceAll("ActiveCondition", " And ActiveStack = 1 ");
         } else {
-            st = sc;
+            query = query.replaceAll("ActiveCondition", " ");
         }
-
-        query = query.replaceAll("stackCondition", st);
-        query = query.replaceAll("SearchCondition", Search_Condition);
-
 
         if (SH_goodamount) {
-            query = query + " And StackAmount > 0 ";
+            query = query.replaceAll("AmountCondition", " GROUP BY GoodRef HAVING " + StackAmountString + " > 0 ");
+        } else {
+            query = query.replaceAll("AmountCondition", " ");
         }
 
-        if (SH_activestack) {
-            query = query + " And ActiveStack > 0 ";
-        }
+        query = query.replaceAll("stackCondition", BrokerStackString);
+
+        query = query.replaceAll("SearchCondition", Search_Condition);
 
 
         if (Integer.parseInt(aGroupCode) > 0) {
@@ -689,7 +707,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     }
                 }
                 gooddetail.setCheck(false);
-                gooddetail.setGoodFieldValue("ActiveStack",cursor.getString(cursor.getColumnIndex("ActiveStack")));
+                gooddetail.setGoodFieldValue("ActiveStack", cursor.getString(cursor.getColumnIndex("ActiveStack")));
                 goods.add(gooddetail);
             }
         }
@@ -706,6 +724,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         query = "  With FilterTable As (Select 1 as SecondField) SELECT ";
         k = 0;
         for (Column column : columns) {
+            if (column.getColumnDefinition().indexOf("Sum") > 0) {
+                StackAmountString = column.getColumnDefinition().substring(
+                        column.getColumnDefinition().indexOf("Sum"),
+                        column.getColumnDefinition().indexOf(")") + 1
+                );
+            }
             if (!column.getColumnName().equals("")) {
                 if (k != 0) {
                     query = query + " , ";
@@ -729,20 +753,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         query = query + " FROM Good g , FilterTable Where " + newSt + ">='" + xDayAgo + "' ";
 
-        query = query + " And Exists(Select 1 From GoodStack stackCondition And GoodRef=GoodCode )";
+        query = query + " And Exists(Select 1 From GoodStack stackCondition ActiveCondition And GoodRef=GoodCode AmountCondition)";
+
 
         if (SH_activestack) {
-            st = sc + " And ActiveStack = 1 ";
+            query = query.replaceAll("ActiveCondition", " And ActiveStack = 1 ");
         } else {
-            st = sc;
+            query = query.replaceAll("ActiveCondition", " ");
         }
-
-        query = query.replaceAll("stackCondition", st);
-
 
         if (SH_goodamount) {
-            query = query + " And StackAmount > 0 ";
+            query = query.replaceAll("AmountCondition", " GROUP BY GoodRef HAVING " + StackAmountString + " > 0 ");
+        } else {
+            query = query.replaceAll("AmountCondition", " ");
         }
+
+        query = query.replaceAll("stackCondition", BrokerStackString);
 
 
         query = query + " order by ";
@@ -806,7 +832,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
 
                 gooddetail.setCheck(false);
-                gooddetail.setGoodFieldValue("ActiveStack",cursor.getString(cursor.getColumnIndex("ActiveStack")));
+                gooddetail.setGoodFieldValue("ActiveStack", cursor.getString(cursor.getColumnIndex("ActiveStack")));
                 goods.add(gooddetail);
             }
         }
@@ -825,6 +851,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         query = "With FilterTable As (Select 0 as SecondField) SELECT ";
         k = 0;
         for (Column column : columns) {
+            if (column.getColumnDefinition().indexOf("Sum") > 0) {
+                StackAmountString = column.getColumnDefinition().substring(
+                        column.getColumnDefinition().indexOf("Sum"),
+                        column.getColumnDefinition().indexOf(")") + 1
+                );
+            }
             if (!column.getColumnName().equals("ksrImageCode")) {
                 if (k != 0) {
                     query = query + " , ";
@@ -838,14 +870,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         }
         query = query + joinDetail;
-
-        if (SH_activestack) {
-            st = sc + " And ActiveStack = 1 ";
-        } else {
-            st = sc;
-        }
         Search_Condition = "'%%'";
-        query = query.replaceAll("stackCondition", st);
+
+
+        query = query.replaceAll("stackCondition", BrokerStackString);
         query = query.replaceAll("SearchCondition", Search_Condition);
 
 
@@ -883,7 +911,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
             }
             gooddetail.setCheck(false);
-            gooddetail.setGoodFieldValue("ActiveStack",cursor.getString(cursor.getColumnIndex("ActiveStack")));
+            gooddetail.setGoodFieldValue("ActiveStack", cursor.getString(cursor.getColumnIndex("ActiveStack")));
 
         }
         cursor.close();
@@ -1248,6 +1276,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String name = GetRegionText(Search_target);
         name = name.replaceAll(" ", "%");
         GetPreference();
+
         columns = GetColumns("", "", "2");
 
 

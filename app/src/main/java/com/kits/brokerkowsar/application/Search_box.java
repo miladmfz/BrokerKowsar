@@ -221,6 +221,7 @@ public class Search_box {
                 }
             }
 
+            Log.e("test__",Where);
             SearchActivity activity = (SearchActivity) mContext;
 
             activity.proSearchCondition = Where;
