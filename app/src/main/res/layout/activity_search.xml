@@ -128,7 +128,6 @@
             android:layout_marginTop="2dp"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="5dp"
-            app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="5dp"
             app:cardElevation="2dp">
 
@@ -178,7 +177,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:background="#ffffff"
             android:visibility="gone" />
 
 
@@ -187,7 +185,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="5dp"
             android:orientation="horizontal"
-            app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="5dp"
             app:cardElevation="2dp">
 
@@ -220,7 +217,7 @@
                     android:layout_weight="0.2"
                     android:layout_gravity="center"
                     android:background="@drawable/ic_baseline_qr_code_scanner_24"
-                    />
+                    android:visibility="gone"/>
             </androidx.appcompat.widget.LinearLayoutCompat>
 
         </com.google.android.material.card.MaterialCardView>
@@ -236,7 +233,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
-            android:background="#ffffff"
             android:layout_margin="10sp"
             android:visibility="visible"/>
         <ProgressBar

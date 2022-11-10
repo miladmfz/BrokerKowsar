@@ -13,14 +13,17 @@
     app:strokeColor="@color/grey_1000"
     app:cardElevation="4dp"
     android:checkable="true"
-    android:layoutDirection="rtl">
+    android:layoutDirection="rtl"
+    >
 
 
 
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            >
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

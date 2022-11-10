@@ -6,7 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activity.ConfigActivity"
     android:orientation="vertical"
-    android:background="@color/colorPrimary"
     android:layoutDirection="rtl"
     >
 
@@ -40,7 +39,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_margin="10dp"
-            android:background="@color/white">
+            >
 
             <Button
                 android:id="@+id/config_btn_to_reg"
@@ -105,7 +104,6 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="@string/config_broker"
-                    android:textColor="@color/grey_1000"
                     android:layout_weight="0.5"
                     />
 
@@ -134,7 +132,6 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="@string/config_searchitem"
-                    android:textColor="@color/grey_1000"
                     android:layout_weight="0.5"
                     />
 
@@ -153,7 +150,6 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="@string/config_item"
-                    android:textColor="@color/grey_1000"
                     android:layout_weight="0.5"
                     />
 
@@ -183,7 +179,6 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="سایز عنوان ها"
-                    android:textColor="@color/grey_1000"
                     android:layout_weight="0.5"
                     />
 
@@ -202,7 +197,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="سایز اطلاعات"
-                    android:textColor="@color/grey_1000"
+
                     android:layout_weight="0.5"
                     />
 
@@ -230,7 +225,7 @@
                     android:gravity="center"
                     android:text="بروزرسانی خودکار"
                     android:layout_weight="0.5"
-                    android:textColor="@color/grey_1000"
+
 
                     />
 
@@ -271,7 +266,7 @@
                     android:gravity="center"
                     android:text="@string/config_off"
                     android:layout_weight="0.5"
-                    android:textColor="@color/grey_1000"
+
 
                     />
 
@@ -311,7 +306,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="@string/config_delay"
-                    android:textColor="@color/grey_1000"
+
 
                     android:layout_weight="0.5"
 
@@ -342,7 +337,7 @@
                     android:layout_gravity="center"
                     android:gravity="center"
                     android:text="شماره تلفن همراه"
-                    android:textColor="@color/grey_1000"
+
 
                     android:layout_weight="0.5"
 
@@ -374,7 +369,7 @@
                     android:layoutDirection="ltr"
                     android:text="@string/config_totalprice"
                     android:layout_weight="0.5"
-                    android:textColor="@color/grey_1000"
+
 
                     />
 

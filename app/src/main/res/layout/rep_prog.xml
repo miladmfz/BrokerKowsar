@@ -8,7 +8,7 @@
     android:id="@+id/rep_prog"
     android:layout_margin="10dp"
     app:layout_constraintCircleRadius="10dp"
-    android:background="@drawable/bg_prog"
+    android:background="@drawable/bg_round_selected"
     android:layoutDirection="rtl">
 
 
@@ -30,7 +30,6 @@
         android:layout_height="match_parent"
         android:textStyle="bold"
         android:gravity="center"
-        android:textColor="@color/grey_900"
         android:textSize="20sp"
         android:paddingBottom="10dp"
 
@@ -43,7 +42,6 @@
         android:layout_height="match_parent"
         android:textStyle="bold"
         android:gravity="center"
-        android:textColor="@color/grey_900"
         android:textSize="20sp"
         android:paddingBottom="10dp"
         android:visibility="gone" />

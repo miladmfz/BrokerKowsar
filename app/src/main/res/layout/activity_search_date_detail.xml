@@ -139,7 +139,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:background="#ffffff" />
+            />
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/searchbydateactivity_lottie"

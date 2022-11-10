@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activity.PrefactorActivity"
-    android:background="@drawable/kowsar_back"
     android:orientation="vertical"
     android:layoutDirection="rtl">
 
@@ -34,7 +33,6 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:background="@color/grey_10"
         android:orientation="horizontal">
 
 
@@ -44,7 +42,6 @@
             android:text="@string/factor_in_use"
             android:gravity="center"
 
-            android:textColor="@color/grey_1000"
             android:textStyle="bold"
             android:textSize="16sp"
             android:layout_weight="0.3" />
@@ -54,7 +51,6 @@
             android:id="@+id/PrefactorActivity_lastfactor"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:textColor="@color/grey_1000"
             android:textStyle="bold"
             android:textSize="22sp"
             android:gravity="center"

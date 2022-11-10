@@ -6,14 +6,13 @@
     android:orientation="vertical"
     android:layout_gravity="center"
     android:id="@+id/pf_detail"
-    android:background="@color/grey_40"
+    android:background="@drawable/bg_round_selected"
     android:layoutDirection="rtl">
 
 
     <EditText
         android:id="@+id/pf_detail_detail"
-        android:background="@drawable/btn_corner_n"
-
+        android:background="@drawable/bg_round_selected"
         android:layout_width="250dp"
         android:layout_height="50dp"
         android:layout_gravity="center"

@@ -6,7 +6,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activity.RegistrationActivity"
     android:orientation="vertical"
-    android:background="@color/colorPrimary"
     android:layoutDirection="rtl">
 
 
@@ -34,7 +33,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="#FFFFFF"
             android:layout_margin="7dp">
 
             <androidx.core.widget.NestedScrollView

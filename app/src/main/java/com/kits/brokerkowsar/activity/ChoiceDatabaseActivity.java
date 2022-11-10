@@ -4,9 +4,11 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,6 +18,7 @@ import com.downloader.Error;
 import com.downloader.OnDownloadListener;
 import com.downloader.PRDownloader;
 import com.downloader.PRDownloaderConfig;
+import com.downloader.Status;
 import com.google.android.material.button.MaterialButton;
 import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.R;
@@ -41,7 +44,6 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     APIInterface apiInterface = APIClient_kowsar.getCleint_log().create(APIInterface.class);
     CallMethod callMethod;
     Activation activation;
-    boolean getdb = true;
     DatabaseHelper dbh;
     DatabaseHelper dbhbase;
     TextView tv_rep;
@@ -75,11 +77,13 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     //*****************************************************************************************
     @SuppressLint("SdCardPath")
     public void Config() {
-
+        Log.e("test__", "___000");
         callMethod = new CallMethod(this);
         dialog = new Dialog(this);
         activation = new Activation();
+
         dbhbase = new DatabaseHelper(App.getContext(), "/data/data/com.kits.brokerkowsar/databases/KowsarDb.sqlite");
+        dbhbase.CreateActivationDb();
 
         dialog.setContentView(R.layout.rep_prog);
         tv_rep = dialog.findViewById(R.id.rep_prog_text);
@@ -90,8 +94,8 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
 
     @SuppressLint("SdCardPath")
     public void init() {
-        activations = dbhbase.getActivation();
 
+        activations = dbhbase.getActivation();
         binding.activitionVersion.setText(NumberFunctions.PerisanNumber("نسخه نرم افزار : " + BuildConfig.VERSION_NAME));
         for (Activation singleactive : activations) {
             CreateView(singleactive);
@@ -99,7 +103,6 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
 
 
         binding.activitionBtn.setOnClickListener(v -> {
-
             Call<RetrofitResponse> call1 = apiInterface.Activation("ActivationCode", Objects.requireNonNull(binding.activitionEdittext.getText()).toString());
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
@@ -140,15 +143,25 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                 .build();
         PRDownloader.initialize(getApplicationContext(), config1);
 
-        downloadId = PRDownloader.download(activation.getSQLiteURL(), activation.getDatabaseFolderPath(), "KowsarDb.sqlite")
+        downloadId = PRDownloader.download(
+                        activation.getSQLiteURL(),
+                        activation.getDatabaseFolderPath(),
+                        "KowsarDbTemp.sqlite"
+                )
+
                 .build()
                 .setOnStartOrResumeListener(() -> {
                     dialog.show();
                     dialog.setCancelable(false);
                 })
                 .setOnPauseListener(() -> {
+                    Log.e("test__", "0");
+
                 })
                 .setOnCancelListener(() -> {
+                    Log.e("test__", "1");
+                    File DownloadTemp = new File(activation.getDatabaseFolderPath() + "/KowsarDbTemp.sqlite");
+                    DownloadTemp.delete();
                 })
 
                 .setOnProgressListener(progress -> {
@@ -156,11 +169,15 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                     tv_step.setVisibility(View.VISIBLE);
                     tv_step.setText(NumberFunctions.PerisanNumber((((progress.currentBytes) * 100) / progress.totalBytes) + "/100"));
                 })
+
                 .start(new OnDownloadListener() {
                     @SuppressLint("SdCardPath")
                     @Override
-                    public void onDownloadComplete() {
 
+                    public void onDownloadComplete() {
+                        File DownloadTemp = new File(activation.getDatabaseFolderPath() + "/KowsarDbTemp.sqlite");
+                        File CompletefILE = new File(activation.getDatabaseFolderPath() + "/KowsarDb.sqlite");
+                        DownloadTemp.renameTo(CompletefILE);
                         callMethod.EditString("DatabaseName", activation.getDatabaseFilePath());
                         dbh = new DatabaseHelper(App.getContext(), callMethod.ReadString("DatabaseName"));
                         dbh.DatabaseCreate();
@@ -182,13 +199,15 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                         dialog.dismiss();
                     }
 
+
                     @Override
                     public void onError(Error error) {
                         btn_prog.setVisibility(View.VISIBLE);
+                        File DownloadTemp = new File(activation.getDatabaseFolderPath() + "/KowsarDbTemp.sqlite");
+                        DownloadTemp.delete();
                         tv_step.setText("مشکل ارتباطی لطفا دوباره امتحان کنید");
 
                     }
-
                 });
 
     }
@@ -329,4 +348,12 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    protected void onDestroy() {
+        if(PRDownloader.getStatus(downloadId)== Status.RUNNING){
+            PRDownloader.cancel(downloadId);
+        }
+        super.onDestroy();
+
+    }
 }

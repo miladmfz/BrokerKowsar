@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:layout_gravity="center"
     android:id="@+id/boxbuy_absolute"
-    android:background="@color/grey_10"
+    android:background="@drawable/bg_round_selected"
     android:layoutDirection="rtl">
 
 
@@ -20,7 +20,6 @@
         android:text="@string/customerfactorheader"
         android:textSize="20sp"
 
-        android:textColor="@color/grey_1000"
         android:focusable="true">
 
 
@@ -54,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:background="#FFFFFF"
+                android:background="@drawable/bg_round_selected"
                 android:gravity="center"
                 android:hint="@string/amount"
                 android:maxLength="4"
@@ -89,7 +88,7 @@
             android:layout_width="250dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:background="#FFFFFF"
+            android:background="@drawable/bg_round_selected"
             android:focusable="true"
 
             android:gravity="center"
@@ -121,7 +120,7 @@
             android:layout_width="250dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:background="#FFFFFF"
+            android:background="@drawable/bg_round_selected"
             android:focusable="true"
 
             android:gravity="center"
@@ -153,7 +152,7 @@
             android:layout_width="250dp"
             android:layout_height="50dp"
             android:layout_gravity="center"
-            android:background="#FFFFFF"
+            android:background="@drawable/bg_round_selected"
             android:focusable="true"
 
             android:gravity="center"

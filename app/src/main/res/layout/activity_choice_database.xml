@@ -42,7 +42,6 @@
                 android:textDirection="rtl"
                 android:inputType="number"
                 android:textSize="36sp"
-                android:background="@color/white"
                 android:gravity="center"
                 android:padding="5dp"
                 android:textColor="@color/grey_1000"

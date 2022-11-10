@@ -40,7 +40,7 @@
                     android:layout_weight="0.25"
                     android:text="@string/prefactor_date"
                     android:gravity="center"
-                    android:textColor="#000000"
+
                     android:textStyle="bold" />
 
                 <TextView
@@ -51,7 +51,7 @@
                     android:layout_weight="0.25"
                     android:gravity="center"
                     android:text="@string/prefactor_date"
-                    android:textColor="#000000"
+
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -72,7 +72,7 @@
                     android:layout_weight="0.25"
                     android:gravity="center"
                     android:text="@string/prefactor_code"
-                    android:textColor="#000000"
+
                     android:textSize="12sp" />
 
                 <TextView
@@ -83,7 +83,7 @@
                     android:layout_weight="0.25"
                     android:gravity="center"
                     android:text="@string/prefactor_code"
-                    android:textColor="#000000"
+
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -114,7 +114,7 @@
                     android:layout_weight="0.25"
                     android:text="@string/prefactor_time"
                     android:gravity="center"
-                    android:textColor="#000000"
+
                     android:textSize="12sp" />
 
                 <TextView
@@ -125,7 +125,7 @@
                     android:layout_weight="0.25"
                     android:gravity="center"
                     android:text="@string/prefactor_time"
-                    android:textColor="#000000"
+
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -145,7 +145,7 @@
                     android:layout_weight="0.25"
                     android:text="@string/buy_rows"
                     android:gravity="center"
-                    android:textColor="#000000"
+
                     android:textSize="12sp" />
 
                 <TextView
@@ -156,7 +156,7 @@
                     android:layout_weight="0.25"
                     android:gravity="center"
                     android:text="@string/buy_rows"
-                    android:textColor="#000000"
+
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -184,7 +184,7 @@
                     android:layout_weight="0.25"
                     android:text="@string/buy_totalamount"
                     android:gravity="center"
-                    android:textColor="#000000"
+
                     android:textSize="12sp" />
 
                 <TextView
@@ -195,7 +195,7 @@
                     android:layout_weight="0.25"
                     android:gravity="center"
                     android:text="@string/buy_totalamount"
-                    android:textColor="#000000"
+
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -215,7 +215,7 @@
                     android:layout_weight="0.25"
                     android:text="@string/totalfactorheader"
                     android:gravity="center"
-                    android:textColor="#000000"
+
                     android:textStyle="bold" />
 
                 <TextView
@@ -226,7 +226,7 @@
                     android:layout_weight="0.25"
                     android:gravity="center"
                     android:text="@string/totalfactorheader"
-                    android:textColor="#000000"
+
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -247,7 +247,7 @@
                 android:layout_weight="0.25"
                 android:text="@string/customerfactorheader"
                 android:gravity="center"
-                android:textColor="#000000"
+
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -259,7 +259,7 @@
                 android:layout_weight="0.25"
                 android:gravity="center"
                 android:text="@string/customerfactorheader"
-                android:textColor="#000000"
+
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -279,7 +279,7 @@
                 android:layout_weight="0.25"
                 android:text="@string/prefactor_explain"
                 android:gravity="center"
-                android:textColor="#000000"
+
                 android:textSize="12sp"
                 android:textStyle="bold" />
 
@@ -292,7 +292,7 @@
                 android:layout_weight="0.25"
                 android:gravity="center"
                 android:text="@string/prefactor_explain"
-                android:textColor="#000000"
+
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
