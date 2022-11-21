@@ -163,7 +163,7 @@ public class Search_box {
 
         btn_search = new MaterialButton(mContext);
 
-        btn_search.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.MATCH_PARENT));
+        btn_search.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
         btn_search.setText(NumberFunctions.PerisanNumber("اعمال فیلتر ها"));
         btn_search.setTextSize(12);
         btn_search.setTextColor(mContext.getColor(R.color.grey_1000));

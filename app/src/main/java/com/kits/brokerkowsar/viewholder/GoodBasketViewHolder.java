@@ -87,10 +87,15 @@ public class GoodBasketViewHolder extends RecyclerView.ViewHolder {
         total.setText(NumberFunctions.PerisanNumber(decimalFormat.format(price)));
         maxtotal.setText(NumberFunctions.PerisanNumber(decimalFormat.format(maxprice)));
 
-        if (good.getGoodFieldValue("SellPriceType").equals("0")) {
+        try {
+            if (good.getGoodFieldValue("SellPriceType").equals("0")) {
+                offer.setText("");
+            } else {
+                offer.setText(NumberFunctions.PerisanNumber((100 - ((sellprice * 100) / maxsellprice)) + " درصد تخفیف "));
+            }
+        }catch (Exception e) {
             offer.setText("");
-        } else {
-            offer.setText(NumberFunctions.PerisanNumber((100 - ((sellprice * 100) / maxsellprice)) + " درصد تخفیف "));
+            e.printStackTrace();
         }
 
 
