@@ -179,8 +179,10 @@ public class Search_box {
                             EditText et = (EditText) LinearLayoutCompat.getChildAt(j);
                             for (Column Column : Columns) {
                                 if (et.getHint().toString().equals(Column.getColumnFieldValue("ColumnCode"))) {
+
                                     Column.setSearch(NumberFunctions.EnglishNumber(et.getText().toString()));
                                     Column.setCondition(NumberFunctions.EnglishNumber(et.getText().toString()));
+
                                     dbh.UpdateSearchColumn(Column);
 
                                 }
@@ -191,13 +193,18 @@ public class Search_box {
             }
             Where = " And Replace(Replace(GoodType,char(1740),char(1610)),char(1705),char(1603))= Replace(Replace('" + Goodtype + "',char(1740),char(1610)),char(1705),char(1603)) ";
             for (Column Column : Columns) {
+
+                String search =Column.getColumnFieldValue("search");
+                search=search.replaceAll(" ", "%").replaceAll("'", "%");
+
+
                 if (!Column.getColumnFieldValue("search").equals("")) {
                     if (Column.getColumnType().equals("0")) {
                         if (!Column.getColumnName().equals("")) {
                             if (!Column.getColumnFieldValue("columndefinition").equals(""))
-                                Where = Where + " And Replace(Replace(" + Column.getColumnFieldValue("columndefinition") + ",char(1740),char(1610)),char(1705),char(1603)) Like '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%'  ";
+                                Where = Where + " And Replace(Replace(" + Column.getColumnFieldValue("columndefinition") + ",char(1740),char(1610)),char(1705),char(1603)) Like '%" + dbh.GetRegionText(search) + "%'  ";
                             else
-                                Where = Where + " And Replace(Replace(" + Column.getColumnFieldValue("ColumnName") + ",char(1740),char(1610)),char(1705),char(1603)) Like '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%' ";
+                                Where = Where + " And Replace(Replace(" + Column.getColumnFieldValue("ColumnName") + ",char(1740),char(1610)),char(1705),char(1603)) Like '%" + dbh.GetRegionText(search) + "%' ";
                         } else {
                             String search_condition = " Replace(Replace('%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%',char(1740),char(1610)),char(1705),char(1603)) ";
                             Where = Where + " And " + Column.getColumnFieldValue("columndefinition");
@@ -206,9 +213,9 @@ public class Search_box {
                     } else {
                         if (!Column.getColumnName().equals("")) {
                             if (!Column.getColumnFieldValue("columndefinition").equals(""))
-                                Where = Where + " And " + Column.getColumnFieldValue("columndefinition") + " Like '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%'  ";
+                                Where = Where + " And " + Column.getColumnFieldValue("columndefinition") + " Like '%" + dbh.GetRegionText(search) + "%'  ";
                             else
-                                Where = Where + " And " + Column.getColumnFieldValue("ColumnName") + " Like '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%' ";
+                                Where = Where + " And " + Column.getColumnFieldValue("ColumnName") + " Like '%" + dbh.GetRegionText(search) + "%' ";
                         } else {
                             String search_condition = " '%" + dbh.GetRegionText(Column.getColumnFieldValue("search")) + "%' ";
                             Where = Where + " And " + Column.getColumnFieldValue("columndefinition");

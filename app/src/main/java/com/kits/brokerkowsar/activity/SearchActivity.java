@@ -150,7 +150,11 @@ public class SearchActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.SearchActivityToolbar);
 
-        binding.SearchActivityEdtsearch.setOnClickListener(view -> binding.SearchActivityEdtsearch.selectAll());
+        binding.SearchActivityEdtsearch.setOnLongClickListener(v -> {
+            binding.SearchActivityEdtsearch.selectAll();
+            return false;
+        });
+
         binding.SearchActivityEdtsearch.addTextChangedListener(
                 new TextWatcher() {
                     @Override
@@ -327,7 +331,9 @@ public class SearchActivity extends AppCompatActivity {
                 }
             });
 
-
+            if (unitratio_mlti.hasFocusable()) {
+                unitratio_mlti.selectAll();
+            }
         });
 
         binding.SearchActivityAllgood.addOnScrollListener(new RecyclerView.OnScrollListener() {

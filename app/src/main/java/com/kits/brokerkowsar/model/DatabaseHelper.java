@@ -134,6 +134,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodName ON Good (GoodName)");
+        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodMainCode ON Good (GoodMainCode)");
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain1 ON Good (GoodExplain1)");
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain2 ON Good (GoodExplain2)");
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain3 ON Good (GoodExplain3)");
@@ -1503,7 +1504,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<Customer> AllCustomer(String search_target, boolean aOnlyActive) {
 
         String name = GetRegionText(search_target);
-
+        name = name.replaceAll(" ", "%").replaceAll("'", "%");
         query = "SELECT u.CustomerCode,u.PriceTip,c.Title || ' ' || c.FName|| ' ' || c.Name CentralName,Address,Manager,Mobile,Phone,Delegacy,y.Name CityName, CustomerBestankar - CustomerBedehkar Bestankar, Active, CentralPrivateCode, EtebarNaghd" +
                 ",EtebarCheck, Takhfif, MobileName, Email, Fax, ZipCode, PostCode FROM Customer u " +
                 "join Central c on u.CentralRef= c.CentralCode " +
