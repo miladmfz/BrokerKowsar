@@ -720,6 +720,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @SuppressLint("Range")
     public ArrayList<Good> getAllGood_ByDate(String xDayAgo, String MoreCallData) {
+
         goods.clear();
         GetPreference();
         columns = GetColumns("", "", "1");
@@ -744,11 +745,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 k++;
             }
         }
+
         String newSt = "Date";
         for (Column column : columns) {
 
             if (column.getColumnName().equals("Date")) {
-                newSt = column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then") + 5, column.getColumnDefinition().indexOf("Then") + 12);
+                newSt = column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Else") + 4, column.getColumnDefinition().indexOf("Else") + 12);
             }
         }
 
@@ -782,14 +784,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
                 if (Integer.parseInt(column.getOrderIndex()) > 0) {
                     if (column.getColumnName().equals("Date")) {
-                        newSt = column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then") + 5, column.getColumnDefinition().indexOf("Then") + 12);
+                        newSt = column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Else") + 4, column.getColumnDefinition().indexOf("Else") + 12);
                         query = query + newSt;
                     } else {
                         query = query + column.getColumnName();
                     }
                 } else {
                     if (column.getColumnName().equals("Date")) {
-                        newSt = column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Then") + 5, column.getColumnDefinition().indexOf("Then") + 12);
+                        newSt = column.getColumnDefinition().substring(column.getColumnDefinition().indexOf("Else") + 4, column.getColumnDefinition().indexOf("Else") + 12);
                         query = query + newSt + " DESC ";
                     } else {
                         query = query + column.getColumnName() + " DESC ";

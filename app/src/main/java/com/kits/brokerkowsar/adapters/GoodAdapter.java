@@ -71,7 +71,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
 //                LayoutInflater.from(parent.getContext())
 //        );
 //        return new GoodItemViewHolder(binding);
-        return new GoodItemViewHolder(view);
+        return new GoodItemViewHolder(view,mContext);
     }
 
 
@@ -79,52 +79,11 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final GoodItemViewHolder holder, @SuppressLint("RecyclerView") final int position) {
 
-        String imagecode = dbh.GetLastksrImageCode(goods.get(position).getGoodFieldValue("GoodCode"));
 
         holder.bind(Columns, goods.get(position), mContext, callMethod);
 
-        holder.Action(goods.get(position)
-                , mContext
-                , dbh
-                , callMethod
-                , action
-                , image_info
-                , multi_select, imagecode
-        );
-
-
-        if (!image_info.Image_exist(imagecode)) {
-
-            call2 = apiInterface.GetImageFromKsr("GetImageFromKsr", goods.get(position).getGoodFieldValue("KsrImageCode"));
-            call2.enqueue(new Callback<RetrofitResponse>() {
-                @Override
-                public void onResponse(@NonNull Call<RetrofitResponse> call2, @NonNull Response<RetrofitResponse> response) {
-
-                    if (response.isSuccessful()) {
-                        assert response.body() != null;
-                        if (!response.body().getText().equals("no_photo")) {
-                            image_info.SaveImage(
-                                    BitmapFactory.decodeByteArray(
-                                            Base64.decode(response.body().getText(), Base64.DEFAULT),
-                                            0,
-                                            Base64.decode(response.body().getText(), Base64.DEFAULT).length
-                                    ),
-                                    imagecode
-                            );
-
-                            notifyItemChanged(position);
-                        }
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<RetrofitResponse> call2, @NonNull Throwable t) {
-                    callMethod.ErrorLog(t.getMessage());
-
-                }
-            });
-        }
-
+        holder.Action(goods.get(position), multi_select);
+        holder.callimage(goods.get(position));
 
         holder.rltv.setOnClickListener(v -> {
 
@@ -151,7 +110,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
                             activity.good_select_function(goods.get(position));
                         }
                     }
-                }else{
+                } else {
                     callMethod.showToast("این کالا غیر فعال می باشد");
                 }
             } else {
@@ -203,7 +162,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
                     mContext.startActivity(intent);
 
                 }
-            }else{
+            } else {
                 callMethod.showToast("این کالا غیر فعال می باشد");
             }
 
@@ -219,4 +178,11 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     }
 
 
+    @Override
+    public void onViewDetachedFromWindow(@NonNull GoodItemViewHolder holder) {
+        super.onViewDetachedFromWindow(holder);
+        if (holder.call.isExecuted()) {
+            holder.call.cancel();
+        }
+    }
 }

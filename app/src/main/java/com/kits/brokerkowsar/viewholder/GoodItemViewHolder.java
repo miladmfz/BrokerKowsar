@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -28,11 +29,17 @@ import com.kits.brokerkowsar.model.Column;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.NumberFunctions;
+import com.kits.brokerkowsar.model.RetrofitResponse;
+import com.kits.brokerkowsar.webService.APIClient;
+import com.kits.brokerkowsar.webService.APIInterface;
 
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class GoodItemViewHolder extends RecyclerView.ViewHolder {
@@ -45,8 +52,30 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
 
     boolean multi_select1;
 
-    public GoodItemViewHolder(View itemView) {
+
+    private final Context mContext;
+    CallMethod callMethod;
+
+    DatabaseHelper dbh;
+
+    APIInterface apiInterface;
+    private final ImageInfo image_info;
+    public Call<RetrofitResponse> call;
+    Action action;
+    ArrayList<Column> Columns;
+
+
+    public GoodItemViewHolder(View itemView,Context context) {
         super(itemView);
+
+        this.mContext = context;
+        this.callMethod = new CallMethod(mContext);
+        this.image_info = new ImageInfo(mContext);
+        this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
+        this.action = new Action(mContext);
+        this.Columns = dbh.GetColumns("id", "", "1");
+        this.apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
+
         mainline = itemView.findViewById(R.id.prosearch_mainline);
         img = itemView.findViewById(R.id.good_prosearch_img);
         rltv = itemView.findViewById(R.id.good_prosearch);
@@ -98,33 +127,11 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     @SuppressLint({"ResourceAsColor", "UseCompatLoadingForColorStateLists"})
-    public void Action(Good good
-            , Context mContext
-            , DatabaseHelper dbh
-            , CallMethod callMethod
-            , Action action
-            , ImageInfo imageInfo
-            , boolean multi_select,
-                       String ImageCode) {
+    public void Action(Good good, boolean multi_select) {
 
         this.multi_select1 = multi_select;
 
-        if (imageInfo.Image_exist(ImageCode)) {
-            String root = Environment.getExternalStorageDirectory().getAbsolutePath();
-            File imagefile = new File(root + "/Kowsar/" +
-                    callMethod.ReadString("EnglishCompanyNameUse") + "/" +
-                    ImageCode + ".jpg"
-            );
-            Bitmap myBitmap = BitmapFactory.decodeFile(imagefile.getAbsolutePath());
-            img.setImageBitmap(myBitmap);
 
-        } else {
-
-            byte[] imageByteArray1;
-            imageByteArray1 = Base64.decode(mContext.getString(R.string.no_photo), Base64.DEFAULT);
-            img.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length), BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getWidth() * 2, BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getHeight() * 2, false));
-
-        }
 
 
         if (good.getGoodFieldValue("ActiveStack").equals("1")){
@@ -152,6 +159,62 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
 
     }
 
+    public void callimage(Good good){
+        String imagecode = dbh.GetLastksrImageCode(good.getGoodFieldValue("GoodCode"));
+
+        if (image_info.Image_exist(imagecode)) {
+            String root = Environment.getExternalStorageDirectory().getAbsolutePath();
+            File imagefile = new File(root + "/Kowsar/" +
+                    callMethod.ReadString("EnglishCompanyNameUse") + "/" +
+                    imagecode + ".jpg"
+            );
+            Bitmap myBitmap = BitmapFactory.decodeFile(imagefile.getAbsolutePath());
+            img.setImageBitmap(myBitmap);
+
+        } else {
+
+            byte[] imageByteArray1;
+            imageByteArray1 = Base64.decode(mContext.getString(R.string.no_photo), Base64.DEFAULT);
+            img.setImageBitmap(Bitmap.createScaledBitmap(BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length), BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getWidth() * 2, BitmapFactory.decodeByteArray(imageByteArray1, 0, imageByteArray1.length).getHeight() * 2, false));
+
+        }
+
+
+
+        call = apiInterface.GetImageFromKsr("GetImageFromKsr", good.getGoodFieldValue("KsrImageCode"));
+        if (!image_info.Image_exist(imagecode)) {
+
+
+            call.enqueue(new Callback<RetrofitResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<RetrofitResponse> call2, @NonNull Response<RetrofitResponse> response) {
+
+                    if (response.isSuccessful()) {
+                        assert response.body() != null;
+                        if (!response.body().getText().equals("no_photo")) {
+                            image_info.SaveImage(
+                                    BitmapFactory.decodeByteArray(
+                                            Base64.decode(response.body().getText(), Base64.DEFAULT),
+                                            0,
+                                            Base64.decode(response.body().getText(), Base64.DEFAULT).length
+                                    ),
+                                    imagecode
+                            );
+                            callimage(good);
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<RetrofitResponse> call2, @NonNull Throwable t) {
+                    callMethod.ErrorLog(t.getMessage());
+
+                }
+            });
+        }
+
+
+    }
 
     public int getcolorresource(String colortarget, Context mContext) {
         int intcolor;
