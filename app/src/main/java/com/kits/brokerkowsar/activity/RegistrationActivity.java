@@ -143,7 +143,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
         binding.registrSelloff.setChecked(Integer.parseInt(callMethod.ReadString("SellOff")) != 0);
         binding.registrAutorep.setChecked(callMethod.ReadBoolan("AutoReplication"));
-
+        binding.registrBroker.setOnClickListener(v -> binding.registrBroker.selectAll());
 
         binding.registrSelloff.setOnCheckedChangeListener((compoundButton, b) -> {
             if (Integer.parseInt(callMethod.ReadString("SellOff")) == 0) {

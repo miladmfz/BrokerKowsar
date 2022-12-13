@@ -1511,10 +1511,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ",EtebarCheck, Takhfif, MobileName, Email, Fax, ZipCode, PostCode FROM Customer u " +
                 "join Central c on u.CentralRef= c.CentralCode " +
                 "Left join Address d on u.AddressRef=d.AddressCode " +
-                "Left join City y on d.CityCode=y.CityCode" +
-                " Where (Replace(Replace(CentralName,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%' or " +
+                "Left join City y on d.CityCode=y.CityCode " +
+                "join BrokerCustomer cb on cb.CustomerRef=u.CustomerCode " +
+                " Where cb.BrokerRef="+ReadConfig("BrokerCode")+
+                " And ((Replace(Replace(CentralName,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%' or " +
                 " CustomerCode Like '%" + name + "%' or  " +
-                " Replace(Replace( Manager,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%')";
+                " Replace(Replace( Manager,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%'))";
+
         if (aOnlyActive) {
             query = query + " And Active = 0";
         }
