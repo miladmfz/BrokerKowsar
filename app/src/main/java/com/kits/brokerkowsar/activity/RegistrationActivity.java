@@ -125,10 +125,6 @@ public class RegistrationActivity extends AppCompatActivity {
                         dbh.deleteColumn();
                         replication.BrokerStack();
                         dbh.DatabaseCreate();
-
-                        dbh.ExecQuery("delete from customer");
-                        dbh.ExecQuery("Update ReplicationTable Set LastRepLogCode = -1 Where ServerTable = 'Customer' ");
-
                         action.app_info();
                         replication.DoingReplicate();
 
@@ -194,8 +190,6 @@ public class RegistrationActivity extends AppCompatActivity {
             UserInfoNew.setBrokerCode(NumberFunctions.EnglishNumber(binding.registrBroker.getText().toString()));
             dbh.SavePersonalInfo(UserInfoNew);
             dbh.DatabaseCreate();
-            dbh.ExecQuery("delete from customer");
-            dbh.ExecQuery("Update ReplicationTable Set LastRepLogCode = -1 Where ServerTable = 'Customer' ");
 
             replication.BrokerStack();
             action.app_info();
