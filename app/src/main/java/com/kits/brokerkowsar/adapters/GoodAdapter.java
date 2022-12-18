@@ -4,9 +4,6 @@ package com.kits.brokerkowsar.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,9 +30,6 @@ import com.kits.brokerkowsar.webService.APIInterface;
 import java.util.ArrayList;
 
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 
 public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     private final Context mContext;
@@ -60,7 +54,6 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
         this.action = new Action(mContext);
         this.Columns = dbh.GetColumns("id", "", "1");
         this.apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
-
     }
 
     @NonNull

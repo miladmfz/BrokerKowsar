@@ -110,20 +110,15 @@ public class Search_box {
         try {
             Columns = dbh.GetColumns("", Goodtype, "3");
         } catch (Exception E) {
-            Log.e("test", E.getMessage());
 
         }
-        Log.e("test", "0");
-        Log.e("test", Columns.size() + "");
+
 
         for (Column Column : Columns) {
-            Log.e("test", "1");
 
             Column.setSearch("");
-            Log.e("test", "2");
 
             if (Integer.parseInt(Column.getColumnFieldValue("SortOrder")) > 1) {
-                Log.e("test", "3");
 
                 layout_view.setOrientation(LinearLayoutCompat.VERTICAL);
                 LinearLayoutCompat layout_view_child = new LinearLayoutCompat(mContext);
@@ -158,7 +153,6 @@ public class Search_box {
 
             }
         }
-        Log.e("test", "4");
 
 
         btn_search = new MaterialButton(mContext);
@@ -225,7 +219,6 @@ public class Search_box {
                 }
             }
 
-            Log.e("test__",Where);
             SearchActivity activity = (SearchActivity) mContext;
 
             activity.proSearchCondition = Where;

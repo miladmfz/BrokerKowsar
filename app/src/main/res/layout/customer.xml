@@ -60,12 +60,15 @@
 
 
             <LinearLayout
+                android:id="@+id/customer_credit_ll"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:paddingTop="2dp"
                 android:layout_weight="0.5"
-                android:weightSum="0.5">
+                android:weightSum="0.5"
+                android:visibility="invisible">
 
 
                 <TextView
@@ -75,9 +78,8 @@
                     tools:ignore="NestedWeights"
                     android:gravity="center"
                     android:text="@string/customer_credite"
-
                     android:textSize="12sp"
-                    android:visibility="gone"/>
+                    />
 
                 <TextView
                     android:id="@+id/customer_bes"
@@ -86,10 +88,7 @@
                     android:layoutDirection="rtl"
                     android:text="@string/customer_credite"
                     android:layout_weight="0.25"
-                    android:visibility="gone"
-
                     android:textSize="16sp"
-
                     android:textStyle="bold" />
 
 

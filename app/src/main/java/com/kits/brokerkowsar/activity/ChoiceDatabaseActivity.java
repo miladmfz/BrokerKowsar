@@ -77,7 +77,6 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     //*****************************************************************************************
     @SuppressLint("SdCardPath")
     public void Config() {
-        Log.e("test__", "___000");
         callMethod = new CallMethod(this);
         dialog = new Dialog(this);
         activation = new Activation();
@@ -155,11 +154,9 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                     dialog.setCancelable(false);
                 })
                 .setOnPauseListener(() -> {
-                    Log.e("test__", "0");
 
                 })
                 .setOnCancelListener(() -> {
-                    Log.e("test__", "1");
                     File DownloadTemp = new File(activation.getDatabaseFolderPath() + "/KowsarDbTemp.sqlite");
                     DownloadTemp.delete();
                 })

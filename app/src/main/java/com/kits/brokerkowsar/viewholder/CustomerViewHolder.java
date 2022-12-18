@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
@@ -35,6 +36,7 @@ public class CustomerViewHolder extends RecyclerView.ViewHolder {
     private final TextView cus_phone;
     private final TextView cus_addres;
     private final TextView cus_bes;
+    public LinearLayout cus_ll;
     private final MaterialCardView fac_rltv;
 
     public CustomerViewHolder(View itemView) {
@@ -45,6 +47,7 @@ public class CustomerViewHolder extends RecyclerView.ViewHolder {
         cus_phone = itemView.findViewById(R.id.customer_phone);
         cus_addres = itemView.findViewById(R.id.customer_addres);
         cus_bes = itemView.findViewById(R.id.customer_bes);
+        cus_ll = itemView.findViewById(R.id.customer_credit_ll);
         fac_rltv = itemView.findViewById(R.id.customer);
     }
 
@@ -52,6 +55,7 @@ public class CustomerViewHolder extends RecyclerView.ViewHolder {
         cus_code.setText(NumberFunctions.PerisanNumber(customer.getCustomerFieldValue("CustomerCode")));
         cus_name.setText(NumberFunctions.PerisanNumber(customer.getCustomerFieldValue("CustomerName")));
         cus_manage.setText(NumberFunctions.PerisanNumber(customer.getCustomerFieldValue("Manager")));
+
 
         if (customer.getCustomerFieldValue("Address").equals("null")) {
             cus_addres.setText("");

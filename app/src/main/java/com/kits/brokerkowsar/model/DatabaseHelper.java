@@ -1024,40 +1024,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         Log.e("test", query);
-        gooddetail = new Good();
+        Good good_data = new Good();
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
-            try {
-                gooddetail.setGoodFieldValue("GoodCode", cursor.getString(cursor.getColumnIndex("GoodCode")));
-                gooddetail.setGoodFieldValue("GoodMainCode", cursor.getString(cursor.getColumnIndex("GoodMainCode")));
-                gooddetail.setGoodFieldValue("GoodName", cursor.getString(cursor.getColumnIndex("GoodName")));
-                gooddetail.setGoodFieldValue("GoodType", cursor.getString(cursor.getColumnIndex("GoodType")));
-                gooddetail.setGoodFieldValue("GoodExplain1", cursor.getString(cursor.getColumnIndex("GoodExplain1")));
-                gooddetail.setGoodFieldValue("GoodExplain2", cursor.getString(cursor.getColumnIndex("GoodExplain2")));
-                gooddetail.setGoodFieldValue("GoodExplain3", cursor.getString(cursor.getColumnIndex("GoodExplain3")));
-                gooddetail.setGoodFieldValue("GoodExplain4", cursor.getString(cursor.getColumnIndex("GoodExplain4")));
-                gooddetail.setGoodFieldValue("GoodExplain5", cursor.getString(cursor.getColumnIndex("GoodExplain5")));
-                gooddetail.setGoodFieldValue("GoodExplain6", cursor.getString(cursor.getColumnIndex("GoodExplain6")));
-                gooddetail.setGoodFieldValue("SellPriceType", cursor.getString(cursor.getColumnIndex("SellPriceType")));
-                gooddetail.setGoodFieldValue("MaxSellPrice", cursor.getString(cursor.getColumnIndex("MaxSellPrice")));
-                gooddetail.setGoodFieldValue("MinSellPrice", cursor.getString(cursor.getColumnIndex("MinSellPrice")));
-                gooddetail.setGoodFieldValue("SellPrice1", cursor.getString(cursor.getColumnIndex("SellPrice1")));
-                gooddetail.setGoodFieldValue("SellPrice2", cursor.getString(cursor.getColumnIndex("SellPrice2")));
-                gooddetail.setGoodFieldValue("SellPrice3", cursor.getString(cursor.getColumnIndex("SellPrice3")));
-                gooddetail.setGoodFieldValue("SellPrice4", cursor.getString(cursor.getColumnIndex("SellPrice4")));
-                gooddetail.setGoodFieldValue("SellPrice5", cursor.getString(cursor.getColumnIndex("SellPrice5")));
-                gooddetail.setGoodFieldValue("SellPrice6", cursor.getString(cursor.getColumnIndex("SellPrice6")));
-                gooddetail.setGoodFieldValue("FirstBarCode", cursor.getString(cursor.getColumnIndex("FirstBarCode")));
-                gooddetail.setGoodFieldValue("GoodUnitRef", cursor.getString(cursor.getColumnIndex("GoodUnitRef")));
-                gooddetail.setGoodFieldValue("DefaultUnitValue", cursor.getString(cursor.getColumnIndex("DefaultUnitValue")));
-                gooddetail.setGoodFieldValue("ISBN", cursor.getString(cursor.getColumnIndex("ISBN")));
-            } catch (Exception ignored) {
-            }
+
+            good_data.setGoodFieldValue("GoodCode", cursor.getString(cursor.getColumnIndex("GoodCode")));
+            good_data.setGoodFieldValue("SellPriceType", cursor.getString(cursor.getColumnIndex("SellPriceType")));
+            good_data.setGoodFieldValue("MaxSellPrice", cursor.getString(cursor.getColumnIndex("MaxSellPrice")));
+            good_data.setGoodFieldValue("MinSellPrice", cursor.getString(cursor.getColumnIndex("MinSellPrice")));
+            good_data.setGoodFieldValue("SellPrice1", cursor.getString(cursor.getColumnIndex("SellPrice1")));
+            good_data.setGoodFieldValue("SellPrice2", cursor.getString(cursor.getColumnIndex("SellPrice2")));
+            good_data.setGoodFieldValue("SellPrice3", cursor.getString(cursor.getColumnIndex("SellPrice3")));
+            good_data.setGoodFieldValue("SellPrice4", cursor.getString(cursor.getColumnIndex("SellPrice4")));
+            good_data.setGoodFieldValue("SellPrice5", cursor.getString(cursor.getColumnIndex("SellPrice5")));
+            good_data.setGoodFieldValue("SellPrice6", cursor.getString(cursor.getColumnIndex("SellPrice6")));
+            good_data.setGoodFieldValue("GoodUnitRef", cursor.getString(cursor.getColumnIndex("GoodUnitRef")));
+            good_data.setGoodFieldValue("DefaultUnitValue", cursor.getString(cursor.getColumnIndex("DefaultUnitValue")));
+
         }
         cursor.close();
-        Log.e("test", gooddetail.getGoodFieldValue("SellPrice"));
-        return gooddetail;
+
+        return good_data;
     }
 
     public ArrayList<Good> getAllGood_pfcode() {
@@ -1513,7 +1501,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Left join Address d on u.AddressRef=d.AddressCode " +
                 "Left join City y on d.CityCode=y.CityCode " +
                 "join BrokerCustomer cb on cb.CustomerRef=u.CustomerCode " +
-                " Where cb.BrokerRef="+ReadConfig("BrokerCode")+
+                " Where cb.BrokerRef=" + ReadConfig("BrokerCode") +
                 " And ((Replace(Replace(CentralName,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%' or " +
                 " CustomerCode Like '%" + name + "%' or  " +
                 " Replace(Replace( Manager,char(1740),char(1610)),char(1705),char(1603)) Like '%" + name + "%'))";
@@ -1654,7 +1642,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         ArrayList<GoodGroup> groups = new ArrayList<>();
 
-        Log.e("test_query", query);
         cursor = getWritableDatabase().rawQuery(query, null);
 
         if (cursor != null) {
@@ -1689,7 +1676,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             query = "SELECT * FROM GoodsGrp Where Groupcode in (9999)";
 
         ArrayList<GoodGroup> groups = new ArrayList<>();
-        Log.e("test", query);
         try {
             cursor = getWritableDatabase().rawQuery(query, null);
         } catch (Exception e) {
@@ -1761,7 +1747,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         user.setActiveCode(val);
                         break;
                     case "BrokerCode":
-                        Log.e("test_setBrokerCode", val);
                         user.setBrokerCode(val);
                         break;
                 }

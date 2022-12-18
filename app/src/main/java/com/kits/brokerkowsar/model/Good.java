@@ -34,11 +34,11 @@ public class Good implements Serializable {
     @SerializedName("GoodExplain6")
     private String GoodExplain6;
     @SerializedName("SellPriceType")
-    private Integer SellPriceType;
+    private String SellPriceType;
     @SerializedName("MaxSellPrice")
-    private Integer MaxSellPrice;
+    private String MaxSellPrice;
     @SerializedName("MinSellPrice")
-    private Integer MinSellPrice;
+    private String MinSellPrice;
     @SerializedName("SellPrice")
     private String SellPrice;
     @SerializedName("SellPrice1")
@@ -755,13 +755,13 @@ public class Good implements Serializable {
                 GoodExplain6 = Res;
                 break;
             case "sellpricetype":
-                SellPriceType = Integer.parseInt(Res);
+                SellPriceType = Res;
                 break;
             case "maxsellprice":
-                MaxSellPrice = Integer.parseInt(Res);
+                MaxSellPrice = Res;
                 break;
             case "minsellprice":
-                MinSellPrice = Integer.parseInt(Res);
+                MinSellPrice = Res;
                 break;
             case "sellprice":
                 SellPrice = Res;

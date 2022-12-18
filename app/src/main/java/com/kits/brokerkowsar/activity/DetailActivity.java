@@ -161,7 +161,6 @@ public class DetailActivity extends AppCompatActivity {
 
         TextView extra_TextView2 = new TextView(this);
         try {
-            Log.e("test", body);
             if (Integer.parseInt(body) > 999) {
                 extra_TextView2.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(body))));
             } else {

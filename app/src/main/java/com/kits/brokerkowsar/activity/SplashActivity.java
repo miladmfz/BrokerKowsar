@@ -93,6 +93,8 @@ public class SplashActivity extends AppCompatActivity {
             callMethod.EditBoolan("AutoReplication", false);
             callMethod.EditBoolan("SellPriceTypeDeactivate", true);
 
+            callMethod.EditBoolan("ShowCustomerCredit", true);
+
             callMethod.EditString("ServerURLUse", "");
             callMethod.EditString("SQLiteURLUse", "");
             callMethod.EditString("PersianCompanyNameUse", "");

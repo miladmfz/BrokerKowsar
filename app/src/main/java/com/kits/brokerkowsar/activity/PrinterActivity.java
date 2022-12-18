@@ -359,7 +359,6 @@ public class PrinterActivity extends AppCompatActivity {
                             image_info.SaveImage_factor(loadBitmapFromView(main_layout), PreFac);
 
                         } catch (Exception e) {
-                            Log.e("test1", e.getMessage());
                         }
                     }
                 };
@@ -384,7 +383,6 @@ public class PrinterActivity extends AppCompatActivity {
         Bundle data = getIntent().getExtras();
         assert data != null;
         PreFac = data.getString("PreFac");
-        Log.e("test_PreFac", PreFac);
     }
 
     private void updateScreenStatus(View viewToShow) {

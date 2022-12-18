@@ -149,7 +149,6 @@ public class Replication {
 
             String where = replicatedetail.getCondition().replace("BrokerCondition", userInfo.getBrokerCode());
 
-
             Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
                     "repinfo",
                     LastRepCode,
@@ -241,12 +240,8 @@ public class Replication {
                                                             }
                                                             QueryConditionCount++;
                                                         }
-
                                                     }
-
-
                                                 } else {
-
                                                     qCol = new StringBuilder("Update " + replicatedetail.getClientTable() + "  Set ");
                                                     int QueryConditionCount = 0;
                                                     for (int z = 1; z < columnDetail; z++) {
@@ -285,44 +280,35 @@ public class Replication {
                                             case "d":
                                                 qCol = new StringBuilder("Delete from " + replicatedetail.getClientTable() + "  Where ").append(replicatedetail.getClientPrimaryKey()).append(" = ").append(repObjectCode);
                                                 try {
-                                                    Log.e("test_qCol=", repcode + " = " + qCol);
                                                     database.execSQL(qCol.toString());
                                                     LastRepCode = repcode;
                                                 } catch (Exception e) {
-                                                    Log.e("test_qCol=", e.getMessage());
                                                 }
 
                                                 break;
                                         }
                                     }
-                                    Log.e("test_","3");
 
                                     database.execSQL("Update ReplicationTable Set LastRepLogCode = " + LastRepCode + " Where ServerTable = '" + replicatedetail.getServerTable() + "' ");
                                     break;
                             }
-                            Log.e("test_","4");
 
                             if (arrayobject.length() >= RepRowCount) {
                                 RetrofitReplicate(replicatelevel);
                             } else {
-                                Log.e("test_","5");
 
                                 if (Integer.parseInt(LastRepCode) < 0) {
-                                    Log.e("test_","6");
 
                                     database.execSQL("Update ReplicationTable Set LastRepLogCode = " + dbh.ReadConfig("MaxRepLogCode") + " Where ServerTable = '" + replicatedetail.getServerTable() + "' ");
 
                                     RetrofitReplicate(replicatelevel);
                                 } else {
-                                    Log.e("test_","7");
 
                                     tv_step.setVisibility(View.GONE);
                                     RetrofitReplicate(replicatelevel + 1);
                                 }
                             }
                         } catch (JSONException ignored) {
-                            Log.e("test_","8");
-                            Log.e("test_",ignored.getMessage());
 
                         }
                     }
@@ -668,7 +654,6 @@ public class Replication {
             public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
                 if (response.isSuccessful()) {
                     assert response.body() != null;
-                    Log.e("test_BrokerStack", response.body().getText());
                     if (!response.body().getText().equals(dbh.ReadConfig("BrokerStack"))) {
                         dbh.SaveConfig("BrokerStack", response.body().getText());
                     }
@@ -677,7 +662,6 @@ public class Replication {
 
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                Log.e("test_Retrofitbroker", t.getMessage());
             }
         });
         MenuBroker();

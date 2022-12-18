@@ -60,6 +60,12 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerViewHolder> {
                 , mContext
         );
 
+        if (callMethod.ReadBoolan("ShowCustomerCredit")){
+            holder.cus_ll.setVisibility(View.VISIBLE);
+        }else {
+            holder.cus_ll.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     @Override

@@ -139,7 +139,21 @@ public class RegistrationActivity extends AppCompatActivity {
 
         binding.registrSelloff.setChecked(Integer.parseInt(callMethod.ReadString("SellOff")) != 0);
         binding.registrAutorep.setChecked(callMethod.ReadBoolan("AutoReplication"));
+        binding.registrCustomercredit.setChecked(callMethod.ReadBoolan("ShowCustomerCredit"));
+
+        binding.registrCustomercredit.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (callMethod.ReadBoolan("ShowCustomerCredit")) {
+                callMethod.EditBoolan("ShowCustomerCredit", false);
+                callMethod.showToast("خیر");
+            } else {
+                callMethod.EditBoolan("ShowCustomerCredit", true);
+                callMethod.showToast("بله");
+            }
+        });
+
         binding.registrBroker.setOnClickListener(v -> binding.registrBroker.selectAll());
+
+
 
         binding.registrSelloff.setOnCheckedChangeListener((compoundButton, b) -> {
             if (Integer.parseInt(callMethod.ReadString("SellOff")) == 0) {

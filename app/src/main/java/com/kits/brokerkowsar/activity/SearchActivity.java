@@ -80,7 +80,6 @@ public class SearchActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
 
-
         dialog1 = new Dialog(this);
         dialog1.requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(dialog1.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
@@ -98,7 +97,7 @@ public class SearchActivity extends AppCompatActivity {
                     callMethod.showToast("تنظیم جدول از سمت دیتابیس مشکل دارد");
                     finish();
                     dialog1.dismiss();
-                }else {
+                } else {
                     init();
                 }
             }, 100);
@@ -233,17 +232,29 @@ public class SearchActivity extends AppCompatActivity {
             final TextView tv = dialog.findViewById(R.id.box_multi_buy_factor);
             String tempvalue = "";
             defultenablesellprice = false;
+            Good goodtempdata;
 
             for (Good good : Multi_Good) {
 
-                Good goodtempdata = dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
+                goodtempdata = dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
 
+
+                Log.e("test_PricetipCustomer+", dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
+                Log.e("test_GoodCode+", "GoodCode=" + goodtempdata.getGoodFieldValue("GoodCode"));
+                Log.e("test_1+", "1=" + goodtempdata.getGoodFieldValue("SellPrice1"));
+                Log.e("test_2+", "2=" + goodtempdata.getGoodFieldValue("SellPrice2"));
+                Log.e("test_3+", "3=" + goodtempdata.getGoodFieldValue("SellPrice3"));
+                Log.e("test_4+", "4=" + goodtempdata.getGoodFieldValue("SellPrice4"));
+                Log.e("test_5+", "5=" + goodtempdata.getGoodFieldValue("SellPrice5"));
+                Log.e("test_6+", "6=" + goodtempdata.getGoodFieldValue("SellPrice6"));
+
+                Log.e("test_", "tip=" + goodtempdata.getGoodFieldValue("SellPrice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))));
 
 
                 if (Multi_Good.get(0).equals(good)) {
-                    if(goodtempdata.getGoodFieldValue("SellPrice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))).equals("")){
-                        tempvalue ="100.0";
-                    }else{
+                    if (goodtempdata.getGoodFieldValue("SellPrice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))).equals("")) {
+                        tempvalue = "100.0";
+                    } else {
                         tempvalue = goodtempdata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
                     }
                 }
@@ -269,7 +280,7 @@ public class SearchActivity extends AppCompatActivity {
             }, 500);
 
             boxbuy.setOnClickListener(view -> {
-                if(unitratio_mlti.getText().toString().equals("بر اساس نرخ فروش")){
+                if (unitratio_mlti.getText().toString().equals("بر اساس نرخ فروش")) {
                     unitratio_mlti.setText("100.0");
                 }
                 String AmountMulti = amount_mlti.getText().toString();
@@ -280,9 +291,9 @@ public class SearchActivity extends AppCompatActivity {
                         for (Good good : Multi_Good) {
                             Good gooddata = dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
                             String temppercent;
-                            if(gooddata.getGoodFieldValue("SellPrice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))).equals("")){
-                                temppercent ="100.0";
-                            }else{
+                            if (gooddata.getGoodFieldValue("SellPrice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))).equals("")) {
+                                temppercent = "100.0";
+                            } else {
                                 temppercent = gooddata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
                             }
 
