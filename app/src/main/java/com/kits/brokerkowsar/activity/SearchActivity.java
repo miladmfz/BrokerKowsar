@@ -238,19 +238,6 @@ public class SearchActivity extends AppCompatActivity {
 
                 goodtempdata = dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
 
-
-                Log.e("test_PricetipCustomer+", dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
-                Log.e("test_GoodCode+", "GoodCode=" + goodtempdata.getGoodFieldValue("GoodCode"));
-                Log.e("test_1+", "1=" + goodtempdata.getGoodFieldValue("SellPrice1"));
-                Log.e("test_2+", "2=" + goodtempdata.getGoodFieldValue("SellPrice2"));
-                Log.e("test_3+", "3=" + goodtempdata.getGoodFieldValue("SellPrice3"));
-                Log.e("test_4+", "4=" + goodtempdata.getGoodFieldValue("SellPrice4"));
-                Log.e("test_5+", "5=" + goodtempdata.getGoodFieldValue("SellPrice5"));
-                Log.e("test_6+", "6=" + goodtempdata.getGoodFieldValue("SellPrice6"));
-
-                Log.e("test_", "tip=" + goodtempdata.getGoodFieldValue("SellPrice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))));
-
-
                 if (Multi_Good.get(0).equals(good)) {
                     if (goodtempdata.getGoodFieldValue("SellPrice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))).equals("")) {
                         tempvalue = "100.0";
