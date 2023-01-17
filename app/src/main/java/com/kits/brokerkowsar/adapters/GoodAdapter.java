@@ -89,7 +89,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
                             SearchActivity activity = (SearchActivity) mContext;
                             activity.good_select_function(goods.get(position));
                         }
-                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
+                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchByDateActivity")) {
                             SearchByDateActivity activity = (SearchByDateActivity) mContext;
                             activity.good_select_function(goods.get(position));
                         }
@@ -98,7 +98,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
                             SearchActivity activity = (SearchActivity) mContext;
                             activity.good_select_function(goods.get(position));
                         }
-                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
+                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchByDateActivity")) {
                             SearchByDateActivity activity = (SearchByDateActivity) mContext;
                             activity.good_select_function(goods.get(position));
                         }
@@ -131,7 +131,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
                             SearchActivity activity = (SearchActivity) mContext;
                             activity.good_select_function(goods.get(position));
                         }
-                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
+                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchByDateActivity")) {
                             SearchByDateActivity activity = (SearchByDateActivity) mContext;
                             activity.good_select_function(goods.get(position));
                         }
@@ -141,7 +141,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
                             SearchActivity activity = (SearchActivity) mContext;
                             activity.good_select_function(goods.get(position));
                         }
-                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.Search_date_detailActivity")) {
+                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchByDateActivity")) {
                             SearchByDateActivity activity = (SearchByDateActivity) mContext;
                             activity.good_select_function(goods.get(position));
                         }
