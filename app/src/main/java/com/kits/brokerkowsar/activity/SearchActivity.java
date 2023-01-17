@@ -47,7 +47,7 @@ public class SearchActivity extends AppCompatActivity {
     private ArrayList<Good> Moregoods = new ArrayList<>();
     ArrayList<GoodGroup> goodGroups;
     private Integer grid;
-    public String id = "";
+    public String id = "0";
     public String title = "";
     Dialog dialog1;
     GroupLableAdapter grp_adapter;

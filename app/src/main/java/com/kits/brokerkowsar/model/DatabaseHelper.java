@@ -1624,7 +1624,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public ArrayList<GoodGroup> getAllGroups(String GL) {
+    public ArrayList<GoodGroup> getAllGroups(String Glstr) {
+
+        String GL = "0";
+        if (!Glstr.equals("")) {
+            GL = Glstr;
+        }
 
         query = "SELECT * ," +
                 "case When L1=0 Then (Select Count(*) From GoodsGrp s Where s.L1=g.GroupCode) " +

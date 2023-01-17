@@ -675,10 +675,14 @@ public class Replication {
             public void onResponse(@NotNull Call<RetrofitResponse> call, @NotNull Response<RetrofitResponse> response) {
                 if (response.isSuccessful()) {
                     assert response.body() != null;
+                    Log.e("test__1",response.body().getText());
+                    Log.e("test__2",dbh.ReadConfig("GroupCodeDefult"));
                     if (!response.body().getText().equals("")) {
                         if (!response.body().getText().equals(dbh.ReadConfig("GroupCodeDefult"))) {
                             dbh.SaveConfig("GroupCodeDefult", response.body().getText());
                         }
+                    }else {
+                        dbh.SaveConfig("GroupCodeDefult", "0");
                     }
                 }
             }
