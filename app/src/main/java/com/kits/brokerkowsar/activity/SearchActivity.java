@@ -141,7 +141,7 @@ public class SearchActivity extends AppCompatActivity {
         grp_adapter = new GroupLableAdapter(goodGroups, this);
         binding.SearchActivityGrpRecy.setLayoutManager(new GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false));
         binding.SearchActivityGrpRecy.setAdapter(grp_adapter);
-
+        adapter = new GoodAdapter(goods, this);
         if (goodGroups.size() == 0) {
             binding.SearchActivityGrpRecy.getLayoutParams().height = 0;
             binding.SearchActivityGrp.setVisibility(View.GONE);
@@ -173,7 +173,7 @@ public class SearchActivity extends AppCompatActivity {
                             GetDataFromDataBase();
                         }, Integer.parseInt(callMethod.ReadString("Delay")));
 
-                        handler.postDelayed(() -> binding.SearchActivityEdtsearch.selectAll(), 5000);
+
                     }
                 });
 
@@ -449,7 +449,9 @@ public class SearchActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void CallRecyclerView() {
-        adapter = new GoodAdapter(goods, this);
+adapter.notifyDataSetChanged();
+
+
         if (adapter.getItemCount() == 0) {
             binding.SearchActivityTvstatus.setText("کالایی یافت نشد");
             binding.SearchActivityTvstatus.setVisibility(View.VISIBLE);
@@ -483,6 +485,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     public void RefreshState() {
+        binding.SearchActivityEdtsearch.selectAll();
         if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
             binding.SearchActivityCustomer.setText("فاکتوری انتخاب نشده");
             binding.SearchActivityLlSumFactor.setVisibility(View.GONE);

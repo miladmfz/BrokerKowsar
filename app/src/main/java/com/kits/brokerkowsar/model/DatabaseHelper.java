@@ -68,6 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL("INSERT INTO main.Config SELECT * FROM tempDb.Config ");
 
         getWritableDatabase().execSQL("DETACH DATABASE 'tempDb' ");
+        getWritableDatabase().close();
 
     }
 
@@ -80,6 +81,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "ServerURL TEXT," +
                 "SQLiteURL TEXT," +
                 "MaxDevice TEXT)");
+        getWritableDatabase().close();
     }
 
     public void InitialConfigInsert() {
@@ -92,7 +94,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'KsrImage_LastRepCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'KsrImage_LastRepCode')");
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'MaxRepLogCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'MaxRepLogCode')");
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'VersionInfo', '" + BuildConfig.VERSION_NAME + "' Where Not Exists(Select * From Config Where KeyValue = 'VersionInfo')");
-
+        getWritableDatabase().close();
     }
 
     public void DatabaseCreate() {
@@ -171,7 +173,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Date1 ON Good (Date1)");
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Date2 ON Good (Date2)");
         getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Text1 ON Good (Text1)");
-
+        getWritableDatabase().close();
 
     }
 
@@ -307,7 +309,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @SuppressLint("Range")
     public ArrayList<Column> GetColumns(String code, String goodtype, @NonNull String AppType) {
-
 
         switch (AppType) {
             case "0"://        0-detail
@@ -1109,6 +1110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 query = "Update PreFactorRow set FactorAmount = " + FactorAmount + " Where PreFactorRowCode=" + BasketFlag;
             }
             getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
         } else {
             query = " Select * From PreFactorRow Where IfNull(PreFactorRef,0)=" + pfcode + " And GoodRef =" + goodcode;
             if (Float.parseFloat(price) >= 0) {
@@ -1141,6 +1143,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //                        "Where h.PreFactorCode =" + pfcode + " And GoodCode = " + goodcode;
                 Log.e("test_", query);
                 getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
             }
             cursor.close();
         }
@@ -1156,6 +1159,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 query = "Update PreFactorRow set FactorAmount = " + FactorAmount + " Where PreFactorRowCode=" + BasketFlag;
             }
             getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
         } else {
             query = " Select * From PreFactorRow Where IfNull(PreFactorRef,0)=" + pfcode + " And GoodRef =" + goodcode;
             if (Float.parseFloat(price) >= 0) {
@@ -1176,6 +1180,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 Log.e("test_", query);
                 getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
             }
             cursor.close();
         }
@@ -1339,6 +1344,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         query = "Update Prefactor set CustomerRef='" + Customer + "' where PreFactorCode = " + pfcode;
         getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
         query = "Select * From ( Select Case PriceTip " +
                 "When 1 Then  SellPrice1 When 2 Then SellPrice2 When 3 Then SellPrice3  " +
                 "When 4 Then   SellPrice4 When 5 Then SellPrice5 When 6 Then SellPrice6 " +
@@ -1384,26 +1390,32 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         query = "Update PreFactor set PreFactorExplain = '" + explain + "' Where IfNull(PreFactorCode,0)=" + pfcode;
         getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
     }
 
     public void DeletePreFactorRow(String pfcode, String rowcode) {
         query = " Delete From PreFactorRow Where IfNull(PreFactorRef,0)=" + pfcode + " And (PreFactorRowCode =" + rowcode + " or 0=" + rowcode + ")";
         getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
     }
 
     public void DeletePreFactor(String pfcode) {
         query = " Delete From Prefactor Where IfNull(PreFactorCode,0)=" + pfcode;
         getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
     }
 
     public void DeleteEmptyPreFactor() {
         query = " DELETE FROM Prefactor WHERE PreFactorCode NOT IN (SELECT PreFactorRef FROM PrefactorRow )";
         getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
+        
     }
 
     public void UpdatePreFactor(String PreFactorCode, String PreFactorKowsarCode, String PreFactorDate) {
         query = "Update PreFactor Set PreFactorKowsarCode = " + PreFactorKowsarCode + ", PreFactorKowsarDate = '" + PreFactorDate + "' Where ifnull(PreFactorCode ,0)= " + PreFactorCode + ";";
         getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
     }
 
     @SuppressLint("Range")
@@ -1642,7 +1654,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (Integer.parseInt(GL) > 0) {
             query = query + " And ((L1=" + GL + " And L2=0) or (L2=" + GL + " And L3=0) or (L3=" + GL + " And L4=0) or (L4=" + GL + " And L5=0) or (L5=" + GL + "))";
         } else {
-            query = query + " And L1>0 and L2=0 order by 1 desc";
+            query = query + " order by 1 desc";
         }
 
         ArrayList<GoodGroup> groups = new ArrayList<>();
@@ -1757,6 +1769,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 }
             }
         }
+        cursor.close();
         return user;
     }
 
@@ -1765,9 +1778,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (!user.getBrokerCode().equals("")) {
             query = " Update Config set DataValue = '" + user.getBrokerCode() + "' Where KeyValue = 'BrokerCode';";
             getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
             query = " Insert Into Config(KeyValue, DataValue) " +
                     "  Select 'BrokerCode', '" + user.getBrokerCode() + "' Where Not Exists(Select * From Config Where KeyValue = 'BrokerCode');";
             getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
         }
 
     }
@@ -1776,8 +1791,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         query = " Insert Into Config(KeyValue, DataValue) Select '" + key + "', '" + Value + "' Where Not Exists(Select * From Config Where KeyValue = '" + key + "');";
         getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
         query = " Update Config set DataValue = '" + Value + "' Where KeyValue = '" + key + "' ;";
         getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
 
     }
 
@@ -1790,8 +1807,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.getCount() > 0) {
             cursor.moveToFirst();
             result = cursor.getString(cursor.getColumnIndex("DataValue"));
-            cursor.close();
+
         }
+        cursor.close();
         return result;
 
     }
@@ -1813,11 +1831,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void UpdateSearchColumn(Column column) {
         query = "update BrokerColumn set condition = '" + column.getCondition() + "' where ColumnCode= " + column.getColumnCode();
         getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
     }
 
     public void ClearSearchColumn() {
         query = "update BrokerColumn set condition = '' ";
         getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
     }
 
     public void ReplicateColumn(Column column, Integer Apptype) {
@@ -1834,6 +1854,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "','" + column.getColumnFieldValue("OrderIndex") +
                 "'," + Apptype + "); ";
         getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
     }
 
     public void deleteColumn() {
@@ -1842,7 +1863,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void ExecQuery(String Query) {
-        getWritableDatabase().execSQL(Query);
+        getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
     }
 
 

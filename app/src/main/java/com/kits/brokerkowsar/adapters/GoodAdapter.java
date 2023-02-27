@@ -30,6 +30,8 @@ import com.kits.brokerkowsar.webService.APIInterface;
 import java.util.ArrayList;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     private final Context mContext;
@@ -38,8 +40,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     DatabaseHelper dbh;
 
     APIInterface apiInterface;
-    private final ImageInfo image_info;
-    Call<RetrofitResponse> call2;
+    final ImageInfo image_info;
     public boolean multi_select;
     Action action;
     ArrayList<Column> Columns;
@@ -176,6 +177,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
         super.onViewDetachedFromWindow(holder);
         if (holder.call.isExecuted()) {
             holder.call.cancel();
+
         }
     }
 }
