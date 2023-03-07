@@ -10,8 +10,10 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.location.LocationResult;
 import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.application.CallMethod;
+import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -93,11 +95,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'MenuBroker', '0' Where Not Exists(Select * From Config Where KeyValue = 'MenuBroker')");
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'KsrImage_LastRepCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'KsrImage_LastRepCode')");
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'MaxRepLogCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'MaxRepLogCode')");
+        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'LastGpsLocationCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'GpsLocationCode')");
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'VersionInfo', '" + BuildConfig.VERSION_NAME + "' Where Not Exists(Select * From Config Where KeyValue = 'VersionInfo')");
         getWritableDatabase().close();
     }
 
     public void DatabaseCreate() {
+        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS GpsLocation (GpsLocationCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE ,Longitude TEXT, Latitude TEXT, Speed TEXT, BrokerRef TEXT, GpsDate TEXT)");
         getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS PreFactorRow (PreFactorRowCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE ,PreFactorRef INTEGER, GoodRef INTEGER, FactorAmount INTEGER, Shortage INTEGER, PreFactorDate TEXT,  Price INTEGER)");
         getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS Prefactor ( PreFactorCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, PreFactorDate TEXT," +
                 " PreFactorTime TEXT, PreFactorKowsarCode INTEGER, PreFactorKowsarDate TEXT, PreFactorExplain TEXT, CustomerRef INTEGER, BrokerRef INTEGER)");
@@ -258,7 +262,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             limitcolumn = Integer.parseInt(columnscount) / Integer.parseInt(goodtypecount);
         } catch (Exception e) {
             callMethod.showToast("تنظیم جدول از سمت دیتابیس مشکل دارد");
-            Log.e("test", e.getMessage());
+            Log.e("kowsar_query", e.getMessage());
         }
     }
 
@@ -328,7 +332,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 break;
         }
 
-        Log.e("test", query);
+        Log.e("kowsar_query", query);
         columns = new ArrayList<>();
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor != null) {
@@ -536,7 +540,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         query = query + " LIMIT  " + LimitAmount;
         query = query + " OFFSET " + (Integer.parseInt(LimitAmount) * Integer.parseInt(MoreCallData));
         cursor = getWritableDatabase().rawQuery(query, null);
-        Log.e("test_query", query);
+        Log.e("kowsar_query", query);
 
         if (cursor != null) {
 
@@ -674,16 +678,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         query = query + " LIMIT  " + LimitAmount;
         query = query + " OFFSET " + (Integer.parseInt(LimitAmount) * Integer.parseInt(MoreCallData));
 
-        Log.e("test_", query);
+        Log.e("kowsar_query", query);
         cursor = getWritableDatabase().rawQuery(query, null);
 
-        Log.e("test_", query);
+        Log.e("kowsar_query", query);
         if (cursor != null) {
 
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
                 for (Column column : columns) {
-                    Log.e("test_", column.getColumnName());
+                    Log.e("kowsar_query", column.getColumnName());
 
                     try {
                         switch (column.getColumnType()) {
@@ -804,7 +808,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         query = query + " LIMIT  " + LimitAmount;
         query = query + " OFFSET " + (Integer.parseInt(LimitAmount) * Integer.parseInt(MoreCallData));
 
-        Log.e("test", query);
+        Log.e("kowsar_query", query);
         goods = new ArrayList<>();
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor != null) {
@@ -884,7 +888,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         query = query + " WHERE GoodCode = " + code;
 
-        Log.e("test_query", query);
+        Log.e("kowsar_query", query);
         gooddetail = new Good();
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor.getCount() > 0) {
@@ -893,7 +897,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 try {
                     switch (column.getColumnType()) {
                         case "0":
-                            Log.e("test", column.getColumnName());
+                            Log.e("kowsar_query", column.getColumnName());
                             gooddetail.setGoodFieldValue(
                                     column.getColumnName(),
                                     cursor.getString(cursor.getColumnIndex(column.getColumnName()))
@@ -996,7 +1000,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 " WHERE GoodCode = " + code;
 
 
-        Log.e("test", query);
+        Log.e("kowsar_query", query);
         gooddetail = new Good();
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor.getCount() > 0) {
@@ -1013,7 +1017,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         }
         cursor.close();
-        Log.e("test", gooddetail.getGoodFieldValue("SellPrice"));
         return gooddetail;
     }
 
@@ -1024,7 +1027,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         query = " SELECT * FROM Good g WHERE GoodCode = " + code;
 
 
-        Log.e("test", query);
+        Log.e("kowsar_query", query);
         Good good_data = new Good();
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor.getCount() > 0) {
@@ -1141,7 +1144,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //                        "* Case When SellPriceType = 1 Then MaxSellPrice/100 Else 1 End End " +
 //                        "From Good g Join PreFactor h on 1=1 Join Customer c on h.CustomerRef=c.CustomerCode " +
 //                        "Where h.PreFactorCode =" + pfcode + " And GoodCode = " + goodcode;
-                Log.e("test_", query);
+                Log.e("kowsar_query", query);
                 getWritableDatabase().execSQL(query);
         getWritableDatabase().close();
             }
@@ -1178,7 +1181,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         + " Where PreFactorCode=" + pfcode + " Limit 1 ";
 
 
-                Log.e("test_", query);
+                Log.e("kowsar_query", query);
                 getWritableDatabase().execSQL(query);
         getWritableDatabase().close();
             }
@@ -1299,7 +1302,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         cursor = getWritableDatabase().rawQuery(query, null);
-        Log.e("test_1", query);
+        Log.e("kowsar_query", query);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 gooddetail = new Good();
@@ -1421,7 +1424,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public String getFactorSum(String pfcode) {
         query = " select sum(FactorAmount*price*DefaultUnitValue) as result From PreFactorRow join Good on GoodRef=GoodCode Where IfNull(PreFactorRef,0)=" + pfcode;
-        Log.e("test", query);
+        Log.e("kowsar_query", query);
         cursor = getWritableDatabase().rawQuery(query, null);
         cursor.moveToFirst();
         long result = cursor.getLong(cursor.getColumnIndex("result"));
@@ -1524,7 +1527,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         query = query + " order by CustomerCode DESC  LIMIT 200";
         ArrayList<Customer> Customers = new ArrayList<>();
-        Log.e("test", query);
+        Log.e("kowsar_query", query);
         cursor = getWritableDatabase().rawQuery(query, null);
 
         if (cursor != null) {
@@ -1602,7 +1605,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public ArrayList<Good> GetksrImageCodes(String code) {
         query = "SELECT ksrImageCode from KsrImage where ObjectRef = " + code;
         ArrayList<Good> Goods = new ArrayList<>();
-        Log.e("test11", query);
+        Log.e("kowsar_query", query);
         cursor = getWritableDatabase().rawQuery(query, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -1830,6 +1833,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void UpdateSearchColumn(Column column) {
         query = "update BrokerColumn set condition = '" + column.getCondition() + "' where ColumnCode= " + column.getColumnCode();
+        getWritableDatabase().execSQL(query);
+        getWritableDatabase().close();
+    }
+    public void UpdateLocationService(LocationResult locationResult, PersianCalendar calendar1) {
+        query = "Insert Into  GpsLocation (Longitude , Latitude ,Speed, BrokerRef , GpsDate )" +
+                " Values ('"+locationResult.getLastLocation().getLongitude()+"' , '"+locationResult.getLastLocation().getLatitude()+"', '"+locationResult.getLastLocation().getSpeed()+"', '"+ReadConfig("BrokerCode")+"' , '"+calendar1.getPersianShortDateTime()+"')";
+        Log.e("kowsar_query", query);
         getWritableDatabase().execSQL(query);
         getWritableDatabase().close();
     }

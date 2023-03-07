@@ -63,7 +63,6 @@ public class Search_box {
         dialog = new Dialog(mContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);//title laye nadashte bashim
         dialog.setContentView(R.layout.search_box);
-        //Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
 
         spinner = dialog.findViewById(R.id.search_box_spinner);
         layout_view = dialog.findViewById(R.id.search_box_layout_pro);

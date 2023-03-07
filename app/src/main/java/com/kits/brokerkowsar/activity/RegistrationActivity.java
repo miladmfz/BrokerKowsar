@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,10 +16,21 @@ import com.kits.brokerkowsar.application.Replication;
 import com.kits.brokerkowsar.databinding.ActivityRegistrationBinding;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.NumberFunctions;
+import com.kits.brokerkowsar.model.RetrofitResponse;
+import com.kits.brokerkowsar.model.SellBroker;
 import com.kits.brokerkowsar.model.UserInfo;
+import com.kits.brokerkowsar.webService.APIClient;
+import com.kits.brokerkowsar.webService.APIInterface;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -30,7 +43,9 @@ public class RegistrationActivity extends AppCompatActivity {
     boolean doubletouchdbanme = false;
     Intent intent;
     ActivityRegistrationBinding binding;
-
+    APIInterface apiInterface;
+    ArrayList<String> SellBroker_Names = new ArrayList<>();
+    ArrayList<SellBroker> SellBrokers = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,9 +70,67 @@ public class RegistrationActivity extends AppCompatActivity {
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
         replication = new Replication(this);
         action = new Action(this);
+        apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
+
+        Call<RetrofitResponse> call1 = apiInterface.GetSellBroker("GetSellBroker");
+        call1.enqueue(new Callback<RetrofitResponse>() {
+            @Override
+            public void onResponse(@NotNull Call<RetrofitResponse> call, @NotNull Response<RetrofitResponse> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    SellBrokers.clear();
+                    SellBrokers = response.body().getSellBrokers();
+                    SellBroker sellBroker= new SellBroker();
+                    sellBroker.setBrokerCode("0");
+                    sellBroker.setBrokerNameWithoutType("بازاریاب تعریف نشده");
+                    SellBrokers.add(sellBroker);
+                    for (SellBroker sb : SellBrokers) {
+                        SellBroker_Names.add(sb.getBrokerNameWithoutType());
+                    }
+                    brokerViewConfig();
+                }
+            }
+
+            @Override
+            public void onFailure(@NotNull Call<RetrofitResponse> call, @NotNull Throwable t) {
+                SellBroker sellBroker= new SellBroker();
+                sellBroker.setBrokerCode("0");
+                sellBroker.setBrokerNameWithoutType("بازاریاب تعریف نشده");
+                SellBrokers.add(sellBroker);
+                brokerViewConfig();
+
+            }
+        });
 
     }
 
+    public void brokerViewConfig() {
+        ArrayAdapter<String> spinner_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, SellBroker_Names);
+        spinner_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.registrSpinnerbroker.setAdapter(spinner_adapter);
+        int possellbroker=0;
+        for (SellBroker sellBroker:SellBrokers){
+            if (sellBroker.getBrokerCode().equals(dbh.ReadConfig("BrokerCode"))){
+                possellbroker=SellBrokers.indexOf(sellBroker);
+            }
+        }
+
+        binding.registrSpinnerbroker.setSelection(possellbroker);
+        binding.registrSpinnerbroker.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                dbh.SaveConfig("BrokerCode",SellBrokers.get(position).getBrokerCode());
+                binding.registrBroker.setText(NumberFunctions.PerisanNumber(dbh.ReadConfig("BrokerCode")));
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+    }
     public void init() {
 
         auser = dbh.LoadPersonalInfo();
@@ -202,6 +275,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
             UserInfo UserInfoNew = new UserInfo();
             UserInfoNew.setBrokerCode(NumberFunctions.EnglishNumber(binding.registrBroker.getText().toString()));
+            callMethod.EditString("BrokerCode", NumberFunctions.EnglishNumber(binding.registrBroker.getText().toString()));
             dbh.SavePersonalInfo(UserInfoNew);
             dbh.DatabaseCreate();
 

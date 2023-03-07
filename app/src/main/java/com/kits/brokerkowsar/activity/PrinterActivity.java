@@ -444,7 +444,6 @@ public class PrinterActivity extends AppCompatActivity {
         @SuppressWarnings("unchecked")
         @Override
         public void handleMessage(Message msg) {
-            //Log.e("test_Handler", msg.what + " " + msg.arg1 + " " + msg.arg2);
             switch (msg.what) {
                 case BixolonPrinter.MESSAGE_STATE_CHANGE:
                     Log.i("Handler", "BixolonPrinter.MESSAGE_STATE_CHANGE");

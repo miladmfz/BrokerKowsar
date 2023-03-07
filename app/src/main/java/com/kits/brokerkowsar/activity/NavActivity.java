@@ -3,7 +3,9 @@ package com.kits.brokerkowsar.activity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.LocationListener;
@@ -11,7 +13,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
+import android.provider.SyncStateContract;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,7 +39,9 @@ import com.google.android.material.navigation.NavigationView;
 import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.Action;
+import com.kits.brokerkowsar.application.AlarmReceiver;
 import com.kits.brokerkowsar.application.CallMethod;
+import com.kits.brokerkowsar.application.LocationService;
 import com.kits.brokerkowsar.application.Replication;
 import com.kits.brokerkowsar.application.WManager;
 import com.kits.brokerkowsar.model.DatabaseHelper;
@@ -48,13 +52,13 @@ import com.kits.brokerkowsar.model.UserInfo;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIClient_kowsar;
 import com.kits.brokerkowsar.webService.APIInterface;
-
-
+import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
+import com.kits.brokerkowsar.application.Constants;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
@@ -63,14 +67,11 @@ import retrofit2.Response;
 
 
 public class NavActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    APIInterface apiInterface;
 
-    private Action action;
-    private boolean doubleBackToExitPressedOnce = false;
-    private Intent intent;
-    CallMethod callMethod;
+    private static final int REQUEST_LOCATION = 1;
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
-    private Replication replication;
+    APIInterface apiInterface;
+    CallMethod callMethod;
     DatabaseHelper dbh;
     ArrayList<GoodGroup> menugrp;
     LinearLayoutCompat llsumfactor;
@@ -86,17 +87,17 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     Button good_search;
     Button open_factor;
     Button all_factor;
-
+    PersianCalendar calendar1 = new PersianCalendar();
     Button btn_test;
-    TextView tv_test;
-
-    private static final int REQUEST_LOCATION = 1;
-
-    LocationManager locationManager;
-    String latitude, longitude;
+    TextView tv_test, tv_test2;
     WorkManager workManager;
+    private Action action;
+    private boolean doubleBackToExitPressedOnce = false;
+    private Intent intent;
+    private Replication replication;
 
     @Override
+    @RequiresApi(api = Build.VERSION_CODES.P)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nav);
@@ -116,45 +117,18 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     //************************************************************
 
 
-    public void Gpslocation() {
-
-        int LOCATION_REFRESH_TIME = 2000; // 15 seconds to update
-        int LOCATION_REFRESH_DISTANCE = 3; // 500 meters to update
-
-        LocationListener mLocationListener = location -> {
-
-            tv_test.setText("lati=" + location.getLatitude() + "\nlong=" + location.getLongitude());
-            Call<RetrofitResponse> call1 = apiInterface.Location(
-                    "Location",
-                    String.valueOf(location.getLongitude()),
-                    String.valueOf(location.getLatitude())
-            );
-            call1.enqueue(new Callback<RetrofitResponse>() {
-                @Override
-                public void onResponse(@NotNull Call<RetrofitResponse> call, @NotNull Response<RetrofitResponse> response) {
-
-                }
-
-                @Override
-                public void onFailure(@NotNull Call<RetrofitResponse> call, @NotNull Throwable t) {
-                    // callMethod.ErrorLog(t.getMessage());
-                }
-            });
-
-        };
 
 
-        LocationManager mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+    public void GpslocationCall() {
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-
-        } else {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_REFRESH_TIME,
-                    LOCATION_REFRESH_DISTANCE, mLocationListener);
-        }
+        AlarmReceiver alarm = new AlarmReceiver();
+        alarm.setAlarm(this);
     }
 
+
+
+
+    @RequiresApi(api = Build.VERSION_CODES.P)
     public void Config() {
 
 
@@ -164,10 +138,10 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
         replication = new Replication(this);
         dbh.ClearSearchColumn();
-
+        dbh.DatabaseCreate();
         toolbar = findViewById(R.id.MainActivity_toolbar);
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
-
+        calendar1.setTimeZone(TimeZone.getDefault());
         setSupportActionBar(toolbar);
         DrawerLayout drawer = findViewById(R.id.NavActivity_drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -190,8 +164,12 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         all_factor = findViewById(R.id.mainactivity_all_factor);
         btn_test = findViewById(R.id.mainactivity_test_btn);
         tv_test = findViewById(R.id.mainactivity_test_tv);
+        tv_test2 = findViewById(R.id.mainactivity_test_tv2);
 
         llsumfactor = findViewById(R.id.MainActivity_ll_sum_factor);
+
+        GpslocationCall();
+
 
 
     }
@@ -201,14 +179,12 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
         callMethod.showToast("TestFunction");
 
-
     }
 
     @SuppressLint("SetTextI18n")
     public void CheckConfig() {
 
         UserInfo auser = dbh.LoadPersonalInfo();
-
 
         if (Integer.parseInt(auser.getBrokerCode()) != 0) {
 
@@ -463,7 +439,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         });
 
         APIInterface apiInterface2 = APIClient_kowsar.getCleint_log().create(APIInterface.class);
-        Call<RetrofitResponse> call2 = apiInterface2.Notification("Notification_kowsar",callMethod.ReadString("EnglishCompanyNameUse")
+        Call<RetrofitResponse> call2 = apiInterface2.Notification("Notification_kowsar", callMethod.ReadString("EnglishCompanyNameUse")
         );
         call2.enqueue(new Callback<RetrofitResponse>() {
             @Override

@@ -44,7 +44,16 @@ public class RetrofitResponse {
     private String ErrCode;
     @SerializedName("ErrDesc")
     private String ErrDesc;
+    @SerializedName("SellBrokers")
+    private ArrayList<SellBroker> SellBrokers;
 
+    public ArrayList<SellBroker> getSellBrokers() {
+        return SellBrokers;
+    }
+
+    public void setSellBrokers(ArrayList<SellBroker> sellBrokers) {
+        SellBrokers = sellBrokers;
+    }
 
     public ArrayList<Good> getGoods() {
         return Goods;

@@ -165,6 +165,15 @@
                         android:visibility="gone"
                         android:text="tv_test"
                         />
+                    <TextView
+                        android:id="@+id/mainactivity_test_tv2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:textColor="@color/grey_1000"
+                        android:visibility="gone"
+                        android:text="tv_test"
+                        />
 
 
                     <com.google.android.material.button.MaterialButton

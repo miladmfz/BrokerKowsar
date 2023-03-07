@@ -236,10 +236,7 @@ ActivitySearchDateDetailBinding binding;
             defultenablesellprice = false;
 
             for (Good good : Multi_Good) {
-                Log.e("test_",Multi_Good.size()+"");
-                Log.e("test_",good.getGoodFieldValue("GoodCode")+"");
-
-                Good goodtempdata = dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
+ Good goodtempdata = dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
 
 
 

@@ -15,7 +15,12 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.activity.BasketActivity;
 import com.kits.brokerkowsar.activity.NavActivity;
 import com.kits.brokerkowsar.model.Column;
 import com.kits.brokerkowsar.model.DatabaseHelper;
@@ -33,6 +38,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -266,11 +274,11 @@ public class Replication {
                                                 }
 
                                                 try {
-                                                    Log.e("test_qCol=", repcode + " = " + qCol.toString());
+                                                    Log.e("kowsar_qCol=", repcode + " = " + qCol.toString());
                                                     database.execSQL(qCol.toString());
                                                     LastRepCode = repcode;
                                                 } catch (Exception e) {
-                                                    Log.e("test_qCol=", e.getMessage());
+                                                    Log.e("kowsar_qCol=", e.getMessage());
                                                 }
 
 
@@ -316,8 +324,6 @@ public class Replication {
 
                 @Override
                 public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                    Log.e("test_",t.getMessage());
-
                     RetrofitReplicate(replicatelevel);
                 }
             });
@@ -342,7 +348,7 @@ public class Replication {
 
             String where = replicatedetail.getCondition().replace("BrokerCondition", userInfo.getBrokerCode());
 
-            Log.e("test_qCol",LastRepCode);
+            Log.e("kowsar_LastRepCode",LastRepCode);
             Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
                     "repinfo",
                     LastRepCode,
@@ -464,12 +470,10 @@ public class Replication {
                                                     }
 
                                                     try {
-                                                        Log.e("test_qCol=", repcode + " = " + qCol.toString());
                                                         database.execSQL(qCol.toString());
                                                         LastRepCode = repcode;
 
-                                                    } catch (Exception e) {
-                                                        Log.e("test_qCol=", e.getMessage());
+                                                    } catch (Exception ignored) {
                                                     }
 
                                                     d.close();
@@ -480,11 +484,9 @@ public class Replication {
 
                                                     qCol = new StringBuilder("Delete from " + replicatedetail.getClientTable() + "  Where ").append(replicatedetail.getClientPrimaryKey()).append(" = ").append(repObjectCode);
                                                     try {
-                                                        Log.e("test_qCol=", repcode + " = " + qCol);
                                                         database.execSQL(qCol.toString());
                                                         LastRepCode = repcode;
-                                                    } catch (Exception e) {
-                                                        Log.e("test_qCol=", e.getMessage());
+                                                    } catch (Exception ignored) {
                                                     }
 
                                                     break;
@@ -514,7 +516,6 @@ public class Replication {
 
                 @Override
                 public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                    Log.e("test_object.length", t.getMessage());
                 }
             });
 
@@ -581,9 +582,8 @@ public class Replication {
                                                 qCol = "Delete from KsrImage Where KsrImageCode= " + code;
                                                 try {
                                                     database.execSQL(qCol);
-                                                    Log.e("test_qCol=", qCol);
-                                                } catch (Exception e) {
-                                                    Log.e("test_qCol=", e.getMessage());
+                                                    Log.e("kowsar_qCol=", qCol);
+                                                } catch (Exception ignored) {
                                                 }
                                                 image_info.DeleteImage(code);
                                             }
@@ -593,8 +593,7 @@ public class Replication {
                                             try {
                                                 database.execSQL(qCol);
                                                 Log.e("test_qCol=", qCol);
-                                            } catch (Exception e) {
-                                                Log.e("test_qCol=", e.getMessage());
+                                            } catch (Exception ignored) {
                                             }
                                             d.close();
                                             break;
@@ -609,8 +608,7 @@ public class Replication {
                                             try {
                                                 database.execSQL(qCol);
                                                 Log.e("test_qCol=", qCol);
-                                            } catch (Exception e) {
-                                                Log.e("test_qCol=", e.getMessage());
+                                            } catch (Exception ignored) {
                                             }
                                             d.close();
                                             break;
@@ -675,8 +673,7 @@ public class Replication {
             public void onResponse(@NotNull Call<RetrofitResponse> call, @NotNull Response<RetrofitResponse> response) {
                 if (response.isSuccessful()) {
                     assert response.body() != null;
-                    Log.e("test__1",response.body().getText());
-                    Log.e("test__2",dbh.ReadConfig("GroupCodeDefult"));
+
                     if (!response.body().getText().equals("")) {
                         if (!response.body().getText().equals(dbh.ReadConfig("GroupCodeDefult"))) {
                             dbh.SaveConfig("GroupCodeDefult", response.body().getText());
@@ -689,7 +686,6 @@ public class Replication {
 
             @Override
             public void onFailure(@NotNull Call<RetrofitResponse> call, @NotNull Throwable t) {
-                Log.e("onFailure", t.toString());
             }
         });
     }
@@ -732,7 +728,6 @@ public class Replication {
 
             @Override
             public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                Log.e("onFailure_t", t.getMessage());
             }
         });
 
@@ -748,7 +743,6 @@ public class Replication {
                     if (response.isSuccessful()) {
                         assert response.body() != null;
                         ArrayList<Column> columns = response.body().getColumns();
-                        Log.e("columns_size", columns.size() + "");
                         int j = 0;
                         for (Column column : columns) {
                             dbh.ReplicateColumn(column, i);
@@ -762,8 +756,7 @@ public class Replication {
 
                 @Override
                 public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                    Log.e("onFailure_t2", t.getMessage());
-                    Log.e("onFailure", t.toString());
+
                 }
             });
         } else {
@@ -771,6 +764,128 @@ public class Replication {
 
         }
     }
+
+
+
+
+
+    public void SendGpsLocation() {
+
+
+
+//        Call<RetrofitResponse> call1 = apiInterface.MenuBroker("GetMenuBroker");
+//        call1.enqueue(new Callback<RetrofitResponse>() {
+//            @Override
+//            public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
+//                if (response.isSuccessful()) {
+//                    assert response.body() != null;
+//                    if (!response.body().getText().equals(dbh.ReadConfig("MenuBroker"))) {
+//                        dbh.SaveConfig("MenuBroker", response.body().getText());
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+//            }
+//        });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//        RequestQueue queue = Volley.newRequestQueue(mContext);
+//
+//        StringRequest stringrequste = new StringRequest(Request.Method.POST, url, response -> {
+//
+//            //TODO RESPONSE
+//
+//        }, volleyError -> {
+//
+//            //TODO ERROR RESPONSE
+//
+//        }) {
+//
+//            @Override
+//            protected Map<String, String> getParams() {
+//
+//
+//
+////                HashMap<String, String> params = new HashMap<>();
+////                params.put("tag", "PFQASWED");
+////                SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
+////                cursor = dbh.rawQuery("Select PreFactorCode, PreFactorDate, PreFactorExplain, CustomerRef, BrokerRef, (Select sum(FactorAmount) From PreFactorRow r Where r.PrefactorRef=h.PrefactorCode) As rwCount From PreFactor h Where PreFactorCode = " + factor_code, null);
+////                String pr1 = CursorToJson(cursor);
+////                cursor.close();
+////                Log.e("kowsar_pfheader", pr1);
+////                params.put("PFHDQASW", pr1);
+////                cursor = dtb.rawQuery("select * from GpsLocation where GpsLocationCode > "+dbh+" order by GpsLocationCode limit 10", null);
+////                String pr2 = CursorToJson(cursor);
+////                cursor.close();
+////                Log.e("kowsar_pfrow", pr2);
+////                params.put("PFDTQASW", pr2);
+////                return params;
+//
+//
+//
+//            }
+//
+//        };
+//        queue.add(stringrequste);
+    }
+
+
+
+
+
+
+    public String CursorToJson(Cursor cursor) {
+        JSONArray resultSet = new JSONArray();
+        cursor.moveToFirst();
+        while (!cursor.isAfterLast()) {
+            int totalColumn = cursor.getColumnCount();
+            JSONObject rowObject = new JSONObject();
+            for (int i = 0; i < totalColumn; i++) {
+                if (cursor.getColumnName(i) != null) {
+                    try {
+                        rowObject.put(cursor.getColumnName(i), cursor.getString(i));
+                    } catch (Exception e) {
+                        Log.d("CursorToJson_Error: ", Objects.requireNonNull(e.getMessage()));
+                    }
+                }
+            }
+            resultSet.put(rowObject);
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return resultSet.toString();
+    }
+
+
 
 
 }

@@ -50,6 +50,7 @@ import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -650,13 +651,13 @@ public class Action {
                 cursor = dtb.rawQuery("Select PreFactorCode, PreFactorDate, PreFactorExplain, CustomerRef, BrokerRef, (Select sum(FactorAmount) From PreFactorRow r Where r.PrefactorRef=h.PrefactorCode) As rwCount From PreFactor h Where PreFactorCode = " + factor_code, null);
                 String pr1 = CursorToJson(cursor);
                 cursor.close();
-                Log.e("bklog_reqqqq", pr1);
+                Log.e("kowsar_pfheader", pr1);
                 params.put("PFHDQASW", pr1);
                 cursor = dtb.rawQuery("Select GoodRef, FactorAmount, Price From PreFactorRow Where  GoodRef>0 and  Prefactorref = " + factor_code, null);
                 String pr2 = CursorToJson(cursor);
                 cursor.close();
 
-                Log.e("bklog_reqqqq", pr2);
+                Log.e("kowsar_pfrow", pr2);
                 params.put("PFDTQASW", pr2);
                 return params;
             }
@@ -812,6 +813,7 @@ public class Action {
         }
 
         PersianCalendar calendar1 = new PersianCalendar();
+        calendar1.setTimeZone(TimeZone.getDefault());
         String version = BuildConfig.VERSION_NAME;
 
 

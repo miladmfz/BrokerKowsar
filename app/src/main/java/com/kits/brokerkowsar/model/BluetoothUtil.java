@@ -18,7 +18,7 @@ public class BluetoothUtil {
                 bluetoothAdapter.enable();
             }
         }catch (Exception e){
-            Log.e("test_ ",e.getMessage());
+            Log.e("Kowsar_bleAdapter ",e.getMessage());
         }
     }
 

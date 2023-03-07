@@ -37,10 +37,12 @@ public interface APIInterface {
 
     @POST("index.php")
     @FormUrlEncoded
-    Call<RetrofitResponse> Location(
+    Call<RetrofitResponse> SetLocation(
             @Field("tag") String tag
             , @Field("Longitude") String Altitude
             , @Field("Latitude") String Latitude
+            , @Field("BrokerRef") String BrokerRef
+            , @Field("GpsDate") String GpsDate
     );
 
     @POST("index.php")
@@ -161,6 +163,9 @@ public interface APIInterface {
     );
 
 
+    @POST("index.php")
+    @FormUrlEncoded
+    Call<RetrofitResponse> GetSellBroker(@Field("tag") String tag);
 
 
 
