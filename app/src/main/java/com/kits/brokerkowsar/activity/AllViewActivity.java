@@ -21,6 +21,7 @@ import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class AllViewActivity extends AppCompatActivity {
@@ -47,8 +48,8 @@ public class AllViewActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 handler.postDelayed(this::init, 100);
             }
-        } catch (Exception e) {
-            callMethod.ErrorLog(e.getMessage());
+        } catch (Exception ignored) {
+
         }
 
 
@@ -57,50 +58,46 @@ public class AllViewActivity extends AppCompatActivity {
 
     public void Config() {
         callMethod = new CallMethod(this);
-        dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
+        String databaseName = callMethod.ReadString("DatabaseName");
+        dbh = new DatabaseHelper(this, databaseName);
         dbh.ClearSearchColumn();
 
         toolbar = findViewById(R.id.allview_toolbar);
+        setSupportActionBar(toolbar);
+
         rc = findViewById(R.id.allview_rc);
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
 
-        setSupportActionBar(toolbar);
+
     }
 
 
     public void init() {
+        List<Category> categories = new ArrayList<>();
 
-
-        categories = new ArrayList<>();
-
-
-        ArrayList<GoodGroup> groupsHeader = dbh.getAllGroups(dbh.ReadConfig("GroupCodeDefult"));
-
-        for (GoodGroup groupHeader : groupsHeader) {
-            ArrayList<Product> Product_child = new ArrayList<>();
-            ArrayList<GoodGroup> groupsRow = dbh.getAllGroups(groupHeader.getGoodGroupFieldValue("groupcode"));
-            for (GoodGroup groupRow : groupsRow) {
-                Product_child.add(new Product(
+        List<GoodGroup> groupHeaders = dbh.getAllGroups(dbh.ReadConfig("GroupCodeDefult"));
+        for (GoodGroup groupHeader : groupHeaders) {
+            List<Product> products = new ArrayList<>();
+            List<GoodGroup> groupRows = dbh.getAllGroups(groupHeader.getGoodGroupFieldValue("groupcode"));
+            for (GoodGroup groupRow : groupRows) {
+                Product product = new Product(
                         groupRow.getGoodGroupFieldValue("Name"),
                         Integer.parseInt(groupRow.getGoodGroupFieldValue("groupcode")),
-                        Integer.parseInt(groupRow.getGoodGroupFieldValue("ChildNo"))));
+                        Integer.parseInt(groupRow.getGoodGroupFieldValue("ChildNo")));
+                products.add(product);
             }
-
-            category = new Category(
+            Category category = new Category(
                     groupHeader.getGoodGroupFieldValue("Name"),
-                    Product_child,
+                    products,
                     Integer.parseInt(groupHeader.getGoodGroupFieldValue("groupcode")),
                     Integer.parseInt(groupHeader.getGoodGroupFieldValue("ChildNo")));
-
             categories.add(category);
         }
 
-
         ProductAdapter adapter = new ProductAdapter(categories, App.getContext());
+        RecyclerView rc = findViewById(R.id.allview_rc);
         rc.setAdapter(adapter);
         rc.setLayoutManager(new LinearLayoutManager(this));
-
-
     }
 
 

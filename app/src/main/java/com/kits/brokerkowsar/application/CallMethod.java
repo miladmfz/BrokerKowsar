@@ -135,6 +135,9 @@ public class CallMethod extends Application {
 
     }
 
-
+    public int readInt(String key) {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+        return Integer.parseInt(sharedPreferences.getString(key, "0"));
+    }
 }
 

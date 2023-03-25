@@ -167,6 +167,10 @@ public interface APIInterface {
     @FormUrlEncoded
     Call<RetrofitResponse> GetSellBroker(@Field("tag") String tag);
 
+    @POST("index.php")
+    @FormUrlEncoded
+    Call<RetrofitResponse> UpdateLocation(@Field("tag") String tag, @Field("GpsLocations") String GpsLocations);
+
 
 
 

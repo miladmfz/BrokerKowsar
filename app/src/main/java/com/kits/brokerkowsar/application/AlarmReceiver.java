@@ -32,9 +32,8 @@ public class AlarmReceiver extends BroadcastReceiver {
 
 
 
-        if (calendar1.getTime().getHours() > 7 || calendar1.getTime().getHours() < 20) {
             setAlarm(context);
-        }
+
 
 
 

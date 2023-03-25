@@ -32,7 +32,7 @@ public class RetrofitResponse {
     @SerializedName("Activation")
     private Activation activation;
     @SerializedName("Location")
-    private Good Location;
+    private Location Location;
 
     @SerializedName("value")
     private String value;
@@ -175,11 +175,11 @@ public class RetrofitResponse {
         Locations = locations;
     }
 
-    public Good getLocation() {
+    public com.kits.brokerkowsar.model.Location getLocation() {
         return Location;
     }
 
-    public void setLocation(Good location) {
+    public void setLocation(com.kits.brokerkowsar.model.Location location) {
         Location = location;
     }
 }

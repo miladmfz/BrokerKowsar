@@ -18,7 +18,7 @@ public class WManager extends Worker {
         super(context, workerParams);
         this.mcontext = context;
         callMethod = new CallMethod(context);
-
+        replication = new Replication(getApplicationContext());
 
     }
 
@@ -26,12 +26,23 @@ public class WManager extends Worker {
     @Override
 
     public Result doWork() {
-        AutomaticReplication();
+
+
+        if (callMethod.ReadBoolan("AutoReplication")) {
+
+            AutomaticReplication();
+        }
+        AutomaticgpsLocation();
+
         return Result.success();
     }
 
     public void AutomaticReplication() {
-        replication = new Replication(getApplicationContext());
+
         replication.DoingReplicateAuto();
+    }
+    public void AutomaticgpsLocation() {
+
+        replication.SendGpsLocation();
     }
 }

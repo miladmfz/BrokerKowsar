@@ -29,7 +29,7 @@ public class GoodBasketHistoryAdapter extends RecyclerView.Adapter<GoodBasketHis
     ImageInfo image_info;
     DatabaseHelper dbh;
     Action action;
-
+    private String itemPosition;
 
     public GoodBasketHistoryAdapter(ArrayList<Good> goods, String Itemposition, Context mContext) {
         this.mContext = mContext;
@@ -38,7 +38,6 @@ public class GoodBasketHistoryAdapter extends RecyclerView.Adapter<GoodBasketHis
         this.callMethod = new CallMethod(mContext);
         this.image_info = new ImageInfo(mContext);
         this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
-
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
         action = new Action(mContext);
 
@@ -70,5 +69,10 @@ public class GoodBasketHistoryAdapter extends RecyclerView.Adapter<GoodBasketHis
         return goods.size();
     }
 
+    public void updateList(ArrayList<Good> newGoods, String newItemPosition) {
+        this.goods = newGoods;
+        this.itemPosition = newItemPosition;
+        notifyDataSetChanged();
+    }
 
 }

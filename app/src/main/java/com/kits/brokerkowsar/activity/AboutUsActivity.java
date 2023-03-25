@@ -1,6 +1,7 @@
 package com.kits.brokerkowsar.activity;
 
 import android.os.Bundle;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,13 +18,13 @@ public class AboutUsActivity extends AppCompatActivity {
         ActivityAboutusBinding binding = ActivityAboutusBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        setPersianText(binding.tv1);
+        setPersianText(binding.tv2);
+        setPersianText(binding.tv3);
+    }
 
-        binding.tv1.setText(NumberFunctions.PerisanNumber(binding.tv1.getText().toString()));
-        binding.tv2.setText(NumberFunctions.PerisanNumber(binding.tv2.getText().toString()));
-        binding.tv3.setText(NumberFunctions.PerisanNumber(binding.tv3.getText().toString()));
-
-
-
+    private void setPersianText(TextView textView) {
+        textView.setText(NumberFunctions.PerisanNumber(textView.getText().toString()));
     }
 
 

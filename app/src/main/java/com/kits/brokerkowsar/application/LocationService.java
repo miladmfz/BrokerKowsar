@@ -29,6 +29,7 @@ import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
+import java.util.Date;
 import java.util.TimeZone;
 
 
@@ -42,18 +43,10 @@ public class LocationService extends Service {
             super.onLocationResult(locationResult);
             locationResult.getLastLocation();
             calendar1.setTimeZone(TimeZone.getDefault());
-            calendar1.setTimeInMillis(locationResult.getLastLocation().getTime());
-            Log.e("kowsar__",locationResult.getLastLocation().getSpeed()+"");
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Log.e("kowsar__",locationResult.getLastLocation().getSpeedAccuracyMetersPerSecond()+"");
+            calendar1.setTime(new Date());
+            if (calendar1.getTime().getHours() > 7 && calendar1.getTime().getHours() < 20) {
+                dbh.UpdateLocationService(locationResult, calendar1.getPersianShortDateTime());
             }
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                Log.e("kowsar__",locationResult.getLastLocation().getVerticalAccuracyMeters()+"");
-            }
-
-
-            dbh.UpdateLocationService(locationResult,calendar1);
-
 
         }
 

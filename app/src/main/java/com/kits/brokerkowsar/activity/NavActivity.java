@@ -1,19 +1,14 @@
 package com.kits.brokerkowsar.activity;
 
 
-import android.Manifest;
+
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.SyncStateContract;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -58,6 +53,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -117,12 +113,17 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     //************************************************************
 
 
+    public void test_fun(View v) {
+
+
+
+    }
 
 
     public void GpslocationCall() {
 
         AlarmReceiver alarm = new AlarmReceiver();
-        alarm.setAlarm(this);
+       alarm.setAlarm(this);
     }
 
 
@@ -175,11 +176,6 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     }
 
 
-    public void test_fun(View v) {
-
-        callMethod.showToast("TestFunction");
-
-    }
 
     @SuppressLint("SetTextI18n")
     public void CheckConfig() {
@@ -191,7 +187,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             tv_brokercode.setText(" کد بازاریاب : " + NumberFunctions.PerisanNumber(auser.getBrokerCode()));
             if (dbh.ReadConfig("BrokerStack").equals("0")) {
                 if (callMethod.ReadBoolan("AutoReplication")) {
-                    workManager.cancelAllWork();
+                    //workManager.cancelAllWork();
                 }
                 new AlertDialog.Builder(this)
                         .setTitle("انباری تعریف نشده")
@@ -231,15 +227,13 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         noti();
         CheckConfig();
 
-        if (callMethod.ReadBoolan("AutoReplication")) {
-
             Constraints conster = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
-            PeriodicWorkRequest req = new PeriodicWorkRequest.Builder(WManager.class, 15, TimeUnit.MINUTES)
+            PeriodicWorkRequest req = new PeriodicWorkRequest.Builder(WManager.class, 1, TimeUnit.MINUTES)
                     .setConstraints(conster)
                     .build();
             workManager = WorkManager.getInstance(NavActivity.this);
             workManager.enqueue(req);
-        }
+
 
 
         tv_versionname.setText(NumberFunctions.PerisanNumber(BuildConfig.VERSION_NAME));

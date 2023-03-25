@@ -24,6 +24,8 @@ import com.kits.brokerkowsar.activity.BasketActivity;
 import com.kits.brokerkowsar.activity.NavActivity;
 import com.kits.brokerkowsar.model.Column;
 import com.kits.brokerkowsar.model.DatabaseHelper;
+import com.kits.brokerkowsar.model.Good;
+import com.kits.brokerkowsar.model.Location;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.ReplicationModel;
 import com.kits.brokerkowsar.model.RetrofitResponse;
@@ -48,13 +50,14 @@ import retrofit2.Response;
 
 
 public class Replication {
-
+    ArrayList<Location> locations= new ArrayList<>();
+    Location location;
     private final Context mContext;
     CallMethod callMethod;
     APIInterface apiInterface;
     Intent intent;
     ImageInfo image_info;
-
+    String GpsLocationLastCode;
     private final SQLiteDatabase database;
     private final Integer RepRowCount = 100;
     private Integer FinalStep = 0;
@@ -67,7 +70,7 @@ public class Replication {
     String url;
     Integer replicatelevel;
     Cursor cursor;
-
+    SQLiteDatabase sqLiteDatabase;
     TextView tv_rep;
     TextView tv_step;
 
@@ -79,7 +82,7 @@ public class Replication {
         this.image_info = new ImageInfo(mContext);
         url = callMethod.ReadString("ServerURLUse");
         database = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
-
+        sqLiteDatabase = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
 
     }
@@ -769,93 +772,54 @@ public class Replication {
 
 
 
+    @SuppressLint("Range")
     public void SendGpsLocation() {
+        locations.clear();
 
+        cursor = sqLiteDatabase.rawQuery("select * from GpsLocation where GpsLocationCode > "+dbh.ReadConfig("LastGpsLocationCode")+" order by GpsLocationCode limit 20", null);
 
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                location=new Location();
+                location.setGpsLocationCode(String.valueOf(cursor.getInt(cursor.getColumnIndex("GpsLocationCode"))));
+                locations.add(location);
+            }
+        }
 
-//        Call<RetrofitResponse> call1 = apiInterface.MenuBroker("GetMenuBroker");
-//        call1.enqueue(new Callback<RetrofitResponse>() {
-//            @Override
-//            public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
-//                if (response.isSuccessful()) {
-//                    assert response.body() != null;
-//                    if (!response.body().getText().equals(dbh.ReadConfig("MenuBroker"))) {
-//                        dbh.SaveConfig("MenuBroker", response.body().getText());
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-//            }
-//        });
+        assert cursor != null;
+        String GpsLocationString = CursorToJson(cursor);
+        cursor.close();
+        Log.e("kowsar_Gps", GpsLocationString);
 
+        if (locations.size()>0) {
+            Call<RetrofitResponse> call1 = apiInterface.UpdateLocation("UpdateLocation", GpsLocationString);
+            call1.enqueue(new Callback<RetrofitResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
+                    if (response.isSuccessful()) {
+                        assert response.body() != null;
 
+                        dbh.SaveConfig("LastGpsLocationCode", locations.get(locations.size() - 1).getGpsLocationCode());
 
+                        cursor = sqLiteDatabase.rawQuery("select * from GpsLocation where GpsLocationCode > " + dbh.ReadConfig("LastGpsLocationCode"), null);
 
+                        if (cursor.getCount() > 1) {
+                            cursor.close();
+                            SendGpsLocation();
+                        } else {
+                            cursor.close();
+                        }
 
+                    }
+                }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//        RequestQueue queue = Volley.newRequestQueue(mContext);
-//
-//        StringRequest stringrequste = new StringRequest(Request.Method.POST, url, response -> {
-//
-//            //TODO RESPONSE
-//
-//        }, volleyError -> {
-//
-//            //TODO ERROR RESPONSE
-//
-//        }) {
-//
-//            @Override
-//            protected Map<String, String> getParams() {
-//
-//
-//
-////                HashMap<String, String> params = new HashMap<>();
-////                params.put("tag", "PFQASWED");
-////                SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
-////                cursor = dbh.rawQuery("Select PreFactorCode, PreFactorDate, PreFactorExplain, CustomerRef, BrokerRef, (Select sum(FactorAmount) From PreFactorRow r Where r.PrefactorRef=h.PrefactorCode) As rwCount From PreFactor h Where PreFactorCode = " + factor_code, null);
-////                String pr1 = CursorToJson(cursor);
-////                cursor.close();
-////                Log.e("kowsar_pfheader", pr1);
-////                params.put("PFHDQASW", pr1);
-////                cursor = dtb.rawQuery("select * from GpsLocation where GpsLocationCode > "+dbh+" order by GpsLocationCode limit 10", null);
-////                String pr2 = CursorToJson(cursor);
-////                cursor.close();
-////                Log.e("kowsar_pfrow", pr2);
-////                params.put("PFDTQASW", pr2);
-////                return params;
-//
-//
-//
-//            }
-//
-//        };
-//        queue.add(stringrequste);
+                @Override
+                public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+                }
+            });
+        }else {
+            Log.e("kowsar_Gps", "size = ");
+        }
     }
 
 

@@ -20,6 +20,8 @@ import org.jetbrains.annotations.NotNull;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     CallMethod callMethod;
@@ -95,7 +97,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'MenuBroker', '0' Where Not Exists(Select * From Config Where KeyValue = 'MenuBroker')");
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'KsrImage_LastRepCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'KsrImage_LastRepCode')");
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'MaxRepLogCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'MaxRepLogCode')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'LastGpsLocationCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'GpsLocationCode')");
+        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'LastGpsLocationCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'LastGpsLocationCode')");
         getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'VersionInfo', '" + BuildConfig.VERSION_NAME + "' Where Not Exists(Select * From Config Where KeyValue = 'VersionInfo')");
         getWritableDatabase().close();
     }
@@ -1836,12 +1838,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL(query);
         getWritableDatabase().close();
     }
-    public void UpdateLocationService(LocationResult locationResult, PersianCalendar calendar1) {
+    public void UpdateLocationService(LocationResult locationResult, String gpsDate) {
+
+
         query = "Insert Into  GpsLocation (Longitude , Latitude ,Speed, BrokerRef , GpsDate )" +
-                " Values ('"+locationResult.getLastLocation().getLongitude()+"' , '"+locationResult.getLastLocation().getLatitude()+"', '"+locationResult.getLastLocation().getSpeed()+"', '"+ReadConfig("BrokerCode")+"' , '"+calendar1.getPersianShortDateTime()+"')";
+                " Values ('"+locationResult.getLastLocation().getLongitude()+"' , '"+locationResult.getLastLocation().getLatitude()+"', '"+locationResult.getLastLocation().getSpeed()+"', '"+ReadConfig("BrokerCode")+"' , '"+gpsDate+"')";
         Log.e("kowsar_query", query);
-        getWritableDatabase().execSQL(query);
-        getWritableDatabase().close();
+
+            getWritableDatabase().execSQL(query);
+            getWritableDatabase().close();
+
     }
 
     public void ClearSearchColumn() {
@@ -1871,6 +1877,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL("delete from BrokerColumn");
         getWritableDatabase().execSQL("delete from GoodType");
     }
+
+    @SuppressLint("Range")
+    public String GpsLocationCode() {
+
+        query = " select GpsLocationCode from GpsLocation where GpsLocationCode> "+ReadConfig("LastGpsLocationCode")+"   limit 1 OFFSET 2";
+
+
+        cursor = getWritableDatabase().rawQuery(query, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            result = String.valueOf(cursor.getInt(cursor.getColumnIndex("GpsLocationCode")));
+
+        }else
+        {
+            result=ReadConfig("LastGpsLocationCode");
+        }
+        cursor.close();
+        return result;
+    }
+
+
 
     public void ExecQuery(String Query) {
         getWritableDatabase().execSQL(query);
