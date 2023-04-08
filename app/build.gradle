@@ -76,7 +76,6 @@ dependencies {
     implementation 'com.mohamadamin:persianmaterialdatetimepicker:1.2.1'
     implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:2.0.1'
     implementation 'me.dm7.barcodescanner:zxing:1.9.8'
-    implementation 'com.android.volley:volley:1.2.1'
     implementation 'com.github.juanlabrador:badgecounter:1.0.2@aar'
     implementation "com.airbnb.android:lottie:5.0.3"
    // implementation 'com.google.android.gms:play-services-location:21.0.1'

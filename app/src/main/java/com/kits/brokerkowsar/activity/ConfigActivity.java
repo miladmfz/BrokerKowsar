@@ -18,49 +18,37 @@ import java.text.DecimalFormat;
 
 public class ConfigActivity extends AppCompatActivity {
 
-    DatabaseHelper dbh;
-    DecimalFormat decimalFormat = new DecimalFormat("0,000");
-    CallMethod callMethod;
-    Intent intent;
-    Replication replication;
-    UserInfo auser;
+    private DatabaseHelper dbh;
+    private CallMethod callMethod;
+    private ActivityConfigBinding binding;
 
-    ActivityConfigBinding binding;
-
-    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityConfigBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        // Initialize variables and configurations
         Config();
 
-        try {
-            init();
-        } catch (Exception e) {
-            callMethod.ErrorLog(e.getMessage());
-        }
+        // Populate views with data
+        populateViews();
 
-
+        // Set listeners for buttons
+        setButtonListeners();
     }
 
-
-    //****************************************************
-    public void Config() {
-
+    private void Config() {
         callMethod = new CallMethod(this);
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
-        replication = new Replication(this);
-        auser = dbh.LoadPersonalInfo();
+        Replication replication = new Replication(this);
+
     }
 
-
-    public void init() {
-
-
+    private void populateViews() {
+        DecimalFormat decimalFormat = new DecimalFormat("0,000");
         binding.configSumFactor.setText(NumberFunctions.PerisanNumber(decimalFormat.format(dbh.getsum_sumfactor())));
-        binding.configBorker.setText(NumberFunctions.PerisanNumber(auser.getBrokerCode()));
+        binding.configBorker.setText(NumberFunctions.PerisanNumber(dbh.ReadConfig("BrokerCode")));
         binding.configGrid.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Grid")));
         binding.configDelay.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Delay")));
         binding.configTitlesize.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("TitleSize")));
@@ -69,12 +57,13 @@ public class ConfigActivity extends AppCompatActivity {
 
         binding.configSelloff.setChecked(Integer.parseInt(callMethod.ReadString("SellOff")) != 0);
         binding.configAutorep.setChecked(callMethod.ReadBoolan("AutoReplication"));
+    }
 
+    private void setButtonListeners() {
         binding.configBtnToReg.setOnClickListener(view -> {
-            intent = new Intent(this, RegistrationActivity.class);
+            Intent intent = new Intent(this, RegistrationActivity.class);
             startActivity(intent);
         });
-
     }
 
     @Override
@@ -83,4 +72,6 @@ public class ConfigActivity extends AppCompatActivity {
         startActivity(getIntent());
         super.onRestart();
     }
+
 }
+

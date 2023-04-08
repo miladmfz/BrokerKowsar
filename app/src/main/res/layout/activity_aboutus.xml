@@ -8,13 +8,6 @@
     android:orientation="vertical"
     android:layoutDirection="rtl">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/BuyActivity_appbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        >
-
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/SearchActivity_appbar"
             android:layout_width="match_parent"
@@ -33,8 +26,6 @@
 
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.AppBarLayout>
-
-    </com.google.android.material.appbar.AppBarLayout>
 
 
     <com.google.android.material.card.MaterialCardView

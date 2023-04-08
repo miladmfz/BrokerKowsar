@@ -164,6 +164,13 @@ public interface APIInterface {
 
 
     @POST("index.php")
+    Call<Void> sendfactor(
+            @Field("tag") String tag,
+            @Field("PFHDQASW") String pfhdqasw,
+            @Field("PFDTQASW") String pfdtqasw
+    );
+
+    @POST("index.php")
     @FormUrlEncoded
     Call<RetrofitResponse> GetSellBroker(@Field("tag") String tag);
 

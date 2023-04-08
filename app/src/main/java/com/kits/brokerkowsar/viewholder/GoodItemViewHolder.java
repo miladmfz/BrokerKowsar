@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Response;
 
 
 public class GoodItemViewHolder extends RecyclerView.ViewHolder {
@@ -187,7 +188,7 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
 
             call.enqueue(new Callback<RetrofitResponse>() {
                 @Override
-                public void onResponse(@NonNull Call<RetrofitResponse> call2, @NonNull Response<RetrofitResponse> response) {
+                public void onResponse(@NonNull Call<RetrofitResponse> call2, @NonNull retrofit2.Response<RetrofitResponse> response) {
 
                     if (response.isSuccessful()) {
                         assert response.body() != null;

@@ -1,10 +1,14 @@
 package com.kits.brokerkowsar.model;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQueryBuilder;
+import android.database.sqlite.SQLiteStatement;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -21,6 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
@@ -64,6 +70,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     public void GetLastDataFromOldDataBase(String tempDbPath) {
+        getWritableDatabase().beginTransaction();
 
         getWritableDatabase().execSQL("ATTACH DATABASE '" + tempDbPath + "' AS tempDb");
 
@@ -87,99 +94,133 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "MaxDevice TEXT)");
         getWritableDatabase().close();
     }
-
     public void InitialConfigInsert() {
+        SQLiteDatabase db = getWritableDatabase();
+        SQLiteStatement stmt = db.compileStatement(
+                "INSERT INTO config (keyvalue, datavalue) " +
+                        "SELECT ?, ? WHERE NOT EXISTS (SELECT 1 FROM config WHERE keyvalue = ?)");
 
+        stmt.bindString(1, "BrokerCode");
+        stmt.bindString(2, "0");
+        stmt.bindString(3, "BrokerCode");
+        stmt.execute();
 
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'BrokerCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'BrokerCode')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'BrokerStack', '0' Where Not Exists(Select * From Config Where KeyValue = 'BrokerStack')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'GroupCodeDefult', '0' Where Not Exists(Select * From Config Where KeyValue = 'BrokerStack')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'MenuBroker', '0' Where Not Exists(Select * From Config Where KeyValue = 'MenuBroker')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'KsrImage_LastRepCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'KsrImage_LastRepCode')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'MaxRepLogCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'MaxRepLogCode')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'LastGpsLocationCode', '0' Where Not Exists(Select * From Config Where KeyValue = 'LastGpsLocationCode')");
-        getWritableDatabase().execSQL("INSERT INTO config(keyvalue, datavalue) Select 'VersionInfo', '" + BuildConfig.VERSION_NAME + "' Where Not Exists(Select * From Config Where KeyValue = 'VersionInfo')");
-        getWritableDatabase().close();
+        stmt.bindString(1, "BrokerStack");
+        stmt.bindString(2, "0");
+        stmt.bindString(3, "BrokerStack");
+        stmt.execute();
+
+        stmt.bindString(1, "GroupCodeDefult");
+        stmt.bindString(2, "0");
+        stmt.bindString(3, "GroupCodeDefult");
+        stmt.execute();
+
+        stmt.bindString(1, "MenuBroker");
+        stmt.bindString(2, "0");
+        stmt.bindString(3, "MenuBroker");
+        stmt.execute();
+
+        stmt.bindString(1, "KsrImage_LastRepCode");
+        stmt.bindString(2, "0");
+        stmt.bindString(3, "KsrImage_LastRepCode");
+        stmt.execute();
+
+        stmt.bindString(1, "MaxRepLogCode");
+        stmt.bindString(2, "0");
+        stmt.bindString(3, "MaxRepLogCode");
+        stmt.execute();
+
+        stmt.bindString(1, "LastGpsLocationCode");
+        stmt.bindString(2, "0");
+        stmt.bindString(3, "LastGpsLocationCode");
+        stmt.execute();
+
+        stmt.bindString(1, "VersionInfo");
+        stmt.bindString(2, BuildConfig.VERSION_NAME);
+        stmt.bindString(3, "VersionInfo");
+        stmt.execute();
+
+        stmt.close();
+        db.close();
     }
 
+
     public void DatabaseCreate() {
-        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS GpsLocation (GpsLocationCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE ,Longitude TEXT, Latitude TEXT, Speed TEXT, BrokerRef TEXT, GpsDate TEXT)");
-        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS PreFactorRow (PreFactorRowCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE ,PreFactorRef INTEGER, GoodRef INTEGER, FactorAmount INTEGER, Shortage INTEGER, PreFactorDate TEXT,  Price INTEGER)");
-        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS Prefactor ( PreFactorCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, PreFactorDate TEXT," +
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL("CREATE TABLE IF NOT EXISTS GpsLocation (GpsLocationCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE ,Longitude TEXT, Latitude TEXT, Speed TEXT, BrokerRef TEXT, GpsDate TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS PreFactorRow (PreFactorRowCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE ,PreFactorRef INTEGER, GoodRef INTEGER, FactorAmount INTEGER, Shortage INTEGER, PreFactorDate TEXT,  Price INTEGER)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS Prefactor ( PreFactorCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, PreFactorDate TEXT," +
                 " PreFactorTime TEXT, PreFactorKowsarCode INTEGER, PreFactorKowsarDate TEXT, PreFactorExplain TEXT, CustomerRef INTEGER, BrokerRef INTEGER)");
-        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS Config (ConfigCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, KeyValue TEXT , DataValue TEXT)");
-        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS BrokerColumn ( ColumnCode INTEGER PRIMARY KEY, SortOrder TEXT, ColumnName TEXT, ColumnDesc TEXT, GoodType TEXT, ColumnDefinition TEXT, ColumnType TEXT, Condition TEXT, OrderIndex TEXT, AppType INTEGER)");
-        getWritableDatabase().execSQL("CREATE TABLE IF NOT EXISTS GoodType ( GoodTypeCode INTEGER PRIMARY KEY, GoodType TEXT, IsDefault TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS Config (ConfigCode INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE, KeyValue TEXT , DataValue TEXT)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS BrokerColumn ( ColumnCode INTEGER PRIMARY KEY, SortOrder TEXT, ColumnName TEXT, ColumnDesc TEXT, GoodType TEXT, ColumnDefinition TEXT, ColumnType TEXT, Condition TEXT, OrderIndex TEXT, AppType INTEGER)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS GoodType ( GoodTypeCode INTEGER PRIMARY KEY, GoodType TEXT, IsDefault TEXT)");
 
 
-        getWritableDatabase().execSQL("Create Index IF Not Exists IX_GoodGroup_GoodRef on GoodGroup (GoodRef,GoodGroupRef)");
+        db.execSQL("Create Index IF Not Exists IX_GoodGroup_GoodRef on GoodGroup (GoodRef,GoodGroupRef)");
 
-        getWritableDatabase().execSQL("Create Index IF Not Exists IX_Prefactor_CustomerRef on Prefactor (CustomerRef)");
+        db.execSQL("Create Index IF Not Exists IX_Prefactor_CustomerRef on Prefactor (CustomerRef)");
 
-        getWritableDatabase().execSQL("Create Index IF Not Exists IX_PreFactorRow_GoodRef on PreFactorRow (GoodRef,PreFactorRef)");
-        getWritableDatabase().execSQL("Create Index IF Not Exists IX_PreFactorRow_PreFactorRef on PreFactorRow (PreFactorRef)");
+        db.execSQL("Create Index IF Not Exists IX_PreFactorRow_GoodRef on PreFactorRow (GoodRef,PreFactorRef)");
+        db.execSQL("Create Index IF Not Exists IX_PreFactorRow_PreFactorRef on PreFactorRow (PreFactorRef)");
 
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_GoodRef_stackref ON GoodStack (GoodRef,StackRef)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_GoodRef ON GoodStack (GoodRef)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_StackRef ON GoodStack (StackRef)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_Amount ON GoodStack (Amount)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_ReservedAmount ON GoodStack (ReservedAmount)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_GoodRef_stackref ON GoodStack (GoodRef,StackRef)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_GoodRef ON GoodStack (GoodRef)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_StackRef ON GoodStack (StackRef)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_Amount ON GoodStack (Amount)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_GoodStack_ReservedAmount ON GoodStack (ReservedAmount)");
 
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_KsrImage_ObjectRef ON KsrImage (ObjectRef)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_KsrImage_IsDefaultImage ON KsrImage (IsDefaultImage)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_KsrImage_ObjectRef ON KsrImage (ObjectRef)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_KsrImage_IsDefaultImage ON KsrImage (IsDefaultImage)");
 
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Customer_PriceTip ON Customer (PriceTip)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Customer_PriceTip ON Customer (PriceTip)");
 
 
-        try {
-            getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_JobRef ON JobPerson (JobRef)");
-            getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_AddressRef ON JobPerson (AddressRef)");
-            getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_CentralRef ON JobPerson (CentralRef)");
-            getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_Good_JobPersonRef ON JobPerson_Good (JobPersonRef)");
-            getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_Good_GoodRef ON JobPerson_Good (GoodRef)");
 
-        } catch (Exception ignored) {
-        }
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_JobRef ON JobPerson (JobRef)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_AddressRef ON JobPerson (AddressRef)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_CentralRef ON JobPerson (CentralRef)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_Good_JobPersonRef ON JobPerson_Good (JobPersonRef)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_JobPerson_Good_GoodRef ON JobPerson_Good (GoodRef)");
 
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodName ON Good (GoodName)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodMainCode ON Good (GoodMainCode)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain1 ON Good (GoodExplain1)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain2 ON Good (GoodExplain2)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain3 ON Good (GoodExplain3)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain4 ON Good (GoodExplain4)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain5 ON Good (GoodExplain5)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain6 ON Good (GoodExplain6)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_SellPriceType ON Good (SellPriceType)");
-        getWritableDatabase().execSQL("Create Index IF Not Exists IX_Good_GoodUnitRef on Good (GoodUnitRef)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar1 ON Good (Nvarchar1)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar2 ON Good (Nvarchar2)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar3 ON Good (Nvarchar3)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar4 ON Good (Nvarchar4)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar5 ON Good (Nvarchar5)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar6 ON Good (Nvarchar6)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar7 ON Good (Nvarchar7)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar8 ON Good (Nvarchar8)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar9 ON Good (Nvarchar9)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar10 ON Good (Nvarchar10)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar11 ON Good (Nvarchar11)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar12 ON Good (Nvarchar12)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar13 ON Good (Nvarchar13)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar14 ON Good (Nvarchar14)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar15 ON Good (Nvarchar15)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar16 ON Good (Nvarchar16)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar17 ON Good (Nvarchar17)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar18 ON Good (Nvarchar18)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar19 ON Good (Nvarchar19)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar20 ON Good (Nvarchar20)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Float1 ON Good (Float1)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Float2 ON Good (Float2)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Float3 ON Good (Float3)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Float4 ON Good (Float4)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Float5 ON Good (Float5)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Date1 ON Good (Date1)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Date2 ON Good (Date2)");
-        getWritableDatabase().execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Text1 ON Good (Text1)");
-        getWritableDatabase().close();
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodName ON Good (GoodName)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodMainCode ON Good (GoodMainCode)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain1 ON Good (GoodExplain1)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain2 ON Good (GoodExplain2)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain3 ON Good (GoodExplain3)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain4 ON Good (GoodExplain4)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain5 ON Good (GoodExplain5)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_GoodExplain6 ON Good (GoodExplain6)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_SellPriceType ON Good (SellPriceType)");
+        db.execSQL("Create Index IF Not Exists IX_Good_GoodUnitRef on Good (GoodUnitRef)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar1 ON Good (Nvarchar1)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar2 ON Good (Nvarchar2)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar3 ON Good (Nvarchar3)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar4 ON Good (Nvarchar4)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar5 ON Good (Nvarchar5)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar6 ON Good (Nvarchar6)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar7 ON Good (Nvarchar7)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar8 ON Good (Nvarchar8)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar9 ON Good (Nvarchar9)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar10 ON Good (Nvarchar10)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar11 ON Good (Nvarchar11)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar12 ON Good (Nvarchar12)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar13 ON Good (Nvarchar13)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar14 ON Good (Nvarchar14)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar15 ON Good (Nvarchar15)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar16 ON Good (Nvarchar16)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar17 ON Good (Nvarchar17)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar18 ON Good (Nvarchar18)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar19 ON Good (Nvarchar19)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Nvarchar20 ON Good (Nvarchar20)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Float1 ON Good (Float1)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Float2 ON Good (Float2)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Float3 ON Good (Float3)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Float4 ON Good (Float4)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Float5 ON Good (Float5)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Date1 ON Good (Date1)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Date2 ON Good (Date2)");
+        db.execSQL("CREATE INDEX IF NOT EXISTS IX_Good_Text1 ON Good (Text1)");
+        db.close();
 
     }
 
@@ -931,27 +972,30 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     public void InsertActivation(@NotNull Activation activation) {
+        SQLiteDatabase db = getWritableDatabase();
+        String activationCode = activation.getActivationCode();
 
-        query = "select * from Activation Where ActivationCode= '" + activation.getActivationCode() + "'";
-        cursor = getWritableDatabase().rawQuery(query, null);
-        if (cursor.getCount() > 0) {
-            getWritableDatabase().execSQL("Update Activation set " +
-                    "ServerURL = '" + activation.getServerURL() + "' " +
-                    "Where ActivationCode= '" + activation.getActivationCode() + "'");
+        String updateSql = "UPDATE Activation SET ServerURL = ?, SQLiteURL = ? WHERE ActivationCode = ?";
+        String insertSql = "INSERT INTO Activation(AppBrokerCustomerCode, ActivationCode, PersianCompanyName, EnglishCompanyName, ServerURL, SQLiteURL, MaxDevice) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-            getWritableDatabase().execSQL("Update Activation set " +
-                    "SQLiteURL = '" + activation.getSQLiteURL() + "' " +
-                    "Where ActivationCode= '" + activation.getActivationCode() + "'");
+        SQLiteStatement updateStatement = db.compileStatement(updateSql);
+        updateStatement.bindString(1, activation.getServerURL());
+        updateStatement.bindString(2, activation.getSQLiteURL());
+        updateStatement.bindString(3, activationCode);
+        int rowsUpdated = updateStatement.executeUpdateDelete();
 
-        } else {
-            getWritableDatabase().execSQL(" Insert Into Activation(AppBrokerCustomerCode,ActivationCode,PersianCompanyName, EnglishCompanyName,ServerURL,SQLiteURL,MaxDevice)" +
-                    " Select '" + activation.getAppBrokerCustomerCode() + "','" + activation.getActivationCode() + "','" +
-                    activation.getPersianCompanyName() + "','" + activation.getEnglishCompanyName() + "','" +
-                    activation.getServerURL() + "','" + activation.getSQLiteURL() + "','" + activation.getMaxDevice() + "'");
-
+        if (rowsUpdated == 0) {
+            SQLiteStatement insertStatement = db.compileStatement(insertSql);
+            insertStatement.bindString(1, activation.getAppBrokerCustomerCode());
+            insertStatement.bindString(2, activationCode);
+            insertStatement.bindString(3, activation.getPersianCompanyName());
+            insertStatement.bindString(4, activation.getEnglishCompanyName());
+            insertStatement.bindString(5, activation.getServerURL());
+            insertStatement.bindString(6, activation.getSQLiteURL());
+            insertStatement.bindString(7, activation.getMaxDevice());
+            insertStatement.executeInsert();
         }
-
-
     }
 
     @SuppressLint("Range")
@@ -986,6 +1030,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public Good getGoodBuyBox(String code) {
         GetPreference();
+
 
         query = " SELECT IfNull(pf.FactorAmount,0) as FactorAmount ,  DefaultUnitValue,  UnitName ," +
                 " IfNull(pf.Price,0) as Price , SellPriceType, MaxSellPrice ," +
@@ -1074,36 +1119,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @SuppressLint("Range")
     public void InsertPreFactorHeader(String Search_target, String CustomerRef) {
-        String Customer = GetRegionText(Search_target);
+        String customer = GetRegionText(Search_target);
 
-        String Date = Utilities.getCurrentShamsidate();
-        Calendar calendar = Calendar.getInstance();
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
-        String strDate = sdf.format(calendar.getTime());
+        String date = Utilities.getCurrentShamsidate();
+        String time = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
 
         UserInfo user = new UserInfo();
-        query = "Select * From Config Where KeyValue = 'BrokerCode' ";
-        String key;
-        String val = "";
-        cursor = getWritableDatabase().rawQuery(query, null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                key = cursor.getString(cursor.getColumnIndex("KeyValue"));
-                val = cursor.getString(cursor.getColumnIndex("DataValue"));
+        String brokerCodeQuery = "SELECT * FROM Config WHERE KeyValue = 'BrokerCode'";
+        cursor = getWritableDatabase().rawQuery(brokerCodeQuery, null);
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                String key = cursor.getString(cursor.getColumnIndex("KeyValue"));
+                String value = cursor.getString(cursor.getColumnIndex("DataValue"));
                 switch (key) {
                     case "ActiveCode":
-                        user.setActiveCode(val);
+                        user.setActiveCode(value);
                         break;
                     case "BrokerCode":
-                        user.setBrokerCode(val);
+                        user.setBrokerCode(value);
                         break;
-
                 }
-            }
+            } while (cursor.moveToNext());
+            cursor.close();
         }
-        getWritableDatabase().execSQL("INSERT INTO Prefactor" +
-                "(PreFactorKowsarCode,PreFactorDate ,PreFactorKowsarDate ,PreFactorTime,PreFactorExplain,CustomerRef,BrokerRef) " +
-                "VALUES(0,'" + Date + "','-----','" + strDate + "','" + Customer + "','" + CustomerRef + "','" + val + "'); ");
+
+        String insertQuery = "INSERT INTO Prefactor (PreFactorKowsarCode, PreFactorDate, PreFactorKowsarDate, " +
+                "PreFactorTime, PreFactorExplain, CustomerRef, BrokerRef) VALUES (0, ?, '-----', ?, ?, ?, ?)";
+        getWritableDatabase().execSQL(insertQuery, new String[]{date, time, customer, CustomerRef, user.getBrokerCode()});
+        getWritableDatabase().close();
+
     }
 
     @SuppressLint("Range")
@@ -1141,11 +1185,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         + " Join Good g on GoodCode=" + goodcode
                         + " Where PreFactorCode=" + pfcode + " Limit 1 ";
 
-//                query = "INSERT INTO PreFactorRow(PreFactorRef, GoodRef, FactorAmount, Price) Select " + pfcode + "," + goodcode + ", " + FactorAmount + "," +
-//                        "Case When " + price + ">=0 Then " + price + " Else Case PriceTip When 1 Then SellPrice1 When 2 Then SellPrice2 When 3 Then SellPrice3 When 4 Then SellPrice4 When 5 Then SellPrice5 When 6 Then SellPrice6 End" +
-//                        "* Case When SellPriceType = 1 Then MaxSellPrice/100 Else 1 End End " +
-//                        "From Good g Join PreFactor h on 1=1 Join Customer c on h.CustomerRef=c.CustomerCode " +
-//                        "Where h.PreFactorCode =" + pfcode + " And GoodCode = " + goodcode;
+
                 Log.e("kowsar_query", query);
                 getWritableDatabase().execSQL(query);
         getWritableDatabase().close();
@@ -1156,40 +1196,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     @SuppressLint("Range")
-    public void InsertPreFactorwithPercent(String pfcode, String goodcode, String FactorAmount, String price, String BasketFlag) {
-        if (Integer.parseInt(BasketFlag) > 0) {
+    public void InsertPreFactorwithPercent(String pfCode, String goodCode, String factorAmount, String price, String basketFlag) {
+        SQLiteDatabase db = getWritableDatabase();
+        String query;
+        if (Integer.parseInt(basketFlag) > 0) {
             if (Float.parseFloat(price) >= 0) {
-                query = "Update PreFactorRow set FactorAmount = " + FactorAmount + ", Price = " + price + " Where PreFactorRowCode=" + BasketFlag;
+                query = "UPDATE PreFactorRow SET FactorAmount = " + factorAmount + ", Price = " + price + " WHERE PreFactorRowCode = " + basketFlag;
             } else {
-                query = "Update PreFactorRow set FactorAmount = " + FactorAmount + " Where PreFactorRowCode=" + BasketFlag;
+                query = "UPDATE PreFactorRow SET FactorAmount = " + factorAmount + " WHERE PreFactorRowCode = " + basketFlag;
             }
-            getWritableDatabase().execSQL(query);
-        getWritableDatabase().close();
+            db.execSQL(query);
         } else {
-            query = " Select * From PreFactorRow Where IfNull(PreFactorRef,0)=" + pfcode + " And GoodRef =" + goodcode;
+            query = "SELECT * FROM PreFactorRow WHERE IFNULL(PreFactorRef, 0) = ? AND GoodRef = ?";
+            List<String> args = new ArrayList<>();
+            args.add(pfCode);
+            args.add(goodCode);
             if (Float.parseFloat(price) >= 0) {
-                query = query + " And Price =" + price;
+                query += " AND Price = ?";
+                args.add(price);
             }
-            cursor = getWritableDatabase().rawQuery(query, null);
-
+            Cursor cursor = db.rawQuery(query, args.toArray(new String[args.size()]));
             if (cursor.getCount() > 0) {
                 cursor.moveToFirst();
-                getWritableDatabase().execSQL("Update PreFactorRow set FactorAmount = FactorAmount +" + FactorAmount + " Where PreFactorRowCode=" + cursor.getString(cursor.getColumnIndex("PreFactorRowCode")) + ";");
+                query = "UPDATE PreFactorRow SET FactorAmount = FactorAmount + ? WHERE PreFactorRowCode = ?";
+                db.execSQL(query, new String[] { factorAmount, cursor.getString(cursor.getColumnIndex("PreFactorRowCode")) });
             } else {
                 query = "INSERT INTO PreFactorRow(PreFactorRef, GoodRef, FactorAmount, Price) "
-                        + "select PreFactorCode ,GoodCode," + FactorAmount + "," + price
-                        + " From PreFactor "
-                        + " Join Good g on GoodCode=" + goodcode
-                        + " Where PreFactorCode=" + pfcode + " Limit 1 ";
-
-
-                Log.e("kowsar_query", query);
-                getWritableDatabase().execSQL(query);
-        getWritableDatabase().close();
+                        + "SELECT PreFactorCode, GoodCode, ?, ? FROM PreFactor JOIN Good g ON GoodCode = ? WHERE PreFactorCode = ? LIMIT 1";
+                db.execSQL(query, new String[] { factorAmount, price, goodCode, pfCode });
             }
             cursor.close();
         }
+        db.close();
     }
+
 
 
     @SuppressLint("Range")
@@ -1345,12 +1385,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @SuppressLint("Range")
     public void UpdatePreFactorHeader_Customer(String pfcode, String Search_target) {
-        String Customer = GetRegionText(Search_target);
+        String customer = GetRegionText(Search_target);
 
-        query = "Update Prefactor set CustomerRef='" + Customer + "' where PreFactorCode = " + pfcode;
-        getWritableDatabase().execSQL(query);
-        getWritableDatabase().close();
-        query = "Select * From ( Select Case PriceTip " +
+        ContentValues values = new ContentValues();
+        values.put("CustomerRef", customer);
+
+        String selection = "PreFactorCode = ?";
+        String[] selectionArgs = { pfcode };
+
+        getWritableDatabase().update("Prefactor", values, selection, selectionArgs);
+
+        String query = "Select * From ( Select Case PriceTip " +
                 "When 1 Then  SellPrice1 When 2 Then SellPrice2 When 3 Then SellPrice3  " +
                 "When 4 Then   SellPrice4 When 5 Then SellPrice5 When 6 Then SellPrice6 " +
                 "Else  Case When g.SellPriceType = 0 Then MaxSellPrice Else 100 End End * " +
@@ -1359,68 +1404,85 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "Join PreFactor h on h.PreFactorCode = p.PreFactorRef " +
                 "Join Customer on CustomerCode = CustomerRef " +
                 "Join Good g on GoodRef = GoodCode Where h.PreFactorCode = " + pfcode + ") ss " +
-                "Where Price<> NewPrice";
+                "Where Price <> NewPrice";
 
-
-        cursor = getWritableDatabase().rawQuery(query, null);
-
+        Cursor cursor = getWritableDatabase().rawQuery(query, null);
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
+                String goodCode = cursor.getString(cursor.getColumnIndex("GoodCode"));
+                float newPrice = cursor.getFloat(cursor.getColumnIndex("NewPrice"));
 
-                getWritableDatabase().execSQL("Update PreFactorRow set Price=" + cursor.getString(cursor.getColumnIndex("NewPrice"))
-                        + " Where PreFactorRef =" + pfcode + " And GoodRef =" + cursor.getString(cursor.getColumnIndex("GoodCode")));
+                ContentValues rowValues = new ContentValues();
+                rowValues.put("Price", newPrice);
+
+                String rowSelection = "PreFactorRef = ? AND GoodRef = ?";
+                String[] rowSelectionArgs = { pfcode, goodCode };
+
+                getWritableDatabase().update("PreFactorRow", rowValues, rowSelection, rowSelectionArgs);
             }
+
+            cursor.close();
         }
-        assert cursor != null;
-        cursor.close();
     }
 
     @SuppressLint("Range")
     public Integer GetLastPreFactorHeader() {
 
-        query = "SELECT PreFactorCode FROM Prefactor Where PreFactorKowsarCode = 0 order by PreFactorCode DESC";
-
-        int Res = 0;
-        cursor = getWritableDatabase().rawQuery(query, null);
-        if (cursor.getCount() > 0) {
-            cursor.moveToNext();
-            Res = cursor.getInt(cursor.getColumnIndex("PreFactorCode"));
+        String query = "SELECT PreFactorCode FROM Prefactor WHERE PreFactorKowsarCode = 0 ORDER BY PreFactorCode DESC LIMIT 1";
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        int result = 0;
+        if (cursor.moveToFirst()) {
+            result = cursor.getInt(0);
         }
         cursor.close();
-        return Res;
+        return result;
     }
 
     public void update_explain(String pfcode, String explain) {
 
-        query = "Update PreFactor set PreFactorExplain = '" + explain + "' Where IfNull(PreFactorCode,0)=" + pfcode;
-        getWritableDatabase().execSQL(query);
-        getWritableDatabase().close();
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "UPDATE PreFactor SET PreFactorExplain = ? WHERE IFNULL(PreFactorCode, 0) = ?";
+        SQLiteStatement statement = db.compileStatement(query);
+        statement.bindString(1, explain);
+        statement.bindString(2, pfcode);
+        statement.executeUpdateDelete();
+        db.close();
     }
 
     public void DeletePreFactorRow(String pfcode, String rowcode) {
-        query = " Delete From PreFactorRow Where IfNull(PreFactorRef,0)=" + pfcode + " And (PreFactorRowCode =" + rowcode + " or 0=" + rowcode + ")";
-        getWritableDatabase().execSQL(query);
-        getWritableDatabase().close();
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete("PreFactorRow", "IfNull(PreFactorRef,0)=? And (PreFactorRowCode=? or 0=?)", new String[]{pfcode, rowcode, rowcode});
+        db.close();
     }
 
     public void DeletePreFactor(String pfcode) {
-        query = " Delete From Prefactor Where IfNull(PreFactorCode,0)=" + pfcode;
-        getWritableDatabase().execSQL(query);
-        getWritableDatabase().close();
+        try (SQLiteDatabase db = getWritableDatabase()) {
+            db.delete("Prefactor", "IfNull(PreFactorCode,0)=?", new String[]{pfcode});
+        }
     }
 
     public void DeleteEmptyPreFactor() {
-        query = " DELETE FROM Prefactor WHERE PreFactorCode NOT IN (SELECT PreFactorRef FROM PrefactorRow )";
-        getWritableDatabase().execSQL(query);
-        getWritableDatabase().close();
+        SQLiteDatabase db = getWritableDatabase();
+        String subquery = "SELECT PreFactorRef FROM PrefactorRow";
+        String query = "DELETE FROM Prefactor WHERE PreFactorCode NOT IN (" + subquery + ")";
+        db.execSQL(query);
+        db.close();
         
     }
 
-    public void UpdatePreFactor(String PreFactorCode, String PreFactorKowsarCode, String PreFactorDate) {
-        query = "Update PreFactor Set PreFactorKowsarCode = " + PreFactorKowsarCode + ", PreFactorKowsarDate = '" + PreFactorDate + "' Where ifnull(PreFactorCode ,0)= " + PreFactorCode + ";";
-        getWritableDatabase().execSQL(query);
-        getWritableDatabase().close();
+    public void UpdatePreFactor(String preFactorCode, String preFactorKowsarCode, String preFactorDate) {
+        String query = "UPDATE PreFactor SET PreFactorKowsarCode = ?, PreFactorKowsarDate = ? WHERE IFNULL(PreFactorCode ,0) = ?;";
+        try (SQLiteDatabase db = getWritableDatabase();
+             SQLiteStatement statement = db.compileStatement(query)) {
+            statement.bindString(1, preFactorKowsarCode);
+            statement.bindString(2, preFactorDate);
+            statement.bindString(3, preFactorCode);
+            statement.executeUpdateDelete();
+        } catch (SQLException e) {
+            Log.e("updatePreFactor", "Error updating PreFactor", e);
+        }
     }
 
     @SuppressLint("Range")
@@ -1437,74 +1499,88 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @SuppressLint("Range")
     public String getFactorSumAmount(String pfcode) {
-        query = "select sum(FactorAmount) as result From PreFactorRow join Good on GoodRef=GoodCode Where IfNull(PreFactorRef,0)=" + pfcode;
-        cursor = getWritableDatabase().rawQuery(query, null);
+        SQLiteDatabase db = getWritableDatabase();
+        String[] columns = {"sum(FactorAmount) as result"};
+        String selection = "IfNull(PreFactorRef,0)=?";
+        String[] selectionArgs = {pfcode};
+        Cursor cursor = db.query("PreFactorRow join Good on GoodRef=GoodCode", columns, selection, selectionArgs, null, null, null);
         cursor.moveToFirst();
         int result = cursor.getInt(cursor.getColumnIndex("result"));
         cursor.close();
+        db.close();
         return String.valueOf(result);
     }
 
     @SuppressLint("Range")
     public String getFactordate(String pfcode) {
-        query = "select PreFactorDate as result From Prefactor  Where IfNull(PreFactorCode,0)=" + pfcode;
-        cursor = getWritableDatabase().rawQuery(query, null);
-        cursor.moveToFirst();
-        result = cursor.getString(cursor.getColumnIndex("result"));
+        String result = "";
+        SQLiteDatabase db = getReadableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("result", "PreFactorDate");
+
+        Cursor cursor = db.query("Prefactor", new String[]{"PreFactorDate as result"},
+                "IfNull(PreFactorCode,0)= ?", new String[]{pfcode},
+                null, null, null);
+
+        if (cursor.moveToFirst()) {
+            result = cursor.getString(cursor.getColumnIndex("result"));
+        }
         cursor.close();
         return result;
     }
 
     @SuppressLint("Range")
     public String getPricetipCustomer(String pfcode) {
-        int resultint = 0;
-        query = "SELECT PriceTip  FROM PreFactor h " +
-                " Join Customer c  on c.CustomerCode = h.CustomerRef " +
-                " join Central n on c.CentralRef=n.CentralCode " +
-                " Where IfNull(PreFactorCode,0)= " + pfcode;
-
-        cursor = getWritableDatabase().rawQuery(query, null);
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            resultint = cursor.getInt(cursor.getColumnIndex("PriceTip"));
-            cursor.close();
-        } else {
-            result = "فاکتوری انتخاب نشده";
-        }
-        return String.valueOf(resultint);
-    }
-
-    @SuppressLint("Range")
-    public String getFactorCustomer(String pfcode) {
-
-        query = "SELECT n.Title || ' ' || n.FName|| ' ' || n.Name CustomerName  FROM PreFactor h " +
-                " Join Customer c  on c.CustomerCode = h.CustomerRef " +
-                " join Central n on c.CentralRef=n.CentralCode " +
-                " Where IfNull(PreFactorCode,0)= " + pfcode;
-
-        cursor = getWritableDatabase().rawQuery(query, null);
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            result = cursor.getString(cursor.getColumnIndex("CustomerName"));
-            cursor.close();
-        } else {
-            result = "فاکتوری انتخاب نشده";
+        String result = "";
+        String[] projection = {"PriceTip"};
+        String selection = "IfNull(PreFactorCode,0)= ?";
+        String[] selectionArgs = {pfcode};
+        SQLiteQueryBuilder builder = new SQLiteQueryBuilder();
+        builder.setTables("PreFactor h JOIN Customer c ON c.CustomerCode = h.CustomerRef JOIN Central n ON c.CentralRef = n.CentralCode");
+        try (Cursor cursor = builder.query(getWritableDatabase(), projection, selection, selectionArgs, null, null, null)) {
+            if (cursor.moveToFirst()) {
+                int priceTip = cursor.getInt(cursor.getColumnIndex("PriceTip"));
+                result = String.valueOf(priceTip);
+            } else {
+                result = "فاکتوری انتخاب نشده";
+            }
         }
         return result;
     }
 
     @SuppressLint("Range")
-    public long getsum_sumfactor() {
-        query = "select sum(price) as sm From PreFactorRow";
-
-        long Res = 0;
-        cursor = getWritableDatabase().rawQuery(query, null);
+    public String getFactorCustomer(String pfcode) {
+        SQLiteDatabase db = getWritableDatabase();
+        String[] columns = {"n.Title", "n.FName", "n.Name"};
+        String selection = "IfNull(PreFactorCode,0) = ?";
+        String[] selectionArgs = {pfcode};
+        String tableName = "PreFactor h " +
+                "Join Customer c on c.CustomerCode = h.CustomerRef " +
+                "join Central n on c.CentralRef=n.CentralCode";
+        Cursor cursor = db.query(tableName, columns, selection, selectionArgs, null, null, null);
+        String result;
         if (cursor.getCount() > 0) {
-            cursor.moveToNext();
-            Res = cursor.getLong(cursor.getColumnIndex("sm"));
+            cursor.moveToFirst();
+            String title = cursor.getString(cursor.getColumnIndex("Title"));
+            String fName = cursor.getString(cursor.getColumnIndex("FName"));
+            String name = cursor.getString(cursor.getColumnIndex("Name"));
+            result = title + " " + fName + " " + name;
+        } else {
+            result = "فاکتوری انتخاب نشده";
         }
         cursor.close();
-        return Res;
+        return result;
+    }
+
+    @SuppressLint("Range")
+    public long getsum_sumfactor() {
+        String[] columns = { "sm" };
+        try (Cursor cursor = getWritableDatabase().query("PreFactorRow", columns, null, null, null, null, null)) {
+            if (cursor.moveToFirst()) {
+                return cursor.getLong(cursor.getColumnIndex("sm"));
+            }
+        }
+        return 0;
     }
 
     @SuppressLint("Range")
@@ -1554,52 +1630,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public Integer Customer_check(String name) {
+    public Integer customerCheck(String name) {
         int res = 0;
-        query = "select centralcode from central where d_codemelli ='" + name + "'";
 
-        cursor = getWritableDatabase().rawQuery(query, null);
+        String selection = "d_codemelli=?";
+        String[] selectionArgs = { name };
+        String[] columns = { "CentralCode" };
+        Cursor cursor = getReadableDatabase().query("central", columns, selection, selectionArgs, null, null, null);
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 res = cursor.getInt(cursor.getColumnIndex("CentralCode"));
             }
         }
-        assert cursor != null;
         cursor.close();
+
         return res;
     }
-
     @SuppressLint("Range")
-    public ArrayList<Customer> city() {
-
-        query = "SELECT * from city";
-        ArrayList<Customer> city = new ArrayList<>();
-        cursor = getWritableDatabase().rawQuery(query, null);
+    public ArrayList<Customer> getCityList() {
+        ArrayList<Customer> cities = new ArrayList<>();
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "SELECT * FROM city";
+        Cursor cursor = db.rawQuery(query, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                Customer customerdetail = new Customer();
+                Customer city = new Customer();
                 try {
-                    customerdetail.setCityName(cursor.getString(cursor.getColumnIndex("CityName")));
-                    customerdetail.setCityCode(cursor.getString(cursor.getColumnIndex("CityCode")));
+                    ContentValues values = new ContentValues();
+                    values.put("CityName", cursor.getString(cursor.getColumnIndex("CityName")));
+                    values.put("CityCode", cursor.getString(cursor.getColumnIndex("CityCode")));
+                    city.setCityName(cursor.getString(cursor.getColumnIndex("CityName")));
+                    city.setCityCode(cursor.getString(cursor.getColumnIndex("CityCode")));
                 } catch (Exception ignored) {
                 }
-                city.add(customerdetail);
+                cities.add(city);
             }
+            cursor.close();
         }
-        assert cursor != null;
-        cursor.close();
-        return city;
-    }
-
-    @SuppressLint("Range")
-    public String GetksrImage(String code) {
-        query = "select ksrImageCode from ksrImage where ObjectRef = " + code + " limit 1";
-        cursor = getWritableDatabase().rawQuery(query, null);
-        cursor.moveToFirst();
-        result = cursor.getString(cursor.getColumnIndex("KsrImageCode"));
-        cursor.close();
-        return result;
+        db.close();
+        return cities;
     }
 
 
@@ -1625,19 +1695,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     @SuppressLint("Range")
-    public String GetLastksrImageCode(String code) {
-        query = "SELECT ksrImageCode from KsrImage where ObjectRef = " + code + " limit 1 ";
-        String ksrimageCode = "";
+    public String GetLastKsrImageCode(String code) {
+        String ksrImageCode = "";
 
-        cursor = getWritableDatabase().rawQuery(query, null);
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                ksrimageCode = String.valueOf(cursor.getInt(cursor.getColumnIndex("KsrImageCode")));
-            }
+        SQLiteDatabase db = getWritableDatabase();
+        String[] columns = {"ksrImageCode"};
+        String selection = "ObjectRef = ?";
+        String[] selectionArgs = {code};
+        String limit = "1";
+
+        Cursor cursor = db.query("KsrImage", columns, selection, selectionArgs, null, null, null, limit);
+
+        if (cursor != null && cursor.moveToFirst()) {
+            ksrImageCode = cursor.getString(cursor.getColumnIndex("ksrImageCode"));
         }
-        assert cursor != null;
+
         cursor.close();
-        return ksrimageCode;
+        db.close();
+
+        return ksrImageCode;
     }
 
     @SuppressLint("Range")
@@ -1692,119 +1768,58 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public ArrayList<GoodGroup> getmenuGroups() {
         GetPreference();
-        if (!SH_MenuBroker.equals(""))
-            query = "SELECT * FROM GoodsGrp Where Groupcode in (" + SH_MenuBroker + ")";
-        else
-            query = "SELECT * FROM GoodsGrp Where Groupcode in (9999)";
-
+        String groupCodeCondition = SH_MenuBroker.isEmpty() ? "9999" : SH_MenuBroker;
+        String query = "SELECT * FROM GoodsGrp WHERE Groupcode IN (" + groupCodeCondition + ")";
         ArrayList<GoodGroup> groups = new ArrayList<>();
-        try {
-            cursor = getWritableDatabase().rawQuery(query, null);
-        } catch (Exception e) {
-            query = "SELECT * FROM GoodsGrp Where Groupcode in (9999)";
-            cursor = getWritableDatabase().rawQuery(query, null);
-        }
-        if (cursor != null) {
+        try (Cursor cursor = getWritableDatabase().rawQuery(query, null)) {
             while (cursor.moveToNext()) {
                 GoodGroup grp = new GoodGroup();
-                try {
-                    grp.setGroupCode(cursor.getInt(cursor.getColumnIndex("GroupCode")));
-
-                    grp.setName(cursor.getString(cursor.getColumnIndex("Name")));
-                    grp.setL1(cursor.getInt(cursor.getColumnIndex("L1")));
-                    grp.setL2(cursor.getInt(cursor.getColumnIndex("L2")));
-                    grp.setL3(cursor.getInt(cursor.getColumnIndex("L3")));
-                    grp.setL4(cursor.getInt(cursor.getColumnIndex("L4")));
-                    grp.setL5(cursor.getInt(cursor.getColumnIndex("L5")));
-                } catch (Exception ignored) {
-                }
+                grp.setGroupCode(cursor.getInt(cursor.getColumnIndex("GroupCode")));
+                grp.setName(cursor.getString(cursor.getColumnIndex("Name")));
+                grp.setL1(cursor.getInt(cursor.getColumnIndex("L1")));
+                grp.setL2(cursor.getInt(cursor.getColumnIndex("L2")));
+                grp.setL3(cursor.getInt(cursor.getColumnIndex("L3")));
+                grp.setL4(cursor.getInt(cursor.getColumnIndex("L4")));
+                grp.setL5(cursor.getInt(cursor.getColumnIndex("L5")));
                 groups.add(grp);
-
             }
+        } catch (Exception e) {
+            // Log or rethrow the exception
         }
-        assert cursor != null;
-        cursor.close();
         return groups;
     }
 
-    @SuppressLint("Range")
-    public UserInfo LoadPersonalInfo() {
-        UserInfo user = new UserInfo();
-        query = "Select * From Config";
-        String key;
-        String val;
-        cursor = getWritableDatabase().rawQuery(query, null);
 
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                key = cursor.getString(cursor.getColumnIndex("KeyValue"));
-                val = cursor.getString(cursor.getColumnIndex("DataValue"));
-
-                switch (key) {
-                    case "Email":
-                        user.setEmail(val);
-                        break;
-                    case "NameFamily":
-                        user.setNameFamily(val);
-                        break;
-                    case "Address":
-                        user.setAddress(val);
-                        break;
-                    case "Mobile":
-                        user.setMobile(val);
-                        break;
-                    case "Phone":
-                        user.setPhone(val);
-                        break;
-                    case "BirthDate":
-                        user.setBirthDate(val);
-                        break;
-                    case "PostalCode":
-                        user.setPostalCode(val);
-                        break;
-                    case "MelliCode":
-                        user.setMelliCode(val);
-                        break;
-                    case "ActiveCode":
-                        user.setActiveCode(val);
-                        break;
-                    case "BrokerCode":
-                        user.setBrokerCode(val);
-                        break;
-                }
-            }
-        }
-        cursor.close();
-        return user;
-    }
 
     public void SavePersonalInfo(UserInfo user) {
 
         if (!user.getBrokerCode().equals("")) {
-            query = " Update Config set DataValue = '" + user.getBrokerCode() + "' Where KeyValue = 'BrokerCode';";
-            getWritableDatabase().execSQL(query);
-        getWritableDatabase().close();
-            query = " Insert Into Config(KeyValue, DataValue) " +
-                    "  Select 'BrokerCode', '" + user.getBrokerCode() + "' Where Not Exists(Select * From Config Where KeyValue = 'BrokerCode');";
-            getWritableDatabase().execSQL(query);
-        getWritableDatabase().close();
+            ContentValues values = new ContentValues();
+            values.put("DataValue", user.getBrokerCode());
+            getWritableDatabase().update("Config", values, "KeyValue = ?", new String[]{"BrokerCode"});
         }
 
     }
 
-    public void SaveConfig(String key, String Value) {
+    public void SaveConfig(String key, String value) {
 
-        query = " Insert Into Config(KeyValue, DataValue) Select '" + key + "', '" + Value + "' Where Not Exists(Select * From Config Where KeyValue = '" + key + "');";
-        getWritableDatabase().execSQL(query);
-        getWritableDatabase().close();
-        query = " Update Config set DataValue = '" + Value + "' Where KeyValue = '" + key + "' ;";
-        getWritableDatabase().execSQL(query);
-        getWritableDatabase().close();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("KeyValue", key);
+        contentValues.put("DataValue", value);
 
+        long result = getWritableDatabase().insertWithOnConflict("Config", null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);
+        if (result == -1) {
+            Log.e("SaveConfig", "Failed to save config with key: " + key);
+        }
+        getWritableDatabase().close();
     }
 
     @SuppressLint("Range")
     public String ReadConfig(String key) {
+
+        if (key.equals("BrokerCode")){
+            result="0";
+        }
 
         query = "SELECT DataValue  FROM Config  Where KeyValue= '" + key + "' ;";
 
@@ -1821,85 +1836,104 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @SuppressLint("Range")
     public void ReplicateGoodtype(Column column) {
-        cursor = getWritableDatabase().rawQuery("Select Count(*) AS cntRec From GoodType Where GoodType = '" + column.getColumnFieldValue("GoodType") + "'", null);
+        cursor = getWritableDatabase().rawQuery("SELECT COUNT(*) AS cntRec FROM GoodType WHERE GoodType = '" + column.getColumnFieldValue("GoodType") + "'", null);
         cursor.moveToFirst();
 
         int nc = cursor.getInt(cursor.getColumnIndex("cntRec"));
         if (nc == 0) {
-            getWritableDatabase().execSQL("INSERT INTO GoodType (GoodType,IsDefault)" +
-                    " VALUES ('" + column.getColumnFieldValue("GoodType") +
-                    "','" + column.getColumnFieldValue("IsDefault") + "'); ");
+            query = "INSERT INTO GoodType (GoodType,IsDefault) VALUES ('" + column.getColumnFieldValue("GoodType") + "','" + column.getColumnFieldValue("IsDefault") + "');";
+            getWritableDatabase().execSQL(query);
+        } else {
+            query = "UPDATE GoodType SET IsDefault = '" + column.getColumnFieldValue("IsDefault") + "' WHERE GoodType = '" + column.getColumnFieldValue("GoodType") + "';";
+            getWritableDatabase().execSQL(query);
         }
         cursor.close();
     }
 
     public void UpdateSearchColumn(Column column) {
-        query = "update BrokerColumn set condition = '" + column.getCondition() + "' where ColumnCode= " + column.getColumnCode();
-        getWritableDatabase().execSQL(query);
-        getWritableDatabase().close();
+        SQLiteDatabase db = getWritableDatabase();
+        String query = "UPDATE BrokerColumn SET condition = ? WHERE ColumnCode = ?";
+        SQLiteStatement statement = db.compileStatement(query);
+        statement.bindString(1, column.getCondition());
+        statement.bindLong(2, Long.parseLong(column.getColumnCode()));
+        statement.executeUpdateDelete();
+        statement.close();
+        db.close();
     }
     public void UpdateLocationService(LocationResult locationResult, String gpsDate) {
-
-
-        query = "Insert Into  GpsLocation (Longitude , Latitude ,Speed, BrokerRef , GpsDate )" +
-                " Values ('"+locationResult.getLastLocation().getLongitude()+"' , '"+locationResult.getLastLocation().getLatitude()+"', '"+locationResult.getLastLocation().getSpeed()+"', '"+ReadConfig("BrokerCode")+"' , '"+gpsDate+"')";
-        Log.e("kowsar_query", query);
-
-            getWritableDatabase().execSQL(query);
-            getWritableDatabase().close();
-
+        try (SQLiteDatabase db = getWritableDatabase()) {
+            ContentValues values = new ContentValues();
+            values.put("Longitude", locationResult.getLastLocation().getLongitude());
+            values.put("Latitude", locationResult.getLastLocation().getLatitude());
+            values.put("Speed", locationResult.getLastLocation().getSpeed());
+            values.put("BrokerRef", ReadConfig("BrokerCode"));
+            values.put("GpsDate", gpsDate);
+            db.insert("GpsLocation", null, values);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void ClearSearchColumn() {
         query = "update BrokerColumn set condition = '' ";
-        getWritableDatabase().execSQL(query);
-        getWritableDatabase().close();
+        SQLiteDatabase db = getWritableDatabase();
+        db.execSQL(query);
+        db.close();
     }
 
-    public void ReplicateColumn(Column column, Integer Apptype) {
+    public void ReplicateColumn(Column column, int appType) {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("SortOrder", column.getColumnFieldValue("SortOrder"));
+        values.put("ColumnName", column.getColumnFieldValue("ColumnName"));
+        values.put("ColumnDesc", column.getColumnFieldValue("ColumnDesc"));
+        values.put("GoodType", column.getColumnFieldValue("GoodType"));
+        values.put("ColumnDefinition", column.getColumnFieldValue("ColumnDefinition"));
+        values.put("ColumnType", column.getColumnFieldValue("ColumnType"));
+        values.put("Condition", column.getColumnFieldValue("Condition"));
+        values.put("OrderIndex", column.getColumnFieldValue("OrderIndex"));
+        values.put("AppType", appType);
 
-        query = "INSERT INTO BrokerColumn" +
-                "(SortOrder,ColumnName ,ColumnDesc ,GoodType,ColumnDefinition,ColumnType,Condition,OrderIndex,AppType) " +
-                " VALUES ('" + column.getColumnFieldValue("SortOrder") +
-                "','" + column.getColumnFieldValue("ColumnName") +
-                "','" + column.getColumnFieldValue("ColumnDesc") +
-                "','" + column.getColumnFieldValue("GoodType") +
-                "','" + column.getColumnFieldValue("ColumnDefinition") +
-                "','" + column.getColumnFieldValue("ColumnType") +
-                "','" + column.getColumnFieldValue("Condition") +
-                "','" + column.getColumnFieldValue("OrderIndex") +
-                "'," + Apptype + "); ";
-        getWritableDatabase().execSQL(query);
-        getWritableDatabase().close();
+        // Check if the record already exists
+        Cursor cursor = db.query("BrokerColumn", null, "ColumnName=?", new String[]{column.getColumnFieldValue("ColumnName")}, null, null, null);
+        if (cursor != null && cursor.getCount() > 0) {
+            // Update the record
+            db.update("BrokerColumn", values, "ColumnName=?", new String[]{column.getColumnFieldValue("ColumnName")});
+        } else {
+            // Insert the record
+            db.insert("BrokerColumn", null, values);
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+
+        // Close the database connection
+        db.close();
+    }
+
+    public void deleteColumn(String columnName) {
+        SQLiteDatabase db = getWritableDatabase();
+        db.delete("BrokerColumn", "ColumnName=?", new String[]{columnName});
+        db.close();
     }
 
     public void deleteColumn() {
-        getWritableDatabase().execSQL("delete from BrokerColumn");
-        getWritableDatabase().execSQL("delete from GoodType");
-    }
-
-    @SuppressLint("Range")
-    public String GpsLocationCode() {
-
-        query = " select GpsLocationCode from GpsLocation where GpsLocationCode> "+ReadConfig("LastGpsLocationCode")+"   limit 1 OFFSET 2";
-
-
-        cursor = getWritableDatabase().rawQuery(query, null);
-        if (cursor.getCount() > 0) {
-            cursor.moveToFirst();
-            result = String.valueOf(cursor.getInt(cursor.getColumnIndex("GpsLocationCode")));
-
-        }else
-        {
-            result=ReadConfig("LastGpsLocationCode");
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            db.execSQL("DELETE FROM BrokerColumn");
+            db.execSQL("DELETE FROM GoodType");
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
-        cursor.close();
-        return result;
     }
 
 
-
-    public void ExecQuery(String Query) {
+    public void execQuery(String query) {
+        if (query == null || query.isEmpty()) {
+            return;
+        }
         getWritableDatabase().execSQL(query);
         getWritableDatabase().close();
     }

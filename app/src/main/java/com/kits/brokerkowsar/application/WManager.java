@@ -21,28 +21,14 @@ public class WManager extends Worker {
         replication = new Replication(getApplicationContext());
 
     }
-
     @NonNull
     @Override
-
     public Result doWork() {
-
-
         if (callMethod.ReadBoolan("AutoReplication")) {
-
-            AutomaticReplication();
+            replication.DoingReplicateAuto();
         }
-        AutomaticgpsLocation();
-
+        replication.SendGpsLocation();
         return Result.success();
     }
 
-    public void AutomaticReplication() {
-
-        replication.DoingReplicateAuto();
-    }
-    public void AutomaticgpsLocation() {
-
-        replication.SendGpsLocation();
-    }
 }

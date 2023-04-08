@@ -31,6 +31,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Response;
 
 
 public class ProductAdapter extends ExpandableRecyclerViewAdapter<CategoryViewHolder, ProductViewHolder> {
@@ -89,7 +90,7 @@ public class ProductAdapter extends ExpandableRecyclerViewAdapter<CategoryViewHo
             );
             call.enqueue(new Callback<RetrofitResponse>() {
                 @Override
-                public void onResponse(@NonNull Call<RetrofitResponse> call2, @NonNull Response<RetrofitResponse> response) {
+                public void onResponse(@NonNull Call<RetrofitResponse> call2, @NonNull retrofit2.Response<RetrofitResponse> response) {
 
                     if (response.isSuccessful()) {
                         assert response.body() != null;
@@ -146,7 +147,7 @@ public class ProductAdapter extends ExpandableRecyclerViewAdapter<CategoryViewHo
             );
             call.enqueue(new Callback<RetrofitResponse>() {
                 @Override
-                public void onResponse(@NonNull Call<RetrofitResponse> call2, @NonNull Response<RetrofitResponse> response) {
+                public void onResponse(@NonNull Call<RetrofitResponse> call2, @NonNull retrofit2.Response<RetrofitResponse> response) {
 
                     if (response.isSuccessful()) {
                         assert response.body() != null;

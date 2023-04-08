@@ -14,11 +14,6 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.activity.BasketActivity;
 import com.kits.brokerkowsar.activity.NavActivity;
@@ -46,6 +41,7 @@ import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Response;
 
 
@@ -156,9 +152,8 @@ public class Replication {
             FinalStep = 0;
             LastRepCode = String.valueOf(replicatedetail.getLastRepLogCode());
 
-            UserInfo userInfo = dbh.LoadPersonalInfo();
 
-            String where = replicatedetail.getCondition().replace("BrokerCondition", userInfo.getBrokerCode());
+            String where = replicatedetail.getCondition().replace("BrokerCondition", dbh.ReadConfig("BrokerCode"));
 
             Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
                     "repinfo",
@@ -347,9 +342,8 @@ public class Replication {
             FinalStep = 0;
             LastRepCode = String.valueOf(replicatedetail.getLastRepLogCode());
 
-            UserInfo userInfo = dbh.LoadPersonalInfo();
 
-            String where = replicatedetail.getCondition().replace("BrokerCondition", userInfo.getBrokerCode());
+            String where = replicatedetail.getCondition().replace("BrokerCondition", dbh.ReadConfig("BrokerCode"));
 
             Log.e("kowsar_LastRepCode",LastRepCode);
             Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
@@ -647,9 +641,8 @@ public class Replication {
 
     public void BrokerStack() {
 
-        UserInfo userInfo = dbh.LoadPersonalInfo();
         dbh.DatabaseCreate();
-        Call<RetrofitResponse> call1 = apiInterface.BrokerStack("BrokerStack", userInfo.getBrokerCode());
+        Call<RetrofitResponse> call1 = apiInterface.BrokerStack("BrokerStack", dbh.ReadConfig("BrokerCode"));
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {

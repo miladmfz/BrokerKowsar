@@ -60,6 +60,7 @@ import java.util.concurrent.TimeUnit;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Response;
 
 
 public class NavActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -180,14 +181,13 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     @SuppressLint("SetTextI18n")
     public void CheckConfig() {
 
-        UserInfo auser = dbh.LoadPersonalInfo();
 
-        if (Integer.parseInt(auser.getBrokerCode()) != 0) {
+        if (Integer.parseInt(dbh.ReadConfig("BrokerCode")) != 0) {
 
-            tv_brokercode.setText(" کد بازاریاب : " + NumberFunctions.PerisanNumber(auser.getBrokerCode()));
+            tv_brokercode.setText(" کد بازاریاب : " + NumberFunctions.PerisanNumber(dbh.ReadConfig("BrokerCode")));
             if (dbh.ReadConfig("BrokerStack").equals("0")) {
                 if (callMethod.ReadBoolan("AutoReplication")) {
-                    //workManager.cancelAllWork();
+                    workManager.cancelAllWork();
                 }
                 new AlertDialog.Builder(this)
                         .setTitle("انباری تعریف نشده")

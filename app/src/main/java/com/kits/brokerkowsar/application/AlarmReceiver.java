@@ -25,17 +25,14 @@ public class AlarmReceiver extends BroadcastReceiver {
         this.mcontext = context;
         calendar1.setTimeZone(TimeZone.getDefault());
         Intent in = new Intent(context, LocationService.class);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             context.startForegroundService(in);
+        } else {
+            context.startService(in);
         }
-        context.startService(in);
 
-
-
-            setAlarm(context);
-
-
-
+        setAlarm(context);
 
     }
 

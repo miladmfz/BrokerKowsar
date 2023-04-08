@@ -33,11 +33,13 @@ import com.kits.brokerkowsar.webService.APIClient_kowsar;
 import com.kits.brokerkowsar.webService.APIInterface;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChoiceDatabaseActivity extends AppCompatActivity {
 
@@ -71,7 +73,6 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         } catch (Exception e) {
             callMethod.ErrorLog(e.getMessage());
         }
-
     }
 
     //*****************************************************************************************
@@ -117,7 +118,8 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                    callMethod.ErrorLog(t.getMessage());
+                    Log.e("test",t.getMessage());
+                    //callMethod.ErrorLog(t.getMessage());
                 }
             });
 
@@ -345,12 +347,15 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     protected void onDestroy() {
-        if(PRDownloader.getStatus(downloadId)== Status.RUNNING){
+        cancelDownloadIfRunning(downloadId);
+        super.onDestroy();
+    }
+    private void cancelDownloadIfRunning(int downloadId) {
+        if (PRDownloader.getStatus(downloadId) == Status.RUNNING) {
             PRDownloader.cancel(downloadId);
         }
-        super.onDestroy();
-
     }
 }

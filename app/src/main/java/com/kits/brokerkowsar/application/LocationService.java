@@ -80,6 +80,7 @@ public class LocationService extends Service {
         builder.setContentText("Kowsar Service");
         builder.setContentIntent(pendingIntent);
         builder.setAutoCancel(false);
+        builder.setSound(null); // disable sound
 
         builder.setPriority(NotificationCompat.PRIORITY_MAX);
 

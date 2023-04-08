@@ -95,8 +95,7 @@ public class CustomerViewHolder extends RecyclerView.ViewHolder {
         fac_rltv.setOnClickListener(v -> {
             if (edit.equals("0")) {
 
-                UserInfo auser = dbh.LoadPersonalInfo();
-                if (Integer.parseInt(auser.getBrokerCode()) > 0) {
+                if (Integer.parseInt(dbh.ReadConfig("BrokerCode")) > 0) {
                     action.addfactordialog(customer.getCustomerFieldValue("CustomerCode"));
                 } else {
                     Intent intent = new Intent(mContext, ConfigActivity.class);

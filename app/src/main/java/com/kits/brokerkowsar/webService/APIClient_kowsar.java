@@ -1,6 +1,5 @@
 package com.kits.brokerkowsar.webService;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import retrofit2.Retrofit;
@@ -14,13 +13,9 @@ public class APIClient_kowsar {
 
     public static Retrofit getCleint_log() {
         if (t == null) {
-            Gson gson = new GsonBuilder()
-                    .setLenient()
-                    .create();
-
             t = new Retrofit.Builder()
                     .baseUrl(BASE_URL_log)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
+                    .addConverterFactory(GsonConverterFactory.create(new GsonBuilder().setLenient().create()))
                     .build();
         }
         return t;

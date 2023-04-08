@@ -31,6 +31,7 @@ import java.util.Objects;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Response;
 
 
 public class RegistrationActivity extends AppCompatActivity {
@@ -39,7 +40,6 @@ public class RegistrationActivity extends AppCompatActivity {
     CallMethod callMethod;
     Action action;
     Replication replication;
-    UserInfo auser;
     boolean doubletouchdbanme = false;
     Intent intent;
     ActivityRegistrationBinding binding;
@@ -133,9 +133,8 @@ public class RegistrationActivity extends AppCompatActivity {
     }
     public void init() {
 
-        auser = dbh.LoadPersonalInfo();
 
-        binding.registrBroker.setText(NumberFunctions.PerisanNumber(auser.getBrokerCode()));
+        binding.registrBroker.setText(NumberFunctions.PerisanNumber(dbh.ReadConfig("BrokerCode")));
         binding.registrGrid.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Grid")));
         binding.registrDelay.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Delay")));
         binding.registrTitlesize.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("TitleSize")));
@@ -257,7 +256,7 @@ public class RegistrationActivity extends AppCompatActivity {
             callMethod.EditString("TitleSize", NumberFunctions.EnglishNumber(binding.registrTitlesize.getText().toString()));
             callMethod.EditString("BodySize", NumberFunctions.EnglishNumber(binding.registrBodysize.getText().toString()));
             callMethod.EditString("PhoneNumber", NumberFunctions.EnglishNumber(binding.registrPhonenumber.getText().toString()));
-            if(!auser.getBrokerCode().equals(NumberFunctions.EnglishNumber(binding.registrBroker.getText().toString()))){
+            if(!dbh.ReadConfig("BrokerCode").equals(NumberFunctions.EnglishNumber(binding.registrBroker.getText().toString()))){
                 Registration();
             }else {
                 finish();

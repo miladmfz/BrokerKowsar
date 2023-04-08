@@ -21,10 +21,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.activity.BasketActivity;
@@ -37,6 +33,7 @@ import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.kits.brokerkowsar.model.UserInfo;
+import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIClient_kowsar;
 import com.kits.brokerkowsar.webService.APIInterface;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
@@ -54,6 +51,8 @@ import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Response;
 
 
 public class Action {
@@ -66,13 +65,14 @@ public class Action {
     Cursor cursor;
     Integer il;
     String url;
-
+    APIInterface apiInterface;
     public Action(Context mContext)   {
         this.mContext = mContext;
         this.il = 0;
         this.callMethod = new CallMethod(mContext);
         this.dbh = new DatabaseHelper(mContext, callMethod.ReadString("DatabaseName"));
         url = callMethod.ReadString("ServerURLUse");
+        apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
 
     }
 
@@ -599,71 +599,79 @@ public class Action {
 
 
     public void sendfactor(String factor_code) {
-        RequestQueue queue = Volley.newRequestQueue(mContext);
-        StringRequest stringrequste = new StringRequest(Request.Method.POST, url, response -> {
-            try {
-                JSONArray object = new JSONArray(response);
-                JSONObject jo = object.getJSONObject(0);
-                il = object.length();
-                int code = jo.getInt("GoodCode");
-                if (code == 0) {
-                    int kowsarcode = jo.getInt("PreFactorCode");
-                    if (kowsarcode > 0) {
-                        String factorDate = jo.getString("PreFactorDate");
-                        dbh.UpdatePreFactor(factor_code, String.valueOf(kowsarcode), factorDate);
-                        callMethod.EditString("PreFactorCode", "0");
-                        lottieok();
 
+
+
+
+
+        HashMap<String, String> params = new HashMap<>();
+        params.put("tag", "PFQASWED");
+        SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
+        cursor = dtb.rawQuery("Select PreFactorCode, PreFactorDate, PreFactorExplain, CustomerRef, BrokerRef, (Select sum(FactorAmount) From PreFactorRow r Where r.PrefactorRef=h.PrefactorCode) As rwCount From PreFactor h Where PreFactorCode = " + factor_code, null);
+        String pr1 = CursorToJson(cursor);
+        cursor.close();
+        Log.e("kowsar_pfheader", pr1);
+        params.put("PFHDQASW", pr1);
+        cursor = dtb.rawQuery("Select GoodRef, FactorAmount, Price From PreFactorRow Where  GoodRef>0 and  Prefactorref = " + factor_code, null);
+        String pr2 = CursorToJson(cursor);
+        cursor.close();
+        Log.e("kowsar_pfrow", pr2);
+        params.put("PFDTQASW", pr2);
+
+        Call<Void> call = apiInterface.sendfactor(params.get("tag"), params.get("PFHDQASW"), params.get("PFDTQASW"));
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+
+                try {
+                    JSONArray object = new JSONArray(response);
+                    JSONObject jo = object.getJSONObject(0);
+                    il = object.length();
+                    int code = jo.getInt("GoodCode");
+                    if (code == 0) {
+                        int kowsarcode = jo.getInt("PreFactorCode");
+                        if (kowsarcode > 0) {
+                            String factorDate = jo.getString("PreFactorDate");
+                            dbh.UpdatePreFactor(factor_code, String.valueOf(kowsarcode), factorDate);
+                            callMethod.EditString("PreFactorCode", "0");
+                            lottieok();
+
+
+                        } else {
+                            callMethod.showToast("خطا در ارتباط با سرور");
+                        }
 
                     } else {
-                        callMethod.showToast("خطا در ارتباط با سرور");
+                        SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
+                        for (int i = 0; i < il; i++) {
+                            jo = object.getJSONObject(i);
+                            code = jo.getInt("GoodCode");
+                            int flag = jo.getInt("Flag");
+                            dtb.execSQL("Update PreFactorRow set Shortage = " + flag + " Where IfNull(PreFactorRef,0)=" + factor_code + " And GoodRef = " + code);
+                        }
+                        callMethod.showToast("کالاهای مورد نظر کسر موجودی دارند!");
+                        intent = new Intent(mContext, BasketActivity.class);
+                        intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
+                        ((Activity) mContext).finish();
+                        ((Activity) mContext).overridePendingTransition(0, 0);
+                        mContext.startActivity(intent);
+                        ((Activity) mContext).overridePendingTransition(0, 0);
                     }
-
-                } else {
-                    SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
-                    for (int i = 0; i < il; i++) {
-                        jo = object.getJSONObject(i);
-                        code = jo.getInt("GoodCode");
-                        int flag = jo.getInt("Flag");
-                        dtb.execSQL("Update PreFactorRow set Shortage = " + flag + " Where IfNull(PreFactorRef,0)=" + factor_code + " And GoodRef = " + code);
-                    }
-                    callMethod.showToast("کالاهای مورد نظر کسر موجودی دارند!");
-                    intent = new Intent(mContext, BasketActivity.class);
-                    intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
-                    ((Activity) mContext).finish();
-                    ((Activity) mContext).overridePendingTransition(0, 0);
-                    mContext.startActivity(intent);
-                    ((Activity) mContext).overridePendingTransition(0, 0);
+                } catch (JSONException e) {
+                    callMethod.ErrorLog(e.getMessage());
+                    callMethod.showToast("بروز خطا در اطلاعات");
                 }
-            } catch (JSONException e) {
-                callMethod.ErrorLog(e.getMessage());
-                callMethod.showToast("بروز خطا در اطلاعات");
+
             }
-        }, volleyError -> {
-            callMethod.ErrorLog(volleyError.getMessage());
-            callMethod.showToast("ارتباط با سرور میسر نمی باشد.");
-        }) {
+
             @Override
-            protected Map<String, String> getParams() {
-                HashMap<String, String> params = new HashMap<>();
-                params.put("tag", "PFQASWED");
-                SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
-                cursor = dtb.rawQuery("Select PreFactorCode, PreFactorDate, PreFactorExplain, CustomerRef, BrokerRef, (Select sum(FactorAmount) From PreFactorRow r Where r.PrefactorRef=h.PrefactorCode) As rwCount From PreFactor h Where PreFactorCode = " + factor_code, null);
-                String pr1 = CursorToJson(cursor);
-                cursor.close();
-                Log.e("kowsar_pfheader", pr1);
-                params.put("PFHDQASW", pr1);
-                cursor = dtb.rawQuery("Select GoodRef, FactorAmount, Price From PreFactorRow Where  GoodRef>0 and  Prefactorref = " + factor_code, null);
-                String pr2 = CursorToJson(cursor);
-                cursor.close();
-
-                Log.e("kowsar_pfrow", pr2);
-                params.put("PFDTQASW", pr2);
-                return params;
+            public void onFailure(Call<Void> call, Throwable t) {
+                callMethod.ErrorLog(t.getMessage());
+                callMethod.showToast("ارتباط با سرور میسر نمی باشد.");
             }
+        });
 
-        };
-        queue.add(stringrequste);
+
     }
 
 
@@ -765,105 +773,118 @@ public class Action {
     }
 
     public void lottieok() {
-
-        Dialog dialog1 = new Dialog(mContext);
-        dialog1.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialog1.setContentView(R.layout.lottie);
-        LottieAnimationView animationView = dialog1.findViewById(R.id.lottie_name);
-        animationView.setAnimation(R.raw.oklottie);
-        dialog1.show();
-        animationView.setRepeatCount(0);
-
-        animationView.addAnimatorListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
+        if (mContext != null) {
+            Dialog dialog1 = new Dialog(mContext);
+            dialog1.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog1.setContentView(R.layout.lottie);
+            LottieAnimationView animationView = dialog1.findViewById(R.id.lottie_name);
+            animationView.setAnimation(R.raw.oklottie);
+            try {
+                dialog1.show();
+            } catch (Exception e) {
+                Log.e("Lottie", "Error while showing the dialog: " + e.getMessage());
             }
+            animationView.setRepeatCount(0);
 
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                dialog1.dismiss();
-                intent = new Intent(mContext, NavActivity.class);
-                ((Activity) mContext).finish();
-                ((Activity) mContext).overridePendingTransition(0, 0);
-                mContext.startActivity(intent);
-                ((Activity) mContext).overridePendingTransition(0, 0);
-            }
+            animationView.addAnimatorListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+                }
 
-            @Override
-            public void onAnimationCancel(Animator animation) {
-            }
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    dialog1.dismiss();
+                    intent = new Intent(mContext, NavActivity.class);
+                    ((Activity) mContext).finish();
+                    ((Activity) mContext).overridePendingTransition(0, 0);
+                    mContext.startActivity(intent);
+                    ((Activity) mContext).overridePendingTransition(0, 0);
+                }
 
-            @Override
-            public void onAnimationRepeat(Animator animation) {
-            }
-        });
+                @Override
+                public void onAnimationCancel(Animator animation) {
+                }
 
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+                }
+            });
 
+        }
     }
 
-    @SuppressLint("HardwareIds")
+
     public void app_info() {
 
-        String android_id = "";
-
-        if (BuildConfig.BUILD_TYPE.equals("release")){
-            android_id= Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID);
-        }else if (BuildConfig.BUILD_TYPE.equals("debug")){
-            android_id="debug";
-        }
-
+        @SuppressLint("HardwareIds") String android_id = BuildConfig.BUILD_TYPE.equals("release") ?
+                Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID) :
+                "debug";
         PersianCalendar calendar1 = new PersianCalendar();
         calendar1.setTimeZone(TimeZone.getDefault());
         String version = BuildConfig.VERSION_NAME;
 
 
-        UserInfo auser = dbh.LoadPersonalInfo();
 
-        APIInterface apiInterface = APIClient_kowsar.getCleint_log().create(APIInterface.class);
-        Call<RetrofitResponse> cl = apiInterface.Kowsar_log("Log_report"
-                , android_id
-                , url
-                , callMethod.ReadString("PersianCompanyNameUse")
-                , callMethod.ReadString("PreFactorCode")
-                , calendar1.getPersianShortDateTime()
-                , auser.getBrokerCode()
-                , version);
+        APIInterface apiInterfaceKowsar = APIClient_kowsar.getCleint_log().create(APIInterface.class);
+        Call<RetrofitResponse> call = apiInterfaceKowsar.Kowsar_log(
+                "Log_report",
+                android_id,
+                url,
+                callMethod.ReadString("PersianCompanyNameUse"),
+                callMethod.ReadString("PreFactorCode"),
+                calendar1.getPersianShortDateTime(),
+                dbh.ReadConfig("BrokerCode"),
+                version
+        );
 
-        cl.enqueue(new Callback<RetrofitResponse>() {
+        call.enqueue(new Callback<RetrofitResponse>() {
             @Override
-            public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
-                assert response.body() != null;
+            public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
+                if (response.isSuccessful()) {
+                    // Handle successful response
+                } else {
+                    // Handle unsuccessful response
+                }
             }
 
-
             @Override
-            public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                //callMethod.ErrorLog(t.getMessage());
+            public void onFailure(Call<RetrofitResponse> call, Throwable t) {
+                // Handle failure
             }
         });
 
+
+
+
+
+
     }
+
 
     public String CursorToJson(Cursor cursor) {
         JSONArray resultSet = new JSONArray();
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            int totalColumn = cursor.getColumnCount();
-            JSONObject rowObject = new JSONObject();
-            for (int i = 0; i < totalColumn; i++) {
-                if (cursor.getColumnName(i) != null) {
-                    try {
-                        rowObject.put(cursor.getColumnName(i), cursor.getString(i));
-                    } catch (Exception e) {
-                        Log.d("CursorToJson_Error: ", Objects.requireNonNull(e.getMessage()));
+        try {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    JSONObject rowObject = new JSONObject();
+                    for (int i = 0; i < cursor.getColumnCount(); i++) {
+                        String columnName = cursor.getColumnName(i);
+                        if (columnName != null) {
+                            rowObject.put(columnName, cursor.getString(i));
+                        }
                     }
-                }
+                    resultSet.put(rowObject);
+                } while (cursor.moveToNext());
             }
-            resultSet.put(rowObject);
-            cursor.moveToNext();
+        } catch (Exception e) {
+            Log.e("CursorToJson", "Error while converting cursor to JSON: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
-        cursor.close();
         return resultSet.toString();
     }
+
 
 }

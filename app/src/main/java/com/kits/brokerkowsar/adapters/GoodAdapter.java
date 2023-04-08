@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Response;
 
 public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     private final Context mContext;

@@ -26,6 +26,7 @@ import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class CallMethod extends Application {
@@ -104,18 +105,13 @@ public class CallMethod extends Application {
         String version = BuildConfig.VERSION_NAME;
 
         DatabaseHelper dbh = new DatabaseHelper(context, ReadString("DatabaseName"));
-        UserInfo auser = new UserInfo();
-        try {
-            auser = dbh.LoadPersonalInfo();
-        } catch (Exception e) {
-            auser.setBrokerCode("0");
-        }
+
 
 
         APIInterface apiInterface = APIClient_kowsar.getCleint_log().create(APIInterface.class);
         Call<RetrofitResponse> cl = apiInterface.Errorlog("Errorlog"
                 , ErrorStr
-                , auser.getBrokerCode()
+                , dbh.ReadConfig("BrokerCode")
                 , android_id
                 , ReadString("PersianCompanyNameUse")
                 , calendar1.getPersianShortDateTime()
