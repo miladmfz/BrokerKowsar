@@ -164,7 +164,7 @@ public interface APIInterface {
 
 
     @POST("index.php")
-    Call<Void> sendfactor(
+    Call<RetrofitResponse> sendfactor(
             @Field("tag") String tag,
             @Field("PFHDQASW") String pfhdqasw,
             @Field("PFDTQASW") String pfdtqasw

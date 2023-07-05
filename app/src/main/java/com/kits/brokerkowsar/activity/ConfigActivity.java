@@ -38,16 +38,15 @@ public class ConfigActivity extends AppCompatActivity {
         setButtonListeners();
     }
 
-    private void Config() {
+     void Config() {
         callMethod = new CallMethod(this);
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
-        Replication replication = new Replication(this);
 
     }
 
-    private void populateViews() {
+     void populateViews() {
         DecimalFormat decimalFormat = new DecimalFormat("0,000");
-        binding.configSumFactor.setText(NumberFunctions.PerisanNumber(decimalFormat.format(dbh.getsum_sumfactor())));
+        //binding.configSumFactor.setText(NumberFunctions.PerisanNumber(decimalFormat.format(dbh.getsum_sumfactor())));
         binding.configBorker.setText(NumberFunctions.PerisanNumber(dbh.ReadConfig("BrokerCode")));
         binding.configGrid.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Grid")));
         binding.configDelay.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Delay")));
@@ -57,9 +56,10 @@ public class ConfigActivity extends AppCompatActivity {
 
         binding.configSelloff.setChecked(Integer.parseInt(callMethod.ReadString("SellOff")) != 0);
         binding.configAutorep.setChecked(callMethod.ReadBoolan("AutoReplication"));
+        binding.configKeyboardrunnable.setChecked(callMethod.ReadBoolan("keyboardRunnable"));
     }
 
-    private void setButtonListeners() {
+     void setButtonListeners() {
         binding.configBtnToReg.setOnClickListener(view -> {
             Intent intent = new Intent(this, RegistrationActivity.class);
             startActivity(intent);

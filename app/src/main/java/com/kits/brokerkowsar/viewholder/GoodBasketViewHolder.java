@@ -33,8 +33,6 @@ import java.text.DecimalFormat;
 public class GoodBasketViewHolder extends RecyclerView.ViewHolder {
 
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
-    private long sum = 0;
-
     private final TextView goodnameTextView;
     private final TextView maxsellpriceTextView;
     private final TextView priceTextView;
@@ -45,6 +43,7 @@ public class GoodBasketViewHolder extends RecyclerView.ViewHolder {
     private final Button btndlt;
     private final ImageView img;
     private final MaterialCardView rltv;
+    private long sum = 0;
 
 
     public GoodBasketViewHolder(View itemView) {
@@ -93,13 +92,13 @@ public class GoodBasketViewHolder extends RecyclerView.ViewHolder {
             } else {
                 offer.setText(NumberFunctions.PerisanNumber((100 - ((sellprice * 100) / maxsellprice)) + " درصد تخفیف "));
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             offer.setText("");
             e.printStackTrace();
         }
 
 
-        if (ws == 1 ||ws == 2) {
+        if (ws == 1 || ws == 2) {
             rltv.setBackgroundResource(R.drawable.bg_round_red);
         } else {
             rltv.setBackgroundResource(R.drawable.bg_round_green);
@@ -125,25 +124,33 @@ public class GoodBasketViewHolder extends RecyclerView.ViewHolder {
 
         btndlt.setOnClickListener(view ->
 
-                new AlertDialog.Builder(mContext)
-                        .setTitle("توجه")
-                        .setMessage("آیا کالا از لیست حذف گردد؟")
-                        .setPositiveButton("بله", (dialogInterface, i) -> {
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.AlertDialogCustom);
+                    builder.setTitle("توجه");
+                    builder.setMessage("آیا کالا از لیست حذف گردد؟");
 
-                            dbh.DeletePreFactorRow(callMethod.ReadString("PreFactorCode"), good.getGoodFieldValue("PreFactorRowCode"));
-                            callMethod.showToast("از سبد خرید حذف گردید");
-                            Intent intent = new Intent(mContext, BasketActivity.class);
-                            intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
-                            intent.putExtra("showflag", "2");
-                            ((Activity) mContext).finish();
-                            ((Activity) mContext).overridePendingTransition(0, 0);
-                            mContext.startActivity(intent);
-                            ((Activity) mContext).overridePendingTransition(0, 0);
-                        })
-                        .setNegativeButton("خیر", (dialogInterface, i) -> {
+                    builder.setPositiveButton(R.string.textvalue_yes, (dialog, which) -> {
+                        dbh.DeletePreFactorRow(callMethod.ReadString("PreFactorCode"), good.getGoodFieldValue("PreFactorRowCode"));
+                        callMethod.showToast("از سبد خرید حذف گردید");
+                        Intent intent = new Intent(mContext, BasketActivity.class);
+                        intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
+                        intent.putExtra("showflag", "2");
+                        ((Activity) mContext).finish();
+                        ((Activity) mContext).overridePendingTransition(0, 0);
+                        mContext.startActivity(intent);
+                        ((Activity) mContext).overridePendingTransition(0, 0);
+                    });
 
-                        })
-                        .show());
+                    builder.setNegativeButton(R.string.textvalue_no, (dialog, which) -> {
+                        // code to handle negative button click
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+
+
+        );
 
 
         amount.setOnClickListener(view ->

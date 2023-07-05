@@ -1,14 +1,12 @@
 package com.kits.brokerkowsar.activity;
 
 
-
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
+
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,10 +17,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.work.Constraints;
@@ -35,37 +33,31 @@ import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.AlarmReceiver;
+import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
-import com.kits.brokerkowsar.application.LocationService;
 import com.kits.brokerkowsar.application.Replication;
 import com.kits.brokerkowsar.application.WManager;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.GoodGroup;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.RetrofitResponse;
-import com.kits.brokerkowsar.model.UserInfo;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIClient_kowsar;
 import com.kits.brokerkowsar.webService.APIInterface;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
-import com.kits.brokerkowsar.application.Constants;
-import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Response;
 
 
 public class NavActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final int REQUEST_LOCATION = 1;
+
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
     APIInterface apiInterface;
     CallMethod callMethod;
@@ -115,19 +107,18 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
 
     public void test_fun(View v) {
-
-
-
+        dbh.SaveConfig("LastGpsLocationCode","0");
     }
 
 
     public void GpslocationCall() {
 
-        AlarmReceiver alarm = new AlarmReceiver();
-       alarm.setAlarm(this);
+
+        if (callMethod.ReadBoolan("kowsarService")) {
+            AlarmReceiver alarm = new AlarmReceiver();
+            alarm.setAlarm(App.getContext());
+        }
     }
-
-
 
 
     @RequiresApi(api = Build.VERSION_CODES.P)
@@ -136,11 +127,14 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
         action = new Action(this);
         callMethod = new CallMethod(this);
-
+        workManager = WorkManager.getInstance(NavActivity.this);
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
         replication = new Replication(this);
+
         dbh.ClearSearchColumn();
         dbh.DatabaseCreate();
+
+       //
         toolbar = findViewById(R.id.MainActivity_toolbar);
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
         calendar1.setTimeZone(TimeZone.getDefault());
@@ -173,9 +167,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         GpslocationCall();
 
 
-
     }
-
 
 
     @SuppressLint("SetTextI18n")
@@ -186,36 +178,50 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
             tv_brokercode.setText(" کد بازاریاب : " + NumberFunctions.PerisanNumber(dbh.ReadConfig("BrokerCode")));
             if (dbh.ReadConfig("BrokerStack").equals("0")) {
-                if (callMethod.ReadBoolan("AutoReplication")) {
-                    workManager.cancelAllWork();
-                }
-                new AlertDialog.Builder(this)
-                        .setTitle("انباری تعریف نشده")
-                        .setMessage("آیا مایل به تغییر کد بازاریاب می باشید ؟")
-                        .setPositiveButton("بله", (dialogInterface, i) -> {
-                            intent = new Intent(this, ConfigActivity.class);
-                            callMethod.showToast("کد بازاریاب را وارد کنید");
-                            startActivity(intent);
-                        })
-                        .setNegativeButton("خیر", (dialogInterface, i) -> {
-                        })
-                        .show();
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogCustom);
+                builder.setTitle("انباری تعریف نشده");
+                builder.setMessage("آیا مایل به تغییر کد بازاریاب می باشید ؟");
+
+                builder.setPositiveButton(R.string.textvalue_yes, (dialog, which) -> {
+                    callMethod.showToast("کد بازاریاب را وارد کنید");
+                    intent = new Intent(this, ConfigActivity.class);
+                    startActivity(intent);
+                });
+
+                builder.setNegativeButton(R.string.textvalue_no, (dialog, which) -> {
+                    // code to handle negative button click
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
             }
         } else {
 
-            tv_brokercode.setText("کد بازاریاب ندارد");
-            new AlertDialog.Builder(this)
-                    .setTitle("عدم وجود کد بازاریاب")
-                    .setMessage("آیا مایل به تعریف کد بازاریاب می باشید ؟")
-                    .setPositiveButton("بله", (dialogInterface, i) -> {
-                        intent = new Intent(this, ConfigActivity.class);
-                        callMethod.showToast("کد بازاریاب را وارد کنید");
-                        startActivity(intent);
-                    })
-                    .setNegativeButton("خیر", (dialogInterface, i) -> {
-                        callMethod.showToast("برای ادامه کار به کد بازاریاب نیازمندیم");
-                    })
-                    .show();
+
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogCustom);
+            builder.setTitle("عدم وجود کد بازاریاب");
+            builder.setMessage("آیا مایل به تعریف کد بازاریاب می باشید ؟");
+
+            builder.setPositiveButton(R.string.textvalue_yes, (dialog, which) -> {
+                callMethod.showToast("کد بازاریاب را وارد کنید");
+                intent = new Intent(this, ConfigActivity.class);
+                startActivity(intent);
+            });
+
+            builder.setNegativeButton(R.string.textvalue_no, (dialog, which) -> {
+                callMethod.showToast("برای ادامه کار به کد بازاریاب نیازمندیم");
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
+
+
+
         }
 
 
@@ -227,13 +233,16 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         noti();
         CheckConfig();
 
-            Constraints conster = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
-            PeriodicWorkRequest req = new PeriodicWorkRequest.Builder(WManager.class, 1, TimeUnit.MINUTES)
-                    .setConstraints(conster)
-                    .build();
-            workManager = WorkManager.getInstance(NavActivity.this);
-            workManager.enqueue(req);
+        Constraints conster = new Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build();
+        PeriodicWorkRequest req = new PeriodicWorkRequest.Builder(WManager.class, 1, TimeUnit.MINUTES)
+                .setConstraints(conster)
+                .build();
 
+        workManager.enqueue(req);
+
+        if (callMethod.ReadBoolan("AutoReplication")) {
+            workManager.cancelAllWork();
+        }
 
 
         tv_versionname.setText(NumberFunctions.PerisanNumber(BuildConfig.VERSION_NAME));
@@ -419,10 +428,19 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
                 if (response.isSuccessful()) {
                     assert response.body() != null;
                     if (!response.body().getText().equals("")) {
-                        new android.app.AlertDialog.Builder(NavActivity.this)
-                                .setTitle("توجه")
-                                .setMessage(response.body().getText())
-                                .show();
+
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(NavActivity.this, R.style.AlertDialogCustom);
+                        builder.setTitle("توجه");
+                        builder.setMessage(response.body().getText());
+
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+
+
+
+
+
                     }
                 }
             }
@@ -441,10 +459,16 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
                 if (response.isSuccessful()) {
                     assert response.body() != null;
                     if (!response.body().getText().equals("")) {
-                        new android.app.AlertDialog.Builder(NavActivity.this)
-                                .setTitle("توجه")
-                                .setMessage(NumberFunctions.PerisanNumber(response.body().getText()))
-                                .show();
+
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(NavActivity.this, R.style.AlertDialogCustom);
+                        builder.setTitle("توجه");
+                        builder.setMessage(NumberFunctions.PerisanNumber(response.body().getText()));
+
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+
+
                     }
                 }
             }

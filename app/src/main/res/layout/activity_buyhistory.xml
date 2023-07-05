@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".activity.BasketHistoryActivity"
+    android:layoutDirection="rtl"
     android:orientation="vertical"
-    android:layoutDirection="rtl">
+    tools:context=".activity.BasketHistoryActivity">
 
 
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".activity.BasketActivity"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:context=".activity.BasketActivity">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/BuyActivity_appbar"
@@ -26,9 +26,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_weight="1"
+                android:background="?attr/colorPrimary"
                 app:title="گزارش فاکتور"
-                app:titleTextColor="@color/white"
-                android:background="?attr/colorPrimary">
+                app:titleTextColor="@color/white">
 
             </androidx.appcompat.widget.Toolbar>
 
@@ -50,34 +50,35 @@
                     android:id="@+id/Buy_history_Activity_row"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:background="@drawable/bg_round_green_history_line"
                     android:layout_margin="4dp"
-                    android:padding="5dp" />
+                    android:background="@drawable/bg_round_green_history_line"
+                    android:padding="5dp"
+                    android:visibility="gone"/>
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:orientation="horizontal"
+                    android:layout_margin="4dp"
                     android:background="@drawable/bg_round_selected"
-                    android:layout_margin="4dp">
+                    android:orientation="horizontal">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_weight="0.3">
+                        android:layout_weight="0.3"
+                        android:orientation="vertical">
 
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="@string/buyhistory_totalprice"
-                            android:textSize="16sp"
-                            android:gravity="center"
-                            android:textStyle="bold"
-                            android:textColor="@color/grey_1000"
-
                             android:layout_weight="0.5"
+                            android:gravity="center"
+                            android:text="@string/buyhistory_totalprice"
+                            android:textColor="@color/grey_1000"
+                            android:textSize="16sp"
+
+                            android:textStyle="bold"
                             tools:ignore="HardcodedText" />
 
 
@@ -85,11 +86,11 @@
                             android:id="@+id/Buy_history_Activity_total_price_buy"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_weight="0.5"
                             android:gravity="center"
-                            android:textStyle="bold"
                             android:text="@string/buyhistory_totalprice"
                             android:textColor="@color/grey_1000"
-                            android:layout_weight="0.5" />
+                            android:textStyle="bold" />
 
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -97,31 +98,31 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_weight="0.3">
+                        android:layout_weight="0.3"
+                        android:orientation="vertical">
 
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="@string/buyhistory_totalamount"
-                            android:textSize="16sp"
-
-                            android:textColor="@color/grey_1000"
+                            android:layout_weight="0.3"
                             android:gravity="center"
-                            android:textStyle="bold"
-                            android:layout_weight="0.3" />
+
+                            android:text="@string/buyhistory_totalamount"
+                            android:textColor="@color/grey_1000"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
 
                         <TextView
                             android:id="@+id/Buy_history_Activity_total_amount_buy"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="@string/buyhistory_totalamount"
-                            android:gravity="center"
-                            android:textStyle="bold"
                             android:layout_weight="0.3"
-                            android:textColor="@color/grey_1000"/>
+                            android:gravity="center"
+                            android:text="@string/buyhistory_totalamount"
+                            android:textColor="@color/grey_1000"
+                            android:textStyle="bold" />
 
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
@@ -129,61 +130,52 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:layout_weight="0.3">
-
+                        android:layout_weight="0.3"
+                        android:orientation="vertical">
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="@string/buyhistory_totalrow"
-                            android:textSize="16sp"
-                            android:textColor="@color/grey_1000"
-
+                            android:layout_weight="0.3"
                             android:gravity="center"
-                            android:textStyle="bold"
-                            android:layout_weight="0.3" />
-
+                            android:text="@string/buyhistory_totalrow"
+                            android:textColor="@color/grey_1000"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/Buy_history_Activity_total_row_buy"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:text="@string/buyhistory_totalrow"
-                            android:gravity="center"
-                            android:textStyle="bold"
                             android:layout_weight="0.3"
-                            android:textColor="@color/grey_1000"/>
-
-
+                            android:gravity="center"
+                            android:text="@string/buyhistory_totalrow"
+                            android:textColor="@color/grey_1000"
+                            android:textStyle="bold" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
-
-
                 </androidx.appcompat.widget.LinearLayoutCompat>
-
-
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <EditText
                 android:id="@+id/Buy_history_Activity_edtsearch"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:hint="@string/search_et"
-                android:background="@drawable/bg_round_selected"
                 android:layout_marginStart="2dp"
-                android:paddingEnd="20dp"
                 android:layout_weight="0.3"
-                android:singleLine="true"
-                android:selectAllOnFocus="true"
+                android:background="@drawable/bg_round_selected"
+                android:hint="@string/search_et"
+                android:inputType="text"
                 android:paddingStart="10dp"
-
-                android:inputType="text" />
+                android:paddingEnd="20dp"
+                android:selectAllOnFocus="true"
+                android:singleLine="true" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/Buy_history_Activity_R1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginTop="5dp"
+                android:paddingBottom="70dp"
 
                 />
 
@@ -195,12 +187,9 @@
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_gravity="end|bottom"
-
+        android:orientation="vertical"
         >
-
-
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 

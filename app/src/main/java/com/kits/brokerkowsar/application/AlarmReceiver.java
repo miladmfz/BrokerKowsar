@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
-
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
 import java.util.TimeZone;
@@ -19,31 +18,33 @@ public class AlarmReceiver extends BroadcastReceiver {
     Context mcontext;
     PersianCalendar calendar1 = new PersianCalendar();
 
+
     @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent intent) {
         this.mcontext = context;
+
         calendar1.setTimeZone(TimeZone.getDefault());
-        Intent in = new Intent(context, LocationService.class);
+        Intent in = new Intent(mcontext, LocationService.class);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            context.startForegroundService(in);
+            mcontext.startForegroundService(in);
         } else {
-            context.startService(in);
+            mcontext.startService(in);
         }
 
-        setAlarm(context);
+        setAlarm(mcontext);
 
     }
 
     public void setAlarm(Context context) {
-            AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-            Intent i = new Intent(context, AlarmReceiver.class);
-            PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_IMMUTABLE);
-            assert am != null;
-            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, (System.currentTimeMillis() / 1000L + 15L) * 1000L, pi); //Next alarm in 15s
+        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Intent i = new Intent(context, AlarmReceiver.class);
+        PendingIntent pi = PendingIntent.getBroadcast(context, 0, i, PendingIntent.FLAG_IMMUTABLE);
+        assert am != null;
+        am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, (System.currentTimeMillis() / 1000L + 15L) * 1000L, pi); //Next alarm in 15s
 
     }
-
 
 }

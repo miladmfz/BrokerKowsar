@@ -25,19 +25,17 @@ import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.Objects;
 
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
 
 
+    final int PERMISSION_CODE = 1;
+    final int PERMISSION_REQUEST_CODE = 1;
     Intent intent;
     CallMethod callMethod;
     Handler handler;
-    final int PERMISSION_CODE = 1;
     DatabaseHelper dbh, dbhbase;
-    final int PERMISSION_REQUEST_CODE = 1;
     WorkManager workManager;
     int i = 0;
 
@@ -68,12 +66,7 @@ public class SplashActivity extends AppCompatActivity {
     public void init() {
         callMethod = new CallMethod(this);
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
-        if (callMethod.ReadBoolan("AutoReplication")) {
-            try {
-                workManager.cancelAllWork();
-            } catch (Exception ignored) {
-            }
-        }
+        Log.e("kowsar__",callMethod.ReadString("ServerURLUse"));
 
         if (callMethod.ReadString("ServerURLUse").equals("")) {
             callMethod.EditString("DatabaseName", "");
@@ -82,7 +75,7 @@ public class SplashActivity extends AppCompatActivity {
             callMethod.EditBoolan("FirstStart", false);
             callMethod.EditString("SellOff", "1");
             callMethod.EditString("Grid", "3");
-            callMethod.EditString("Delay", "500");
+            callMethod.EditString("Delay", "1000");
             callMethod.EditString("TitleSize", "18");
             callMethod.EditString("BodySize", "18");
             callMethod.EditString("PhoneNumber", "");
@@ -92,6 +85,9 @@ public class SplashActivity extends AppCompatActivity {
             callMethod.EditBoolan("GoodAmount", false);
             callMethod.EditBoolan("AutoReplication", false);
             callMethod.EditBoolan("SellPriceTypeDeactivate", true);
+
+            callMethod.EditBoolan("keyboardRunnable", false);
+            callMethod.EditBoolan("kowsarService", false);
 
             callMethod.EditBoolan("ShowCustomerCredit", true);
 
@@ -103,6 +99,13 @@ public class SplashActivity extends AppCompatActivity {
             dbhbase.CreateActivationDb();
 
 
+        }
+
+        if (callMethod.ReadBoolan("AutoReplication")) {
+            try {
+                workManager.cancelAllWork();
+            } catch (Exception ignored) {
+            }
         }
         callMethod.EditString("Filter", "0");
         callMethod.EditString("PreFactorCode", "0");
@@ -169,14 +172,26 @@ public class SplashActivity extends AppCompatActivity {
                     startActivityForResult(intent, 2296);
                 }
             } else {
-                if (androidx.core.content.ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    if (androidx.core.content.ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        Startapplication();
+                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                                    Startapplication();
+                                } else {
+                                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, PERMISSION_CODE);
+                                }
+                            } else {
+                                Startapplication();
+                            }
+                        } else {
+                            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, PERMISSION_CODE);
+                        }
                     } else {
-                        androidx.core.app.ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
                     }
                 } else {
-                    androidx.core.app.ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_CODE);
+                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_CODE);
                 }
             }
         } else {
@@ -241,8 +256,6 @@ public class SplashActivity extends AppCompatActivity {
             throw new IllegalStateException("Unexpected value: " + requestCode);
         }
     }
-
-
 
 
 }

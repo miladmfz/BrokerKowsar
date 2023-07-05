@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,53 +37,32 @@ import java.util.Objects;
 
 public class SearchByDateActivity extends AppCompatActivity {
 
-    CallMethod callMethod;
-    private ArrayList<Good> Moregoods = new ArrayList<>();
-
+    public static String scan = "";
     private final Integer conter = 0;
-    private Integer grid;
-    private String date;
-    public String PageMoreData = "0";
-    private boolean loading = true;
-    private String lastDate;
-    ArrayList<String[]> Multi_buy = new ArrayList<>();
-    private ArrayList<Good> goods = new ArrayList<>();
-    DatabaseHelper dbh;
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
+    public String PageMoreData = "0";
+    public String title = "";
+    CallMethod callMethod;
+    ArrayList<String[]> Multi_buy = new ArrayList<>();
+    DatabaseHelper dbh;
     GoodAdapter adapter;
     GridLayoutManager gridLayoutManager;
-
-
     int pastVisiblesItems = 0, visibleItemCount, totalItemCount;
     Menu item_multi;
-
     String year;
     String mount;
     String day;
-
     PersianCalendar calendar1;
     ArrayList<Good> Multi_Good = new ArrayList<>();
-
-    public static String scan = "";
-    public String title = "";
     Intent intent;
-
-//    Toolbar toolbar;
-//    TextView tv_customer;
-//    TextView tv_sumfac;
-//    SwitchMaterial sm_goodamount;
-//    Button btn_search;
-//    EditText ed_search;
-//    RecyclerView recyclerView;
-//    FloatingActionButton fab;
-//    LinearLayoutCompat llsumfactor;
-//
-//    LottieAnimationView lottieAnimationView;
-//    TextView tvstatus;
-
-
     boolean defultenablesellprice;
-ActivitySearchDateDetailBinding binding;
+    ActivitySearchDateDetailBinding binding;
+    private ArrayList<Good> Moregoods = new ArrayList<>();
+    private Integer grid;
+    private String date;
+    private boolean loading = true;
+    private String lastDate;
+    private ArrayList<Good> goods = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -224,7 +202,7 @@ ActivitySearchDateDetailBinding binding;
             }
         });
 
-        binding.searchbydateactivityFab.setOnClickListener(v ->  {
+        binding.searchbydateactivityFab.setOnClickListener(v -> {
             final Dialog dialog = new Dialog(this);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(R.layout.box_multi_buy);
@@ -236,14 +214,13 @@ ActivitySearchDateDetailBinding binding;
             defultenablesellprice = false;
 
             for (Good good : Multi_Good) {
- Good goodtempdata = dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
-
+                Good goodtempdata = dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
 
 
                 if (Multi_Good.get(0).equals(good)) {
-                    if(goodtempdata.getGoodFieldValue("SellPrice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))).equals("")){
-                        tempvalue ="100.0";
-                    }else{
+                    if (goodtempdata.getGoodFieldValue("SellPrice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))).equals("")) {
+                        tempvalue = "100.0";
+                    } else {
                         tempvalue = goodtempdata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
                     }
                 }
@@ -269,7 +246,7 @@ ActivitySearchDateDetailBinding binding;
             }, 500);
 
             boxbuy.setOnClickListener(view -> {
-                if(unitratio_mlti.getText().toString().equals("بر اساس نرخ فروش")){
+                if (unitratio_mlti.getText().toString().equals("بر اساس نرخ فروش")) {
                     unitratio_mlti.setText("100.0");
                 }
                 String AmountMulti = amount_mlti.getText().toString();
@@ -280,9 +257,9 @@ ActivitySearchDateDetailBinding binding;
                         for (Good good : Multi_Good) {
                             Good gooddata = dbh.getGooddata(good.getGoodFieldValue("GoodCode"));
                             String temppercent;
-                            if(gooddata.getGoodFieldValue("SellPrice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))).equals("")){
-                                temppercent ="100.0";
-                            }else{
+                            if (gooddata.getGoodFieldValue("SellPrice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode"))).equals("")) {
+                                temppercent = "100.0";
+                            } else {
                                 temppercent = gooddata.getGoodFieldValue("Sellprice" + dbh.getPricetipCustomer(callMethod.ReadString("PreFactorCode")));
                             }
 

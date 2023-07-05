@@ -141,7 +141,7 @@ public class CustomerActivity extends AppCompatActivity {
         // replication.replicate_customer();
 
 
-        citys = dbh.getCityList();
+        citys = dbh.city();
         for (Customer citycustomer : citys) {
             city_array.add(citycustomer.getCustomerFieldValue("CityName"));
         }
@@ -168,7 +168,7 @@ public class CustomerActivity extends AppCompatActivity {
 
         binding.customerNewKodemelliCheck.setOnClickListener(v -> {
 
-            if (dbh.customerCheck(binding.customerNewKodemelli.getText().toString()) > 0) {
+            if (dbh.Customer_check(binding.customerNewKodemelli.getText().toString()) > 0) {
 
                 binding.customerNewKodemelliStatus.setText("کد ملی ثبت شده است");
                 binding.customerNewKodemelliStatus.setTextColor(getResources().getColor(R.color.red_300));
@@ -182,7 +182,7 @@ public class CustomerActivity extends AppCompatActivity {
 
         binding.customerNewRegisterBtn.setOnClickListener(v -> {
 
-            if (dbh.customerCheck(binding.customerNewKodemelli.getText().toString()) > 0) {
+            if (dbh.Customer_check(binding.customerNewKodemelli.getText().toString()) > 0) {
                 binding.customerNewKodemelliStatus.setText("کد ملی ثبت شده است");
                 binding.customerNewKodemelliStatus.setTextColor(getResources().getColor(R.color.red_300));
             } else {

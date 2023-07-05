@@ -1,13 +1,13 @@
 package com.kits.brokerkowsar.viewholder;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
@@ -32,7 +32,6 @@ import java.util.ArrayList;
 
 public class PreFactorHeaderViewHolder extends RecyclerView.ViewHolder {
     private final DecimalFormat decimalFormat = new DecimalFormat("0,000");
-    Intent intent;
     public TextView fac_code;
     public TextView fac_date;
     public TextView fac_time;
@@ -53,6 +52,7 @@ public class PreFactorHeaderViewHolder extends RecyclerView.ViewHolder {
     public Button fac_select;
     public Button fac_good_edit;
     public MaterialCardView fac_rltv;
+    Intent intent;
 
     public PreFactorHeaderViewHolder(View itemView) {
         super(itemView);
@@ -136,17 +136,27 @@ public class PreFactorHeaderViewHolder extends RecyclerView.ViewHolder {
 
                 ArrayList<Good> goods = dbh.getAllPreFactorRows("", String.valueOf(preFactor.getPreFactorFieldValue("PreFactorCode")));
                 if (goods.size() != 0) {
-                    new AlertDialog.Builder(mContext)
-                            .setTitle("توجه")
-                            .setMessage("فاکتور دارای کالا می باشد،کالاها حذف شود؟")
-                            .setPositiveButton("بله", (dialogInterface, i) -> {
-                                intent = new Intent(mContext, BasketActivity.class);
-                                intent.putExtra("PreFac", preFactor.getPreFactorFieldValue("PreFactorCode"));
-                                mContext.startActivity(intent);
-                            })
-                            .setNegativeButton("خیر", (dialogInterface, i) -> {
-                            })
-                            .show();
+
+
+                    {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.AlertDialogCustom);
+                        builder.setTitle("توجه");
+                        builder.setMessage("فاکتور دارای کالا می باشد،کالاها حذف شود؟");
+
+                        builder.setPositiveButton(R.string.textvalue_yes, (dialog, which) -> {
+                            intent = new Intent(mContext, BasketActivity.class);
+                            intent.putExtra("PreFac", preFactor.getPreFactorFieldValue("PreFactorCode"));
+                            mContext.startActivity(intent);
+                        });
+
+                        builder.setNegativeButton(R.string.textvalue_no, (dialog, which) -> {
+                            // code to handle negative button click
+                        });
+
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+                    }
+
                 } else {
                     dbh.DeletePreFactor(String.valueOf(preFactor.getPreFactorFieldValue("PreFactorCode")));
                     callMethod.showToast("فاکتور حذف گردید");
@@ -170,10 +180,10 @@ public class PreFactorHeaderViewHolder extends RecyclerView.ViewHolder {
 
         fac_good_edit.setOnClickListener(view -> {
 
-                callMethod.EditString("PreFactorCode", preFactor.getPreFactorFieldValue("PreFactorCode"));
-                intent = new Intent(mContext, BasketActivity.class);
-                intent.putExtra("PreFac", preFactor.getPreFactorFieldValue("PreFactorCode"));
-                mContext.startActivity(intent);
+            callMethod.EditString("PreFactorCode", preFactor.getPreFactorFieldValue("PreFactorCode"));
+            intent = new Intent(mContext, BasketActivity.class);
+            intent.putExtra("PreFac", preFactor.getPreFactorFieldValue("PreFactorCode"));
+            mContext.startActivity(intent);
 
         });
 
@@ -182,13 +192,25 @@ public class PreFactorHeaderViewHolder extends RecyclerView.ViewHolder {
 
             ArrayList<Good> goods = dbh.getAllPreFactorRows("", String.valueOf(preFactor.getPreFactorFieldValue("PreFactorCode")));
             if (goods.size() != 0) {
-                new AlertDialog.Builder(mContext)
-                        .setTitle("توجه")
-                        .setMessage("آیا فاکتور ارسال گردد؟")
-                        .setPositiveButton("بله", (dialogInterface, i) -> action.sendfactor(String.valueOf(preFactor.getPreFactorFieldValue("PreFactorCode"))))
-                        .setNegativeButton("خیر", (dialogInterface, i) -> {
-                        })
-                        .show();
+
+
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.AlertDialogCustom);
+                    builder.setTitle("توجه");
+                    builder.setMessage("آیا فاکتور ارسال گردد؟");
+
+                    builder.setPositiveButton(R.string.textvalue_yes, (dialog, which) -> {
+                        action.sendfactor(String.valueOf(preFactor.getPreFactorFieldValue("PreFactorCode")));
+                    });
+
+                    builder.setNegativeButton(R.string.textvalue_no, (dialog, which) -> {
+                        // code to handle negative button click
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+
             } else {
                 callMethod.showToast("فاکتور خالی می باشد");
                 goods.size();
@@ -201,24 +223,32 @@ public class PreFactorHeaderViewHolder extends RecyclerView.ViewHolder {
             if (Integer.parseInt(preFactor.getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
                 callMethod.showToast("فاکتور بسته می باشد");
             } else {
-                new AlertDialog.Builder(mContext)
-                        .setTitle("توجه")
-                        .setMessage("آیا مایل به اصلاح مشتری می باشید؟")
-                        .setPositiveButton("بله", (dialogInterface, i) -> {
-
-                            intent = new Intent(mContext, CustomerActivity.class);
-                            intent.putExtra("edit", "1");
-                            intent.putExtra("factor_code", preFactor.getPreFactorFieldValue("PreFactorCode"));
-                            intent.putExtra("id", "0");
-
-                            ((Activity) mContext).finish();
-                            mContext.startActivity(intent);
 
 
-                        })
-                        .setNegativeButton("خیر", (dialogInterface, i) -> {
-                        })
-                        .show();
+                {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.AlertDialogCustom);
+                    builder.setTitle("توجه");
+                    builder.setMessage("آیا مایل به اصلاح مشتری می باشید؟");
+
+                    builder.setPositiveButton(R.string.textvalue_yes, (dialog, which) -> {
+                        intent = new Intent(mContext, CustomerActivity.class);
+                        intent.putExtra("edit", "1");
+                        intent.putExtra("factor_code", preFactor.getPreFactorFieldValue("PreFactorCode"));
+                        intent.putExtra("id", "0");
+
+                        ((Activity) mContext).finish();
+                        mContext.startActivity(intent);
+
+                    });
+
+                    builder.setNegativeButton(R.string.textvalue_no, (dialog, which) -> {
+                        // code to handle negative button click
+                    });
+
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }
+
             }
         });
 
@@ -227,13 +257,24 @@ public class PreFactorHeaderViewHolder extends RecyclerView.ViewHolder {
             if (Integer.parseInt(preFactor.getPreFactorFieldValue("PreFactorKowsarCode")) != 0) {
                 callMethod.showToast("فاکتور بسته می باشد");
             } else {
-                new AlertDialog.Builder(mContext)
-                        .setTitle("توجه")
-                        .setMessage("آیا مایل به اصلاح توضیحات می باشید؟")
-                        .setPositiveButton("بله", (dialogInterface, i) -> action.edit_explain(String.valueOf(preFactor.getPreFactorFieldValue("PreFactorCode"))))
-                        .setNegativeButton("خیر", (dialogInterface, i) -> {
-                        })
-                        .show();
+
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.AlertDialogCustom);
+                builder.setTitle("توجه");
+                builder.setMessage("آیا مایل به اصلاح توضیحات می باشید؟");
+
+                builder.setPositiveButton(R.string.textvalue_yes, (dialog, which) -> {
+                    action.edit_explain(String.valueOf(preFactor.getPreFactorFieldValue("PreFactorCode")));
+                });
+
+                builder.setNegativeButton(R.string.textvalue_no, (dialog, which) -> {
+                    // code to handle negative button click
+                });
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+
+
             }
         });
 

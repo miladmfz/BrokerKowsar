@@ -8,24 +8,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.util.Log;
 import android.view.View;
-
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+
 import com.kits.brokerkowsar.R;
-import com.kits.brokerkowsar.activity.BasketActivity;
 import com.kits.brokerkowsar.activity.NavActivity;
 import com.kits.brokerkowsar.model.Column;
 import com.kits.brokerkowsar.model.DatabaseHelper;
-import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.Location;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.ReplicationModel;
 import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.kits.brokerkowsar.model.TableDetail;
-import com.kits.brokerkowsar.model.UserInfo;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
@@ -35,40 +33,36 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Response;
 
 
 public class Replication {
-    ArrayList<Location> locations= new ArrayList<>();
-    Location location;
     private final Context mContext;
+    private final SQLiteDatabase database;
+    private final Integer RepRowCount = 100;
+    private final DatabaseHelper dbh;
+    ArrayList<Location> locations = new ArrayList<>();
+    Location location;
     CallMethod callMethod;
     APIInterface apiInterface;
     Intent intent;
     ImageInfo image_info;
     String GpsLocationLastCode;
-    private final SQLiteDatabase database;
-    private final Integer RepRowCount = 100;
-    private Integer FinalStep = 0;
     String LastRepCode = "0";
-    Dialog dialog;
-    private final DatabaseHelper dbh;
+    public Dialog dialog;
     ArrayList<TableDetail> tableDetails = new ArrayList<>();
     ArrayList<ReplicationModel> replicationModels = new ArrayList<>();
-
     String url;
     Integer replicatelevel;
     Cursor cursor;
     SQLiteDatabase sqLiteDatabase;
     TextView tv_rep;
     TextView tv_step;
+    private Integer FinalStep = 0;
 
 
     public Replication(Context context) {
@@ -88,6 +82,8 @@ public class Replication {
 
         dialog = new Dialog(mContext);
         dialog();
+        SendGpsLocation();
+
 
         if (dbh.GetColumnscount().equals("0")) {
             tv_rep.setText(NumberFunctions.PerisanNumber("در حال بروز رسانی تنظیم جدول"));
@@ -135,15 +131,28 @@ public class Replication {
         dialog.setContentView(R.layout.rep_prog);
         tv_rep = dialog.findViewById(R.id.rep_prog_text);
         tv_step = dialog.findViewById(R.id.rep_prog_step);
-        dialog.show();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (mContext.isUiContext()){
+                dialog.show();
+            }
+
+        }
+
+
+    }
+
+    public void Closedialog() {
+
+        dialog.dismiss();
+
+
     }
 
     public void RetrofitReplicate(Integer replevel) {
         dbh.closedb();
         replicatelevel = replevel;
-
         replicationModels = dbh.GetReplicationTable();
-
+        Log.e("kowsar_1111=", replicationModels.size() + "");
         if (replicatelevel < replicationModels.size()) {
 
             ReplicationModel replicatedetail = replicationModels.get(replicatelevel);
@@ -154,7 +163,7 @@ public class Replication {
 
 
             String where = replicatedetail.getCondition().replace("BrokerCondition", dbh.ReadConfig("BrokerCode"));
-
+            Log.e("kowsar_0=", replicatedetail.getServerTable());
             Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
                     "repinfo",
                     LastRepCode,
@@ -170,6 +179,7 @@ public class Replication {
 
                     if (response.isSuccessful()) {
                         assert response.body() != null;
+                        Log.e("kowsar_1=", response.body().getText());
                         try {
 
                             JSONArray arrayobject = new JSONArray(response.body().getText());
@@ -191,7 +201,7 @@ public class Replication {
                                         singleobject = arrayobject.getJSONObject(i);
                                         String reptype = singleobject.getString("RLOpType");
                                         String repcode = singleobject.getString("RepLogDataCode");
-                                        String repObjectCode = singleobject.getString("RLObjectRef");
+
                                         String code = singleobject.getString(replicatedetail.getServerPrimaryKey());
                                         int columnDetail = tableDetails.size();
                                         StringBuilder qCol = new StringBuilder();
@@ -284,11 +294,16 @@ public class Replication {
                                                 break;
                                             case "D":
                                             case "d":
-                                                qCol = new StringBuilder("Delete from " + replicatedetail.getClientTable() + "  Where ").append(replicatedetail.getClientPrimaryKey()).append(" = ").append(repObjectCode);
-                                                try {
-                                                    database.execSQL(qCol.toString());
-                                                    LastRepCode = repcode;
-                                                } catch (Exception e) {
+
+
+                                                if (!replicatedetail.getServerTable().equals("")) {
+                                                    String repObjectCode = singleobject.getString("RLObjectRef");
+                                                    qCol = new StringBuilder("Delete from " + replicatedetail.getClientTable() + "  Where ").append(replicatedetail.getClientPrimaryKey()).append(" = ").append(repObjectCode);
+                                                    try {
+                                                        database.execSQL(qCol.toString());
+                                                        LastRepCode = repcode;
+                                                    } catch (Exception ignored) {
+                                                    }
                                                 }
 
                                                 break;
@@ -314,8 +329,8 @@ public class Replication {
                                     RetrofitReplicate(replicatelevel + 1);
                                 }
                             }
-                        } catch (JSONException ignored) {
-
+                        } catch (Exception ignored) {
+                            Log.e("kowsar_1=", ignored.getMessage());
                         }
                     }
                 }
@@ -345,7 +360,7 @@ public class Replication {
 
             String where = replicatedetail.getCondition().replace("BrokerCondition", dbh.ReadConfig("BrokerCode"));
 
-            Log.e("kowsar_LastRepCode",LastRepCode);
+            Log.e("kowsar_LastRepCode", LastRepCode);
             Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
                     "repinfo",
                     LastRepCode,
@@ -380,7 +395,6 @@ public class Replication {
                                             singleobject = arrayobject.getJSONObject(i);
                                             String reptype = singleobject.getString("RLOpType");
                                             String repcode = singleobject.getString("RepLogDataCode");
-                                            String repObjectCode = singleobject.getString("RLObjectRef");
                                             String code = singleobject.getString(replicatedetail.getServerPrimaryKey());
 
                                             int columnDetail = tableDetails.size();
@@ -440,8 +454,7 @@ public class Replication {
                                                         }
 
 
-                                                    } else
-                                                    {
+                                                    } else {
 
                                                         qCol = new StringBuilder("Update " + replicatedetail.getClientTable() + "  Set ");
                                                         int QueryConditionCount = 0;
@@ -479,11 +492,15 @@ public class Replication {
                                                 case "D":
                                                 case "d":
 
-                                                    qCol = new StringBuilder("Delete from " + replicatedetail.getClientTable() + "  Where ").append(replicatedetail.getClientPrimaryKey()).append(" = ").append(repObjectCode);
-                                                    try {
-                                                        database.execSQL(qCol.toString());
-                                                        LastRepCode = repcode;
-                                                    } catch (Exception ignored) {
+
+                                                    if (!replicatedetail.getServerTable().equals("")) {
+                                                        String repObjectCode = singleobject.getString("RLObjectRef");
+                                                        qCol = new StringBuilder("Delete from " + replicatedetail.getClientTable() + "  Where ").append(replicatedetail.getClientPrimaryKey()).append(" = ").append(repObjectCode);
+                                                        try {
+                                                            database.execSQL(qCol.toString());
+                                                            LastRepCode = repcode;
+                                                        } catch (Exception ignored) {
+                                                        }
                                                     }
 
                                                     break;
@@ -620,6 +637,7 @@ public class Replication {
                             replicateGoodImageChange();
                         } else {
                             tv_step.setVisibility(View.GONE);
+                            dialog.dismiss();
                             intent = new Intent(mContext, NavActivity.class);
                             mContext.startActivity(intent);
                             ((Activity) mContext).finish();
@@ -674,7 +692,7 @@ public class Replication {
                         if (!response.body().getText().equals(dbh.ReadConfig("GroupCodeDefult"))) {
                             dbh.SaveConfig("GroupCodeDefult", response.body().getText());
                         }
-                    }else {
+                    } else {
                         dbh.SaveConfig("GroupCodeDefult", "0");
                     }
                 }
@@ -756,24 +774,25 @@ public class Replication {
                 }
             });
         } else {
+            Closedialog();
             DoingReplicate();
 
         }
+
     }
-
-
-
 
 
     @SuppressLint("Range")
     public void SendGpsLocation() {
+
+        Log.e("kowsar", "0");
         locations.clear();
 
-        cursor = sqLiteDatabase.rawQuery("select * from GpsLocation where GpsLocationCode > "+dbh.ReadConfig("LastGpsLocationCode")+" order by GpsLocationCode limit 20", null);
+        cursor = sqLiteDatabase.rawQuery("select * from GpsLocation where GpsLocationCode > " + dbh.ReadConfig("LastGpsLocationCode") + " order by GpsLocationCode limit 20", null);
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                location=new Location();
+                location = new Location();
                 location.setGpsLocationCode(String.valueOf(cursor.getInt(cursor.getColumnIndex("GpsLocationCode"))));
                 locations.add(location);
             }
@@ -782,9 +801,9 @@ public class Replication {
         assert cursor != null;
         String GpsLocationString = CursorToJson(cursor);
         cursor.close();
-        Log.e("kowsar_Gps", GpsLocationString);
+        Log.e("kowsar", GpsLocationString);
 
-        if (locations.size()>0) {
+        if (locations.size() > 0) {
             Call<RetrofitResponse> call1 = apiInterface.UpdateLocation("UpdateLocation", GpsLocationString);
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
@@ -795,7 +814,7 @@ public class Replication {
                         dbh.SaveConfig("LastGpsLocationCode", locations.get(locations.size() - 1).getGpsLocationCode());
 
                         cursor = sqLiteDatabase.rawQuery("select * from GpsLocation where GpsLocationCode > " + dbh.ReadConfig("LastGpsLocationCode"), null);
-
+                        Log.e("kowsar", response.body().toString());
                         if (cursor.getCount() > 1) {
                             cursor.close();
                             SendGpsLocation();
@@ -810,14 +829,10 @@ public class Replication {
                 public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
                 }
             });
-        }else {
+        } else {
             Log.e("kowsar_Gps", "size = ");
         }
     }
-
-
-
-
 
 
     public String CursorToJson(Cursor cursor) {
@@ -841,8 +856,6 @@ public class Replication {
         cursor.close();
         return resultSet.toString();
     }
-
-
 
 
 }

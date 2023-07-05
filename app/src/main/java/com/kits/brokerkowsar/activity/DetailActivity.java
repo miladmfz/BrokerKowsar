@@ -115,6 +115,7 @@ public class DetailActivity extends AppCompatActivity {
             }
         }
 
+        Log.e("test",gooddetail.getGoodFieldValue("GoodCode"));
         imagelists = dbh.GetksrImageCodes(gooddetail.getGoodFieldValue("GoodCode"));
         SliderView();
 

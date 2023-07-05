@@ -142,6 +142,8 @@
     <string name="good_buy_delete">حذف از سبد</string>
     <string name="Customer_new"> مشتری جدید</string>
     <string name="UnitRadio">درصد تخفیف</string>
-
+    <string name="textvalue_allert">توجه</string>
+    <string name="textvalue_yes">بله</string>
+    <string name="textvalue_no">خیر</string>
 
 </resources>

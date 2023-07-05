@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,14 +43,14 @@ public class SearchActivity extends AppCompatActivity {
 
 
     public ArrayList<Good> goods = new ArrayList<>();
-    private ArrayList<Good> Moregoods = new ArrayList<>();
-    ArrayList<GoodGroup> goodGroups;
-    private Integer grid;
     public String id = "0";
     public String title = "";
+    public String proSearchCondition = "";
+    public String AutoSearch = "";
+    public String PageMoreData = "0";
+    ArrayList<GoodGroup> goodGroups;
     Dialog dialog1;
     GroupLableAdapter grp_adapter;
-
     Intent intent;
     DatabaseHelper dbh;
     Handler handler;
@@ -62,15 +61,20 @@ public class SearchActivity extends AppCompatActivity {
     int pastVisiblesItems = 0, visibleItemCount, totalItemCount;
     Menu item_multi;
     CallMethod callMethod;
-    public String proSearchCondition = "";
-    public String AutoSearch = "";
-    public String PageMoreData = "0";
-    private boolean loading = true;
-
-
     boolean defultenablesellprice;
-
     ActivitySearchBinding binding;
+    private ArrayList<Good> Moregoods = new ArrayList<>();
+    private Integer grid;
+    private boolean loading = true;
+    private Handler keyboardHandler = new Handler();
+
+    //*************************************************
+    private Runnable keyboardRunnable = () -> {
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(binding.SearchActivityEdtsearch.getWindowToken(),
+                0
+        );
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,8 +113,6 @@ public class SearchActivity extends AppCompatActivity {
 
     }
 
-    //*************************************************
-
     public void Config() {
 
         callMethod = new CallMethod(this);
@@ -127,7 +129,7 @@ public class SearchActivity extends AppCompatActivity {
         title = data.getString("title");
     }
 
-
+    //
     @SuppressLint("SetTextI18n")
     public void init() {
         if (id.equals("0")) {
@@ -154,6 +156,10 @@ public class SearchActivity extends AppCompatActivity {
             return false;
         });
 
+
+        binding.SearchActivityEdtsearch.setFocusable(true);
+        binding.SearchActivityEdtsearch.requestFocus();
+
         binding.SearchActivityEdtsearch.addTextChangedListener(
                 new TextWatcher() {
                     @Override
@@ -171,6 +177,22 @@ public class SearchActivity extends AppCompatActivity {
                             AutoSearch = editable.toString();
                             proSearchCondition = "";
                             GetDataFromDataBase();
+                            binding.SearchActivityEdtsearch.setFocusable(true);
+                            binding.SearchActivityEdtsearch.requestFocus();
+                            binding.SearchActivityEdtsearch.selectAll();
+
+                            if (callMethod.ReadBoolan("keyboardRunnable")) {
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                imm.showSoftInput(binding.SearchActivityEdtsearch, InputMethodManager.SHOW_IMPLICIT);
+
+
+                                keyboardHandler.removeCallbacks(keyboardRunnable);
+                                keyboardHandler.postDelayed(keyboardRunnable,
+                                        Integer.parseInt(callMethod.ReadString("Delay")) + Integer.parseInt(callMethod.ReadString("Delay"))
+                                );
+
+                            }
+
                         }, Integer.parseInt(callMethod.ReadString("Delay")));
 
 
@@ -449,7 +471,7 @@ public class SearchActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     public void CallRecyclerView() {
-adapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
 
 
         if (adapter.getItemCount() == 0) {
@@ -485,7 +507,9 @@ adapter.notifyDataSetChanged();
     }
 
     public void RefreshState() {
+
         binding.SearchActivityEdtsearch.selectAll();
+
         if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) == 0) {
             binding.SearchActivityCustomer.setText("فاکتوری انتخاب نشده");
             binding.SearchActivityLlSumFactor.setVisibility(View.GONE);
@@ -510,11 +534,28 @@ adapter.notifyDataSetChanged();
             binding.SearchActivityswitchAmount.setChecked(false);
             binding.SearchActivityswitchAmount.setText("هردو");
         }
+
+
+
+        if (callMethod.ReadBoolan("keyboardRunnable")) {
+            binding.SearchActivityEdtsearch.setFocusable(true);
+            binding.SearchActivityEdtsearch.requestFocus();
+            binding.SearchActivityEdtsearch.selectAll();
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(binding.SearchActivityEdtsearch, InputMethodManager.SHOW_IMPLICIT);
+            keyboardHandler.removeCallbacks(keyboardRunnable);
+            keyboardHandler.postDelayed(keyboardRunnable,
+                    0
+            );
+        }
+
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         RefreshState();
+
+
         super.onWindowFocusChanged(hasFocus);
     }
 }

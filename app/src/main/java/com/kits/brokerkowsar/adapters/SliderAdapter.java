@@ -57,7 +57,6 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
         image_info = new ImageInfo(mcontext);
         url = callMethod.ReadString("ServerURLUse");
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
-
     }
 
 

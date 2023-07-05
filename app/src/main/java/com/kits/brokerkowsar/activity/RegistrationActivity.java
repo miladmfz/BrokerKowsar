@@ -8,8 +8,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-
+import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.Replication;
@@ -151,60 +152,89 @@ public class RegistrationActivity extends AppCompatActivity {
         });
 
         binding.registrTotaldelete.setOnClickListener(v -> {
-            new android.app.AlertDialog.Builder(this)
-                    .setTitle("توجه")
-                    .setMessage("آیا اطلاعات نرم افزار به صورت کلی حذف شود؟")
-                    .setPositiveButton("بله", (dialogInterface, i) -> {
-                        File databasedir = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse"));
-                        deleteRecursive(databasedir);
-                    })
-                    .setNegativeButton("خیر", (dialogInterface, i) -> {
-                    })
-                    .show();
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogCustom);
+            builder.setTitle(R.string.textvalue_allert);
+            builder.setMessage("آیا اطلاعات نرم افزار به صورت کلی حذف شود؟");
+
+            builder.setPositiveButton(R.string.textvalue_yes, (dialog, which) -> {
+                File databasedir = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse"));
+                deleteRecursive(databasedir);
+
+            });
+
+            builder.setNegativeButton(R.string.textvalue_no, (dialog, which) -> {
+                // code to handle negative button click
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
         });
 
         binding.registrBasedelete.setOnClickListener(v -> {
-            new android.app.AlertDialog.Builder(this)
-                    .setTitle("توجه")
-                    .setMessage("آیا نیازمند بارگیری مجدد اطلاعات هستید؟")
-                    .setPositiveButton("بله", (dialogInterface, i) -> {
 
-                        File currentFile = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse") + "/KowsarDb.sqlite");
-                        File newFile = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse") + "/tempDb");
 
-                        if (rename(currentFile, newFile)) {
-                            callMethod.EditString("PersianCompanyNameUse", "");
-                            callMethod.EditString("EnglishCompanyNameUse", "");
-                            callMethod.EditString("ServerURLUse", "");
-                            callMethod.EditString("DatabaseName", "");
-                            intent = new Intent(this, SplashActivity.class);
-                            finish();
-                            startActivity(intent);
-                            Log.i("test", "Success");
-                        }
 
-                    })
-                    .setNegativeButton("خیر", (dialogInterface, i) -> {
-                    })
-                    .show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogCustom);
+            builder.setTitle(R.string.textvalue_allert);
+            builder.setMessage("آیا نیازمند بارگیری مجدد اطلاعات هستید؟");
+
+            builder.setPositiveButton(R.string.textvalue_yes, (dialog, which) -> {
+
+                File currentFile = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse") + "/KowsarDb.sqlite");
+                File newFile = new File(getApplicationInfo().dataDir + "/databases/" + callMethod.ReadString("EnglishCompanyNameUse") + "/tempDb");
+
+                if (rename(currentFile, newFile)) {
+                    callMethod.EditString("PersianCompanyNameUse", "");
+                    callMethod.EditString("EnglishCompanyNameUse", "");
+                    callMethod.EditString("ServerURLUse", "");
+                    callMethod.EditString("DatabaseName", "");
+                    intent = new Intent(this, SplashActivity.class);
+                    finish();
+                    startActivity(intent);
+                    Log.i("test", "Success");
+                }
+            });
+
+            builder.setNegativeButton(R.string.textvalue_no, (dialog, which) -> {
+                // code to handle negative button click
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
+
+
         });
 
         binding.registrReplicationcolumn.setOnClickListener(v -> {
-            new android.app.AlertDialog.Builder(this)
-                    .setTitle("توجه")
-                    .setMessage("آیا تنظیمات پیش فرض مجددا گرفته شود ؟")
-                    .setPositiveButton("بله", (dialogInterface, i) -> {
-                        dbh.deleteColumn();
-                        replication.BrokerStack();
-                        dbh.DatabaseCreate();
-                        action.app_info();
-                        replication.DoingReplicate();
 
 
-                    })
-                    .setNegativeButton("خیر", (dialogInterface, i) -> {
-                    })
-                    .show();
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogCustom);
+            builder.setTitle(R.string.textvalue_allert);
+            builder.setMessage("آیا تنظیمات پیش فرض مجددا گرفته شود ؟");
+
+            builder.setPositiveButton(R.string.textvalue_yes, (dialog, which) -> {
+                dbh.deleteColumn();
+                replication.BrokerStack();
+                dbh.DatabaseCreate();
+                action.app_info();
+                replication.DoingReplicate();
+
+
+            });
+
+            builder.setNegativeButton(R.string.textvalue_no, (dialog, which) -> {
+                // code to handle negative button click
+            });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+
+
+
 
         });
 
@@ -212,6 +242,8 @@ public class RegistrationActivity extends AppCompatActivity {
         binding.registrSelloff.setChecked(Integer.parseInt(callMethod.ReadString("SellOff")) != 0);
         binding.registrAutorep.setChecked(callMethod.ReadBoolan("AutoReplication"));
         binding.registrCustomercredit.setChecked(callMethod.ReadBoolan("ShowCustomerCredit"));
+        binding.registrKeyboardrunnable.setChecked(callMethod.ReadBoolan("keyboardRunnable"));
+        binding.registrKowsarservice.setChecked(callMethod.ReadBoolan("kowsarService"));
 
         binding.registrCustomercredit.setOnCheckedChangeListener((compoundButton, b) -> {
             if (callMethod.ReadBoolan("ShowCustomerCredit")) {
@@ -223,7 +255,6 @@ public class RegistrationActivity extends AppCompatActivity {
             }
         });
 
-        binding.registrBroker.setOnClickListener(v -> binding.registrBroker.selectAll());
 
 
 
@@ -245,6 +276,30 @@ public class RegistrationActivity extends AppCompatActivity {
 
             } else {
                 callMethod.EditBoolan("AutoReplication", true);
+                callMethod.showToast("بله");
+            }
+        });
+
+
+
+        binding.registrKeyboardrunnable.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (callMethod.ReadBoolan("keyboardRunnable")) {
+                callMethod.EditBoolan("keyboardRunnable", false);
+                callMethod.showToast("خیر");
+
+            } else {
+                callMethod.EditBoolan("keyboardRunnable", true);
+                callMethod.showToast("بله");
+            }
+        });
+
+        binding.registrKowsarservice.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (callMethod.ReadBoolan("kowsarService")) {
+                callMethod.EditBoolan("kowsarService", false);
+                callMethod.showToast("خیر");
+
+            } else {
+                callMethod.EditBoolan("kowsarService", true);
                 callMethod.showToast("بله");
             }
         });
@@ -302,5 +357,10 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private boolean rename(File from, File to) {
         return Objects.requireNonNull(from.getParentFile()).exists() && from.exists() && from.renameTo(to);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 }
