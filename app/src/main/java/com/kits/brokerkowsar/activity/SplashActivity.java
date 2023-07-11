@@ -85,6 +85,7 @@ public class SplashActivity extends AppCompatActivity {
             callMethod.EditBoolan("GoodAmount", false);
             callMethod.EditBoolan("AutoReplication", false);
             callMethod.EditBoolan("SellPriceTypeDeactivate", true);
+            callMethod.EditBoolan("ShowDetail", true);
 
             callMethod.EditBoolan("keyboardRunnable", false);
             callMethod.EditBoolan("kowsarService", false);

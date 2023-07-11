@@ -244,6 +244,18 @@ public class RegistrationActivity extends AppCompatActivity {
         binding.registrCustomercredit.setChecked(callMethod.ReadBoolan("ShowCustomerCredit"));
         binding.registrKeyboardrunnable.setChecked(callMethod.ReadBoolan("keyboardRunnable"));
         binding.registrKowsarservice.setChecked(callMethod.ReadBoolan("kowsarService"));
+        binding.registrShowdetail.setChecked(callMethod.ReadBoolan("ShowDetail"));
+
+        binding.registrShowdetail.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (callMethod.ReadBoolan("ShowDetail")) {
+                callMethod.EditBoolan("ShowDetail", false);
+                callMethod.showToast("خیر");
+            } else {
+                callMethod.EditBoolan("ShowDetail", true);
+                callMethod.showToast("بله");
+            }
+        });
+
 
         binding.registrCustomercredit.setOnCheckedChangeListener((compoundButton, b) -> {
             if (callMethod.ReadBoolan("ShowCustomerCredit")) {

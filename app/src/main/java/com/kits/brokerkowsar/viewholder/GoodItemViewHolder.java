@@ -128,7 +128,40 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
     }
 
     @SuppressLint({"ResourceAsColor", "UseCompatLoadingForColorStateLists"})
-    public void Action(Good good, boolean multi_select) {
+    public void Actionbtn(Good good, boolean multi_select) {
+
+        this.multi_select1 = multi_select;
+
+
+
+
+        if (good.getGoodFieldValue("ActiveStack").equals("1")){
+            btnadd.setBackgroundTintList(mContext.getResources().getColorStateList(R.color.green_600));
+        }else{
+            btnadd.setBackgroundTintList(mContext.getResources().getColorStateList(R.color.grey_700));
+        }
+
+
+
+        btnadd.setOnClickListener(view -> {
+            if (good.getGoodFieldValue("ActiveStack").equals("1")) {
+                if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
+                    action.buydialog(good.getGoodFieldValue("GoodCode"), "0");
+                } else {
+                    Intent intent = new Intent(mContext, PrefactoropenActivity.class);
+                    intent.putExtra("fac", "0");
+                    mContext.startActivity(intent);
+                }
+            }else{
+                callMethod.showToast("این کالا غیر فعال می باشد");
+            }
+        });
+
+
+    }
+
+    @SuppressLint({"ResourceAsColor", "UseCompatLoadingForColorStateLists"})
+    public void Actionrltv(Good good, boolean multi_select) {
 
         this.multi_select1 = multi_select;
 

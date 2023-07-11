@@ -53,10 +53,12 @@ public class ConfigActivity extends AppCompatActivity {
         binding.configTitlesize.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("TitleSize")));
         binding.configBodysize.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("BodySize")));
         binding.configPhonenumber.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PhoneNumber")));
+        binding.configPhonenumber.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PhoneNumber")));
 
         binding.configSelloff.setChecked(Integer.parseInt(callMethod.ReadString("SellOff")) != 0);
         binding.configAutorep.setChecked(callMethod.ReadBoolan("AutoReplication"));
         binding.configKeyboardrunnable.setChecked(callMethod.ReadBoolan("keyboardRunnable"));
+        binding.configDetailshow.setChecked(callMethod.ReadBoolan("ShowDetail"));
     }
 
      void setButtonListeners() {

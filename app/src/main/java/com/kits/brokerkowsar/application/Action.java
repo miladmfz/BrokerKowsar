@@ -252,13 +252,26 @@ public class Action {
 
                             callMethod.showToast("به سبد کالا اضافه شد");
                             if (!Basketflag.equals("0")) {
-                                intent = new Intent(mContext, BasketActivity.class);
-                                intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
-                                ((Activity) mContext).finish();
-                                ((Activity) mContext).overridePendingTransition(0, 0);
-                                mContext.startActivity(intent);
-                                ((Activity) mContext).overridePendingTransition(0, 0);
+
+                                if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.DetailActivity")){
+                                    ((Activity) mContext).finish();
+                                }else {
+                                    intent = new Intent(mContext, BasketActivity.class);
+                                    intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
+                                    ((Activity) mContext).finish();
+                                    ((Activity) mContext).overridePendingTransition(0, 0);
+                                    mContext.startActivity(intent);
+                                    ((Activity) mContext).overridePendingTransition(0, 0);
+                                }
+
+
+
                             }
+
+
+
+
+
                         } else {
                             intent = new Intent(mContext, CustomerActivity.class);
                             intent.putExtra("edit", "0");

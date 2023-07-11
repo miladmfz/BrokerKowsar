@@ -77,51 +77,14 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
 
         holder.bind(Columns, goods.get(position), mContext, callMethod);
 
-        holder.Action(goods.get(position), multi_select);
+
         holder.callimage(goods.get(position));
-
-        holder.rltv.setOnClickListener(v -> {
-
-            if (multi_select) {
-                if (goods.get(position).getGoodFieldValue("ActiveStack").equals("1")) {
-                    holder.rltv.setChecked(!holder.rltv.isChecked());
-                    goods.get(position).setCheck(!goods.get(position).isCheck());
-                    if (goods.get(position).isCheck()) {
-                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
-                            SearchActivity activity = (SearchActivity) mContext;
-                            activity.good_select_function(goods.get(position));
-                        }
-                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchByDateActivity")) {
-                            SearchByDateActivity activity = (SearchByDateActivity) mContext;
-                            activity.good_select_function(goods.get(position));
-                        }
-                    } else {
-                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
-                            SearchActivity activity = (SearchActivity) mContext;
-                            activity.good_select_function(goods.get(position));
-                        }
-                        if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchByDateActivity")) {
-                            SearchByDateActivity activity = (SearchByDateActivity) mContext;
-                            activity.good_select_function(goods.get(position));
-                        }
-                    }
-                } else {
-                    callMethod.showToast("این کالا غیر فعال می باشد");
-                }
-            } else {
-                Intent intent = new Intent(mContext, DetailActivity.class);
-                intent.putExtra("id", goods.get(position).getGoodFieldValue("GoodCode"));
-                intent.putExtra("ws", goods.get(position).getGoodFieldValue("Shortage"));
-                mContext.startActivity(intent);
-            }
-
-        });
 
 
         holder.rltv.setChecked(goods.get(position).isCheck());
 
         holder.rltv.setOnLongClickListener(view ->
-        {
+          {
             if (goods.get(position).getGoodFieldValue("ActiveStack").equals("1")) {
                 if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
                     multi_select = true;
@@ -163,6 +126,104 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
 
             return true;
         });
+
+        if (callMethod.ReadBoolan("ShowDetail")){
+            holder.btnadd.setVisibility(View.VISIBLE);
+            holder.Actionbtn(goods.get(position), multi_select);
+
+
+            holder.rltv.setOnClickListener(v -> {
+
+                if (multi_select) {
+                    if (goods.get(position).getGoodFieldValue("ActiveStack").equals("1")) {
+                        holder.rltv.setChecked(!holder.rltv.isChecked());
+                        goods.get(position).setCheck(!goods.get(position).isCheck());
+                        if (goods.get(position).isCheck()) {
+                            if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
+                                SearchActivity activity = (SearchActivity) mContext;
+                                activity.good_select_function(goods.get(position));
+                            }
+                            if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchByDateActivity")) {
+                                SearchByDateActivity activity = (SearchByDateActivity) mContext;
+                                activity.good_select_function(goods.get(position));
+                            }
+                        } else {
+                            if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
+                                SearchActivity activity = (SearchActivity) mContext;
+                                activity.good_select_function(goods.get(position));
+                            }
+                            if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchByDateActivity")) {
+                                SearchByDateActivity activity = (SearchByDateActivity) mContext;
+                                activity.good_select_function(goods.get(position));
+                            }
+                        }
+                    } else {
+                        callMethod.showToast("این کالا غیر فعال می باشد");
+                    }
+                } else {
+                    Intent intent = new Intent(mContext, DetailActivity.class);
+                    intent.putExtra("id", goods.get(position).getGoodFieldValue("GoodCode"));
+                    intent.putExtra("ws", goods.get(position).getGoodFieldValue("Shortage"));
+                    mContext.startActivity(intent);
+                }
+
+            });
+
+
+
+
+
+
+        }else{
+            holder.btnadd.setVisibility(View.GONE);
+
+
+
+
+            holder.rltv.setOnClickListener(v -> {
+                if (multi_select) {
+                    if (goods.get(position).getGoodFieldValue("ActiveStack").equals("1")) {
+                        holder.rltv.setChecked(!holder.rltv.isChecked());
+                        goods.get(position).setCheck(!goods.get(position).isCheck());
+                        if (goods.get(position).isCheck()) {
+                            if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
+                                SearchActivity activity = (SearchActivity) mContext;
+                                activity.good_select_function(goods.get(position));
+                            }
+                            if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchByDateActivity")) {
+                                SearchByDateActivity activity = (SearchByDateActivity) mContext;
+                                activity.good_select_function(goods.get(position));
+                            }
+                        } else {
+                            if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
+                                SearchActivity activity = (SearchActivity) mContext;
+                                activity.good_select_function(goods.get(position));
+                            }
+                            if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchByDateActivity")) {
+                                SearchByDateActivity activity = (SearchByDateActivity) mContext;
+                                activity.good_select_function(goods.get(position));
+                            }
+                        }
+                    } else {
+                        callMethod.showToast("این کالا غیر فعال می باشد");
+                    }
+                } else {
+                    holder.Actionrltv(goods.get(position), multi_select);
+                }
+
+            });
+
+
+
+
+        }
+
+
+
+
+
+
+
 
 
     }

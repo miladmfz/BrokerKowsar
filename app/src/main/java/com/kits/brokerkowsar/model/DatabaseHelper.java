@@ -13,12 +13,15 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.location.LocationResult;
 import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.application.CallMethod;
+import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     CallMethod callMethod;
@@ -501,9 +504,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         query = query.replaceAll("SearchCondition", Search_Condition);
 
 
-        if (aGroupCode.equals("")) {
-            aGroupCode = "0";
-        }
         if (Integer.parseInt(aGroupCode) > 0) {
             query = query + " And GoodCode in(Select GoodRef From GoodGroup p "
                     + "Join GoodsGrp s on p.GoodGroupRef = s.GroupCode "
@@ -923,7 +923,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
             gooddetail.setCheck(false);
             gooddetail.setGoodFieldValue("ActiveStack", cursor.getString(cursor.getColumnIndex("ActiveStack")));
-            Log.e("test", gooddetail.getGoodFieldValue("GoodCode"));
+
         }
         cursor.close();
         return gooddetail;
@@ -1115,7 +1115,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 query = "Update PreFactorRow set FactorAmount = " + FactorAmount + " Where PreFactorRowCode=" + BasketFlag;
             }
             getWritableDatabase().execSQL(query);
-            getWritableDatabase().close();
+        getWritableDatabase().close();
         } else {
             query = " Select * From PreFactorRow Where IfNull(PreFactorRef,0)=" + pfcode + " And GoodRef =" + goodcode;
             if (Float.parseFloat(price) >= 0) {
@@ -1148,7 +1148,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //                        "Where h.PreFactorCode =" + pfcode + " And GoodCode = " + goodcode;
                 Log.e("kowsar_query", query);
                 getWritableDatabase().execSQL(query);
-                getWritableDatabase().close();
+        getWritableDatabase().close();
             }
             cursor.close();
         }
@@ -1164,7 +1164,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 query = "Update PreFactorRow set FactorAmount = " + FactorAmount + " Where PreFactorRowCode=" + BasketFlag;
             }
             getWritableDatabase().execSQL(query);
-            getWritableDatabase().close();
+        getWritableDatabase().close();
         } else {
             query = " Select * From PreFactorRow Where IfNull(PreFactorRef,0)=" + pfcode + " And GoodRef =" + goodcode;
             if (Float.parseFloat(price) >= 0) {
@@ -1185,7 +1185,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 Log.e("kowsar_query", query);
                 getWritableDatabase().execSQL(query);
-                getWritableDatabase().close();
+        getWritableDatabase().close();
             }
             cursor.close();
         }
@@ -1414,7 +1414,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         query = " DELETE FROM Prefactor WHERE PreFactorCode NOT IN (SELECT PreFactorRef FROM PrefactorRow )";
         getWritableDatabase().execSQL(query);
         getWritableDatabase().close();
-
+        
     }
 
     public void UpdatePreFactor(String PreFactorCode, String PreFactorKowsarCode, String PreFactorDate) {
@@ -1643,16 +1643,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public ArrayList<GoodGroup> getAllGroups(String Glstr) {
 
-        String GL;
-
-        try {
-            if (Integer.parseInt(Glstr) > 0) {
-                GL = Glstr;
-            } else {
-                GL = "0";
-            }
-        } catch (Exception e) {
-            GL = "0";
+        String GL = "0";
+        if (!Glstr.equals("")) {
+            GL = Glstr;
         }
 
         query = "SELECT * ," +
@@ -1790,11 +1783,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (!user.getBrokerCode().equals("")) {
             query = " Update Config set DataValue = '" + user.getBrokerCode() + "' Where KeyValue = 'BrokerCode';";
             getWritableDatabase().execSQL(query);
-            getWritableDatabase().close();
+        getWritableDatabase().close();
             query = " Insert Into Config(KeyValue, DataValue) " +
                     "  Select 'BrokerCode', '" + user.getBrokerCode() + "' Where Not Exists(Select * From Config Where KeyValue = 'BrokerCode');";
             getWritableDatabase().execSQL(query);
-            getWritableDatabase().close();
+        getWritableDatabase().close();
         }
 
     }
@@ -1845,20 +1838,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         getWritableDatabase().execSQL(query);
         getWritableDatabase().close();
     }
-
     public void UpdateLocationService(LocationResult locationResult, String gpsDate) {
 
-        if(!callMethod.ReadString("ServerURLUse").equals("")) {
-            Log.e("kowsar_Gps","running");
-            query = "Insert Into  GpsLocation (Longitude , Latitude ,Speed, BrokerRef , GpsDate )" +
-                    " Values ('" + locationResult.getLastLocation().getLongitude() + "' , '" + locationResult.getLastLocation().getLatitude() + "', '" + locationResult.getLastLocation().getSpeed() + "', '" + ReadConfig("BrokerCode") + "' , '" + gpsDate + "')";
-            Log.e("kowsar_query", query);
+
+        query = "Insert Into  GpsLocation (Longitude , Latitude ,Speed, BrokerRef , GpsDate )" +
+                " Values ('"+locationResult.getLastLocation().getLongitude()+"' , '"+locationResult.getLastLocation().getLatitude()+"', '"+locationResult.getLastLocation().getSpeed()+"', '"+ReadConfig("BrokerCode")+"' , '"+gpsDate+"')";
+        Log.e("kowsar_query", query);
 
             getWritableDatabase().execSQL(query);
             getWritableDatabase().close();
-        }else{
-            Log.e("kowsar_Gps","not running");
-        }
 
     }
 
@@ -1893,7 +1881,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @SuppressLint("Range")
     public String GpsLocationCode() {
 
-        query = " select GpsLocationCode from GpsLocation where GpsLocationCode> " + ReadConfig("LastGpsLocationCode") + "   limit 1 OFFSET 2";
+        query = " select GpsLocationCode from GpsLocation where GpsLocationCode> "+ReadConfig("LastGpsLocationCode")+"   limit 1 OFFSET 2";
 
 
         cursor = getWritableDatabase().rawQuery(query, null);
@@ -1901,27 +1889,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             cursor.moveToFirst();
             result = String.valueOf(cursor.getInt(cursor.getColumnIndex("GpsLocationCode")));
 
-        } else {
-            result = ReadConfig("LastGpsLocationCode");
+        }else
+        {
+            result=ReadConfig("LastGpsLocationCode");
         }
         cursor.close();
         return result;
     }
 
 
+
     public void ExecQuery(String Query) {
-
-        getWritableDatabase().execSQL(Query);
-        getWritableDatabase().close();
-    }
-
-
-    public void qwe() {
-        query = "INSERT INTO ReplicationTable" +
-                "(ServerTable, ClientTable, ServerPrimaryKey, ClientPrimaryKey, LastRepLogCode, LastRepLogCodeDelete, Condition, ConditionDelete)" +
-                " VALUES " +
-                "('Units' ,'Units','UnitCode' ,'UnitCode', -1 , -1  ,'','')";
-
         getWritableDatabase().execSQL(query);
         getWritableDatabase().close();
     }
