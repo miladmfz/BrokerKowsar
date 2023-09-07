@@ -129,7 +129,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
 
         if (callMethod.ReadBoolan("ShowDetail")){
             holder.btnadd.setVisibility(View.VISIBLE);
-            holder.Actionbtn(goods.get(position), multi_select);
+
 
 
             holder.rltv.setOnClickListener(v -> {
@@ -169,6 +169,38 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
 
             });
 
+            holder.btnadd.setOnClickListener(v -> {
+                if (multi_select) {
+                    if (goods.get(position).getGoodFieldValue("ActiveStack").equals("1")) {
+                        holder.rltv.setChecked(!holder.rltv.isChecked());
+                        goods.get(position).setCheck(!goods.get(position).isCheck());
+                        if (goods.get(position).isCheck()) {
+                            if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
+                                SearchActivity activity = (SearchActivity) mContext;
+                                activity.good_select_function(goods.get(position));
+                            }
+                            if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchByDateActivity")) {
+                                SearchByDateActivity activity = (SearchByDateActivity) mContext;
+                                activity.good_select_function(goods.get(position));
+                            }
+                        } else {
+                            if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchActivity")) {
+                                SearchActivity activity = (SearchActivity) mContext;
+                                activity.good_select_function(goods.get(position));
+                            }
+                            if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.SearchByDateActivity")) {
+                                SearchByDateActivity activity = (SearchByDateActivity) mContext;
+                                activity.good_select_function(goods.get(position));
+                            }
+                        }
+                    } else {
+                        callMethod.showToast("این کالا غیر فعال می باشد");
+                    }
+                } else {
+                    holder.Actionrltv(goods.get(position), multi_select);
+                }
+
+            });
 
 
 

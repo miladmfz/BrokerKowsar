@@ -11,7 +11,7 @@ android {
         minSdk 23
         targetSdk 33
         versionCode 1
-        versionName "12.04.01"
+        versionName "12.04.04"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     
@@ -20,6 +20,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+
     }
 
     compileOptions {
@@ -32,6 +33,7 @@ android {
     }
     namespace 'com.kits.brokerkowsar'
 }
+
 
 
 

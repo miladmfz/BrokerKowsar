@@ -174,6 +174,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     public void CheckConfig() {
 
 
+
         if (Integer.parseInt(dbh.ReadConfig("BrokerCode")) != 0) {
 
             tv_brokercode.setText(" کد بازاریاب : " + NumberFunctions.PerisanNumber(dbh.ReadConfig("BrokerCode")));

@@ -19,6 +19,8 @@ public class RetrofitResponse {
     private ArrayList<Activation> Activations;
     @SerializedName("Locations")
     private ArrayList<Location> Locations;
+    @SerializedName("AppPrinters")
+    private ArrayList<AppPrinter> AppPrinters;
 
 
     @SerializedName("Good")
@@ -46,6 +48,15 @@ public class RetrofitResponse {
     private String ErrDesc;
     @SerializedName("SellBrokers")
     private ArrayList<SellBroker> SellBrokers;
+
+
+    public ArrayList<AppPrinter> getAppPrinters() {
+        return AppPrinters;
+    }
+
+    public void setAppPrinters(ArrayList<AppPrinter> appPrinters) {
+        AppPrinters = appPrinters;
+    }
 
     public ArrayList<SellBroker> getSellBrokers() {
         return SellBrokers;

@@ -131,12 +131,7 @@ public class Replication {
         dialog.setContentView(R.layout.rep_prog);
         tv_rep = dialog.findViewById(R.id.rep_prog_text);
         tv_step = dialog.findViewById(R.id.rep_prog_step);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (mContext.isUiContext()){
-                dialog.show();
-            }
-
-        }
+        dialog.show();
 
 
     }

@@ -1,7 +1,6 @@
 package com.kits.brokerkowsar.viewholder;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -13,11 +12,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.activity.BasketActivity;
+import com.kits.brokerkowsar.activity.ConfigActivity;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.ImageInfo;
@@ -147,6 +148,8 @@ public class GoodBasketViewHolder extends RecyclerView.ViewHolder {
 
                     AlertDialog dialog = builder.create();
                     dialog.show();
+
+
                 }
 
 

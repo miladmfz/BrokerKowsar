@@ -165,18 +165,6 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
 
         this.multi_select1 = multi_select;
 
-
-
-
-        if (good.getGoodFieldValue("ActiveStack").equals("1")){
-            btnadd.setBackgroundTintList(mContext.getResources().getColorStateList(R.color.green_600));
-        }else{
-            btnadd.setBackgroundTintList(mContext.getResources().getColorStateList(R.color.grey_700));
-        }
-
-
-
-        btnadd.setOnClickListener(view -> {
             if (good.getGoodFieldValue("ActiveStack").equals("1")) {
                 if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
                     action.buydialog(good.getGoodFieldValue("GoodCode"), "0");
@@ -188,7 +176,7 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
             }else{
                 callMethod.showToast("این کالا غیر فعال می باشد");
             }
-        });
+
 
 
     }

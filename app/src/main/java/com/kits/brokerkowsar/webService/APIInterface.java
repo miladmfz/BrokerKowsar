@@ -179,6 +179,12 @@ public interface APIInterface {
     Call<RetrofitResponse> UpdateLocation(@Field("tag") String tag, @Field("GpsLocations") String GpsLocations);
 
 
+    @POST("index.php")
+    @FormUrlEncoded
+    Call<RetrofitResponse> OrderGetAppPrinter(@Field("tag") String tag);
+    @FormUrlEncoded
+    @POST("index.php")
+    Call<RetrofitResponse> OrderSendImage(@Field("tag") String tag, @Field("Image") String image, @Field("Code") String barcode, @Field("PrinterName") String PrinterName, @Field("PrintCount") String PrintCount);
 
 
 }

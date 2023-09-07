@@ -20,6 +20,7 @@ import com.kits.brokerkowsar.activity.PrinterActivity;
 import com.kits.brokerkowsar.activity.SearchActivity;
 import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.CallMethod;
+import com.kits.brokerkowsar.application.Print;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.NumberFunctions;
@@ -120,9 +121,35 @@ public class PreFactorHeaderViewHolder extends RecyclerView.ViewHolder {
 
         fac_excel.setOnClickListener(view -> {
 
-            intent = new Intent(mContext, PrinterActivity.class);
-            intent.putExtra("PreFac", preFactor.getPreFactorFieldValue("PreFactorCode"));
-            mContext.startActivity(intent);
+
+            final CharSequence[] options = { "پرینتر بلوتوثی", "پرینتر مجموعه","لغو" };
+
+            android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(mContext);
+            builder.setTitle("پرینتر مورد نظر را انتخاب کنید");
+
+            builder.setItems(options, (dialog, item) -> {
+
+                if (options[item].equals("پرینتر بلوتوثی")) {
+
+                    intent = new Intent(mContext, PrinterActivity.class);
+                    intent.putExtra("PreFac", preFactor.getPreFactorFieldValue("PreFactorCode"));
+                    mContext.startActivity(intent);
+
+
+                } else if (options[item].equals("پرینتر مجموعه")) {
+
+
+                    Print print=new Print(mContext,preFactor.getPreFactorFieldValue("PreFactorCode"));
+                    print.Start();
+
+                } else if (options[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+
+
+
         });
 
 
