@@ -123,7 +123,7 @@
     <string name="prefactor_send">ارسال فاکتور</string>
     <string name="prefactor_editexplain">تغییر توضیحات</string>
     <string name="prefactor_editcustomer">تغییر مشتری</string>
-    <string name="prefactor_excel">خروجی اکسل , پرینت</string>
+    <string name="prefactor_excel">خروجی پرینت</string>
     <string name="prefactor_report">گزارش اقلام فاکتور</string>
     <string name="prefactor_editgood">اصلاح اقلام فاکتور</string>
     <string name="prefactor_select">انتخاب فاکتور</string>

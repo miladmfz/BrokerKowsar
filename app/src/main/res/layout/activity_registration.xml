@@ -86,6 +86,61 @@
 
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/registr_replicationcolumn"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="تنظیمات پیشفرض"
+                            android:textColor="#ffffff"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:layout_weight="0.5"
+                            app:backgroundTint="@color/cyan_500"
+                            app:strokeColor="@color/grey_1000"
+                            app:strokeWidth="1dp"
+                            style="?attr/materialButtonOutlinedStyle"
+                            />
+                        <Button
+                            android:id="@+id/registr_basedelete"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text=" بارگیری مجدد"
+                            android:textColor="#ffffff"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:layout_weight="0.5"
+                            app:backgroundTint="@color/amber_900"
+                            app:strokeColor="@color/grey_1000"
+                            app:strokeWidth="1dp"
+                            style="?attr/materialButtonOutlinedStyle"
+                            />
+
+                        <Button
+                            android:id="@+id/registr_totaldelete"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="حذف کلی اطلاعات"
+                            android:textColor="#ffffff"
+                            android:textStyle="bold"
+                            android:textSize="16sp"
+                            android:layout_weight="0.5"
+                            app:backgroundTint="@color/red_700"
+                            app:strokeColor="@color/grey_1000"
+                            app:strokeWidth="1dp"
+                            style="?attr/materialButtonOutlinedStyle"
+                            />
+
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
 
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -93,7 +148,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
-                        android:visibility="gone">
+                        android:visibility="visible">
 
 
                         <androidx.appcompat.widget.LinearLayoutCompat
@@ -145,6 +200,125 @@
                                 android:gravity="center"
                                 android:textSize="22sp"
                                 android:textStyle="bold" />
+
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal"
+                            android:padding="5dp">
+
+                            <TextView
+                                android:layout_weight="0.5"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:text="@string/config_delay" />
+
+                            <EditText
+                                android:layout_weight="0.5"
+                                android:id="@+id/registr_delay"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/edittest1"
+
+                                android:inputType="text"
+                                tools:ignore="LabelFor"
+                                android:gravity="center" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:text="@string/config_item"
+                                android:layout_weight="0.5" />
+
+                            <EditText
+                                android:id="@+id/registr_grid"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/edittest1"
+                                android:layout_weight="0.5"
+                                android:inputType="numberDecimal"
+                                android:maxLength="1"
+                                android:gravity="center"
+                                tools:ignore="LabelFor" />
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:orientation="horizontal"
+                            android:padding="5dp"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:text="@string/config_real_amount"
+                                android:layout_weight="0.5" />
+
+                            <com.google.android.material.switchmaterial.SwitchMaterial
+                                android:id="@+id/registr_real_amount"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.75" />
+
+                            <com.google.android.material.switchmaterial.SwitchMaterial
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.75"
+                                android:visibility="invisible" />
+
+
+                        </androidx.appcompat.widget.LinearLayoutCompat>
+
+                        <androidx.appcompat.widget.LinearLayoutCompat
+                            android:layout_width="match_parent"
+                            android:layout_height="50dp"
+                            android:padding="5dp">
+                            <TextView
+                                android:layout_weight="0.5"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:text="سایز عنوان ها" />
+
+                            <EditText
+                                android:layout_weight="0.5"
+                                android:id="@+id/registr_titlesize"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/edittest1"
+
+                                android:inputType="text"
+                                tools:ignore="LabelFor"
+                                android:gravity="center" />
+                            <TextView
+                                android:layout_weight="0.5"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:text="سایز اطلاعات" />
+
+                            <EditText
+                                android:layout_weight="0.5"
+                                android:id="@+id/registr_bodysize"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:background="@drawable/edittest1"
+
+                                android:inputType="text"
+                                tools:ignore="LabelFor"
+                                android:gravity="center" />
 
 
                         </androidx.appcompat.widget.LinearLayoutCompat>
@@ -209,183 +383,10 @@
                         </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-                        <androidx.appcompat.widget.LinearLayoutCompat
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <Button
-                                android:id="@+id/registr_replicationcolumn"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="5dp"
-                                android:text="تنظیمات پیشفرض"
-                                android:textColor="#ffffff"
-                                android:textStyle="bold"
-                                android:textSize="16sp"
-                                android:layout_weight="0.5"
-                                app:backgroundTint="@color/cyan_500"
-                                app:strokeColor="@color/grey_1000"
-                                app:strokeWidth="1dp"
-                                style="?attr/materialButtonOutlinedStyle"
-                                />
-                            <Button
-                                android:id="@+id/registr_basedelete"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="5dp"
-                                android:text=" بارگیری مجدد"
-                                android:textColor="#ffffff"
-                                android:textStyle="bold"
-                                android:textSize="16sp"
-                                android:layout_weight="0.5"
-                                app:backgroundTint="@color/amber_900"
-                                app:strokeColor="@color/grey_1000"
-                                app:strokeWidth="1dp"
-                                style="?attr/materialButtonOutlinedStyle"
-                                />
-
-                            <Button
-                                android:id="@+id/registr_totaldelete"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_margin="5dp"
-                                android:text="حذف کلی اطلاعات"
-                                android:textColor="#ffffff"
-                                android:textStyle="bold"
-                                android:textSize="16sp"
-                                android:layout_weight="0.5"
-                                app:backgroundTint="@color/red_700"
-                                app:strokeColor="@color/grey_1000"
-                                app:strokeWidth="1dp"
-                                style="?attr/materialButtonOutlinedStyle"
-                                />
-
-
-                        </androidx.appcompat.widget.LinearLayoutCompat>
 
 
                     </androidx.appcompat.widget.LinearLayoutCompat>
 
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:orientation="horizontal"
-                        android:padding="5dp">
-
-                        <TextView
-                            android:layout_weight="0.5"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:text="@string/config_delay" />
-
-                        <EditText
-                            android:layout_weight="0.5"
-                            android:id="@+id/registr_delay"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/edittest1"
-
-                            android:inputType="text"
-                            tools:ignore="LabelFor"
-                            android:gravity="center" />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:text="@string/config_item"
-                            android:layout_weight="0.5" />
-
-                        <EditText
-                            android:id="@+id/registr_grid"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/edittest1"
-                            android:layout_weight="0.5"
-                            android:inputType="numberDecimal"
-                            android:maxLength="1"
-                            android:gravity="center"
-                            tools:ignore="LabelFor" />
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:orientation="horizontal"
-                        android:padding="5dp"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:text="@string/config_real_amount"
-                            android:layout_weight="0.5" />
-
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:id="@+id/registr_real_amount"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.75" />
-
-                        <com.google.android.material.switchmaterial.SwitchMaterial
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="0.75"
-                            android:visibility="invisible" />
-
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
-
-                    <androidx.appcompat.widget.LinearLayoutCompat
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:padding="5dp">
-                        <TextView
-                            android:layout_weight="0.5"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:text="سایز عنوان ها" />
-
-                        <EditText
-                            android:layout_weight="0.5"
-                            android:id="@+id/registr_titlesize"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/edittest1"
-
-                            android:inputType="text"
-                            tools:ignore="LabelFor"
-                            android:gravity="center" />
-                        <TextView
-                            android:layout_weight="0.5"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center"
-                            android:gravity="center"
-                            android:text="سایز اطلاعات" />
-
-                        <EditText
-                            android:layout_weight="0.5"
-                            android:id="@+id/registr_bodysize"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/edittest1"
-
-                            android:inputType="text"
-                            tools:ignore="LabelFor"
-                            android:gravity="center" />
-
-
-                    </androidx.appcompat.widget.LinearLayoutCompat>
 
 
 
@@ -406,6 +407,38 @@
 
                         <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/registr_autorep"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.75" />
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.75"
+                            android:visibility="invisible" />
+
+
+                    </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+
+                    <androidx.appcompat.widget.LinearLayoutCompat
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:orientation="horizontal"
+                        android:padding="5dp"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="نمایش خطی کالا"
+                            android:layout_weight="0.5" />
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/registr_lineview"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_weight="0.75" />
@@ -511,7 +544,8 @@
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
-                        android:padding="5dp">
+                        android:padding="5dp"
+                        android:visibility="gone">
 
                         <TextView
                             android:layout_weight="0.5"

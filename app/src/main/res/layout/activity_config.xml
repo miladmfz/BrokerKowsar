@@ -131,12 +131,12 @@
                     android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:gravity="center"
-                    android:text="@string/config_searchitem"
+                    android:text="@string/config_delay"
                     android:layout_weight="0.5"
                     />
 
                 <TextView
-                    android:id="@+id/config_itemamount"
+                    android:id="@+id/config_delay"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:background="@drawable/edittest1"
@@ -232,6 +232,48 @@
                 <com.google.android.material.switchmaterial.SwitchMaterial
 
                     android:id="@+id/config_autorep"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.75"
+                    android:checked="true"
+                    android:enabled="false"
+                    android:layout_gravity="center"
+                    />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.75"
+                    android:enabled="true"
+                    android:checked="true"
+                    android:layout_gravity="center"
+                    android:visibility="invisible" />
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_margin="10dp"
+                android:visibility="visible">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="نمایش خطی کالا"
+                    android:layout_weight="0.5"
+
+
+                    />
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+
+                    android:id="@+id/config_lineview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="0.75"
@@ -374,42 +416,14 @@
             </androidx.appcompat.widget.LinearLayoutCompat>
 
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_margin="10dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="@string/config_delay"
-
-
-                    android:layout_weight="0.5"
-
-                    />
-
-                <TextView
-                    android:id="@+id/config_delay"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/edittest1"
-                    android:textSize="22sp"
-                    android:layout_weight="0.5"
-                    android:gravity="center" />
-
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
 
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="10dp">
+                android:layout_margin="10dp"
+                android:visibility="gone">
 
                 <TextView
                     android:layout_width="match_parent"

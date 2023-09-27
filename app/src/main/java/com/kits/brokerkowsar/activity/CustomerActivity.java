@@ -198,7 +198,7 @@ public class CustomerActivity extends AppCompatActivity {
                     postcode = NumberFunctions.EnglishNumber(binding.customerNewPostcode.getText().toString());
                     zipcode = NumberFunctions.EnglishNumber(binding.customerNewZipcode.getText().toString());
 
-                    Call<RetrofitResponse> call = apiInterface.customer_insert("CustomerInsert",dbh.ReadConfig("BrokerCode"), citycode, kodemelli, name, family, address, phone, mobile, email, postcode, zipcode);
+                    Call<RetrofitResponse> call = apiInterface.CustomerInsert("CustomerInsert",dbh.ReadConfig("BrokerCode"), citycode, kodemelli, name, family, address, phone, mobile, email, postcode, zipcode);
                     call.enqueue(new Callback<RetrofitResponse>() {
                         @Override
                         public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {

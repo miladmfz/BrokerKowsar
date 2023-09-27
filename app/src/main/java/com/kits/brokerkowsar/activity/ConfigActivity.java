@@ -1,11 +1,17 @@
 package com.kits.brokerkowsar.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Window;
+import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.button.MaterialButton;
+import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.application.Replication;
 import com.kits.brokerkowsar.databinding.ActivityConfigBinding;
@@ -59,13 +65,44 @@ public class ConfigActivity extends AppCompatActivity {
         binding.configAutorep.setChecked(callMethod.ReadBoolan("AutoReplication"));
         binding.configKeyboardrunnable.setChecked(callMethod.ReadBoolan("keyboardRunnable"));
         binding.configDetailshow.setChecked(callMethod.ReadBoolan("ShowDetail"));
+        binding.configLineview.setChecked(callMethod.ReadBoolan("LineView"));
     }
 
      void setButtonListeners() {
         binding.configBtnToReg.setOnClickListener(view -> {
-            Intent intent = new Intent(this, RegistrationActivity.class);
-            startActivity(intent);
+
+
+            if (callMethod.ReadString("ActivationCode").equals("111111")) {
+                Intent intent = new Intent(this, RegistrationActivity.class);
+                startActivity(intent);
+            }else {
+                LoginSetting();
+            }
         });
+    }
+    public void LoginSetting() {
+
+
+        final Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.loginconfig);
+        EditText ed_password = dialog.findViewById(R.id.edloginconfig);
+        MaterialButton btn_login = dialog.findViewById(R.id.btnloginconfig);
+
+
+        btn_login.setOnClickListener(v -> {
+
+            if (NumberFunctions.EnglishNumber(ed_password.getText().toString()).equals(callMethod.ReadString("ActivationCode"))) {
+
+                Intent intent = new Intent(this, RegistrationActivity.class);
+                startActivity(intent);
+            }else {
+                callMethod.showToast("رمز عبور صیحیح نیست");
+            }
+
+
+        });
+        dialog.show();
     }
 
     @Override

@@ -66,7 +66,7 @@ public class SplashActivity extends AppCompatActivity {
     public void init() {
         callMethod = new CallMethod(this);
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
-        Log.e("kowsar__",callMethod.ReadString("ServerURLUse"));
+        Log.e("kowsar__", callMethod.ReadString("ServerURLUse"));
 
         if (callMethod.ReadString("ServerURLUse").equals("")) {
             callMethod.EditString("DatabaseName", "");
@@ -86,6 +86,8 @@ public class SplashActivity extends AppCompatActivity {
             callMethod.EditBoolan("AutoReplication", false);
             callMethod.EditBoolan("SellPriceTypeDeactivate", true);
             callMethod.EditBoolan("ShowDetail", true);
+            callMethod.EditBoolan("LineView", false);
+
 
             callMethod.EditBoolan("keyboardRunnable", false);
             callMethod.EditBoolan("kowsarService", false);
@@ -147,6 +149,7 @@ public class SplashActivity extends AppCompatActivity {
                 callMethod.EditString("PersianCompanyNameUse", "");
                 callMethod.EditString("EnglishCompanyNameUse", "");
                 callMethod.EditString("DatabaseName", "");
+                callMethod.EditString("ActivationCode", "");
                 startActivity(getIntent());
                 finish();
             }
@@ -157,6 +160,9 @@ public class SplashActivity extends AppCompatActivity {
 
 
     }
+
+
+    // Check if Bluetooth permissions are granted
 
     private void requestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
@@ -178,7 +184,15 @@ public class SplashActivity extends AppCompatActivity {
                         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                                 if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                                    Startapplication();
+                                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
+                                        // Request Bluetooth permissions
+                                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN}, PERMISSION_CODE);
+
+                                    } else {
+                                        // Permissions are already granted; you can proceed with your Bluetooth operations.
+                                        Startapplication();
+                                    }
+
                                 } else {
                                     ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, PERMISSION_CODE);
                                 }

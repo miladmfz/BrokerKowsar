@@ -9,15 +9,19 @@ import retrofit2.http.POST;
 
 public interface APIInterface {
 
+    //String BrokerPostString = "Broker/";
+    //String KowsarPostString = "Kowsar/";
+    String BrokerPostString ="index.php";
+    String KowsarPostString ="index.php";
 
-    @POST("index.php")
+    @POST(KowsarPostString)
     @FormUrlEncoded
     Call<RetrofitResponse> GetImageFromKsr(
             @Field("tag") String tag
             , @Field("KsrImageCode") String KsrImageCode
     );
 
-    @POST("index.php")
+    @POST(KowsarPostString)
     @FormUrlEncoded
     Call<RetrofitResponse> GetImageCustom(
             @Field("tag") String tag
@@ -27,7 +31,7 @@ public interface APIInterface {
     );
 
 
-    @POST("index.php")
+    @POST(KowsarPostString)
     @FormUrlEncoded
     Call<RetrofitResponse> Activation(
             @Field("tag") String tag
@@ -35,37 +39,7 @@ public interface APIInterface {
     );
 
 
-    @POST("index.php")
-    @FormUrlEncoded
-    Call<RetrofitResponse> SetLocation(
-            @Field("tag") String tag
-            , @Field("Longitude") String Altitude
-            , @Field("Latitude") String Latitude
-            , @Field("BrokerRef") String BrokerRef
-            , @Field("GpsDate") String GpsDate
-    );
-
-    @POST("index.php")
-    @FormUrlEncoded
-    Call<RetrofitResponse> GetLocation(
-            @Field("tag") String tag
-    );
-
-
-    @POST("index.php")
-    @FormUrlEncoded
-    Call<RetrofitResponse> BrokerStack(
-            @Field("tag") String tag
-            , @Field("BrokerRef") String BrokerRef
-    );
-
-    @POST("index.php")
-    @FormUrlEncoded
-    Call<RetrofitResponse> MenuBroker(
-            @Field("tag") String tag
-    );
-
-    @POST("index.php")
+    @POST(KowsarPostString)
     @FormUrlEncoded
     Call<RetrofitResponse> info(
             @Field("tag") String tag,
@@ -73,16 +47,7 @@ public interface APIInterface {
     );
 
 
-
-
-    @POST("index.php")
-    @FormUrlEncoded
-    Call<RetrofitResponse> MaxRepLogCode(
-            @Field("tag") String tag
-    );
-
-
-    @POST("index.php")
+    @POST(KowsarPostString)
     @FormUrlEncoded
     Call<RetrofitResponse> Notification(
             @Field("tag") String tag,
@@ -90,7 +55,7 @@ public interface APIInterface {
     );
 
 
-    @POST("index.php")
+    @POST(KowsarPostString)
     @FormUrlEncoded
     Call<RetrofitResponse> Kowsar_log(
             @Field("tag") String tag
@@ -103,7 +68,7 @@ public interface APIInterface {
             , @Field("Explain") String Explain
     );
 
-    @POST("index.php")
+    @POST(KowsarPostString)
     @FormUrlEncoded
     Call<RetrofitResponse> Errorlog(
             @Field("tag") String tag
@@ -115,10 +80,58 @@ public interface APIInterface {
             , @Field("VersionName") String VersionName
     );
 
-
-    @POST("index.php")
+    @POST(KowsarPostString)
     @FormUrlEncoded
-    Call<RetrofitResponse> customer_insert(
+    Call<RetrofitResponse> GetGoodType(
+            @Field("tag") String tag
+    );
+
+
+    @POST(KowsarPostString)
+    @FormUrlEncoded
+    Call<RetrofitResponse> GetColumnList(
+            @Field("tag") String tag
+            , @Field("Type") String Type
+            , @Field("AppType") String AppType
+            , @Field("IncludeZero") String IncludeZero
+    );
+
+    @POST(KowsarPostString)
+    @FormUrlEncoded
+    Call<RetrofitResponse> GetSellBroker(@Field("tag") String tag);
+
+
+
+
+
+
+
+
+
+
+
+    @POST(BrokerPostString)
+    @FormUrlEncoded
+    Call<RetrofitResponse> BrokerStack(
+            @Field("tag") String tag
+            , @Field("BrokerRef") String BrokerRef
+    );
+
+    @POST(BrokerPostString)
+    @FormUrlEncoded
+    Call<RetrofitResponse> MenuBroker(
+            @Field("tag") String tag
+    );
+
+    @POST(BrokerPostString)
+    @FormUrlEncoded
+    Call<RetrofitResponse> MaxRepLogCode(
+            @Field("tag") String tag
+    );
+
+    @POST(BrokerPostString)
+    @FormUrlEncoded
+    Call<RetrofitResponse> CustomerInsert(
             @Field("tag") String tag
             , @Field("BrokerRef") String BrokerRef
             , @Field("CityCode") String CityCode
@@ -133,25 +146,7 @@ public interface APIInterface {
             , @Field("ZipCode") String ZipCode
     );
 
-
-    @POST("index.php")
-    @FormUrlEncoded
-    Call<RetrofitResponse> GetGoodType(
-            @Field("tag") String tag
-    );
-
-
-    @POST("index.php")
-    @FormUrlEncoded
-    Call<RetrofitResponse> GetColumnList(
-            @Field("tag") String tag
-            , @Field("Type") String Type
-            , @Field("AppType") String AppType
-            , @Field("IncludeZero") String IncludeZero
-    );
-
-
-    @POST("index.php")
+    @POST(BrokerPostString)
     @FormUrlEncoded
     Call<RetrofitResponse> RetrofitReplicate(
             @Field("tag") String tag
@@ -163,28 +158,26 @@ public interface APIInterface {
     );
 
 
-    @POST("index.php")
+    @POST(BrokerPostString)
     Call<RetrofitResponse> sendfactor(
             @Field("tag") String tag,
             @Field("PFHDQASW") String pfhdqasw,
             @Field("PFDTQASW") String pfdtqasw
     );
 
-    @POST("index.php")
-    @FormUrlEncoded
-    Call<RetrofitResponse> GetSellBroker(@Field("tag") String tag);
 
-    @POST("index.php")
+    @POST(BrokerPostString)
     @FormUrlEncoded
     Call<RetrofitResponse> UpdateLocation(@Field("tag") String tag, @Field("GpsLocations") String GpsLocations);
 
 
-    @POST("index.php")
+    @POST(BrokerPostString)
     @FormUrlEncoded
-    Call<RetrofitResponse> OrderGetAppPrinter(@Field("tag") String tag);
+    Call<RetrofitResponse> GetAppPrinter(@Field("tag") String tag);
+
     @FormUrlEncoded
-    @POST("index.php")
-    Call<RetrofitResponse> OrderSendImage(@Field("tag") String tag, @Field("Image") String image, @Field("Code") String barcode, @Field("PrinterName") String PrinterName, @Field("PrintCount") String PrintCount);
+    @POST(BrokerPostString)
+    Call<RetrofitResponse> AppBrokerPrint(@Field("tag") String tag, @Field("Image") String image, @Field("Code") String barcode, @Field("PrinterName") String PrinterName, @Field("PrintCount") String PrintCount);
 
 
 }

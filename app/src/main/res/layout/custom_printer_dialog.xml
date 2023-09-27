@@ -9,9 +9,7 @@
     android:layout_margin="10dp"
     app:layout_constraintCircleRadius="10dp"
     android:background="@drawable/bg_round_selected"
-    android:layoutDirection="rtl"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    >
+    android:layoutDirection="rtl">
 
 
     <!-- res/layout/custom_printer_dialog.xml -->
@@ -29,8 +27,7 @@
             android:gravity="center"
             android:padding="16dp"
             android:textSize="18sp"
-            android:textColor="@android:color/black"
-            android:background="@android:color/white"/>
+/>
 
         <ListView
             android:id="@+id/listView"

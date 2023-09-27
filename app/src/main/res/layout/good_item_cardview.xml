@@ -14,6 +14,7 @@
     app:cardElevation="4dp"
     android:checkable="true"
     android:layoutDirection="rtl"
+    app:checkedIconTint="@color/red_800"
     >
 
 

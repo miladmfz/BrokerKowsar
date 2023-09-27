@@ -41,7 +41,6 @@ public class RegistrationActivity extends AppCompatActivity {
     CallMethod callMethod;
     Action action;
     Replication replication;
-    boolean doubletouchdbanme = false;
     Intent intent;
     ActivityRegistrationBinding binding;
     APIInterface apiInterface;
@@ -143,13 +142,6 @@ public class RegistrationActivity extends AppCompatActivity {
         binding.registrPhonenumber.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PhoneNumber")));
         binding.registrDbname.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("PersianCompanyNameUse")));
 
-        binding.registrDbname.setOnClickListener(v -> {
-            if (doubletouchdbanme) {
-                binding.registrLineManage.setVisibility(View.VISIBLE);
-            }
-            doubletouchdbanme = true;
-            new Handler().postDelayed(() -> doubletouchdbanme = false, 1000);
-        });
 
         binding.registrTotaldelete.setOnClickListener(v -> {
 
@@ -173,8 +165,6 @@ public class RegistrationActivity extends AppCompatActivity {
         });
 
         binding.registrBasedelete.setOnClickListener(v -> {
-
-
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.AlertDialogCustom);
             builder.setTitle(R.string.textvalue_allert);
@@ -204,9 +194,6 @@ public class RegistrationActivity extends AppCompatActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
 
-
-
-
         });
 
         binding.registrReplicationcolumn.setOnClickListener(v -> {
@@ -233,9 +220,6 @@ public class RegistrationActivity extends AppCompatActivity {
             AlertDialog dialog = builder.create();
             dialog.show();
 
-
-
-
         });
 
 
@@ -245,6 +229,9 @@ public class RegistrationActivity extends AppCompatActivity {
         binding.registrKeyboardrunnable.setChecked(callMethod.ReadBoolan("keyboardRunnable"));
         binding.registrKowsarservice.setChecked(callMethod.ReadBoolan("kowsarService"));
         binding.registrShowdetail.setChecked(callMethod.ReadBoolan("ShowDetail"));
+        binding.registrLineview.setChecked(callMethod.ReadBoolan("LineView"));
+
+
 
         binding.registrShowdetail.setOnCheckedChangeListener((compoundButton, b) -> {
             if (callMethod.ReadBoolan("ShowDetail")) {
@@ -253,6 +240,20 @@ public class RegistrationActivity extends AppCompatActivity {
             } else {
                 callMethod.EditBoolan("ShowDetail", true);
                 callMethod.showToast("بله");
+            }
+        });
+
+
+
+        binding.registrLineview.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (callMethod.ReadBoolan("LineView")) {
+                callMethod.EditBoolan("LineView", false);
+                callMethod.showToast("خیر");
+                binding.registrGrid.setText(NumberFunctions.PerisanNumber("3"));
+            } else {
+                callMethod.EditBoolan("LineView", true);
+                callMethod.showToast("بله");
+                binding.registrGrid.setText(NumberFunctions.PerisanNumber("1"));
             }
         });
 
@@ -361,6 +362,7 @@ public class RegistrationActivity extends AppCompatActivity {
         callMethod.EditString("EnglishCompanyNameUse", "");
         callMethod.EditString("ServerURLUse", "");
         callMethod.EditString("DatabaseName", "");
+        callMethod.EditString("ActivationCode", "");
         intent = new Intent(this, SplashActivity.class);
         finish();
         startActivity(intent);

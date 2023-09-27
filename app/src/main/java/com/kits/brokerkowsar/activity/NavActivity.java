@@ -134,7 +134,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         dbh.ClearSearchColumn();
         dbh.DatabaseCreate();
 
-       //
+
         toolbar = findViewById(R.id.MainActivity_toolbar);
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
         calendar1.setTimeZone(TimeZone.getDefault());
@@ -307,6 +307,8 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             callMethod.EditString("EnglishCompanyNameUse", "");
             callMethod.EditString("ServerURLUse", "");
             callMethod.EditString("DatabaseName", "");
+            callMethod.EditString("ActivationCode", "");
+
             intent = new Intent(this, SplashActivity.class);
             finish();
             startActivity(intent);

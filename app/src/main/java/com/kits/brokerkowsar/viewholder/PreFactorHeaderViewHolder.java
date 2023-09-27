@@ -1,13 +1,18 @@
 package com.kits.brokerkowsar.viewholder;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
@@ -73,7 +78,7 @@ public class PreFactorHeaderViewHolder extends RecyclerView.ViewHolder {
         fac_dlt = itemView.findViewById(R.id.pf_header_dlt);
         fac_customer_edit = itemView.findViewById(R.id.pf_header_customer_edit);
         fac_explain_edit = itemView.findViewById(R.id.pf_header_explain_edit);
-        fac_excel = itemView.findViewById(R.id.pf_header__xls);
+        fac_excel = itemView.findViewById(R.id.pf_header_print);
         fac_select = itemView.findViewById(R.id.pf_header_select);
         fac_status = itemView.findViewById(R.id.pf_header_status);
         fac_good_edit = itemView.findViewById(R.id.pf_header_good_edit);
@@ -131,13 +136,15 @@ public class PreFactorHeaderViewHolder extends RecyclerView.ViewHolder {
 
                 if (options[item].equals("پرینتر بلوتوثی")) {
 
-                    intent = new Intent(mContext, PrinterActivity.class);
-                    intent.putExtra("PreFac", preFactor.getPreFactorFieldValue("PreFactorCode"));
-                    mContext.startActivity(intent);
+//                    Log.e("kowsar","0");
+//                    intent = new Intent(mContext, PrinterActivity.class);
+//                    intent.putExtra("PreFac", preFactor.getPreFactorFieldValue("PreFactorCode"));
+//                    mContext.startActivity(intent);
 
+                    callMethod.showToast("دستگاهی پیدا نشد");
 
                 } else if (options[item].equals("پرینتر مجموعه")) {
-
+                    Log.e("kowsar","1");
 
                     Print print=new Print(mContext,preFactor.getPreFactorFieldValue("PreFactorCode"));
                     print.Start();

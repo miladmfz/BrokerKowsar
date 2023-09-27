@@ -53,6 +53,10 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
 
     boolean multi_select1;
 
+    public TextView tv_line_name;
+    public TextView tv_line_maxsellprice;
+    public TextView tv_line_amount;
+
 
     private final Context mContext;
     CallMethod callMethod;
@@ -81,6 +85,15 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
         img = itemView.findViewById(R.id.good_prosearch_img);
         rltv = itemView.findViewById(R.id.good_prosearch);
         btnadd = itemView.findViewById(R.id.good_prosearch_btn);
+
+        if (callMethod.ReadBoolan("LineView")) {
+
+
+            tv_line_name = itemView.findViewById(R.id.good_prosearch_name);
+            tv_line_maxsellprice = itemView.findViewById(R.id.good_prosearch_maxsellprice);
+            tv_line_amount = itemView.findViewById(R.id.good_prosearch_amount);
+
+        }
     }
 
 
@@ -126,6 +139,18 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
             }
         }
     }
+
+
+    public void bindLine(ArrayList<Column> Columns, Good good, Context mContext, CallMethod callMethod) {
+
+
+        tv_line_name.setText(NumberFunctions.PerisanNumber(good.getGoodFieldValue("GoodName")));
+        tv_line_maxsellprice.setText(NumberFunctions.PerisanNumber(good.getGoodFieldValue("MaxSellPrice")));
+        tv_line_amount.setText(NumberFunctions.PerisanNumber(good.getGoodFieldValue("StackAmount")));
+
+    }
+
+
 
     @SuppressLint({"ResourceAsColor", "UseCompatLoadingForColorStateLists"})
     public void Actionbtn(Good good, boolean multi_select) {

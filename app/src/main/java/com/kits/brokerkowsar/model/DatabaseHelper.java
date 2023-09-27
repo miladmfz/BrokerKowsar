@@ -504,6 +504,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         query = query.replaceAll("SearchCondition", Search_Condition);
 
 
+        try{
+            Integer.parseInt(aGroupCode);
+        }catch (Exception e){
+            aGroupCode="0";
+        }
         if (Integer.parseInt(aGroupCode) > 0) {
             query = query + " And GoodCode in(Select GoodRef From GoodGroup p "
                     + "Join GoodsGrp s on p.GoodGroupRef = s.GroupCode "
@@ -953,6 +958,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     }
+
+
+    @SuppressLint("Range")
+    public String GetActivationCode() {
+
+        query = " select * from Activation Where EnglishCompanyName='"+callMethod.ReadString("EnglishCompanyNameUse")+"'";
+        cursor = getWritableDatabase().rawQuery(query, null);
+        if (cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            result = String.valueOf(cursor.getInt(cursor.getColumnIndex("ActivationCode")));
+        }
+        cursor.close();
+        return result;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @SuppressLint("Range")
     public ArrayList<Activation> getActivation() {
@@ -1896,6 +1942,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cursor.close();
         return result;
     }
+
+
 
 
 

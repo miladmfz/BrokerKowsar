@@ -61,12 +61,23 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     @NonNull
     @Override
     public GoodItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.good_item_cardview, parent, false);
+
+
+        View view;
+
+        if (callMethod.ReadBoolan("LineView")) {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.good_item_line_cardview, parent, false);
+        } else {
+            view = LayoutInflater.from(parent.getContext()).inflate(R.layout.good_item_cardview, parent, false);
+
+        }
+
+
 //        GoodItemCardviewBinding binding = GoodItemCardviewBinding.inflate(
 //                LayoutInflater.from(parent.getContext())
 //        );
 //        return new GoodItemViewHolder(binding);
-        return new GoodItemViewHolder(view,mContext);
+        return new GoodItemViewHolder(view, mContext);
     }
 
 
@@ -74,17 +85,18 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull final GoodItemViewHolder holder, @SuppressLint("RecyclerView") final int position) {
 
+        if (!callMethod.ReadBoolan("LineView")) {
+            holder.bind(Columns, goods.get(position), mContext, callMethod);
 
-        holder.bind(Columns, goods.get(position), mContext, callMethod);
-
+        }else {
+            holder.bindLine(Columns, goods.get(position), mContext, callMethod);
+        }
 
         holder.callimage(goods.get(position));
-
-
         holder.rltv.setChecked(goods.get(position).isCheck());
 
         holder.rltv.setOnLongClickListener(view ->
-          {
+        {
             if (goods.get(position).getGoodFieldValue("ActiveStack").equals("1")) {
                 if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
                     multi_select = true;
@@ -127,9 +139,8 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
             return true;
         });
 
-        if (callMethod.ReadBoolan("ShowDetail")){
+        if (callMethod.ReadBoolan("ShowDetail")) {
             holder.btnadd.setVisibility(View.VISIBLE);
-
 
 
             holder.rltv.setOnClickListener(v -> {
@@ -203,13 +214,8 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
             });
 
 
-
-
-
-        }else{
+        } else {
             holder.btnadd.setVisibility(View.GONE);
-
-
 
 
             holder.rltv.setOnClickListener(v -> {
@@ -246,16 +252,7 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
             });
 
 
-
-
         }
-
-
-
-
-
-
-
 
 
     }

@@ -475,7 +475,7 @@
                 style="?attr/materialButtonOutlinedStyle" />
 
             <Button
-                android:id="@+id/pf_header__xls"
+                android:id="@+id/pf_header_print"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -483,8 +483,6 @@
                 android:gravity="center"
                 android:layout_margin="3dp"
                 android:text="@string/prefactor_excel"
-
-
                 android:textSize="16sp"
                 android:textStyle="bold"
                 app:backgroundTint="@color/white"

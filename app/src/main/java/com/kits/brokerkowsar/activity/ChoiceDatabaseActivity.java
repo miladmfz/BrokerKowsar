@@ -296,6 +296,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                 callMethod.EditString("EnglishCompanyNameUse", singleactive.getEnglishCompanyName());
                 callMethod.EditString("ServerURLUse", singleactive.getServerURL());
                 callMethod.EditString("DatabaseName", singleactive.getDatabaseFilePath());
+                callMethod.EditString("ActivationCode", singleactive.getActivationCode());
                 intent = new Intent(this, SplashActivity.class);
                 startActivity(intent);
                 finish();
