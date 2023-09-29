@@ -3,4 +3,7 @@
     <files-path
         name="app_directory"
         path="." />
+    <external-path
+        name="external_files"
+        path="Android/data/com.kits.brokerkowsar/files/Download/" />
 </paths>
