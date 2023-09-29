@@ -192,6 +192,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                         callMethod.EditString("PersianCompanyNameUse", activation.getPersianCompanyName());
                         callMethod.EditString("EnglishCompanyNameUse", activation.getEnglishCompanyName());
                         callMethod.EditString("ServerURLUse", activation.getServerURL());
+                        callMethod.EditString("ActivationCode", activation.getActivationCode());
                         intent = new Intent(App.getContext(), SplashActivity.class);
                         startActivity(intent);
                         finish();

@@ -98,6 +98,7 @@ public class SplashActivity extends AppCompatActivity {
             callMethod.EditString("SQLiteURLUse", "");
             callMethod.EditString("PersianCompanyNameUse", "");
             callMethod.EditString("EnglishCompanyNameUse", "");
+            callMethod.EditString("ActivationCode", "");
             dbhbase = new DatabaseHelper(App.getContext(), "/data/data/com.kits.brokerkowsar/databases/KowsarDb.sqlite");
             dbhbase.CreateActivationDb();
 

@@ -66,8 +66,6 @@ public class BasketActivity extends AppCompatActivity {
         action = new Action(this);
         callMethod = new CallMethod(this);
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
-
-
         setSupportActionBar(binding.BuyActivityToolbar);
 
     }

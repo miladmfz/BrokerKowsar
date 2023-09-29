@@ -30,6 +30,7 @@
     <string name="aboutus">درباره ما</string>
     <string name="aboutus_address">نشانی :میدان توحید خیابان پرچم پلاک 37</string>
     <string name="aboutus_number">تلفن :3—66569320</string>
+    <string name="aboutus_localnumber">داخلی : 409 </string>
     <string name="aboutus_email">پست الکترونیک :info@Kits.ir</string>
     <string name="aboutus_downpage">تمامی حقوق این نرم افزار متعلق به گروه نرم افزاری کوثر می باشد</string>
     <string name="buy_total">مبلغ نهایی</string>
