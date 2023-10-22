@@ -1,12 +1,14 @@
 package com.kits.brokerkowsar.activity;
 
 
+
 import android.annotation.SuppressLint;
 
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,6 +23,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.work.Constraints;
@@ -35,24 +38,30 @@ import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.AlarmReceiver;
 import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
+import com.kits.brokerkowsar.application.LocationService;
 import com.kits.brokerkowsar.application.Replication;
 import com.kits.brokerkowsar.application.WManager;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.GoodGroup;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.RetrofitResponse;
+import com.kits.brokerkowsar.model.UserInfo;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIClient_kowsar;
 import com.kits.brokerkowsar.webService.APIInterface;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
+import com.kits.brokerkowsar.application.Constants;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class NavActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -119,6 +128,8 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             alarm.setAlarm(App.getContext());
         }
     }
+
+
 
 
     @RequiresApi(api = Build.VERSION_CODES.P)
@@ -307,8 +318,6 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
             callMethod.EditString("EnglishCompanyNameUse", "");
             callMethod.EditString("ServerURLUse", "");
             callMethod.EditString("DatabaseName", "");
-            callMethod.EditString("ActivationCode", "");
-
             intent = new Intent(this, SplashActivity.class);
             finish();
             startActivity(intent);
@@ -424,62 +433,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
 
 
     private void noti() {
-        Call<RetrofitResponse> call1 = apiInterface.Notification("Notification", "Broker");
-        call1.enqueue(new Callback<RetrofitResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
-                if (response.isSuccessful()) {
-                    assert response.body() != null;
-                    if (!response.body().getText().equals("")) {
 
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(NavActivity.this, R.style.AlertDialogCustom);
-                        builder.setTitle("توجه");
-                        builder.setMessage(response.body().getText());
-
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-
-
-
-
-
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-            }
-        });
-
-        APIInterface apiInterface2 = APIClient_kowsar.getCleint_log().create(APIInterface.class);
-        Call<RetrofitResponse> call2 = apiInterface2.Notification("Notification_kowsar", callMethod.ReadString("EnglishCompanyNameUse")
-        );
-        call2.enqueue(new Callback<RetrofitResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
-                if (response.isSuccessful()) {
-                    assert response.body() != null;
-                    if (!response.body().getText().equals("")) {
-
-
-                        AlertDialog.Builder builder = new AlertDialog.Builder(NavActivity.this, R.style.AlertDialogCustom);
-                        builder.setTitle("توجه");
-                        builder.setMessage(NumberFunctions.PerisanNumber(response.body().getText()));
-
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
-
-
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-            }
-        });
 
 
     }

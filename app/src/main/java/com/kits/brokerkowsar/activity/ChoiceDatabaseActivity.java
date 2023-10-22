@@ -55,8 +55,6 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     Button btn_prog;
     Intent intent;
     int downloadId;
-
-
     ActivityChoiceDatabaseBinding binding;
 
     @Override
@@ -96,14 +94,22 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     public void init() {
 
         activations = dbhbase.getActivation();
+
         binding.activitionVersion.setText(NumberFunctions.PerisanNumber("نسخه نرم افزار : " + BuildConfig.VERSION_NAME));
+        callMethod.ErrorLog("0");
         for (Activation singleactive : activations) {
-            CreateView(singleactive);
+            callMethod.ErrorLog("11");
+            try {
+                CreateView(singleactive);
+            }catch (Exception e){
+                callMethod.ErrorLog(e.getMessage());
+            }
+
         }
 
 
         binding.activitionBtn.setOnClickListener(v -> {
-            Call<RetrofitResponse> call1 = apiInterface.Activation("ActivationCode", Objects.requireNonNull(binding.activitionEdittext.getText()).toString());
+            Call<RetrofitResponse> call1 = apiInterface.Activation(Objects.requireNonNull(binding.activitionEdittext.getText()).toString());
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
@@ -112,6 +118,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                         activation = response.body().getActivations().get(0);
                         dbhbase.InsertActivation(activation);
                         finish();
+
                         startActivity(getIntent());
                     }
                 }
@@ -131,6 +138,9 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     public void DownloadRequest(Activation activation) {
         btn_prog.setOnClickListener(view -> DownloadRequest(activation));
 
+
+        String downloadurl="http://178.131.31.161:60005/api/kits/GetDb?Code="+activation.getActivationCode();
+
         PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
                 .setDatabaseEnabled(true)
                 .build();
@@ -144,8 +154,9 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                 .build();
         PRDownloader.initialize(getApplicationContext(), config1);
 
+
         downloadId = PRDownloader.download(
-                        activation.getSQLiteURL(),
+                        downloadurl,
                         activation.getDatabaseFolderPath(),
                         "KowsarDbTemp.sqlite"
                 )
@@ -189,6 +200,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                         } else {
                             dbh.InitialConfigInsert();
                         }
+
                         callMethod.EditString("PersianCompanyNameUse", activation.getPersianCompanyName());
                         callMethod.EditString("EnglishCompanyNameUse", activation.getEnglishCompanyName());
                         callMethod.EditString("ServerURLUse", activation.getServerURL());
@@ -215,8 +227,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
 
     @SuppressLint({"SetTextI18n", "SdCardPath"})
     public void CreateView(Activation singleactive) {
-
-        String serverip = singleactive.getServerURL().substring(singleactive.getServerURL().indexOf("//") + 2, singleactive.getServerURL().indexOf("/login") - 6);
+        String serverip = singleactive.getServerURL().substring(singleactive.getServerURL().indexOf("//") + 2, singleactive.getServerURL().indexOf("/api") - 6);
 
 
         LinearLayoutCompat ll_main = new LinearLayoutCompat(this);
@@ -228,7 +239,6 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         MaterialButton btn_login = new MaterialButton(this);
         MaterialButton btn_update = new MaterialButton(this);
         MaterialButton btn_gap = new MaterialButton(this);
-
         LinearLayoutCompat.LayoutParams margin_10 = new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
         LinearLayoutCompat.LayoutParams margin_5 = new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
 
@@ -245,7 +255,6 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         tv_PersianCompanyName.setTextColor(getResources().getColor(R.color.grey_800));
         tv_EnglishCompanyName.setTextColor(getResources().getColor(R.color.grey_800));
         tv_ServerURL.setTextColor(getResources().getColor(R.color.grey_800));
-
 
         ll_main.setOrientation(LinearLayoutCompat.HORIZONTAL);
         ll_tv.setOrientation(LinearLayoutCompat.VERTICAL);
@@ -264,7 +273,6 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         btn_update.setBackgroundResource(R.color.white);
         btn_gap.setBackgroundResource(R.color.white);
 
-
         tv_PersianCompanyName.setTextSize(26);
         tv_EnglishCompanyName.setTextSize(16);
         tv_ServerURL.setTextSize(16);
@@ -278,7 +286,6 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         ll_btn.setWeightSum(1);
 
         btn_gap.setVisibility(View.INVISIBLE);
-
 
         tv_PersianCompanyName.setText(NumberFunctions.PerisanNumber(singleactive.getPersianCompanyName()));
         tv_EnglishCompanyName.setText("نام پوشه عکس : " + singleactive.getEnglishCompanyName());
@@ -308,8 +315,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         btn_update.setOnClickListener(v -> {
 
             Call<RetrofitResponse> call1 = apiInterface.Activation(
-                    "ActivationCode",
-                    singleactive.getActivationCode()
+                         singleactive.getActivationCode()
             );
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
@@ -326,11 +332,11 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+
                     callMethod.ErrorLog(t.getMessage());
                 }
             });
         });
-
 
         ll_btn.addView(btn_login);
         ll_btn.addView(btn_gap);
@@ -343,7 +349,6 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         ll_tv.addView(ll_btn, margin_5);
 
         ll_main.addView(ll_tv);
-
 
         binding.activitionLine.addView(ll_main, margin_10);
     }

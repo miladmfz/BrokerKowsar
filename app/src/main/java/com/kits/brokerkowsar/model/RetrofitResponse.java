@@ -41,6 +41,16 @@ public class RetrofitResponse {
     @SerializedName("Text")
     private String Text;
 
+    @SerializedName("response")
+    private String response;
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
+    }
 
     @SerializedName("ErrCode")
     private String ErrCode;

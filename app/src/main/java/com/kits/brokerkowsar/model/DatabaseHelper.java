@@ -84,7 +84,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "EnglishCompanyName TEXT," +
                 "ServerURL TEXT," +
                 "SQLiteURL TEXT," +
-                "MaxDevice TEXT)");
+                "MaxDevice TEXT," +
+                "SecendServerURL TEXT," +
+                "DbName TEXT," +
+                "AppType TEXT)");
         getWritableDatabase().close();
     }
 
@@ -949,10 +952,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     "Where ActivationCode= '" + activation.getActivationCode() + "'");
 
         } else {
-            getWritableDatabase().execSQL(" Insert Into Activation(AppBrokerCustomerCode,ActivationCode,PersianCompanyName, EnglishCompanyName,ServerURL,SQLiteURL,MaxDevice)" +
+            getWritableDatabase().execSQL(" Insert Into Activation(AppBrokerCustomerCode,ActivationCode,PersianCompanyName, EnglishCompanyName,ServerURL,SQLiteURL,MaxDevice,SecendServerURL,DbName,AppType)" +
                     " Select '" + activation.getAppBrokerCustomerCode() + "','" + activation.getActivationCode() + "','" +
                     activation.getPersianCompanyName() + "','" + activation.getEnglishCompanyName() + "','" +
-                    activation.getServerURL() + "','" + activation.getSQLiteURL() + "','" + activation.getMaxDevice() + "'");
+                    activation.getServerURL() + "','" + activation.getSQLiteURL() + "','" + activation.getMaxDevice() + "','" + activation.getSecendServerURL() + "','" + activation.getDbName() + "','" + activation.getAppType() + "'");
 
         }
 
@@ -1002,7 +1005,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @SuppressLint("Range")
     public ArrayList<Activation> getActivation() {
-
+        callMethod.ErrorLog("db=start");
         query = "Select * From Activation";
         cursor = getWritableDatabase().rawQuery(query, null);
         ArrayList<Activation> activations = new ArrayList<>();
@@ -1018,7 +1021,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     activation.setServerURL(cursor.getString(cursor.getColumnIndex("ServerURL")));
                     activation.setSQLiteURL(cursor.getString(cursor.getColumnIndex("SQLiteURL")));
                     activation.setMaxDevice(cursor.getString(cursor.getColumnIndex("MaxDevice")));
+                    activation.setSecendServerURL(cursor.getString(cursor.getColumnIndex("SecendServerURL")));
+                    activation.setDbName(cursor.getString(cursor.getColumnIndex("DbName")));
+                    activation.setAppType(cursor.getString(cursor.getColumnIndex("AppType")));
                 } catch (Exception ignored) {
+                    callMethod.ErrorLog("db="+ignored.getMessage());
                 }
                 activations.add(activation);
 

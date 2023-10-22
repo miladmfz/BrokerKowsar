@@ -83,8 +83,8 @@ public class ProductAdapter extends ExpandableRecyclerViewAdapter<CategoryViewHo
 
         } else {
 
-            call = apiInterface.GetImageCustom("GetImageCustom"
-                    , "TGoodsGrp"
+            call = apiInterface.GetImageCustom(
+                    "TGoodsGrp"
                     , String.valueOf(product.id)
                     , "500"
             );
@@ -140,8 +140,8 @@ public class ProductAdapter extends ExpandableRecyclerViewAdapter<CategoryViewHo
 
         } else {
 
-            call = apiInterface.GetImageCustom("GetImageCustom"
-                    , "TGoodsGrp"
+            call = apiInterface.GetImageCustom(
+                     "TGoodsGrp"
                     , String.valueOf(company.id)
                     , "500"
             );

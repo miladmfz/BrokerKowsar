@@ -118,7 +118,7 @@ public class Print {
 
     public void GetAppPrinterList() {
 
-        call = apiInterface.GetAppPrinter("GetAppPrinter");
+        call = apiInterface.GetAppPrinter();
         call.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(@NotNull Call<RetrofitResponse> call, @NotNull Response<RetrofitResponse> response) {
@@ -406,7 +406,7 @@ public class Print {
 
 
         bitmap_factor_base64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
-        Call<RetrofitResponse> call = apiInterface.AppBrokerPrint("AppBrokerPrint",
+        Call<RetrofitResponse> call = apiInterface.AppBrokerPrint(
                 bitmap_factor_base64,
                 PreFac,
                 selectedPrinter.getPrinterName(),

@@ -99,7 +99,7 @@ public class SliderAdapter extends SliderViewAdapter<SliderAdapter.GoodViewHolde
                             false)
             );
 
-            Call<RetrofitResponse> call2 = apiInterface.GetImageFromKsr("GetImageFromKsr", goods.get(position).getGoodFieldValue("KsrImageCode")
+            Call<RetrofitResponse> call2 = apiInterface.GetImageFromKsr( goods.get(position).getGoodFieldValue("KsrImageCode")
             );
             call2.enqueue(new Callback<RetrofitResponse>() {
                 @Override

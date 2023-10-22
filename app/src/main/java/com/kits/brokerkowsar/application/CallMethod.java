@@ -26,7 +26,6 @@ import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
 
 public class CallMethod extends Application {
@@ -96,38 +95,46 @@ public class CallMethod extends Application {
 
     public void ErrorLog(String ErrorStr) {
 
-        @SuppressLint("HardwareIds") String android_id = Settings.Secure.getString(context
-                .getContentResolver(), Settings.Secure.ANDROID_ID);
-
-        Log.e("kowsar_ErrorLog", ErrorStr);
-
-        PersianCalendar calendar1 = new PersianCalendar();
-        String version = BuildConfig.VERSION_NAME;
-
-        DatabaseHelper dbh = new DatabaseHelper(context, ReadString("DatabaseName"));
-
-
-
-        APIInterface apiInterface = APIClient_kowsar.getCleint_log().create(APIInterface.class);
-        Call<RetrofitResponse> cl = apiInterface.Errorlog("Errorlog"
-                , ErrorStr
-                , dbh.ReadConfig("BrokerCode")
-                , android_id
-                , ReadString("PersianCompanyNameUse")
-                , calendar1.getPersianShortDateTime()
-                , version);
-        cl.enqueue(new Callback<RetrofitResponse>() {
-            @Override
-            public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
-                assert response.body() != null;
-            }
-
-
-            @Override
-            public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                //ErrorLog(t.getMessage());
-            }
-        });
+        Log.e("Kowsar",ErrorStr);
+//
+//        @SuppressLint("HardwareIds") String android_id = Settings.Secure.getString(context
+//                .getContentResolver(), Settings.Secure.ANDROID_ID);
+//
+//        Log.e("kowsar_ErrorLog", ErrorStr);
+//
+//        PersianCalendar calendar1 = new PersianCalendar();
+//        String version = BuildConfig.VERSION_NAME;
+//
+//        DatabaseHelper dbh = new DatabaseHelper(context, ReadString("DatabaseName"));
+//        UserInfo auser = new UserInfo();
+//        try {
+//            auser = dbh.LoadPersonalInfo();
+//        } catch (Exception e) {
+//            auser.setBrokerCode("0");
+//        }
+//
+//
+//        APIInterface apiInterface = APIClient_kowsar.getCleint_log().create(APIInterface.class);
+//        Call<RetrofitResponse> cl = apiInterface.Errorlog(
+//                ErrorStr
+//                , auser.getBrokerCode()
+//                , android_id
+//                , ReadString("PersianCompanyNameUse")
+//                , calendar1.getPersianShortDateTime()
+//                , version);
+//        cl.enqueue(new Callback<RetrofitResponse>() {
+//            @Override
+//            public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
+//
+//
+//            }
+//
+//
+//            @Override
+//            public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+//                //ErrorLog(t.getMessage());
+//            }
+//        });
 
     }
 

@@ -60,6 +60,8 @@ public class CustomerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityCustomerBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+
         intent();
         Config();
         try {
@@ -67,6 +69,8 @@ public class CustomerActivity extends AppCompatActivity {
         } catch (Exception e) {
             callMethod.ErrorLog(e.getMessage());
         }
+
+
     }
 
 //*****************************************************************************************
@@ -119,6 +123,7 @@ public class CustomerActivity extends AppCompatActivity {
             }
         });
 
+
         binding.customerNewRegisterBtn.setOnClickListener(v -> {
             Intent intent = new Intent(CustomerActivity.this, CustomerActivity.class);
             intent.putExtra("edit", "0");
@@ -134,6 +139,7 @@ public class CustomerActivity extends AppCompatActivity {
             allCustomer();
         });
         allCustomer();
+
     }
 
     public void Customer_new() {
@@ -197,30 +203,30 @@ public class CustomerActivity extends AppCompatActivity {
                     email = NumberFunctions.EnglishNumber(binding.customerNewEmail.getText().toString());
                     postcode = NumberFunctions.EnglishNumber(binding.customerNewPostcode.getText().toString());
                     zipcode = NumberFunctions.EnglishNumber(binding.customerNewZipcode.getText().toString());
-
-                    Call<RetrofitResponse> call = apiInterface.CustomerInsert("CustomerInsert",dbh.ReadConfig("BrokerCode"), citycode, kodemelli, name, family, address, phone, mobile, email, postcode, zipcode);
-                    call.enqueue(new Callback<RetrofitResponse>() {
-                        @Override
-                        public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
-                            if (response.isSuccessful()) {
-                                assert response.body() != null;
-                                ArrayList<Customer> Customes = response.body().getCustomers();
-                                callMethod.showToast(Customes.get(0).getCustomerFieldValue("ErrDesc"));
-                                intent = new Intent(App.getContext(), CustomerActivity.class);
-                                intent.putExtra("edit", "0");
-                                intent.putExtra("factor_code", "0");
-                                intent.putExtra("id", "0");
-                                startActivity(intent);
-                            }
-
-
-                        }
-
-                        @Override
-                        public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                            callMethod.ErrorLog(t.getMessage());
-                        }
-                    });
+//
+//                    Call<RetrofitResponse> call = apiInterface.customer_insert( auser.getBrokerCode(), citycode, kodemelli, name, family, address, phone, mobile, email, postcode, zipcode);
+//                    call.enqueue(new Callback<RetrofitResponse>() {
+//                        @Override
+//                        public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
+//                            if (response.isSuccessful()) {
+//                                assert response.body() != null;
+//                                ArrayList<Customer> Customes = response.body().getCustomers();
+//                                callMethod.showToast(Customes.get(0).getCustomerFieldValue("ErrDesc"));
+//                                intent = new Intent(App.getContext(), CustomerActivity.class);
+//                                intent.putExtra("edit", "0");
+//                                intent.putExtra("factor_code", "0");
+//                                intent.putExtra("id", "0");
+//                                startActivity(intent);
+//                            }
+//
+//
+//                        }
+//
+//                        @Override
+//                        public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+//                            callMethod.ErrorLog(t.getMessage());
+//                        }
+//                    });
 
                 } else {
                     intent = new Intent(this, ConfigActivity.class);

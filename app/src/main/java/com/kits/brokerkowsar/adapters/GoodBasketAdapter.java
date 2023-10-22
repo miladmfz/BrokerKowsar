@@ -71,7 +71,6 @@ public class GoodBasketAdapter extends RecyclerView.Adapter<GoodBasketViewHolder
 
         if (!image_info.Image_exist(goods.get(position).getGoodFieldValue("KsrImageCode"))) {
             Call<RetrofitResponse> call2 = apiInterface.GetImageFromKsr(
-                    "GetImageFromKsr",
                     goods.get(position).getGoodFieldValue("KsrImageCode")
             );
             call2.enqueue(new Callback<RetrofitResponse>() {

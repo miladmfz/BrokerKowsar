@@ -165,113 +165,92 @@ public class SplashActivity extends AppCompatActivity {
 
     // Check if Bluetooth permissions are granted
 
+    private void runtimePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CODE);
+        } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CODE);
+        } else {
+            Startapplication();
+        }
+    }
+
     private void requestPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            Log.e("kowsar_1","Build.VERSION.SDK_INT >= Build.VERSION_CODES.R");
             if (!Environment.isExternalStorageManager()) {
-
+                Log.e("kowsar_1","0");
                 try {
+                    Log.e("kowsar_1","1");
                     intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
-                    intent.addCategory("android.intent.category.DEFAULT");
-                    intent.setData(Uri.parse(String.format("package:%s", getApplicationContext().getPackageName())));
+                    intent.addCategory(Intent.CATEGORY_DEFAULT);
+                    intent.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
                     startActivityForResult(intent, 2296);
                 } catch (Exception e) {
+                    Log.e("kowsar_1","2");
                     intent = new Intent();
                     intent.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
                     startActivityForResult(intent, 2296);
                 }
+                Log.e("kowsar_1","3");
+            } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Log.e("kowsar_1","4");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_CODE);
+            } else if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                Log.e("kowsar_1","5");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+                    && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                Log.e("kowsar_1","6");
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, PERMISSION_CODE);
             } else {
-                if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                                if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-                                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED) {
-                                        // Request Bluetooth permissions
-                                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.BLUETOOTH, Manifest.permission.BLUETOOTH_ADMIN}, PERMISSION_CODE);
-
-                                    } else {
-                                        // Permissions are already granted; you can proceed with your Bluetooth operations.
-                                        Startapplication();
-                                    }
-
-                                } else {
-                                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, PERMISSION_CODE);
-                                }
-                            } else {
-                                Startapplication();
-                            }
-                        } else {
-                            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_BACKGROUND_LOCATION}, PERMISSION_CODE);
-                        }
-                    } else {
-                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
-                    }
-                } else {
-                    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_CODE);
-                }
+                Startapplication();
             }
         } else {
+            Log.e("kowsar_1","not If");
             runtimePermission();
-        }
-    }
-
-    private void runtimePermission() {
-        try {
-            if (androidx.core.content.ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                if (androidx.core.content.ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    if (androidx.core.content.ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        Startapplication();
-                    } else {
-                        androidx.core.app.ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_CODE);
-                    }
-                } else {
-                    androidx.core.app.ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_CODE);
-                }
-            } else {
-                androidx.core.app.ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_CODE);
-            }
-        } catch (Exception e) {
-            Log.e("kowsar_runtime", e.getMessage());
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 2296) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                if (Environment.isExternalStorageManager()) {
-                    requestPermission();
-                    callMethod.showToast("مجوز صادر شد");
-
-                } else {
-                    handler = new Handler();
-                    handler.postDelayed(() -> {
-                        intent = new Intent(this, SplashActivity.class);
-                        finish();
-                        startActivity(intent);
-                    }, 2000);
-                    callMethod.showToast("مجوز مربوطه را فعال نمایید");
-                }
+        if (requestCode == 2296 && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (Environment.isExternalStorageManager()) {
+                requestPermission();
+                callMethod.showToast("مجوز صادر شد");
+            } else {
+                handler = new Handler();
+                handler.postDelayed(() -> {
+                    intent = new Intent(this, SplashActivity.class);
+                    finish();
+                    startActivity(intent);
+                }, 2000);
+                callMethod.showToast("مجوز مربوطه را فعال نمایید");
             }
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        if (requestCode == PERMISSION_REQUEST_CODE) {
+
+        if (requestCode == PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                callMethod.showToast("permission granted");
+                callMethod.showToast("Permission granted");
             } else {
-                callMethod.showToast("permission denied");
+                callMethod.showToast("Permission denied");
             }
             requestPermission();
         } else {
             throw new IllegalStateException("Unexpected value: " + requestCode);
         }
     }
+
+
+
 
 
 }

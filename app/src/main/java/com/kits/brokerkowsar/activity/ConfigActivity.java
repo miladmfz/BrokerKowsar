@@ -78,6 +78,7 @@ public class ConfigActivity extends AppCompatActivity {
             }else {
                 LoginSetting();
             }
+
         });
     }
     public void LoginSetting() {
@@ -92,6 +93,7 @@ public class ConfigActivity extends AppCompatActivity {
 
         btn_login.setOnClickListener(v -> {
 
+            callMethod.ErrorLog(callMethod.ReadString("ActivationCode"));
             if (NumberFunctions.EnglishNumber(ed_password.getText().toString()).equals(callMethod.ReadString("ActivationCode"))) {
 
                 Intent intent = new Intent(this, RegistrationActivity.class);

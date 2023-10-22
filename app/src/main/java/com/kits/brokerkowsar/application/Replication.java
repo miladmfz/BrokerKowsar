@@ -8,22 +8,29 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build;
 import android.util.Log;
 import android.view.View;
+
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.activity.BasketActivity;
 import com.kits.brokerkowsar.activity.NavActivity;
 import com.kits.brokerkowsar.model.Column;
 import com.kits.brokerkowsar.model.DatabaseHelper;
+import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.Location;
 import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.ReplicationModel;
 import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.kits.brokerkowsar.model.TableDetail;
+import com.kits.brokerkowsar.model.UserInfo;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
@@ -33,6 +40,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -47,23 +56,25 @@ public class Replication {
     private final DatabaseHelper dbh;
     ArrayList<Location> locations = new ArrayList<>();
     Location location;
+
     CallMethod callMethod;
     APIInterface apiInterface;
     Intent intent;
     ImageInfo image_info;
     String GpsLocationLastCode;
+
+    private Integer FinalStep = 0;
     String LastRepCode = "0";
     public Dialog dialog;
     ArrayList<TableDetail> tableDetails = new ArrayList<>();
     ArrayList<ReplicationModel> replicationModels = new ArrayList<>();
+
     String url;
     Integer replicatelevel;
     Cursor cursor;
     SQLiteDatabase sqLiteDatabase;
     TextView tv_rep;
     TextView tv_step;
-    private Integer FinalStep = 0;
-
 
     public Replication(Context context) {
         this.mContext = context;
@@ -89,17 +100,20 @@ public class Replication {
             tv_rep.setText(NumberFunctions.PerisanNumber("در حال بروز رسانی تنظیم جدول"));
             GoodTypeReplication();
         } else {
-            Call<RetrofitResponse> call1 = apiInterface.MaxRepLogCode("MaxRepLogCode");
+            Call<RetrofitResponse> call1 = apiInterface.GetMaxRepLog();
+            callMethod.ErrorLog(call1.request().toString()+"");
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
-                public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
+                public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull Response<RetrofitResponse> response) {
+
                     assert response.body() != null;
-                    dbh.SaveConfig("MaxRepLogCode", response.body().getText());
+                    callMethod.ErrorLog(response.body().getText()+"");
+                    dbh.SaveConfig("MaxRepLogCode", Objects.requireNonNull(response.body()).getText());
                     RetrofitReplicate(0);
                 }
 
                 @Override
-                public void onFailure(Call<RetrofitResponse> call, Throwable t) {
+                public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
 
                 }
             });
@@ -110,11 +124,10 @@ public class Replication {
 
     public void DoingReplicateAuto() {
 
-        Call<RetrofitResponse> call1 = apiInterface.MaxRepLogCode("MaxRepLogCode");
+        Call<RetrofitResponse> call1 = apiInterface.GetMaxRepLog ();
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
-                assert response.body() != null;
                 dbh.SaveConfig("MaxRepLogCode", response.body().getText());
                 RetrofitReplicateAuto(0);
             }
@@ -147,37 +160,35 @@ public class Replication {
         dbh.closedb();
         replicatelevel = replevel;
         replicationModels = dbh.GetReplicationTable();
-        Log.e("kowsar_1111=", replicationModels.size() + "");
         if (replicatelevel < replicationModels.size()) {
-
             ReplicationModel replicatedetail = replicationModels.get(replicatelevel);
             tv_rep.setText(NumberFunctions.PerisanNumber(replicationModels.size() + "/" + replicatedetail.getReplicationCode() + "در حال بروز رسانی"));
             tableDetails = dbh.GetTableDetail(replicatedetail.getClientTable());
             FinalStep = 0;
             LastRepCode = String.valueOf(replicatedetail.getLastRepLogCode());
+            UserInfo userInfo = dbh.LoadPersonalInfo();
 
-
-            String where = replicatedetail.getCondition().replace("BrokerCondition", dbh.ReadConfig("BrokerCode"));
-            Log.e("kowsar_0=", replicatedetail.getServerTable());
-            Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
-                    "repinfo",
-                    LastRepCode,
+            Call<RetrofitResponse> call1 = apiInterface.repinfo(
+                    String.valueOf(replicatedetail.getLastRepLogCode()),
                     replicatedetail.getServerTable(),
-                    where,
                     "1",
                     String.valueOf(RepRowCount)
             );
+            callMethod.ErrorLog(call1.request().toString());
 
+
+            callMethod.ErrorLog("lastreplog= "+String.valueOf(replicatedetail.getLastRepLogCode()));
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
 
                     if (response.isSuccessful()) {
-                        assert response.body() != null;
-                        Log.e("kowsar_1=", response.body().getText());
                         try {
-
-                            JSONArray arrayobject = new JSONArray(response.body().getText());
+                            callMethod.ErrorLog("8");
+                            JSONArray arrayobject = null;
+                            if (response.body() != null) {
+                                arrayobject = new JSONArray(response.body().getText());
+                            }
                             int ObjectSize = arrayobject.length();
                             JSONObject singleobject = arrayobject.getJSONObject(0);
                             String state = singleobject.getString("RLOpType");
@@ -260,12 +271,24 @@ public class Replication {
                                                             if (QueryConditionCount > 0)
                                                                 qCol.append(" , ");
                                                             if (!tableDetails.get(z).getText().equals("null")) {
+
                                                                 String valuetype = tableDetails.get(z).getType().substring(0, 2);
                                                                 if (valuetype.equals("CH")) {
                                                                     qCol.append(" ").append(tableDetails.get(z).getName()).append(" = '").append(tableDetails.get(z).getText()).append("' ");
-                                                                } else {
+                                                                } else if (valuetype.equals("BO")) {
+                                                                    if (!tableDetails.get(z).getText().equals(""))
+                                                                    {
+                                                                        qCol.append(" ").append(tableDetails.get(z).getName()).append(" = ").append(tableDetails.get(z).getText()).append(" ");
+
+                                                                    }else{
+                                                                        qCol.append(" ").append(tableDetails.get(z).getName()).append(" = null ");
+                                                                    }
+
+                                                                }else {
                                                                     qCol.append(" ").append(tableDetails.get(z).getName()).append(" = ").append(tableDetails.get(z).getText()).append(" ");
                                                                 }
+
+
                                                             } else {
                                                                 qCol.append(" ").append(tableDetails.get(z).getName()).append(" = ").append(tableDetails.get(z).getText()).append(" ");
                                                             }
@@ -308,7 +331,8 @@ public class Replication {
                                     database.execSQL("Update ReplicationTable Set LastRepLogCode = " + LastRepCode + " Where ServerTable = '" + replicatedetail.getServerTable() + "' ");
                                     break;
                             }
-
+                            Log.e("kowsar_1=", RepRowCount+"");
+                            Log.e("kowsar_1=", arrayobject.length()+"");
                             if (arrayobject.length() >= RepRowCount) {
                                 RetrofitReplicate(replicatelevel);
                             } else {
@@ -326,12 +350,15 @@ public class Replication {
                             }
                         } catch (Exception ignored) {
                             Log.e("kowsar_1=", ignored.getMessage());
+                            callMethod.ErrorLog("10");
                         }
                     }
                 }
 
                 @Override
                 public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+                    callMethod.ErrorLog("9");
+                    callMethod.ErrorLog("kowsar_____"+t.getMessage());
                     RetrofitReplicate(replicatelevel);
                 }
             });
@@ -355,12 +382,10 @@ public class Replication {
 
             String where = replicatedetail.getCondition().replace("BrokerCondition", dbh.ReadConfig("BrokerCode"));
 
-            Log.e("kowsar_LastRepCode", LastRepCode);
-            Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
-                    "repinfo",
+            Log.e("kowsar_LastRepCode",LastRepCode);
+            Call<RetrofitResponse> call1 = apiInterface.repinfo(
                     LastRepCode,
                     replicatedetail.getServerTable(),
-                    where,
                     "1",
                     "100"
             );
@@ -542,11 +567,9 @@ public class Replication {
         LastRepCode = cursor.getString(0);
         cursor.close();
 
-        Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate(
-                "repinfo"
-                , LastRepCode
+        Call<RetrofitResponse> call1 = apiInterface.repinfo(
+                 LastRepCode
                 , RepTable
-                , ""
                 , "1"
                 , String.valueOf(400)
         );
@@ -654,8 +677,9 @@ public class Replication {
 
     public void BrokerStack() {
 
+        UserInfo userInfo = dbh.LoadPersonalInfo();
         dbh.DatabaseCreate();
-        Call<RetrofitResponse> call1 = apiInterface.BrokerStack("BrokerStack", dbh.ReadConfig("BrokerCode"));
+        Call<RetrofitResponse> call1 = apiInterface.BrokerStack( userInfo.getBrokerCode());
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
@@ -676,7 +700,7 @@ public class Replication {
 
     public void GroupCodeDefult() {
 
-        Call<RetrofitResponse> call1 = apiInterface.info("kowsar_info", "AppBroker_DefaultGroupCode");
+        Call<RetrofitResponse> call1 = apiInterface.DbSetupvalue( "AppBroker_DefaultGroupCode");
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(@NotNull Call<RetrofitResponse> call, @NotNull Response<RetrofitResponse> response) {
@@ -700,7 +724,7 @@ public class Replication {
     }
 
     public void MenuBroker() {
-        Call<RetrofitResponse> call1 = apiInterface.MenuBroker("GetMenuBroker");
+        Call<RetrofitResponse> call1 = apiInterface.GetMenuBroker();
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
@@ -721,7 +745,7 @@ public class Replication {
 
     public void GoodTypeReplication() {
 
-        Call<RetrofitResponse> call1 = apiInterface.GetGoodType("GetGoodType");
+        Call<RetrofitResponse> call1 = apiInterface.GetGoodType();
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
@@ -744,8 +768,11 @@ public class Replication {
     }
 
     public void columnReplication(Integer i) {
+
+callMethod.ErrorLog(""+i);
         if (i < 4) {
-            Call<RetrofitResponse> call2 = apiInterface.GetColumnList("GetColumnList", "" + i, "1", "1");
+            Call<RetrofitResponse> call2 = apiInterface.GetColumnList( "" + i, "1", "1");
+            callMethod.ErrorLog(call2.request().toString());
             call2.enqueue(new Callback<RetrofitResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
@@ -766,15 +793,17 @@ public class Replication {
                 @Override
                 public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
 
+                    callMethod.ErrorLog(t.getMessage());
                 }
             });
         } else {
-            Closedialog();
             DoingReplicate();
 
         }
-
     }
+
+
+
 
 
     @SuppressLint("Range")
@@ -798,8 +827,8 @@ public class Replication {
         cursor.close();
         Log.e("kowsar", GpsLocationString);
 
-        if (locations.size() > 0) {
-            Call<RetrofitResponse> call1 = apiInterface.UpdateLocation("UpdateLocation", GpsLocationString);
+        if (locations.size()>0) {
+            Call<RetrofitResponse> call1 = apiInterface.UpdateLocation( GpsLocationString);
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
@@ -851,6 +880,8 @@ public class Replication {
         cursor.close();
         return resultSet.toString();
     }
+
+
 
 
 }

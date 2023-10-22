@@ -25,6 +25,8 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.R;
 import com.kits.brokerkowsar.activity.BasketActivity;
@@ -36,6 +38,8 @@ import com.kits.brokerkowsar.model.Column;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
 import com.kits.brokerkowsar.model.NumberFunctions;
+import com.kits.brokerkowsar.model.PFheader;
+import com.kits.brokerkowsar.model.PFrow;
 import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.kits.brokerkowsar.model.UserInfo;
 import com.kits.brokerkowsar.webService.APIClient;
@@ -55,6 +59,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -148,7 +155,7 @@ public class Action {
                     try {
                         boxAmount[0] = NumberFunctions.EnglishNumber(amount.getText().toString());
 
-                        long sumpricevlue = (long) (Long.parseLong(NewPrice[0]) * Long.parseLong(boxAmount[0]) * DefaultUnitValue);
+                        long sumpricevlue =(Long.parseLong(NewPrice[0]) * Long.parseLong(boxAmount[0]) * DefaultUnitValue);
 
                         sumprice.setText(NumberFunctions.PerisanNumber(decimalFormat.format(sumpricevlue)));
 
@@ -626,73 +633,133 @@ public class Action {
 
 
     public void sendfactor(String factor_code) {
-        RequestQueue queue = Volley.newRequestQueue(mContext);
-        StringRequest stringrequste = new StringRequest(Request.Method.POST, url, response -> {
-            try {
-                JSONArray object = new JSONArray(response);
-                JSONObject jo = object.getJSONObject(0);
-                il = object.length();
-                int code = jo.getInt("GoodCode");
-                if (code == 0) {
-                    int kowsarcode = jo.getInt("PreFactorCode");
-                    if (kowsarcode > 0) {
-                        String factorDate = jo.getString("PreFactorDate");
-                        dbh.UpdatePreFactor(factor_code, String.valueOf(kowsarcode), factorDate);
-                        callMethod.EditString("PreFactorCode", "0");
-                        lottieok();
 
 
-                    } else {
-                        callMethod.showToast("خطا در ارتباط با سرور");
-                    }
+//
+//        SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
+//        cursor = dtb.rawQuery("Select PreFactorCode, PreFactorDate, PreFactorExplain, CustomerRef, BrokerRef, (Select sum(FactorAmount) From PreFactorRow r Where r.PrefactorRef=h.PrefactorCode) As rwCount From PreFactor h Where PreFactorCode = " + factor_code, null);
+//        String pr1 = CursorToJson(cursor);
+//        cursor.close();
+//        Log.e("kowsar_pfheader", pr1);
+//        cursor = dtb.rawQuery("Select GoodRef, FactorAmount, Price From PreFactorRow Where  GoodRef>0 and  Prefactorref = " + factor_code, null);
+//        String pr2 = CursorToJson(cursor);
+//        cursor.close();
+//        Log.e("kowsar_pfrow", pr2);
+//
 
-                } else {
-                    SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
-                    for (int i = 0; i < il; i++) {
-                        jo = object.getJSONObject(i);
-                        code = jo.getInt("GoodCode");
-                        int flag = jo.getInt("Flag");
-                        dtb.execSQL("Update PreFactorRow set Shortage = " + flag + " Where IfNull(PreFactorRef,0)=" + factor_code + " And GoodRef = " + code);
-                    }
-                    callMethod.showToast("کالاهای مورد نظر کسر موجودی دارند!");
-                    intent = new Intent(mContext, BasketActivity.class);
-                    intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
-                    ((Activity) mContext).finish();
-                    ((Activity) mContext).overridePendingTransition(0, 0);
-                    mContext.startActivity(intent);
-                    ((Activity) mContext).overridePendingTransition(0, 0);
-                }
-            } catch (JSONException e) {
-                callMethod.ErrorLog(e.getMessage());
-                callMethod.showToast("بروز خطا در اطلاعات");
-            }
-        }, volleyError -> {
-            callMethod.ErrorLog(volleyError.getMessage());
-            callMethod.showToast("ارتباط با سرور میسر نمی باشد.");
-        }) {
+
+        SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
+
+// Query to retrieve PFheader data
+        cursor = dtb.rawQuery("Select PreFactorCode, PreFactorDate, PreFactorExplain, CustomerRef, BrokerRef, " +
+                "(Select sum(FactorAmount) From PreFactorRow r Where r.PrefactorRef=h.PrefactorCode) As rwCount " +
+                "From PreFactor h Where PreFactorCode = " + factor_code, null);
+        String pr1 = CursorToJson(cursor);
+        cursor.close();
+        Log.e("kowsar_pfheader", pr1);
+
+// Query to retrieve PFrow data
+        cursor = dtb.rawQuery("Select GoodRef, FactorAmount, Price From PreFactorRow Where  GoodRef > 0 and  Prefactorref = " + factor_code, null);
+        String pr2 = CursorToJson(cursor);
+        cursor.close();
+        Log.e("kowsar_pfrow", pr2);
+
+// Now, you can convert pr1 and pr2 into PFheader and PFrow objects using Gson
+        Gson gson = new Gson();
+        PFheader pfHeader = gson.fromJson(pr1, PFheader.class);
+        PFrow pfRow = gson.fromJson(pr2, PFrow.class);
+
+
+
+
+
+// Create a JSON object to hold both header and row data
+        JsonObject jsonPayload = new JsonObject();
+        jsonPayload.add("kowsar_pfheader", gson.toJsonTree(pfHeader));
+        jsonPayload.add("kowsar_pfrow", gson.toJsonTree(pfRow));
+
+// Convert the JSON object to a request body
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonPayload.toString());
+
+
+
+
+
+// Make the API call
+        Call<ResponseBody> call = apiInterface.sendData(requestBody);
+
+// Execute the call
+        call.enqueue(new Callback<ResponseBody>() {
             @Override
-            protected Map<String, String> getParams() {
-                HashMap<String, String> params = new HashMap<>();
-                params.put("tag", "PFQASWED");
-                SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
-                cursor = dtb.rawQuery("Select PreFactorCode, PreFactorDate, PreFactorExplain, CustomerRef, BrokerRef, (Select sum(FactorAmount) From PreFactorRow r Where r.PrefactorRef=h.PrefactorCode) As rwCount From PreFactor h Where PreFactorCode = " + factor_code, null);
-                String pr1 = CursorToJson(cursor);
-                cursor.close();
-                Log.e("bklog_reqqqq", pr1);
-                params.put("PFHDQASW", pr1);
-                cursor = dtb.rawQuery("Select GoodRef, FactorAmount, Price From PreFactorRow Where  GoodRef>0 and  Prefactorref = " + factor_code, null);
-                String pr2 = CursorToJson(cursor);
-                cursor.close();
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    try {
+                        JSONArray object = new JSONArray(response.body());
+                        JSONObject jo = object.getJSONObject(0);
+                        il = object.length();
+                        int code = jo.getInt("GoodCode");
+                        if (code == 0) {
+                            int kowsarcode = jo.getInt("PreFactorCode");
+                            if (kowsarcode > 0) {
+                                String factorDate = jo.getString("PreFactorDate");
+                                dbh.UpdatePreFactor(factor_code, String.valueOf(kowsarcode), factorDate);
+                                callMethod.EditString("PreFactorCode", "0");
+                                lottieok();
 
-                Log.e("bklog_reqqqq", pr2);
-                params.put("PFDTQASW", pr2);
-                return params;
+
+                            } else {
+                                callMethod.showToast("خطا در ارتباط با سرور");
+                            }
+
+                        } else {
+                            SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
+                            for (int i = 0; i < il; i++) {
+                                jo = object.getJSONObject(i);
+                                code = jo.getInt("GoodCode");
+                                int flag = jo.getInt("Flag");
+                                dtb.execSQL("Update PreFactorRow set Shortage = " + flag + " Where IfNull(PreFactorRef,0)=" + factor_code + " And GoodRef = " + code);
+                            }
+                            callMethod.showToast("کالاهای مورد نظر کسر موجودی دارند!");
+                            intent = new Intent(mContext, BasketActivity.class);
+                            intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
+                            ((Activity) mContext).finish();
+                            ((Activity) mContext).overridePendingTransition(0, 0);
+                            mContext.startActivity(intent);
+                            ((Activity) mContext).overridePendingTransition(0, 0);
+                        }
+                    } catch (JSONException e) {
+                        callMethod.ErrorLog(e.getMessage());
+                        callMethod.showToast("بروز خطا در اطلاعات");
+                    }
+                } else {
+                    // Handle the error response here
+                }
             }
 
-        };
-        queue.add(stringrequste);
-    }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                callMethod.ErrorLog(t.getMessage());            }
+        });
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
 
 
     public void edit_explain(String factor_code) {
@@ -773,17 +840,23 @@ public class Action {
             @Override
             public void onAnimationStart(Animator animation) {
             }
+
             @Override
             public void onAnimationEnd(Animator animation) {
                 dialog1.dismiss();
+
             }
+
             @Override
             public void onAnimationCancel(Animator animation) {
             }
+
             @Override
             public void onAnimationRepeat(Animator animation) {
             }
         });
+
+
     }
 
     public void lottieok() {
@@ -828,6 +901,8 @@ public class Action {
     }
 
 
+
+    @SuppressLint("HardwareIds")
     public void app_info() {
 
         @SuppressLint("HardwareIds") String android_id = BuildConfig.BUILD_TYPE.equals("release") ?
@@ -839,17 +914,14 @@ public class Action {
 
 
 
-        APIInterface apiInterfaceKowsar = APIClient_kowsar.getCleint_log().create(APIInterface.class);
-        Call<RetrofitResponse> call = apiInterfaceKowsar.Kowsar_log(
-                "Log_report",
-                android_id,
-                url,
-                callMethod.ReadString("PersianCompanyNameUse"),
-                callMethod.ReadString("PreFactorCode"),
-                calendar1.getPersianShortDateTime(),
-                dbh.ReadConfig("BrokerCode"),
-                version
-        );
+        APIInterface apiInterface = APIClient_kowsar.getCleint_log().create(APIInterface.class);
+        Call<RetrofitResponse> call = apiInterface.Kowsar_log( android_id
+                , url
+                , callMethod.ReadString("PersianCompanyNameUse")
+                , callMethod.ReadString("PreFactorCode")
+                , calendar1.getPersianShortDateTime()
+                , dbh.ReadConfig("BrokerCode")
+                , version);
 
         call.enqueue(new Callback<RetrofitResponse>() {
             @Override
@@ -860,6 +932,7 @@ public class Action {
                     // Handle unsuccessful response
                 }
             }
+
 
             @Override
             public void onFailure(Call<RetrofitResponse> call, Throwable t) {
@@ -899,6 +972,33 @@ public class Action {
         }
         return resultSet.toString();
     }
+
+
+    public String cursorToJson(Cursor cursor) {
+        JSONArray resultSet = new JSONArray();
+        try {
+            if (cursor != null && cursor.moveToFirst()) {
+                do {
+                    JSONObject rowObject = new JSONObject();
+                    for (int i = 0; i < cursor.getColumnCount(); i++) {
+                        String columnName = cursor.getColumnName(i);
+                        if (columnName != null) {
+                            rowObject.put(columnName, cursor.getString(i));
+                        }
+                    }
+                    resultSet.put(rowObject);
+                } while (cursor.moveToNext());
+            }
+        } catch (JSONException e) {
+            Log.e("CursorToJson", "Error while converting cursor to JSON: " + e.getMessage());
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return resultSet.toString();
+    }
+
 
 
 }
