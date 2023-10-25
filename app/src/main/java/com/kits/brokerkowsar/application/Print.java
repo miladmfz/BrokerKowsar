@@ -56,6 +56,8 @@ import retrofit2.Response;
 public class Print {
 
 
+
+
     private final Context mContext;
     public APIInterface apiInterface;
     public Call<RetrofitResponse> call;
@@ -118,7 +120,7 @@ public class Print {
 
     public void GetAppPrinterList() {
 
-        call = apiInterface.GetAppPrinter();
+        call = apiInterface.GetAppPrinter("OrderGetAppPrinter");
         call.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(@NotNull Call<RetrofitResponse> call, @NotNull Response<RetrofitResponse> response) {
@@ -406,7 +408,7 @@ public class Print {
 
 
         bitmap_factor_base64 = Base64.encodeToString(byteArray, Base64.DEFAULT);
-        Call<RetrofitResponse> call = apiInterface.AppBrokerPrint(
+        Call<RetrofitResponse> call = apiInterface.AppBrokerPrint("AppBrokerPrint",
                 bitmap_factor_base64,
                 PreFac,
                 selectedPrinter.getPrinterName(),

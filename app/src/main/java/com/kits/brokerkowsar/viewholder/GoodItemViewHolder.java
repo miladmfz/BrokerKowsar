@@ -228,7 +228,7 @@ public class GoodItemViewHolder extends RecyclerView.ViewHolder {
 
 
 
-        call = apiInterface.GetImageFromKsr(good.getGoodFieldValue("KsrImageCode"));
+        call = apiInterface.GetImageFromKsr("GetImageFromKsr",good.getGoodFieldValue("KsrImageCode"));
         callMethod.ErrorLog(call.request().toString());
         if (!image_info.Image_exist(imagecode)) {
 

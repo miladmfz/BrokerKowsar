@@ -22,17 +22,11 @@ import com.kits.brokerkowsar.application.ImageInfo;
 import com.kits.brokerkowsar.model.Column;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
-import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.kits.brokerkowsar.viewholder.GoodItemViewHolder;
 import com.kits.brokerkowsar.webService.APIClient;
 import com.kits.brokerkowsar.webService.APIInterface;
 
 import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Response;
 
 public class GoodAdapter extends RecyclerView.Adapter<GoodItemViewHolder> {
     private final Context mContext;

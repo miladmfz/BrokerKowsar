@@ -28,8 +28,6 @@ import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Response;
 
 
 public class GoodBasketAdapter extends RecyclerView.Adapter<GoodBasketViewHolder> {
@@ -70,7 +68,7 @@ public class GoodBasketAdapter extends RecyclerView.Adapter<GoodBasketViewHolder
 
 
         if (!image_info.Image_exist(goods.get(position).getGoodFieldValue("KsrImageCode"))) {
-            Call<RetrofitResponse> call2 = apiInterface.GetImageFromKsr(
+            Call<RetrofitResponse> call2 = apiInterface.GetImageFromKsr("GetImageFromKsr",
                     goods.get(position).getGoodFieldValue("KsrImageCode")
             );
             call2.enqueue(new Callback<RetrofitResponse>() {

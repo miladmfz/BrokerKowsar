@@ -631,135 +631,208 @@ public class Action {
 
     }
 
-
-    public void sendfactor(String factor_code) {
-
-
+//
+//    public void sendfactor11(String factor_code) {
+//
+//
+////
+////        SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
+////        cursor = dtb.rawQuery("Select PreFactorCode, PreFactorDate, PreFactorExplain, CustomerRef, BrokerRef, (Select sum(FactorAmount) From PreFactorRow r Where r.PrefactorRef=h.PrefactorCode) As rwCount From PreFactor h Where PreFactorCode = " + factor_code, null);
+////        String pr1 = CursorToJson(cursor);
+////        cursor.close();
+////        Log.e("kowsar_pfheader", pr1);
+////        cursor = dtb.rawQuery("Select GoodRef, FactorAmount, Price From PreFactorRow Where  GoodRef>0 and  Prefactorref = " + factor_code, null);
+////        String pr2 = CursorToJson(cursor);
+////        cursor.close();
+////        Log.e("kowsar_pfrow", pr2);
+////
+//
 //
 //        SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
-//        cursor = dtb.rawQuery("Select PreFactorCode, PreFactorDate, PreFactorExplain, CustomerRef, BrokerRef, (Select sum(FactorAmount) From PreFactorRow r Where r.PrefactorRef=h.PrefactorCode) As rwCount From PreFactor h Where PreFactorCode = " + factor_code, null);
+//
+//// Query to retrieve PFheader data
+//        cursor = dtb.rawQuery("Select PreFactorCode, PreFactorDate, PreFactorExplain, CustomerRef, BrokerRef, " +
+//                "(Select sum(FactorAmount) From PreFactorRow r Where r.PrefactorRef=h.PrefactorCode) As rwCount " +
+//                "From PreFactor h Where PreFactorCode = " + factor_code, null);
 //        String pr1 = CursorToJson(cursor);
 //        cursor.close();
 //        Log.e("kowsar_pfheader", pr1);
-//        cursor = dtb.rawQuery("Select GoodRef, FactorAmount, Price From PreFactorRow Where  GoodRef>0 and  Prefactorref = " + factor_code, null);
+//
+//// Query to retrieve PFrow data
+//        cursor = dtb.rawQuery("Select GoodRef, FactorAmount, Price From PreFactorRow Where  GoodRef > 0 and  Prefactorref = " + factor_code, null);
 //        String pr2 = CursorToJson(cursor);
 //        cursor.close();
 //        Log.e("kowsar_pfrow", pr2);
 //
+//// Now, you can convert pr1 and pr2 into PFheader and PFrow objects using Gson
+//        Gson gson = new Gson();
+//        PFheader pfHeader = gson.fromJson(pr1, PFheader.class);
+//        PFrow pfRow = gson.fromJson(pr2, PFrow.class);
+//
+//
+//
+//
+//
+//// Create a JSON object to hold both header and row data
+//        JsonObject jsonPayload = new JsonObject();
+//        jsonPayload.add("kowsar_pfheader", gson.toJsonTree(pfHeader));
+//        jsonPayload.add("kowsar_pfrow", gson.toJsonTree(pfRow));
+//
+//// Convert the JSON object to a request body
+//        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonPayload.toString());
+//
+//
+//
+//
+//
+//// Make the API call
+//        Call<ResponseBody> call = apiInterface.sendData(requestBody);
+//
+//// Execute the call
+//        call.enqueue(new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                if (response.isSuccessful()) {
+//                    try {
+//                        JSONArray object = new JSONArray(response.body());
+//                        JSONObject jo = object.getJSONObject(0);
+//                        il = object.length();
+//                        int code = jo.getInt("GoodCode");
+//                        if (code == 0) {
+//                            int kowsarcode = jo.getInt("PreFactorCode");
+//                            if (kowsarcode > 0) {
+//                                String factorDate = jo.getString("PreFactorDate");
+//                                dbh.UpdatePreFactor(factor_code, String.valueOf(kowsarcode), factorDate);
+//                                callMethod.EditString("PreFactorCode", "0");
+//                                lottieok();
+//
+//
+//                            } else {
+//                                callMethod.showToast("خطا در ارتباط با سرور");
+//                            }
+//
+//                        } else {
+//                            SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
+//                            for (int i = 0; i < il; i++) {
+//                                jo = object.getJSONObject(i);
+//                                code = jo.getInt("GoodCode");
+//                                int flag = jo.getInt("Flag");
+//                                dtb.execSQL("Update PreFactorRow set Shortage = " + flag + " Where IfNull(PreFactorRef,0)=" + factor_code + " And GoodRef = " + code);
+//                            }
+//                            callMethod.showToast("کالاهای مورد نظر کسر موجودی دارند!");
+//                            intent = new Intent(mContext, BasketActivity.class);
+//                            intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
+//                            ((Activity) mContext).finish();
+//                            ((Activity) mContext).overridePendingTransition(0, 0);
+//                            mContext.startActivity(intent);
+//                            ((Activity) mContext).overridePendingTransition(0, 0);
+//                        }
+//                    } catch (JSONException e) {
+//                        callMethod.ErrorLog(e.getMessage());
+//                        callMethod.showToast("بروز خطا در اطلاعات");
+//                    }
+//                } else {
+//                    // Handle the error response here
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//                callMethod.ErrorLog(t.getMessage());            }
+//        });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//    }
+//
 
 
-        SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
-
-// Query to retrieve PFheader data
-        cursor = dtb.rawQuery("Select PreFactorCode, PreFactorDate, PreFactorExplain, CustomerRef, BrokerRef, " +
-                "(Select sum(FactorAmount) From PreFactorRow r Where r.PrefactorRef=h.PrefactorCode) As rwCount " +
-                "From PreFactor h Where PreFactorCode = " + factor_code, null);
-        String pr1 = CursorToJson(cursor);
-        cursor.close();
-        Log.e("kowsar_pfheader", pr1);
-
-// Query to retrieve PFrow data
-        cursor = dtb.rawQuery("Select GoodRef, FactorAmount, Price From PreFactorRow Where  GoodRef > 0 and  Prefactorref = " + factor_code, null);
-        String pr2 = CursorToJson(cursor);
-        cursor.close();
-        Log.e("kowsar_pfrow", pr2);
-
-// Now, you can convert pr1 and pr2 into PFheader and PFrow objects using Gson
-        Gson gson = new Gson();
-        PFheader pfHeader = gson.fromJson(pr1, PFheader.class);
-        PFrow pfRow = gson.fromJson(pr2, PFrow.class);
+    public void sendfactor(String factor_code) {
+        RequestQueue queue = Volley.newRequestQueue(mContext);
+        StringRequest stringrequste = new StringRequest(Request.Method.POST, url, response -> {
+            try {
+                JSONArray object = new JSONArray(response);
+                JSONObject jo = object.getJSONObject(0);
+                il = object.length();
+                int code = jo.getInt("GoodCode");
+                if (code == 0) {
+                    int kowsarcode = jo.getInt("PreFactorCode");
+                    if (kowsarcode > 0) {
+                        String factorDate = jo.getString("PreFactorDate");
+                        dbh.UpdatePreFactor(factor_code, String.valueOf(kowsarcode), factorDate);
+                        callMethod.EditString("PreFactorCode", "0");
+                        lottieok();
 
 
-
-
-
-// Create a JSON object to hold both header and row data
-        JsonObject jsonPayload = new JsonObject();
-        jsonPayload.add("kowsar_pfheader", gson.toJsonTree(pfHeader));
-        jsonPayload.add("kowsar_pfrow", gson.toJsonTree(pfRow));
-
-// Convert the JSON object to a request body
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonPayload.toString());
-
-
-
-
-
-// Make the API call
-        Call<ResponseBody> call = apiInterface.sendData(requestBody);
-
-// Execute the call
-        call.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    try {
-                        JSONArray object = new JSONArray(response.body());
-                        JSONObject jo = object.getJSONObject(0);
-                        il = object.length();
-                        int code = jo.getInt("GoodCode");
-                        if (code == 0) {
-                            int kowsarcode = jo.getInt("PreFactorCode");
-                            if (kowsarcode > 0) {
-                                String factorDate = jo.getString("PreFactorDate");
-                                dbh.UpdatePreFactor(factor_code, String.valueOf(kowsarcode), factorDate);
-                                callMethod.EditString("PreFactorCode", "0");
-                                lottieok();
-
-
-                            } else {
-                                callMethod.showToast("خطا در ارتباط با سرور");
-                            }
-
-                        } else {
-                            SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
-                            for (int i = 0; i < il; i++) {
-                                jo = object.getJSONObject(i);
-                                code = jo.getInt("GoodCode");
-                                int flag = jo.getInt("Flag");
-                                dtb.execSQL("Update PreFactorRow set Shortage = " + flag + " Where IfNull(PreFactorRef,0)=" + factor_code + " And GoodRef = " + code);
-                            }
-                            callMethod.showToast("کالاهای مورد نظر کسر موجودی دارند!");
-                            intent = new Intent(mContext, BasketActivity.class);
-                            intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
-                            ((Activity) mContext).finish();
-                            ((Activity) mContext).overridePendingTransition(0, 0);
-                            mContext.startActivity(intent);
-                            ((Activity) mContext).overridePendingTransition(0, 0);
-                        }
-                    } catch (JSONException e) {
-                        callMethod.ErrorLog(e.getMessage());
-                        callMethod.showToast("بروز خطا در اطلاعات");
+                    } else {
+                        callMethod.showToast("خطا در ارتباط با سرور");
                     }
+
                 } else {
-                    // Handle the error response here
+                    SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
+                    for (int i = 0; i < il; i++) {
+                        jo = object.getJSONObject(i);
+                        code = jo.getInt("GoodCode");
+                        int flag = jo.getInt("Flag");
+                        dtb.execSQL("Update PreFactorRow set Shortage = " + flag + " Where IfNull(PreFactorRef,0)=" + factor_code + " And GoodRef = " + code);
+                    }
+                    callMethod.showToast("کالاهای مورد نظر کسر موجودی دارند!");
+                    intent = new Intent(mContext, BasketActivity.class);
+                    intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
+                    ((Activity) mContext).finish();
+                    ((Activity) mContext).overridePendingTransition(0, 0);
+                    mContext.startActivity(intent);
+                    ((Activity) mContext).overridePendingTransition(0, 0);
                 }
+            } catch (JSONException e) {
+                callMethod.ErrorLog(e.getMessage());
+                callMethod.showToast("بروز خطا در اطلاعات");
+            }
+        }, volleyError -> {
+            callMethod.ErrorLog(volleyError.getMessage());
+            callMethod.showToast("ارتباط با سرور میسر نمی باشد.");
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> params = new HashMap<>();
+                params.put("tag", "PFQASWED");
+                SQLiteDatabase dtb = mContext.openOrCreateDatabase(callMethod.ReadString("DatabaseName"), Context.MODE_PRIVATE, null);
+                cursor = dtb.rawQuery("Select PreFactorCode, PreFactorDate, PreFactorExplain, CustomerRef, BrokerRef, (Select sum(FactorAmount) From PreFactorRow r Where r.PrefactorRef=h.PrefactorCode) As rwCount From PreFactor h Where PreFactorCode = " + factor_code, null);
+                String pr1 = CursorToJson(cursor);
+                cursor.close();
+                Log.e("bklog_reqqqq", pr1);
+                params.put("PFHDQASW", pr1);
+                cursor = dtb.rawQuery("Select GoodRef, FactorAmount, Price From PreFactorRow Where  GoodRef>0 and  Prefactorref = " + factor_code, null);
+                String pr2 = CursorToJson(cursor);
+                cursor.close();
+
+                Log.e("bklog_reqqqq", pr2);
+                params.put("PFDTQASW", pr2);
+                return params;
             }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                callMethod.ErrorLog(t.getMessage());            }
-        });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        };
+        queue.add(stringrequste);
     }
+
+
+
 
 
     public void edit_explain(String factor_code) {
@@ -915,7 +988,7 @@ public class Action {
 
 
         APIInterface apiInterface = APIClient_kowsar.getCleint_log().create(APIInterface.class);
-        Call<RetrofitResponse> call = apiInterface.Kowsar_log( android_id
+        Call<RetrofitResponse> call = apiInterface.Kowsar_log("Kowsar_log", android_id
                 , url
                 , callMethod.ReadString("PersianCompanyNameUse")
                 , callMethod.ReadString("PreFactorCode")

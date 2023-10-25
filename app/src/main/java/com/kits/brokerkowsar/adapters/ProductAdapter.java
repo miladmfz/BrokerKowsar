@@ -30,8 +30,6 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Response;
 
 
 public class ProductAdapter extends ExpandableRecyclerViewAdapter<CategoryViewHolder, ProductViewHolder> {
@@ -83,7 +81,7 @@ public class ProductAdapter extends ExpandableRecyclerViewAdapter<CategoryViewHo
 
         } else {
 
-            call = apiInterface.GetImageCustom(
+            call = apiInterface.GetImageCustom("GetImageCustom",
                     "TGoodsGrp"
                     , String.valueOf(product.id)
                     , "500"
@@ -140,7 +138,7 @@ public class ProductAdapter extends ExpandableRecyclerViewAdapter<CategoryViewHo
 
         } else {
 
-            call = apiInterface.GetImageCustom(
+            call = apiInterface.GetImageCustom("GetImageCustom",
                      "TGoodsGrp"
                     , String.valueOf(company.id)
                     , "500"

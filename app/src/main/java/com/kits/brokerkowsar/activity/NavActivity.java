@@ -257,6 +257,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         }
 
 
+
         tv_versionname.setText(NumberFunctions.PerisanNumber(BuildConfig.VERSION_NAME));
         tv_dbname.setText(callMethod.ReadString("PersianCompanyNameUse"));
         toolbar.setTitle(callMethod.ReadString("PersianCompanyNameUse"));

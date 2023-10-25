@@ -100,7 +100,7 @@ public class Replication {
             tv_rep.setText(NumberFunctions.PerisanNumber("در حال بروز رسانی تنظیم جدول"));
             GoodTypeReplication();
         } else {
-            Call<RetrofitResponse> call1 = apiInterface.GetMaxRepLog();
+            Call<RetrofitResponse> call1 = apiInterface.MaxRepLogCode("MaxRepLogCode");
             callMethod.ErrorLog(call1.request().toString()+"");
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
@@ -124,7 +124,7 @@ public class Replication {
 
     public void DoingReplicateAuto() {
 
-        Call<RetrofitResponse> call1 = apiInterface.GetMaxRepLog ();
+        Call<RetrofitResponse> call1 = apiInterface.MaxRepLogCode ("MaxRepLogCode");
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
@@ -168,9 +168,10 @@ public class Replication {
             LastRepCode = String.valueOf(replicatedetail.getLastRepLogCode());
             UserInfo userInfo = dbh.LoadPersonalInfo();
 
-            Call<RetrofitResponse> call1 = apiInterface.repinfo(
+            Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate("repinfo",
                     String.valueOf(replicatedetail.getLastRepLogCode()),
                     replicatedetail.getServerTable(),
+                    "",
                     "1",
                     String.valueOf(RepRowCount)
             );
@@ -383,9 +384,10 @@ public class Replication {
             String where = replicatedetail.getCondition().replace("BrokerCondition", dbh.ReadConfig("BrokerCode"));
 
             Log.e("kowsar_LastRepCode",LastRepCode);
-            Call<RetrofitResponse> call1 = apiInterface.repinfo(
+            Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate("repinfo",
                     LastRepCode,
                     replicatedetail.getServerTable(),
+                    "",
                     "1",
                     "100"
             );
@@ -567,9 +569,10 @@ public class Replication {
         LastRepCode = cursor.getString(0);
         cursor.close();
 
-        Call<RetrofitResponse> call1 = apiInterface.repinfo(
+        Call<RetrofitResponse> call1 = apiInterface.RetrofitReplicate("repinfo",
                  LastRepCode
                 , RepTable
+                ,""
                 , "1"
                 , String.valueOf(400)
         );
@@ -679,7 +682,7 @@ public class Replication {
 
         UserInfo userInfo = dbh.LoadPersonalInfo();
         dbh.DatabaseCreate();
-        Call<RetrofitResponse> call1 = apiInterface.BrokerStack( userInfo.getBrokerCode());
+        Call<RetrofitResponse> call1 = apiInterface.BrokerStack( "BrokerStack",userInfo.getBrokerCode());
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
@@ -700,7 +703,7 @@ public class Replication {
 
     public void GroupCodeDefult() {
 
-        Call<RetrofitResponse> call1 = apiInterface.DbSetupvalue( "AppBroker_DefaultGroupCode");
+        Call<RetrofitResponse> call1 = apiInterface.info("kowsar_info", "AppBroker_DefaultGroupCode");
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(@NotNull Call<RetrofitResponse> call, @NotNull Response<RetrofitResponse> response) {
@@ -724,7 +727,7 @@ public class Replication {
     }
 
     public void MenuBroker() {
-        Call<RetrofitResponse> call1 = apiInterface.GetMenuBroker();
+        Call<RetrofitResponse> call1 = apiInterface.MenuBroker("GetMenuBroker");
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
@@ -745,7 +748,7 @@ public class Replication {
 
     public void GoodTypeReplication() {
 
-        Call<RetrofitResponse> call1 = apiInterface.GetGoodType();
+        Call<RetrofitResponse> call1 = apiInterface.GetGoodType("GetGoodType");
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
@@ -771,7 +774,7 @@ public class Replication {
 
 callMethod.ErrorLog(""+i);
         if (i < 4) {
-            Call<RetrofitResponse> call2 = apiInterface.GetColumnList( "" + i, "1", "1");
+            Call<RetrofitResponse> call2 = apiInterface.GetColumnList( "GetColumnList","" + i, "1", "1");
             callMethod.ErrorLog(call2.request().toString());
             call2.enqueue(new Callback<RetrofitResponse>() {
                 @Override
@@ -828,7 +831,7 @@ callMethod.ErrorLog(""+i);
         Log.e("kowsar", GpsLocationString);
 
         if (locations.size()>0) {
-            Call<RetrofitResponse> call1 = apiInterface.UpdateLocation( GpsLocationString);
+            Call<RetrofitResponse> call1 = apiInterface.UpdateLocation( "UpdateLocation",GpsLocationString);
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {

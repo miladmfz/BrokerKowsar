@@ -72,7 +72,7 @@ public class RegistrationActivity extends AppCompatActivity {
         action = new Action(this);
         apiInterface = APIClient.getCleint(callMethod.ReadString("ServerURLUse")).create(APIInterface.class);
 
-        Call<RetrofitResponse> call1 = apiInterface.GetSellBroker();
+        Call<RetrofitResponse> call1 = apiInterface.GetSellBroker("GetSellBroker");
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(@NotNull Call<RetrofitResponse> call, @NotNull Response<RetrofitResponse> response) {
