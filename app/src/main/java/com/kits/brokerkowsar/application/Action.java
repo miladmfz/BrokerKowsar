@@ -103,164 +103,299 @@ public class Action {
 
         final Dialog dialog = new Dialog(mContext);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
+        Log.e("kowsar - SellPriceType =",good.getGoodFieldValue("SellPriceType"));
 
         if (callMethod.ReadBoolan("SellPriceTypeDeactive")) {
-            dialog.setContentView(R.layout.box_buy_percent);
-            Button boxbuy = dialog.findViewById(R.id.boxbuy_percent_btn);
-            final EditText amount = dialog.findViewById(R.id.boxbuy_percent_amount);
-            final TextView factorname = dialog.findViewById(R.id.boxbuy_percent_factorname);
-            final TextView maxPrice = dialog.findViewById(R.id.boxbuy_percent_maxprice);
-            final EditText percent = dialog.findViewById(R.id.boxbuy_percent_scale);
-            final EditText price = dialog.findViewById(R.id.boxbuy_percent_price);
-            final TextView sumprice = dialog.findViewById(R.id.boxbuy_percent_sumprice);
-            final TextView factoramount = dialog.findViewById(R.id.boxbuy_percent_facamount);
-
-            if (Basketflag.equals("0")) {
-                amount.setHint(NumberFunctions.PerisanNumber(good.getGoodFieldValue("UnitName")));
-                factoramount.setText(NumberFunctions.PerisanNumber(good.getGoodFieldValue("factoramount")));
-            } else {
-                amount.setHint(NumberFunctions.PerisanNumber(good.getGoodFieldValue("amount")));
-                factoramount.setHint(NumberFunctions.PerisanNumber(good.getGoodFieldValue("factoramount")));
-                boxbuy.setText("اصلاح کالای مورد نظر");
-            }
-
-            if (callMethod.ReadString("SellOff").equals("0")) {
-                percent.setEnabled(false);
-                price.setEnabled(false);
-            } else {
-                percent.setEnabled(true);
-                price.setEnabled(true);
-            }
-
-            long percent_param = (long) (100 - (100 * Float.parseFloat(good.getGoodFieldValue("SellPrice")) / Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"))));
-            percent.setText(NumberFunctions.PerisanNumber(percent_param + ""));
-
-            factorname.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
-            maxPrice.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")))));
-            price.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(good.getGoodFieldValue("SellPrice")))));
+            Log.e("kowsar SellPriceTypeDeactive","true");
 
 
-            amount.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            if (good.getGoodFieldValue("SellPriceType").equals("0")) { // nerkh forosh motlagh
+                Log.e("kowsar SellPriceType","true");
+
+
+                dialog.setContentView(R.layout.box_buy_absolute);
+                Button boxbuy = dialog.findViewById(R.id.boxbuy_absolute_btn);
+                final EditText amount = dialog.findViewById(R.id.boxbuy_absolute_amount);
+                final TextView factorname = dialog.findViewById(R.id.boxbuy_absolute_factorname);
+                final EditText price = dialog.findViewById(R.id.boxbuy_absolute_price);
+                final TextView sumprice = dialog.findViewById(R.id.boxbuy_absolute_sumprice);
+                final TextView factoramount = dialog.findViewById(R.id.boxbuy_absolute_facamount);
+
+                if (Basketflag.equals("0")) {
+                    amount.setHint(NumberFunctions.PerisanNumber(good.getGoodFieldValue("UnitName")));
+                    factoramount.setText(NumberFunctions.PerisanNumber(good.getGoodFieldValue("factoramount")));
+                } else {
+                    amount.setHint(NumberFunctions.PerisanNumber(good.getGoodFieldValue("amount")));
+                    factoramount.setHint(NumberFunctions.PerisanNumber(good.getGoodFieldValue("factoramount")));
+                    boxbuy.setText("اصلاح کالای مورد نظر");
                 }
 
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
+                price.setEnabled(!callMethod.ReadString("SellOff").equals("0"));
 
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    try {
-                        boxAmount[0] = NumberFunctions.EnglishNumber(amount.getText().toString());
 
-                        long sumpricevlue =(Long.parseLong(NewPrice[0]) * Long.parseLong(boxAmount[0]) * DefaultUnitValue);
+                factorname.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
 
-                        sumprice.setText(NumberFunctions.PerisanNumber(decimalFormat.format(sumpricevlue)));
+                price.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(good.getGoodFieldValue("SellPrice")))));
 
-                    } catch (Exception e) {
-                        sumprice.setText("");
+                amount.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                     }
-                }
-            });
 
-            percent.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
 
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-
-                @SuppressLint("SetTextI18n")
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (percent.hasFocus()) {
-                        long iPercent;
+                    @Override
+                    public void afterTextChanged(Editable editable) {
                         try {
-                            iPercent = Integer.parseInt(NumberFunctions.EnglishNumber(percent.getText().toString()));
-                            if (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) > 0) {
-                                if (iPercent > 100) {
-                                    iPercent = 100;
-                                    percent.setText(NumberFunctions.PerisanNumber(String.valueOf(iPercent)));
-                                    percent.setError("حداکثر تخفیف");
-                                }
-                                long sellpricenew = (long) (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) - (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) * iPercent / 100));
-                                price.setText(NumberFunctions.PerisanNumber(decimalFormat.format(sellpricenew)));
-                                NewPrice[0] = String.valueOf(sellpricenew);
+                            boxAmount[0] = NumberFunctions.EnglishNumber(amount.getText().toString());
+
+                            long sumpricevlue = (long) (Long.parseLong(NewPrice[0]) * Long.parseLong(boxAmount[0]) * DefaultUnitValue);
+
+                            sumprice.setText(NumberFunctions.PerisanNumber(decimalFormat.format(sumpricevlue)));
+                        } catch (Exception e) {
+                            sumprice.setText("");
+                        }
+                    }
+                });
+
+
+                price.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        if (price.hasFocus()) {
+                            try {
+                                NewPrice[0] = NumberFunctions.EnglishNumber(price.getText().toString());
+
+                                long sumpricevlue = (long) (Long.parseLong(NewPrice[0]) * Long.parseLong(boxAmount[0]) * DefaultUnitValue);
+                                sumprice.setText(NumberFunctions.PerisanNumber(decimalFormat.format(sumpricevlue)));
+                            } catch (Exception e) {
+                                sumprice.setText("");
                             }
-
-                        } catch (Exception e) {
-                            price.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")))));
-                            NewPrice[0] = good.getGoodFieldValue("MaxSellPrice");
-
                         }
+                    }
+                });
+
+                dialog.show();
+                amount.requestFocus();
+                amount.postDelayed(() -> {
+                    InputMethodManager inputMethodManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.showSoftInput(amount, InputMethodManager.SHOW_IMPLICIT);
+                }, 500);
+                boxbuy.setOnClickListener(view -> {
+                    try {
+
+                        if (NewPrice[0].equals("")) NewPrice[0] = "-1";
+                        if (!boxAmount[0].equals("")) {
+                            if (Integer.parseInt(boxAmount[0]) != 0) {
+                                if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
+                                    dbh.InsertPreFactor(callMethod.ReadString("PreFactorCode"), goodcode, boxAmount[0], NewPrice[0], Basketflag);
+
+                                    callMethod.showToast("به سبد کالا اضافه شد");
+                                    if (!Basketflag.equals("0")) {
+
+                                        intent = new Intent(mContext, BasketActivity.class);
+                                        intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
+                                        ((Activity) mContext).finish();
+                                        ((Activity) mContext).overridePendingTransition(0, 0);
+                                        mContext.startActivity(intent);
+                                        ((Activity) mContext).overridePendingTransition(0, 0);
+
+                                    }
+                                    if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.DetailActivity")){
+                                        ((Activity) mContext).finish();
+                                    }
+                                } else {
+                                    intent = new Intent(mContext, CustomerActivity.class);
+                                    intent.putExtra("edit", "0");
+                                    intent.putExtra("factor_code", "0");
+                                    intent.putExtra("id", "0");
+                                    mContext.startActivity(intent);
+                                }
+                                dialog.dismiss();
+                            } else {
+                                callMethod.showToast("تعداد مورد نظر صحیح نمی باشد.");
+                            }
+                        } else {
+                            callMethod.showToast("تعداد مورد نظر صحیح نمی باشد.");
+                        }
+                    } catch (Exception e) {
+                        callMethod.ErrorLog(e.getMessage());
+
+                    }
+                });
+
+
+                if (price.hasFocusable()) {
+                    price.selectAll();
+                }
+
+
+            } else { // nerkh forosh nesbi
+                Log.e("kowsar SellPriceType","false");
+                dialog.setContentView(R.layout.box_buy_percent);
+                Button boxbuy = dialog.findViewById(R.id.boxbuy_percent_btn);
+                final EditText amount = dialog.findViewById(R.id.boxbuy_percent_amount);
+                final TextView factorname = dialog.findViewById(R.id.boxbuy_percent_factorname);
+                final TextView maxPrice = dialog.findViewById(R.id.boxbuy_percent_maxprice);
+                final EditText percent = dialog.findViewById(R.id.boxbuy_percent_scale);
+                final EditText price = dialog.findViewById(R.id.boxbuy_percent_price);
+                final TextView sumprice = dialog.findViewById(R.id.boxbuy_percent_sumprice);
+                final TextView factoramount = dialog.findViewById(R.id.boxbuy_percent_facamount);
+
+                if (Basketflag.equals("0")) {
+                    amount.setHint(NumberFunctions.PerisanNumber(good.getGoodFieldValue("UnitName")));
+                    factoramount.setText(NumberFunctions.PerisanNumber(good.getGoodFieldValue("factoramount")));
+                } else {
+                    amount.setHint(NumberFunctions.PerisanNumber(good.getGoodFieldValue("amount")));
+                    factoramount.setHint(NumberFunctions.PerisanNumber(good.getGoodFieldValue("factoramount")));
+                    boxbuy.setText("اصلاح کالای مورد نظر");
+                }
+
+                if (callMethod.ReadString("SellOff").equals("0")) {
+                    percent.setEnabled(false);
+                    price.setEnabled(false);
+                } else {
+                    percent.setEnabled(true);
+                    price.setEnabled(true);
+                }
+
+                long percent_param = (long) (100 - (100 * Float.parseFloat(good.getGoodFieldValue("SellPrice")) / Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"))));
+                percent.setText(NumberFunctions.PerisanNumber(percent_param + ""));
+
+                factorname.setText(dbh.getFactorCustomer(callMethod.ReadString("PreFactorCode")));
+                maxPrice.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")))));
+                price.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(good.getGoodFieldValue("SellPrice")))));
+
+
+                amount.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
                         try {
+                            boxAmount[0] = NumberFunctions.EnglishNumber(amount.getText().toString());
 
                             long sumpricevlue = (long) (Long.parseLong(NewPrice[0]) * Long.parseLong(boxAmount[0]) * DefaultUnitValue);
+
                             sumprice.setText(NumberFunctions.PerisanNumber(decimalFormat.format(sumpricevlue)));
 
                         } catch (Exception e) {
                             sumprice.setText("");
                         }
                     }
+                });
 
-                }
-            });
+                percent.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
 
-            price.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
 
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        if (percent.hasFocus()) {
+                            long iPercent;
+                            try {
+                                iPercent = Integer.parseInt(NumberFunctions.EnglishNumber(percent.getText().toString()));
+                                if (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) > 0) {
+                                    if (iPercent > 100) {
+                                        iPercent = 100;
+                                        percent.setText(NumberFunctions.PerisanNumber(String.valueOf(iPercent)));
+                                        percent.setError("حداکثر تخفیف");
+                                    }
+                                    long sellpricenew = (long) (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) - (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) * iPercent / 100));
+                                    price.setText(NumberFunctions.PerisanNumber(decimalFormat.format(sellpricenew)));
+                                    NewPrice[0] = String.valueOf(sellpricenew);
+                                }
 
-                @SuppressLint("SetTextI18n")
-                @Override
-                public void afterTextChanged(Editable editable) {
-                    if (price.hasFocus()) {
-                        try {
-                            NewPrice[0] = NumberFunctions.EnglishNumber(price.getText().toString());
+                            } catch (Exception e) {
+                                price.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")))));
+                                NewPrice[0] = good.getGoodFieldValue("MaxSellPrice");
 
-                            if (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) > 0) {
-                                percent.setText(NumberFunctions.PerisanNumber("" + (100 - (100 * Long.parseLong(NewPrice[0]) / Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"))))));
-                            } else
-                                percent.setText("");
+                            }
+                            try {
+
+                                long sumpricevlue = (long) (Long.parseLong(NewPrice[0]) * Long.parseLong(boxAmount[0]) * DefaultUnitValue);
+                                sumprice.setText(NumberFunctions.PerisanNumber(decimalFormat.format(sumpricevlue)));
+
+                            } catch (Exception e) {
+                                sumprice.setText("");
+                            }
+                        }
+
+                    }
+                });
+
+                price.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @SuppressLint("SetTextI18n")
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        if (price.hasFocus()) {
+                            try {
+                                NewPrice[0] = NumberFunctions.EnglishNumber(price.getText().toString());
+
+                                if (Integer.parseInt(good.getGoodFieldValue("MaxSellPrice")) > 0) {
+                                    percent.setText(NumberFunctions.PerisanNumber("" + (100 - (100 * Long.parseLong(NewPrice[0]) / Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"))))));
+                                } else
+                                    percent.setText("");
 
 
-                            long sumpricevlue = (long) (Long.parseLong(NewPrice[0]) * Long.parseLong(boxAmount[0]) * DefaultUnitValue);
+                                long sumpricevlue = (Long.parseLong(NewPrice[0]) * Long.parseLong(boxAmount[0]) * DefaultUnitValue);
 
-                            sumprice.setText(NumberFunctions.PerisanNumber(decimalFormat.format(sumpricevlue)));
+                                sumprice.setText(NumberFunctions.PerisanNumber(decimalFormat.format(sumpricevlue)));
 
-                        } catch (Exception e) {
-                            sumprice.setText("");
+                            } catch (Exception e) {
+                                sumprice.setText("");
+                            }
                         }
                     }
-                }
-            });
+                });
 
-            dialog.show();
-            amount.requestFocus();
-            amount.postDelayed(() -> {
-                InputMethodManager inputMethodManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                inputMethodManager.showSoftInput(amount, InputMethodManager.SHOW_IMPLICIT);
-            }, 500);
-            boxbuy.setOnClickListener(view -> {
+                dialog.show();
+                amount.requestFocus();
+                amount.postDelayed(() -> {
+                    InputMethodManager inputMethodManager = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.showSoftInput(amount, InputMethodManager.SHOW_IMPLICIT);
+                }, 500);
+                boxbuy.setOnClickListener(view -> {
 
-                if (NewPrice[0].equals("")) NewPrice[0] = "-1";
-                if (!boxAmount[0].equals("")) {
-                    if (Integer.parseInt(boxAmount[0]) != 0) {
-                        if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
-                            dbh.InsertPreFactor(callMethod.ReadString("PreFactorCode"), goodcode, boxAmount[0], NewPrice[0], Basketflag);
+                    if (NewPrice[0].equals("")) NewPrice[0] = "-1";
+                    if (!boxAmount[0].equals("")) {
+                        if (Integer.parseInt(boxAmount[0]) != 0) {
+                            if (Integer.parseInt(callMethod.ReadString("PreFactorCode")) != 0) {
+                                dbh.InsertPreFactor(callMethod.ReadString("PreFactorCode"), goodcode, boxAmount[0], NewPrice[0], Basketflag);
 
-                            callMethod.showToast("به سبد کالا اضافه شد");
-
-                            if (!Basketflag.equals("0")) {
-
+                                callMethod.showToast("به سبد کالا اضافه شد");
+                                if (!Basketflag.equals("0")) {
 
                                     intent = new Intent(mContext, BasketActivity.class);
                                     intent.putExtra("PreFac", callMethod.ReadString("PreFactorCode"));
@@ -269,41 +404,43 @@ public class Action {
                                     mContext.startActivity(intent);
                                     ((Activity) mContext).overridePendingTransition(0, 0);
 
-
-
-
+                                }
+                                if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.DetailActivity")){
+                                    ((Activity) mContext).finish();
+                                }
+                            } else {
+                                intent = new Intent(mContext, CustomerActivity.class);
+                                intent.putExtra("edit", "0");
+                                intent.putExtra("factor_code", "0");
+                                intent.putExtra("id", "0");
+                                mContext.startActivity(intent);
                             }
-                            if (mContext.getClass().getName().equals("com.kits.brokerkowsar.activity.DetailActivity")){
-                                ((Activity) mContext).finish();
-                            }
-
+                            dialog.dismiss();
                         } else {
-                            intent = new Intent(mContext, CustomerActivity.class);
-                            intent.putExtra("edit", "0");
-                            intent.putExtra("factor_code", "0");
-                            intent.putExtra("id", "0");
-                            mContext.startActivity(intent);
+                            callMethod.showToast("تعداد مورد نظر صحیح نمی باشد.");
                         }
-                        dialog.dismiss();
                     } else {
                         callMethod.showToast("تعداد مورد نظر صحیح نمی باشد.");
                     }
-                } else {
-                    callMethod.showToast("تعداد مورد نظر صحیح نمی باشد.");
+                });
+
+
+                if (percent.hasFocusable()) {
+                    percent.selectAll();
                 }
-            });
 
+                if (price.hasFocusable()) {
+                    price.selectAll();
+                }
 
-            if (percent.hasFocusable()) {
-                percent.selectAll();
             }
 
-            if (price.hasFocusable()) {
-                price.selectAll();
-            }
 
         } else {
+            Log.e("kowsar SellPriceTypeDeactive","false");
             if (good.getGoodFieldValue("SellPriceType").equals("0")) { // nerkh forosh motlagh
+                Log.e("kowsar SellPriceType","true");
+
 
                 dialog.setContentView(R.layout.box_buy_absolute);
                 Button boxbuy = dialog.findViewById(R.id.boxbuy_absolute_btn);
@@ -434,7 +571,7 @@ public class Action {
 
 
             } else { // nerkh forosh nesbi
-
+                Log.e("kowsar SellPriceType","false");
                 dialog.setContentView(R.layout.box_buy_percent);
                 Button boxbuy = dialog.findViewById(R.id.boxbuy_percent_btn);
                 final EditText amount = dialog.findViewById(R.id.boxbuy_percent_amount);

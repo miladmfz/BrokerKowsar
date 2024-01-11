@@ -28,6 +28,8 @@
             android:gravity="center"
             android:singleLine="true"
             android:maxLength="6"
+            android:inputType="numberPassword"
+
             />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnloginconfig"

@@ -330,6 +330,7 @@ public class Print {
             detail.setWeightSum(9);
             detail.setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
 
+
             TextView good_price_tv = new TextView(App.getContext());
             good_price_tv.setText(NumberFunctions.PerisanNumber(decimalFormat.format(Integer.parseInt(gooddetail.getGoodFieldValue("Price")))));
             good_price_tv.setLayoutParams(new LinearLayoutCompat.LayoutParams(width, LinearLayoutCompat.LayoutParams.WRAP_CONTENT, 3));

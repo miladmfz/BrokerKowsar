@@ -13,6 +13,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.Settings;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
@@ -70,6 +72,17 @@ public class AboutUsActivity extends AppCompatActivity {
             builder.setPositiveButton(R.string.textvalue_yes, (dialogalert, which) -> {
 
 
+
+
+
+
+
+
+
+
+
+
+
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     if (!getPackageManager().canRequestPackageInstalls()) {
                         // Open the permission settings for the user to enable the permission
@@ -83,6 +96,59 @@ public class AboutUsActivity extends AppCompatActivity {
                         dialog.setContentView(R.layout.loginconfig);
                         EditText ed_password = dialog.findViewById(R.id.edloginconfig);
                         MaterialButton btn_login = dialog.findViewById(R.id.btnloginconfig);
+
+
+
+
+
+
+
+
+
+                        ed_password.addTextChangedListener(
+                                new TextWatcher() {
+                                    @Override
+                                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                    }
+
+                                    @Override
+                                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                                    }
+
+                                    @Override
+                                    public void afterTextChanged(final Editable editable) {
+
+                                        if(NumberFunctions.EnglishNumber(ed_password.getText().toString()).length()>5) {
+                                            if (NumberFunctions.EnglishNumber(ed_password.getText().toString()).equals(callMethod.ReadString("ActivationCode"))) {
+
+                                                Intent intent = new Intent(AboutUsActivity.this, RegistrationActivity.class);
+                                                startActivity(intent);
+                                            } else {
+                                                callMethod.showToast("رمز عبور صیحیح نیست");
+                                            }
+
+                                        }
+                                    }
+                                });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         btn_login.setOnClickListener(vs -> {
                             if (NumberFunctions.EnglishNumber(ed_password.getText().toString()).equals(callMethod.ReadString("ActivationCode"))) {
                                 DownloadFun();
@@ -120,7 +186,7 @@ public class AboutUsActivity extends AppCompatActivity {
 
     private void DownloadFun() {
 
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse("http://87.107.78.234:60005/app/Brokerkowsar.apk"));
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse("http://178.131.31.161:60005/api/kits/Brokerkowsar"));
         request.setTitle("BrokerKowsar");
         request.setDescription("Downloading New Version");
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);

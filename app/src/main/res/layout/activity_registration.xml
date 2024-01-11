@@ -364,7 +364,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center"
                                 android:gravity="center"
-                                android:text="مکان یابی"
+                                android:text="سرویس کوثر"
                                 android:layout_weight="0.5" />
 
                             <com.google.android.material.switchmaterial.SwitchMaterial

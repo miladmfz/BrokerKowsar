@@ -2,10 +2,14 @@ package com.kits.brokerkowsar.activity;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -89,6 +93,43 @@ public class ConfigActivity extends AppCompatActivity {
         dialog.setContentView(R.layout.loginconfig);
         EditText ed_password = dialog.findViewById(R.id.edloginconfig);
         MaterialButton btn_login = dialog.findViewById(R.id.btnloginconfig);
+
+
+
+        ed_password.addTextChangedListener(
+                new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @Override
+                    public void afterTextChanged(final Editable editable) {
+
+                        if(NumberFunctions.EnglishNumber(ed_password.getText().toString()).length()>5) {
+                            if (NumberFunctions.EnglishNumber(ed_password.getText().toString()).equals(callMethod.ReadString("ActivationCode"))) {
+
+                                Intent intent = new Intent(ConfigActivity.this, RegistrationActivity.class);
+                                startActivity(intent);
+                            } else {
+                                callMethod.showToast("رمز عبور صیحیح نیست");
+                            }
+
+                        }
+                    }
+                });
+
+
+
+
+
+
+
+
+
 
 
         btn_login.setOnClickListener(v -> {

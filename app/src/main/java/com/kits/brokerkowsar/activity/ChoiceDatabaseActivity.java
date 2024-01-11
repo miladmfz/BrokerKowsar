@@ -126,7 +126,6 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
                     Log.e("test",t.getMessage());
-                    //callMethod.ErrorLog(t.getMessage());
                 }
             });
 
@@ -227,7 +226,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
 
     @SuppressLint({"SetTextI18n", "SdCardPath"})
     public void CreateView(Activation singleactive) {
-        String serverip = singleactive.getServerURL().substring(singleactive.getServerURL().indexOf("//") + 2, singleactive.getServerURL().indexOf("/api") - 6);
+        String serverip = singleactive.getServerURL().substring(singleactive.getServerURL().indexOf("//") + 2);
 
 
         LinearLayoutCompat ll_main = new LinearLayoutCompat(this);
