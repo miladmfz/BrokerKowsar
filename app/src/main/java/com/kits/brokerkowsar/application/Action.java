@@ -66,6 +66,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Response;
+import retrofit2.http.Field;
 
 
 public class Action {
@@ -1125,17 +1126,36 @@ public class Action {
 
 
         APIInterface apiInterface = APIClient_kowsar.getCleint_log().create(APIInterface.class);
-        Call<RetrofitResponse> call = apiInterface.Kowsar_log("Kowsar_log", android_id
-                , url
-                , callMethod.ReadString("PersianCompanyNameUse")
-                , callMethod.ReadString("PreFactorCode")
-                , calendar1.getPersianShortDateTime()
-                , dbh.ReadConfig("BrokerCode")
-                , version);
+//        Call<RetrofitResponse> call = apiInterface.Kowsar_log("Kowsar_log", android_id
+//                , url
+//                , callMethod.ReadString("PersianCompanyNameUse")
+//                , callMethod.ReadString("PreFactorCode")
+//                , calendar1.getPersianShortDateTime()
+//                , dbh.ReadConfig("BrokerCode")
+//                , version);
+//
+//
+
+        String Body_str  = "";
+        Body_str =callMethod.CreateJson("Device_Id", android_id, Body_str);
+        Body_str =callMethod.CreateJson("Address_Ip", url, Body_str);
+        Body_str =callMethod.CreateJson("Server_Name", callMethod.ReadString("PersianCompanyNameUse"), Body_str);
+        Body_str =callMethod.CreateJson("Factor_Code", callMethod.ReadString("PreFactorCode"), Body_str);
+        Body_str =callMethod.CreateJson("StrDate", calendar1.getPersianShortDateTime(), Body_str);
+        Body_str =callMethod.CreateJson("Broker",  dbh.ReadConfig("BrokerCode"), Body_str);
+        Body_str =callMethod.CreateJson("Explain", version, Body_str);
+
+        Log.e("e=",""+Body_str);
+        Call<RetrofitResponse> call = apiInterface.LogReport(callMethod.RetrofitBody(Body_str));
+        Log.e("ec=",""+call.request().url());
+        Log.e("ec=",""+call.request().body());
+
 
         call.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
+                Log.e("res=",""+response.body().toString());
+
                 if (response.isSuccessful()) {
                     // Handle successful response
                 } else {

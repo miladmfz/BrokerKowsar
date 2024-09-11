@@ -27,7 +27,10 @@ public interface APIInterface {
     String order_Url="order/";
 
 
+    String Kowsar_Url = "Kowsar/";
 
+    @POST("kits/LogReport") // Replace with your actual API endpoint
+    Call<RetrofitResponse> LogReport(@Body RequestBody requestBody);
 
 
     @POST("index.php")
@@ -208,70 +211,69 @@ public interface APIInterface {
     @FormUrlEncoded
     Call<RetrofitResponse> UpdateLocation(@Field("tag") String tag, @Field("GpsLocations") String GpsLocations);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    @GET(Kits_Url+"Activation")
+@GET(Kits_Url+"Activation")
     Call<RetrofitResponse> Activation(
             @Query("ActivationCode") String ActivationCode
     );
 
 
 
-    /*
 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
 
     @GET(Kits_Url+"Activation")
     Call<RetrofitResponse> Activation(
+            @Query("tag") String tag,
             @Query("ActivationCode") String ActivationCode
     );
 
@@ -280,6 +282,7 @@ public interface APIInterface {
 
     @GET(Kits_Url+"Kowsar_log")
     Call<RetrofitResponse> Kowsar_log(
+            @Query("tag") String tag,
             @Query("Device_Id") String Device_Id,
             @Query("Address_Ip") String Address_Ip,
             @Query("Server_Name") String Server_Name,
@@ -291,6 +294,7 @@ public interface APIInterface {
 
     @GET(Kits_Url+"Errorlog")
     Call<RetrofitResponse> Errorlog(
+            @Query("tag") String tag,
             @Query("ErrorLog") String ErrorLog,
             @Query("Broker") String Broker,
             @Query("DeviceId") String DeviceId,
@@ -307,23 +311,27 @@ public interface APIInterface {
 
     @GET(kowsar_Url+"GetImageFromKsr")
     Call<RetrofitResponse> GetImageFromKsr(
+            @Query("tag") String tag,
             @Query("KsrImageCode") String KsrImageCode
     );
 
     @GET(kowsar_Url+"GetImageCustom")
     Call<RetrofitResponse> GetImageCustom(
+            @Query("tag") String tag,
             @Query("ClassName") String ClassName,
             @Query("ObjectRef") String ObjectRef,
             @Query("Scale") String Scale
     );
 
     @GET(kowsar_Url+"DbSetupvalue")
-    Call<RetrofitResponse> DbSetupvalue(
+    Call<RetrofitResponse> info(
+            @Query("tag") String tag,
             @Query("Where") String Where
     );
 
     @GET(kowsar_Url+"customer_insert")
     Call<RetrofitResponse> customer_insert(
+            @Query("tag") String tag,
             @Query("BrokerRef") String BrokerRef,
             @Query("CityCode") String CityCode,
             @Query("KodeMelli") String KodeMelli,
@@ -338,12 +346,16 @@ public interface APIInterface {
     );
 
     @GET(kowsar_Url+"GetGoodType")
-    Call<RetrofitResponse> GetGoodType();
+    Call<RetrofitResponse> GetGoodType(
+            @Query("tag") String tag
+    );
 
 
 
     @GET(kowsar_Url+"GetSellBroker")
-    Call<RetrofitResponse> GetSellBroker();
+    Call<RetrofitResponse> GetSellBroker(
+            @Query("tag") String tag
+    );
 
 
 
@@ -351,61 +363,68 @@ public interface APIInterface {
 
     @GET(Broker_Url+"GetColumnList")
     Call<RetrofitResponse> GetColumnList(
+            @Query("tag") String tag,
             @Query("Type") String Type,
             @Query("AppType") String AppType,
             @Query("IncludeZero") String IncludeZero
     );
     @GET(Broker_Url+"BrokerStack")
-    Call<RetrofitResponse> BrokerStack(@Query("BrokerRef") String brokerRef);
+    Call<RetrofitResponse> BrokerStack(@Query("tag") String tag,@Query("BrokerRef") String brokerRef);
 
     @GET(Broker_Url+"GetMenuBroker")
-    Call<RetrofitResponse> GetMenuBroker();
+    Call<RetrofitResponse> MenuBroker(@Query("tag") String tag);
 
     @GET(Broker_Url+"GetMaxRepLog")
-    Call<RetrofitResponse> GetMaxRepLog();
+    Call<RetrofitResponse> MaxRepLogCode(@Query("tag") String tag);
 
     @GET(Broker_Url+"BrokerOrder")
     Call<String> BrokerOrder(
+            @Query("tag") String tag,
             @Query("HeaderDetail") String HeaderDetail,
             @Query("RowDetail") String RowDetail
     );
     @POST(Broker_Url+"BrokerOrder")
     Call<String> BrokerOrder1(
+            @Query("tag") String tag,
             @Field("HeaderDetail") String HeaderDetail,
             @Field("RowDetail") String RowDetail
     );
 
     @POST(Broker_Url+"BrokerOrder") // Replace with your actual API endpoint
-    Call<ResponseBody> sendData(@Body RequestBody requestBody);
+    Call<ResponseBody> sendData(@Query("tag") String tag,@Body RequestBody requestBody);
 
 
 
     @GET(Broker_Url+"repinfo")
-    Call<RetrofitResponse> repinfo(
+    Call<RetrofitResponse> RetrofitReplicate(
+            @Query("tag") String tag,
             @Query("code") String code,
             @Query("table") String table,
+            @Query("Where") String Where,
             @Query("reptype") String reptype,
             @Query("Reprow") String Reprow
     );
 
     @GET(Broker_Url+"UpdateLocation")
     Call<RetrofitResponse> UpdateLocation(
+            @Query("tag") String tag,
             @Query("GpsLocations") String GpsLocations
     );
 
 
 
     @GET(Broker_Url+"GetAppPrinter")
-    Call<RetrofitResponse> GetAppPrinter();
+    Call<RetrofitResponse> GetAppPrinter(@Query("tag") String tag);
 
      @GET(Broker_Url+"AppBrokerPrint")
     Call<RetrofitResponse> AppBrokerPrint(
+             @Query("tag") String tag,
             @Query("Image") String Image,
             @Query("Code") String Code,
             @Query("PrinterName") String PrinterName,
             @Query("PrintCount") String PrintCount
     );
-*/
 
+*/
 }
 

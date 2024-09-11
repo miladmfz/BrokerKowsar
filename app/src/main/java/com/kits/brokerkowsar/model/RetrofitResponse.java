@@ -21,8 +21,6 @@ public class RetrofitResponse {
     private ArrayList<Location> Locations;
     @SerializedName("AppPrinters")
     private ArrayList<AppPrinter> AppPrinters;
-
-
     @SerializedName("Good")
     private Good good;
     @SerializedName("Customer")
@@ -43,6 +41,11 @@ public class RetrofitResponse {
 
     @SerializedName("response")
     private String response;
+
+
+
+
+
 
     public String getResponse() {
         return response;

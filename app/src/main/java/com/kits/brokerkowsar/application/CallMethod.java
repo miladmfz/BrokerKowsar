@@ -21,9 +21,13 @@ import com.kits.brokerkowsar.webService.APIClient_kowsar;
 import com.kits.brokerkowsar.webService.APIInterface;
 import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
+import org.json.JSONObject;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -92,6 +96,31 @@ public class CallMethod extends Application {
         EditString("ItemsShow", "3");
         sEdit.apply();
     }
+    public String CreateJson(String key, String value, String existingJson) {
+
+        JSONObject jsonObject = null;
+        try {
+            if (existingJson != null && !existingJson.isEmpty()) {
+                jsonObject = new JSONObject(existingJson);
+            } else {
+                jsonObject = new JSONObject();
+            }
+            jsonObject.put(key, value);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return jsonObject.toString()+"";
+    }
+    public RequestBody RetrofitBody(String jsonRequestBody) {
+
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), jsonRequestBody);
+
+        return requestBody;
+    }
+
 
     public void ErrorLog(String ErrorStr) {
 

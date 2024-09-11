@@ -13,7 +13,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
-
+//
 import com.downloader.Error;
 import com.downloader.OnDownloadListener;
 import com.downloader.PRDownloader;
@@ -109,7 +109,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
 
 
         binding.activitionBtn.setOnClickListener(v -> {
-            Call<RetrofitResponse> call1 = apiInterface.Activation(Objects.requireNonNull(binding.activitionEdittext.getText()).toString());
+            Call<RetrofitResponse> call1 = apiInterface.Activation(binding.activitionEdittext.getText().toString());
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
                 public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
@@ -314,6 +314,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         btn_update.setOnClickListener(v -> {
 
             Call<RetrofitResponse> call1 = apiInterface.Activation(
+
                          singleactive.getActivationCode()
             );
             call1.enqueue(new Callback<RetrofitResponse>() {

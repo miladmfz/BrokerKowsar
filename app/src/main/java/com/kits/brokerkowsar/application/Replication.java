@@ -124,7 +124,7 @@ public class Replication {
 
     public void DoingReplicateAuto() {
 
-        Call<RetrofitResponse> call1 = apiInterface.MaxRepLogCode ("MaxRepLogCode");
+        Call<RetrofitResponse> call1 = apiInterface.MaxRepLogCode("MaxRepLogCode");
         call1.enqueue(new Callback<RetrofitResponse>() {
             @Override
             public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
