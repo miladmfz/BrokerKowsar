@@ -4,14 +4,27 @@ package com.kits.brokerkowsar.activity;
 
 import android.annotation.SuppressLint;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,9 +66,20 @@ import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 import com.kits.brokerkowsar.application.Constants;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -115,9 +139,22 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
     //************************************************************
 
 
+
+
     public void test_fun(View v) {
-        dbh.SaveConfig("LastGpsLocationCode","0");
+
+        ///dbh.SaveConfig("LastGpsLocationCode","0");
+
+
+
+
     }
+
+
+
+
+
+
 
 
     public void GpslocationCall() {
@@ -280,7 +317,7 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         navigationView.inflateMenu(R.menu.activity_navigation_drawer);
 
 
-        if (callMethod.ReadString("PersianCompanyNameUse").equals("اصلی")) {
+        if (callMethod.ReadString("EnglishCompanyNameUse").equals("asli")) {
             btn_test.setVisibility(View.VISIBLE);
             tv_test.setVisibility(View.VISIBLE);
             //dbh.SaveConfig("BrokerStack","1");

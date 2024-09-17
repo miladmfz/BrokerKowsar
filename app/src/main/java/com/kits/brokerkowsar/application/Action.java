@@ -8,6 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,6 +24,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.android.volley.Request;
@@ -52,9 +58,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TimeZone;
@@ -1112,9 +1123,80 @@ public class Action {
     }
 
 
+    @SuppressLint("DefaultLocale")
+    public String getIpAddress(boolean useIPv4){
+        int delim = 0;
+        String finalAdress = "";
+        try {
+            List<NetworkInterface> interfaces = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for(NetworkInterface intf : interfaces){
+                List<InetAddress> addresses = Collections.list(intf.getInetAddresses());
+                for(InetAddress addr : addresses){
+                    if(!addr.isLoopbackAddress()) {
+                        String sAddr = addr.getHostAddress();
+                        boolean isIPv4 = sAddr.indexOf(':') < 0 ;
+                        if(useIPv4){
+                            if(isIPv4)
+                                finalAdress = sAddr;
+                        } else {
+                            if(!isIPv4){
+                                delim = sAddr.indexOf('%');
+                                finalAdress =  delim<0 ? sAddr.toUpperCase() : sAddr.substring(0 , delim);
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (SocketException e) {
+            e.printStackTrace();
+            WifiManager wifiManager = (WifiManager) this.mContext.getSystemService(Context.WIFI_SERVICE);
+            int ipAddress = wifiManager.getConnectionInfo().getIpAddress();
+            finalAdress = String.format("%d.%d.%d.%d", (ipAddress & 0xff),(ipAddress >> 8 & 0xff),(ipAddress >> 16 & 0xff),(ipAddress >> 24 & 0xff));
+        }
+        return finalAdress;
+    }
+
+
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    public boolean isVpnConnection(){
+        return Settings.Secure.getInt(this.mContext.getContentResolver(), "vpn_state", 0) == 1 || isvpn1() || isvpn2();
+    }
+    private boolean isvpn1() {
+        String iface = "";
+        try {
+            for (NetworkInterface networkInterface : Collections.list(NetworkInterface.getNetworkInterfaces())) {
+                if (networkInterface.isUp())
+                    iface = networkInterface.getName();
+                Log.d("DEBUG", "IFACE NAME: " + iface);
+                if ( iface.contains("tun") || iface.contains("ppp") || iface.contains("pptp")) {
+                    return true;
+                }
+            }
+        } catch (SocketException e1) {
+            e1.printStackTrace();
+        }
+
+        return false;
+    }
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean isvpn2() {
+        ConnectivityManager cm = (ConnectivityManager) this.mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+        Network activeNetwork = cm.getActiveNetwork();
+        NetworkCapabilities caps = cm.getNetworkCapabilities(activeNetwork);
+        boolean vpnInUse = caps.hasTransport(NetworkCapabilities.TRANSPORT_VPN);
+        return vpnInUse;
+    }
+
 
     @SuppressLint("HardwareIds")
     public void app_info() {
+
+        Log.e("Debug Build.VERSION.SDK_INT =",Build.VERSION.SDK_INT+"");
+        Log.e("Debug isVpnConnection =",getIpAddress(true)+" / "+isVpnConnection()+"");
+
+
+
 
         @SuppressLint("HardwareIds") String android_id = BuildConfig.BUILD_TYPE.equals("release") ?
                 Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID) :
@@ -1144,6 +1226,9 @@ public class Action {
         Body_str =callMethod.CreateJson("StrDate", calendar1.getPersianShortDateTime(), Body_str);
         Body_str =callMethod.CreateJson("Broker",  dbh.ReadConfig("BrokerCode"), Body_str);
         Body_str =callMethod.CreateJson("Explain", version, Body_str);
+        Body_str =callMethod.CreateJson("DeviceAgant", Build.BRAND+" / "+Build.MODEL+" / "+Build.HARDWARE, Body_str);
+        Body_str =callMethod.CreateJson("SdkVersion", Build.VERSION.SDK_INT+"", Body_str);
+        Body_str =callMethod.CreateJson("DeviceIp", getIpAddress(true)+" / "+isVpnConnection(), Body_str);
 
         Log.e("e=",""+Body_str);
         Call<RetrofitResponse> call = apiInterface.LogReport(callMethod.RetrofitBody(Body_str));
