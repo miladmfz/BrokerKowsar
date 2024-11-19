@@ -3,7 +3,11 @@ package com.kits.brokerkowsar.activity;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -22,6 +26,7 @@ import com.downloader.Status;
 import com.google.android.material.button.MaterialButton;
 import com.kits.brokerkowsar.BuildConfig;
 import com.kits.brokerkowsar.R;
+import com.kits.brokerkowsar.application.Action;
 import com.kits.brokerkowsar.application.App;
 import com.kits.brokerkowsar.application.CallMethod;
 import com.kits.brokerkowsar.databinding.ActivityChoiceDatabaseBinding;
@@ -31,11 +36,13 @@ import com.kits.brokerkowsar.model.NumberFunctions;
 import com.kits.brokerkowsar.model.RetrofitResponse;
 import com.kits.brokerkowsar.webService.APIClient_kowsar;
 import com.kits.brokerkowsar.webService.APIInterface;
+import com.mohamadamin.persianmaterialdatetimepicker.utils.PersianCalendar;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,6 +53,8 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
     APIInterface apiInterface = APIClient_kowsar.getCleint_log().create(APIInterface.class);
     CallMethod callMethod;
     Activation activation;
+    Action action;
+
     DatabaseHelper dbh;
     DatabaseHelper dbhbase;
     TextView tv_rep;
@@ -116,10 +125,15 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
                     if (response.isSuccessful()) {
                         assert response.body() != null;
                         activation = response.body().getActivations().get(0);
-                        dbhbase.InsertActivation(activation);
-                        finish();
-
-                        startActivity(getIntent());
+                        Log.e("kowsar",""+activation.getErrCode());
+                        if (Integer.parseInt(activation.getErrCode())>0){
+                            callMethod.showToast(activation.getErrDesc());
+                        }else{
+                            FirstActivation(activation);
+                            dbhbase.InsertActivation(activation);
+                            finish();
+                            startActivity(getIntent());
+                        }
                     }
                 }
 
@@ -138,7 +152,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         btn_prog.setOnClickListener(view -> DownloadRequest(activation));
 
 
-        String downloadurl="http://178.131.31.161:60005/api/kits/GetDb?Code="+activation.getActivationCode();
+        String downloadurl="http://5.160.152.173:60005/api/kits/GetDb?Code="+activation.getActivationCode();
 
         PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
                 .setDatabaseEnabled(true)
@@ -268,8 +282,10 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         tv_PersianCompanyName.setBackgroundResource(R.color.grey_20);
         tv_EnglishCompanyName.setBackgroundResource(R.color.grey_20);
         tv_ServerURL.setBackgroundResource(R.color.grey_20);
-        btn_login.setBackgroundResource(R.color.white);
-        btn_update.setBackgroundResource(R.color.white);
+
+
+        btn_login.setBackgroundResource(R.drawable.btn_background_login);
+        btn_update.setBackgroundResource(R.drawable.btn_background_update);
         btn_gap.setBackgroundResource(R.color.white);
 
         tv_PersianCompanyName.setTextSize(26);
@@ -351,6 +367,160 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         ll_main.addView(ll_tv);
 
         binding.activitionLine.addView(ll_main, margin_10);
+    }
+
+
+    private TextView createTextView(int textColor, int textSize, String description, String text) {
+        TextView textView = new TextView(this);
+        textView.setTextColor(getResources().getColor(textColor));
+        textView.setTextSize(textSize);
+        textView.setText(text);
+        textView.setContentDescription(description);
+        return textView;
+    }
+
+    private MaterialButton createMaterialButton(String text, int textSize, float weight) {
+        MaterialButton button = new MaterialButton(this);
+        button.setText(text);
+        button.setTextSize(textSize);
+        LinearLayoutCompat.LayoutParams params = new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
+        params.weight = weight;
+        button.setLayoutParams(params);
+        return button;
+    }
+
+    private void setLayoutParams(View view, int width, int height) {
+        view.setLayoutParams(new LinearLayoutCompat.LayoutParams(width, height));
+    }
+
+    private void setLayoutParams(View view, int width, int height, float weight) {
+        LinearLayoutCompat.LayoutParams params = new LinearLayoutCompat.LayoutParams(width, height);
+        params.weight = weight;
+        view.setLayoutParams(params);
+    }
+
+    private void setLayoutMargins(View view, int left, int top, int right, int bottom) {
+        LinearLayoutCompat.LayoutParams params = (LinearLayoutCompat.LayoutParams) view.getLayoutParams();
+        params.setMargins(left, top, right, bottom);
+        view.setLayoutParams(params);
+    }
+
+    private void setupButtonListeners(Activation singleactive, MaterialButton btn_login, MaterialButton btn_update) {
+        btn_login.setOnClickListener(v -> {
+            if (!new File(singleactive.getDatabaseFilePath()).exists()) {
+                DownloadRequest(singleactive);
+            } else {
+                saveDataAndNavigate(singleactive);
+            }
+        });
+
+        btn_update.setOnClickListener(v -> {
+            Call<RetrofitResponse> call1 = apiInterface.Activation(singleactive.getActivationCode());
+            call1.enqueue(new Callback<RetrofitResponse>() {
+                @Override
+                public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
+                    if (response.isSuccessful()) {
+                        assert response.body() != null;
+                        activation = response.body().getActivations().get(0);
+                        dbhbase.InsertActivation(activation);
+                        restartActivity();
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+                    callMethod.ErrorLog(t.getMessage());
+                }
+            });
+        });
+    }
+
+    private void saveDataAndNavigate(Activation singleactive) {
+        callMethod.EditString("PersianCompanyNameUse", singleactive.getPersianCompanyName());
+        callMethod.EditString("EnglishCompanyNameUse", singleactive.getEnglishCompanyName());
+        callMethod.EditString("ServerURLUse", singleactive.getServerURL());
+        callMethod.EditString("DatabaseName", singleactive.getDatabaseFilePath());
+        callMethod.EditString("ActivationCode", singleactive.getActivationCode());
+        Intent intent = new Intent(this, SplashActivity.class);
+        startActivity(intent);
+        finish();
+    }
+
+    private void restartActivity() {
+        finish();
+        startActivity(getIntent());
+    }
+
+
+    @SuppressLint("HardwareIds")
+    public void FirstActivation(Activation activation) {
+
+
+        Log.e("Debug Build.VERSION.SDK_INT =", Build.VERSION.SDK_INT+"");
+
+
+        @SuppressLint("HardwareIds") String android_id = BuildConfig.BUILD_TYPE.equals("release") ?
+                Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID) :
+                "debug";
+        PersianCalendar calendar1 = new PersianCalendar();
+        calendar1.setTimeZone(TimeZone.getDefault());
+        String version = BuildConfig.VERSION_NAME;
+
+
+
+        APIInterface apiInterface = APIClient_kowsar.getCleint_log().create(APIInterface.class);
+//        Call<RetrofitResponse> call = apiInterface.Kowsar_log("Kowsar_log", android_id
+//                , url
+//                , callMethod.ReadString("PersianCompanyNameUse")
+//                , callMethod.ReadString("PreFactorCode")
+//                , calendar1.getPersianShortDateTime()
+//                , dbh.ReadConfig("BrokerCode")
+//                , version);
+//
+//
+
+        String Body_str  = "";
+        Body_str =callMethod.CreateJson("Device_Id", android_id, Body_str);
+        Body_str =callMethod.CreateJson("Address_Ip", activation.getServerURL(), Body_str);
+        Body_str =callMethod.CreateJson("Server_Name", activation.getPersianCompanyName(), Body_str);
+        Body_str =callMethod.CreateJson("Factor_Code", "0", Body_str);
+        Body_str =callMethod.CreateJson("StrDate", calendar1.getPersianShortDateTime(), Body_str);
+        Body_str =callMethod.CreateJson("Broker",  "0", Body_str);
+        Body_str =callMethod.CreateJson("Explain", version, Body_str);
+        Body_str =callMethod.CreateJson("DeviceAgant", Build.BRAND+" / "+Build.MODEL+" / "+Build.HARDWARE, Body_str);
+        Body_str =callMethod.CreateJson("SdkVersion", Build.VERSION.SDK_INT+"", Body_str);
+        Body_str =callMethod.CreateJson("DeviceIp", "---- / -----", Body_str);
+
+        Log.e("e=",""+Body_str);
+        Call<RetrofitResponse> call = apiInterface.LogReport(callMethod.RetrofitBody(Body_str));
+        Log.e("ec=",""+call.request().url());
+        Log.e("ec=",""+call.request().body());
+
+
+        call.enqueue(new Callback<RetrofitResponse>() {
+            @Override
+            public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
+                Log.e("res=",""+response.body().toString());
+
+                if (response.isSuccessful()) {
+                    // Handle successful response
+                } else {
+                    // Handle unsuccessful response
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<RetrofitResponse> call, Throwable t) {
+                // Handle failure
+            }
+        });
+
+
+
+
+
+
     }
 
 

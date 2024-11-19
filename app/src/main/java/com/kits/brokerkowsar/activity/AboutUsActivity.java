@@ -73,16 +73,6 @@ public class AboutUsActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
-
-
-
-
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     if (!getPackageManager().canRequestPackageInstalls()) {
                         // Open the permission settings for the user to enable the permission
@@ -96,12 +86,6 @@ public class AboutUsActivity extends AppCompatActivity {
                         dialog.setContentView(R.layout.loginconfig);
                         EditText ed_password = dialog.findViewById(R.id.edloginconfig);
                         MaterialButton btn_login = dialog.findViewById(R.id.btnloginconfig);
-
-
-
-
-
-
 
 
 
@@ -186,7 +170,7 @@ public class AboutUsActivity extends AppCompatActivity {
 
     private void DownloadFun() {
 
-        DownloadManager.Request request = new DownloadManager.Request(Uri.parse("http://178.131.31.161:60005/api/kits/Brokerkowsar"));
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse("http://5.160.152.173:60005/api/kits/Brokerkowsar"));
         request.setTitle("BrokerKowsar");
         request.setDescription("Downloading New Version");
         request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);

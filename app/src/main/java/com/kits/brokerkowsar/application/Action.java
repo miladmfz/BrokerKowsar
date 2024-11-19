@@ -40,6 +40,7 @@ import com.kits.brokerkowsar.activity.CustomerActivity;
 import com.kits.brokerkowsar.activity.NavActivity;
 import com.kits.brokerkowsar.activity.PrefactorActivity;
 import com.kits.brokerkowsar.activity.SearchActivity;
+import com.kits.brokerkowsar.model.Activation;
 import com.kits.brokerkowsar.model.Column;
 import com.kits.brokerkowsar.model.DatabaseHelper;
 import com.kits.brokerkowsar.model.Good;
@@ -1196,8 +1197,6 @@ public class Action {
         Log.e("Debug isVpnConnection =",getIpAddress(true)+" / "+isVpnConnection()+"");
 
 
-
-
         @SuppressLint("HardwareIds") String android_id = BuildConfig.BUILD_TYPE.equals("release") ?
                 Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID) :
                 "debug";
@@ -1261,6 +1260,79 @@ public class Action {
 
 
     }
+
+    @SuppressLint("HardwareIds")
+    public void FirstActivation(Activation activation) {
+
+        url=activation.getServerURL();
+        Log.e("Debug Build.VERSION.SDK_INT =",Build.VERSION.SDK_INT+"");
+        Log.e("Debug isVpnConnection =",getIpAddress(true)+" / "+isVpnConnection()+"");
+
+
+        @SuppressLint("HardwareIds") String android_id = BuildConfig.BUILD_TYPE.equals("release") ?
+                Settings.Secure.getString(mContext.getContentResolver(), Settings.Secure.ANDROID_ID) :
+                "debug";
+        PersianCalendar calendar1 = new PersianCalendar();
+        calendar1.setTimeZone(TimeZone.getDefault());
+        String version = BuildConfig.VERSION_NAME;
+
+
+
+        APIInterface apiInterface = APIClient_kowsar.getCleint_log().create(APIInterface.class);
+//        Call<RetrofitResponse> call = apiInterface.Kowsar_log("Kowsar_log", android_id
+//                , url
+//                , callMethod.ReadString("PersianCompanyNameUse")
+//                , callMethod.ReadString("PreFactorCode")
+//                , calendar1.getPersianShortDateTime()
+//                , dbh.ReadConfig("BrokerCode")
+//                , version);
+//
+//
+
+        String Body_str  = "";
+        Body_str =callMethod.CreateJson("Device_Id", android_id, Body_str);
+        Body_str =callMethod.CreateJson("Address_Ip", url, Body_str);
+        Body_str =callMethod.CreateJson("Server_Name", activation.getPersianCompanyName(), Body_str);
+        Body_str =callMethod.CreateJson("Factor_Code", "0", Body_str);
+        Body_str =callMethod.CreateJson("StrDate", calendar1.getPersianShortDateTime(), Body_str);
+        Body_str =callMethod.CreateJson("Broker",  "0", Body_str);
+        Body_str =callMethod.CreateJson("Explain", version, Body_str);
+        Body_str =callMethod.CreateJson("DeviceAgant", Build.BRAND+" / "+Build.MODEL+" / "+Build.HARDWARE, Body_str);
+        Body_str =callMethod.CreateJson("SdkVersion", Build.VERSION.SDK_INT+"", Body_str);
+        Body_str =callMethod.CreateJson("DeviceIp", getIpAddress(true)+" / "+isVpnConnection(), Body_str);
+
+        Log.e("e=",""+Body_str);
+        Call<RetrofitResponse> call = apiInterface.LogReport(callMethod.RetrofitBody(Body_str));
+        Log.e("ec=",""+call.request().url());
+        Log.e("ec=",""+call.request().body());
+
+
+        call.enqueue(new Callback<RetrofitResponse>() {
+            @Override
+            public void onResponse(Call<RetrofitResponse> call, Response<RetrofitResponse> response) {
+                Log.e("res=",""+response.body().toString());
+
+                if (response.isSuccessful()) {
+                    // Handle successful response
+                } else {
+                    // Handle unsuccessful response
+                }
+            }
+
+
+            @Override
+            public void onFailure(Call<RetrofitResponse> call, Throwable t) {
+                // Handle failure
+            }
+        });
+
+
+
+
+
+
+    }
+
 
 
     public String CursorToJson(Cursor cursor) {

@@ -28,6 +28,27 @@ public class Activation {
     @SerializedName("AppType")
     private String AppType;
 
+    @SerializedName("ErrCode")
+    private String ErrCode;
+    @SerializedName("ErrDesc")
+    private String ErrDesc;
+
+    public String getErrCode() {
+        return ErrCode;
+    }
+
+    public void setErrCode(String errCode) {
+        ErrCode = errCode;
+    }
+
+    public String getErrDesc() {
+        return ErrDesc;
+    }
+
+    public void setErrDesc(String errDesc) {
+        ErrDesc = errDesc;
+    }
+
     public String getSecendServerURL() {
         return SecendServerURL;
     }
