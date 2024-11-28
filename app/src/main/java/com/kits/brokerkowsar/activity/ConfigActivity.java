@@ -57,7 +57,7 @@ public class ConfigActivity extends AppCompatActivity {
      void populateViews() {
         DecimalFormat decimalFormat = new DecimalFormat("0,000");
         //binding.configSumFactor.setText(NumberFunctions.PerisanNumber(decimalFormat.format(dbh.getsum_sumfactor())));
-        binding.configBorker.setText(NumberFunctions.PerisanNumber(dbh.ReadConfig("BrokerCode")));
+        binding.configBroker.setText(NumberFunctions.PerisanNumber(dbh.ReadConfig("BrokerCode")));
         binding.configGrid.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Grid")));
         binding.configDelay.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("Delay")));
         binding.configTitlesize.setText(NumberFunctions.PerisanNumber(callMethod.ReadString("TitleSize")));

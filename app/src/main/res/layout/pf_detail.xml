@@ -1,47 +1,57 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+
+<androidx.appcompat.widget.LinearLayoutCompat
+xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+android:gravity="center"
+android:padding="16dp"
+android:background="@color/grey_100">
+
+<!-- Login Form Container -->
+<androidx.appcompat.widget.LinearLayoutCompat
+    android:layout_width="300dp"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_gravity="center"
-    android:id="@+id/pf_detail"
-    android:background="@drawable/bg_round_selected"
-    android:layoutDirection="rtl">
+    android:gravity="center"
+    android:padding="16dp"
+    android:background="@drawable/bg_card"
+    android:elevation="8dp">
 
-
+    <!-- Password Input -->
+    <!-- توضیحات -->
     <EditText
         android:id="@+id/pf_detail_detail"
-        android:background="@drawable/bg_round_selected"
-        android:layout_width="250dp"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:background="@drawable/bg_round"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_marginBottom="16dp"
         android:gravity="center"
         android:hint="@string/explain"
+        android:textSize="16sp"
         android:singleLine="true"
-        android:inputType="text"
-        android:focusable="true">
+        android:inputType="text" />
 
 
-    </EditText>
-
-
-    <Button
+    <!-- Login Button -->
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/pf_detail_btn"
-        android:layout_width="250dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:gravity="center"
         android:layout_gravity="center"
-        android:layout_margin="10dp"
-        android:layout_height="50dp"
+        android:layout_marginTop="8dp"
         android:text="@string/insert_prefactor"
-        android:textSize="20sp"
-        android:textColor="#ffffff"
-
-
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        app:cornerRadius="12dp"
         app:backgroundTint="@color/green_600"
-
-
         style="?attr/materialButtonOutlinedStyle" />
-
 </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.appcompat.widget.LinearLayoutCompat>
+
+
+
+

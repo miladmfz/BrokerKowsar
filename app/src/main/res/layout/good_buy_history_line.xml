@@ -1,182 +1,106 @@
-<?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/good_buy_history"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
+    android:layout_margin="8dp"
     android:layoutDirection="rtl"
-    android:orientation="vertical"
-    app:cardCornerRadius="2dp"
+    app:cardCornerRadius="8dp"
     app:cardElevation="6dp"
-    app:strokeColor="@color/grey_1000"
+    app:strokeColor="@color/grey_400"
     app:strokeWidth="1dp">
 
-
+    <!-- محتوای اصلی -->
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="8dp">
 
-        <LinearLayout
+        <!-- خط اول: نام کالا -->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:gravity="start"
+                android:text="@string/detail_goodname"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/good_buy_history_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:gravity="end"
+                android:text="نام کالا"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:textStyle="bold" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!-- خط دوم: مقدار و کد کالا -->
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:gravity="start"
+                android:text="@string/amount"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/good_buy_history_amount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:gravity="end"
+                android:text="10"
+                android:textSize="14sp"
+                android:textColor="@color/black" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!-- خط سوم: قیمت و مجموع -->
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="321dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.80"
-                android:gravity="center"
-                android:text="@string/detail_goodname"
-                android:textColor="#000000"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/good_buy_history_name"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.20"
-                android:paddingLeft="8dp"
-                android:paddingTop="1dp"
-                android:paddingRight="8dp"
-                android:paddingBottom="1dp"
-                android:text="@string/detail_goodname"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-
-
-        </LinearLayout>
-
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="1">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.4"
-                android:orientation="horizontal"
-                android:paddingTop="2dp"
-                android:weightSum="1">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.5"
-                    android:gravity="center"
-                    android:text="@string/amount"
-                    android:textColor="#000000"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/good_buy_history_amount"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="0.5"
-                    android:background="#FFFFFF"
-                    android:gravity="center"
-                    android:text="@string/amount"
-                    android:textColor="#000000"
-                    android:textSize="14sp" />
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.5"
-                    android:gravity="center"
-                    android:text="@string/deatil_goodcode"
-                    android:textColor="#000000"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/good_buy_history_code"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.5"
-                    android:gravity="center"
-
-                    android:text="@string/deatil_goodcode"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-
-
-            </LinearLayout>
-
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:orientation="horizontal"
-                android:weightSum="1">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.7"
-                    android:gravity="center"
-                    android:text="@string/boxbuy_total"
-                    android:textColor="#000000"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/good_buy_history_total"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.3"
-                    android:text="@string/boxbuy_total"
-                    android:textColor="#000000"
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-
-
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/good_buy_history_img"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/good_buy_history_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.25"
+                android:layout_weight="0.5"
+                android:gravity="start"
                 android:text="@string/boxbuy_total"
-                android:textColor="#000000"
-                android:textSize="16sp"
-
+                android:textSize="14sp"
                 android:textStyle="bold"
-                android:visibility="gone" />
+                android:textColor="@color/black" />
 
+            <TextView
+                android:id="@+id/good_buy_history_total"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.5"
+                android:gravity="end"
+                android:text="1000000 تومان"
+                android:textSize="14sp"
+                android:textColor="@color/red_700"
+                android:textStyle="bold" />
         </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.viewpager.widget.ViewPager
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@color/grey_1000" />
-
     </androidx.appcompat.widget.LinearLayoutCompat>
-
-
 </com.google.android.material.card.MaterialCardView>

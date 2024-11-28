@@ -408,8 +408,9 @@ public class NavActivity extends AppCompatActivity implements NavigationView.OnN
         } else if (id == R.id.nav_rep) {
 
             replication.BrokerStack();
-            action.app_info();
             try {
+                action.app_info();
+
                 workManager.cancelAllWork();
                 replication.DoingReplicate();
             } catch (Exception e) {

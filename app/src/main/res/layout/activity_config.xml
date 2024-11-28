@@ -44,18 +44,29 @@
             <Button
                 android:id="@+id/config_btn_to_reg"
                 android:layout_margin="5dp"
-                android:layout_width="match_parent"
                 android:text="@string/config_change"
-                android:textColor="#ffffff"
                 android:textStyle="bold"
-                android:textSize="16sp"
-                android:layout_height="wrap_content"
+
                 android:layout_weight="0.5"
                 app:backgroundTint="@color/green_600"
                 app:strokeColor="@color/grey_1000"
                 app:strokeWidth="1dp"
-                style="?attr/materialButtonOutlinedStyle"
-                />
+
+
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginBottom="8dp"
+                app:cornerRadius="12dp"
+                android:textSize="18sp"
+                android:backgroundTint="@color/green_500"
+                android:textColor="@color/white"
+                app:icon="@drawable/ic_edit_config"
+                app:iconGravity="start"
+                app:iconSize="24dp"
+                 />
+
+
+
 
             <Button
                 android:id="@+id/config_to_home"
@@ -91,328 +102,346 @@
                 />
 
 
+
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_margin="10dp">
+                android:orientation="vertical"
+                android:layout_margin="16dp"
+                android:padding="8dp"
+                android:background="@drawable/bg_card"
+                android:elevation="4dp">
 
-
-                <TextView
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="@string/config_broker"
-                    android:layout_weight="0.5"
-                    />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_margin="16dp"
+                    android:padding="8dp"
+                    android:background="@drawable/bg_card"
+                    android:elevation="4dp">
 
-                <TextView
-                    android:id="@+id/config_borker"
+                    <!-- Label -->
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical|start"
+                        android:text="@string/config_broker"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp" />
+
+                    <!-- Value -->
+                    <TextView
+                        android:id="@+id/config_broker"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:gravity="center"
+                        android:background="@drawable/bg_round"
+                        android:padding="8dp"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+                <!-- Row 1 -->
+                <androidx.appcompat.widget.LinearLayoutCompat
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/edittest1"
-                    android:layout_weight="0.5"
-                    android:gravity="center"
-                    android:textSize="22sp"
-                    />
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <!-- Label -->
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/config_delay"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:gravity="center_vertical|start"
+                        android:paddingStart="8dp" />
+
+                    <!-- Value -->
+                    <TextView
+                        android:id="@+id/config_delay"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_round"
+                        android:padding="8dp"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <!-- Row 2 -->
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <!-- Label -->
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/config_item"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:gravity="center_vertical|start"
+                        android:paddingStart="8dp" />
+
+                    <!-- Value -->
+                    <TextView
+                        android:id="@+id/config_grid"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_round"
+                        android:padding="8dp"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
 
 
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="8dp">
+
+                    <!-- Label: سایز عنوان ها -->
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="سایز عنوان ها"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:gravity="center_vertical|start"
+                        android:paddingStart="8dp" />
+
+                    <!-- Value: Title Size -->
+                    <TextView
+                        android:id="@+id/config_titlesize"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_round"
+                        android:padding="8dp"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <!-- Row 2: Body Size -->
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Label: سایز اطلاعات -->
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="سایز اطلاعات"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:gravity="center_vertical|start"
+                        android:paddingStart="8dp" />
+
+                    <!-- Value: Body Size -->
+                    <TextView
+                        android:id="@+id/config_bodysize"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/bg_round"
+                        android:padding="8dp"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
 
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_margin="10dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="@string/config_delay"
-                    android:layout_weight="0.5"
-                    />
-
-                <TextView
-                    android:id="@+id/config_delay"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/edittest1"
-                    android:layout_weight="0.5"
-                    android:gravity="center"
-                    android:textSize="22sp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="@string/config_item"
-                    android:layout_weight="0.5"
-                    />
-
-                <TextView
-                    android:id="@+id/config_grid"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/edittest1"
-                    android:textSize="22sp"
-                    android:layout_weight="0.5"
-                    android:gravity="center" />
-
-
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="10dp">
+                android:layout_margin="8dp"
+                android:padding="8dp"
+                android:background="@drawable/bg_card"
+                android:elevation="4dp">
 
-
+                <!-- Label Text -->
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="سایز عنوان ها"
-                    android:layout_weight="0.5"
-                    />
-
-                <TextView
-                    android:id="@+id/config_titlesize"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/edittest1"
-                    android:layout_weight="0.5"
-                    android:gravity="center"
-                    android:textSize="22sp"/>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="سایز اطلاعات"
-
-                    android:layout_weight="0.5"
-                    />
-
-                <TextView
-                    android:id="@+id/config_bodysize"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:background="@drawable/edittest1"
-                    android:layout_weight="0.5"
-                    android:gravity="center"
-                    android:textSize="22sp"/>
-            </androidx.appcompat.widget.LinearLayoutCompat>
-
-            <androidx.appcompat.widget.LinearLayoutCompat
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_margin="10dp"
-                android:visibility="visible">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|start"
                     android:text="بروزرسانی خودکار"
-                    android:layout_weight="0.5"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:paddingStart="8dp" />
 
-
-                    />
-
+                <!-- Switch -->
                 <com.google.android.material.switchmaterial.SwitchMaterial
-
                     android:id="@+id/config_autorep"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.75"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:checked="true"
                     android:enabled="false"
                     android:layout_gravity="center"
-                    />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.75"
-                    android:enabled="true"
-                    android:checked="true"
-                    android:layout_gravity="center"
-                    android:visibility="invisible" />
-
-
+                                           />
             </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+
+
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="10dp"
-                android:visibility="visible">
+                android:layout_margin="8dp"
+                android:padding="8dp"
+                android:background="@drawable/bg_card"
+                android:elevation="4dp">
 
+                <!-- Label Text -->
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|start"
                     android:text="نمایش خطی کالا"
-                    android:layout_weight="0.5"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:paddingStart="8dp" />
 
-
-                    />
-
+                <!-- Switch -->
                 <com.google.android.material.switchmaterial.SwitchMaterial
-
                     android:id="@+id/config_lineview"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.75"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:checked="true"
                     android:enabled="false"
-                    android:layout_gravity="center"
-                    />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.75"
-                    android:enabled="true"
-                    android:checked="true"
-                    android:layout_gravity="center"
-                    android:visibility="invisible" />
-
-
+                    android:layout_gravity="center" />
             </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+
+
+
+
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="10dp">
+                android:layout_margin="8dp"
+                android:padding="8dp"
+                android:background="@drawable/bg_card"
+                android:elevation="4dp">
 
+                <!-- Label Text -->
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|start"
                     android:text="@string/config_off"
-                    android:layout_weight="0.5"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:paddingStart="8dp" />
 
-
-                    />
-
+                <!-- Switch -->
                 <com.google.android.material.switchmaterial.SwitchMaterial
-
                     android:id="@+id/config_selloff"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.75"
-                    android:enabled="false"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:checked="true"
-
-                    android:layout_gravity="center" />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.75"
                     android:enabled="false"
                     android:layout_gravity="center"
-                    android:visibility="invisible" />
-
-
+                                           />
             </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+
+
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="10dp">
+                android:layout_margin="8dp"
+                android:padding="8dp"
+                android:background="@drawable/bg_card"
+                android:elevation="4dp">
 
+                <!-- Label Text -->
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|start"
                     android:text="بسته شدن کیبورد"
-                    android:layout_weight="0.5"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:paddingStart="8dp" />
 
-
-                    />
-
+                <!-- Switch -->
                 <com.google.android.material.switchmaterial.SwitchMaterial
-
                     android:id="@+id/config_keyboardrunnable"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.75"
-                    android:enabled="false"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:checked="true"
-
-                    android:layout_gravity="center" />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.75"
                     android:enabled="false"
                     android:layout_gravity="center"
-                    android:visibility="invisible" />
-
-
+                                           />
             </androidx.appcompat.widget.LinearLayoutCompat>
+
+
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_margin="10dp">
+                android:layout_margin="8dp"
+                android:padding="8dp"
+                android:background="@drawable/bg_card"
+                android:elevation="4dp">
 
+                <!-- Label Text -->
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:gravity="center"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|start"
                     android:text="نمایش خصوصیات"
-                    android:layout_weight="0.5"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:paddingStart="8dp" />
 
-
-                    />
-
+                <!-- Switch -->
                 <com.google.android.material.switchmaterial.SwitchMaterial
-
                     android:id="@+id/config_detailshow"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.75"
-                    android:enabled="false"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:checked="true"
-
-                    android:layout_gravity="center" />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="0.75"
                     android:enabled="false"
                     android:layout_gravity="center"
-                    android:visibility="invisible" />
-
-
+                                           />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
 
@@ -441,7 +470,7 @@
                     android:id="@+id/config_phonenumber"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:background="@drawable/edittest1"
+                    android:background="@drawable/bg_round"
                     android:textSize="22sp"
                     android:layout_weight="0.5"
                     android:gravity="center" />
@@ -471,7 +500,7 @@
                     android:id="@+id/config_sum_factor"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:background="@drawable/edittest1"
+                    android:background="@drawable/bg_round"
                     android:textSize="22sp"
                     android:layout_weight="0.5"
                     android:gravity="center" />
