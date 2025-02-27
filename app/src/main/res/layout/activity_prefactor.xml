@@ -1,117 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activity.PrefactorActivity"
     android:orientation="vertical"
+    android:padding="1dp"
+    android:background="@color/grey_200"
+    tools:context=".activity.PrefactorActivity"
     android:layoutDirection="rtl">
 
+    <!-- AppBar Layout -->
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/PrefactorActivity_appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/PrefactorActivity_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:layout_weight="1"
-            app:titleTextColor="@color/white"
             android:background="?attr/colorPrimary"
-            android:layout_gravity="center"
-
-            app:title="انتخاب فاکتور">
-
-        </androidx.appcompat.widget.Toolbar>
-
-
+            app:title="انتخاب فاکتور"
+            app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
+    <!-- Factor Info -->
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:orientation="horizontal">
-
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="4dp"
+        android:background="@drawable/bg_round">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:text="@string/factor_in_use"
+            android:layout_weight="0.3"
             android:gravity="center"
-
-            android:textStyle="bold"
+            android:text="@string/factor_in_use"
             android:textSize="16sp"
-            android:layout_weight="0.3" />
-
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/PrefactorActivity_lastfactor"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:textStyle="bold"
-            android:textSize="22sp"
+            android:layout_weight="0.3"
             android:gravity="center"
-            android:layout_weight="0.3" />
-
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/PrefactorActivity_addfactor"
-            android:layout_margin="2dp"
             android:layout_width="120dp"
             android:layout_height="match_parent"
+            android:layout_margin="2dp"
             android:text="@string/insert_prefactor"
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold"
-
-
             android:textColor="@color/white"
+            app:cornerRadius="8dp"
             app:backgroundTint="@color/green_600"
-            app:strokeColor="@color/grey_1000"
-            app:strokeWidth="1dp"
-            style="?attr/materialButtonOutlinedStyle"
-
-            />
-
+            style="?attr/materialButtonOutlinedStyle" />
 
         <Button
             android:id="@+id/PrefactorActivity_refresh"
-            android:layout_margin="2dp"
             android:layout_width="120dp"
             android:layout_height="match_parent"
+            android:layout_margin="2dp"
             android:text="@string/refresh"
-
-            android:textSize="16sp"
+            android:textSize="14sp"
             android:textStyle="bold"
-
             android:textColor="@color/white"
-            app:backgroundTint="@color/green_600"
-            app:strokeColor="@color/grey_1000"
-            app:strokeWidth="1dp"
+            app:cornerRadius="8dp"
+            app:backgroundTint="@color/blue_600"
             style="?attr/materialButtonOutlinedStyle" />
-
-
     </androidx.appcompat.widget.LinearLayoutCompat>
 
+    <!-- Search Bar -->
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
         android:id="@+id/PrefactorActivity_edtsearch"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginVertical="8dp"
         android:hint="@string/search_et"
         android:background="@drawable/bg_round_selected"
-        android:singleLine="true"
-        android:selectAllOnFocus="true"
-
+        android:gravity="center_vertical|start"
+        android:paddingHorizontal="12dp"
+        android:textSize="16sp"
         android:inputType="text"
-        android:paddingRight="10dp"
-        android:layout_margin="5dp" />
+        android:singleLine="true" />
 
+    <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/PrefactorActivity_recyclerView"
         android:layout_width="match_parent"
-
-        android:layout_height="wrap_content" />
-
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:background="@drawable/bg_round" />
 </androidx.appcompat.widget.LinearLayoutCompat>

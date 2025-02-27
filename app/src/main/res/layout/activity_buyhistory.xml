@@ -59,7 +59,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
                     android:layout_margin="4dp"
-                    android:background="@drawable/bg_round_selected"
+                    android:background="@drawable/bg_round"
                     android:orientation="horizontal">
 
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -167,6 +167,8 @@
                 android:inputType="text"
                 android:paddingStart="10dp"
                 android:paddingEnd="20dp"
+                android:padding="2dp"
+                android:layout_margin="2dp"
                 android:selectAllOnFocus="true"
                 android:singleLine="true" />
 

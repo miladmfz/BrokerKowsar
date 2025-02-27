@@ -52,13 +52,10 @@
                     android:text="@string/reg_save"
                     android:layout_margin="5dp"
                     android:textStyle="bold"
-
                     android:layout_weight="0.5"
                     app:backgroundTint="@color/green_600"
                     app:strokeColor="@color/grey_1000"
                     app:strokeWidth="1dp"
-
-
                     android:layout_height="60dp"
                     android:layout_marginBottom="8dp"
                     app:cornerRadius="12dp"
@@ -185,11 +182,11 @@
 
                         <!-- Label -->
                         <TextView
+                            android:text="@string/config_broker"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_vertical|start"
-                            android:text="@string/config_broker"
                             android:textColor="@color/black"
                             android:textSize="16sp"
                             android:paddingStart="8dp" />
@@ -217,11 +214,12 @@
 
                         <!-- Label -->
                         <TextView
+                            android:text="نام بازاریاب"
+
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_vertical|start"
-                            android:text="نام بازاریاب"
                             android:textColor="@color/black"
                             android:textSize="16sp"
                             android:paddingStart="8dp" />
@@ -249,25 +247,22 @@
                     android:background="@drawable/bg_card"
                     android:elevation="4dp">
 
-                    <!-- Row 1: Config Delay and Config Item -->
                     <androidx.appcompat.widget.LinearLayoutCompat
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:layout_marginBottom="8dp">
 
-                        <!-- Label: Config Delay -->
 
-                        <!-- Label: Config Item -->
                         <TextView
+                            android:text="@string/config_item"
+
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical|start"
-                            android:text="@string/config_item"
                             android:textColor="@color/black"
                             android:textSize="16sp"
                             android:layout_weight="1"
-
                             android:paddingStart="8dp" />
 
                         <!-- Input: Config Grid -->
@@ -283,7 +278,6 @@
                             android:textColor="@color/black"
                             android:textSize="16sp"
                             android:layout_weight="2"
-
                             android:gravity="center" />
                     </androidx.appcompat.widget.LinearLayoutCompat>
                     <androidx.appcompat.widget.LinearLayoutCompat
@@ -394,37 +388,6 @@
 
 
 
-                <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_margin="8dp"
-                    android:padding="8dp"
-                    android:background="@drawable/bg_card"
-                    android:elevation="4dp"
-                    android:visibility="gone">
-
-                    <!-- Label Text -->
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center_vertical|start"
-                        android:text="@string/config_real_amount"
-                        android:textColor="@color/black"
-                        android:textSize="16sp"
-                        android:paddingStart="8dp" />
-
-                    <!-- Switch -->
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/registr_real_amount"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:checked="true"
-                        android:enabled="false"
-                        android:layout_gravity="center"
-                                                   />
-                </androidx.appcompat.widget.LinearLayoutCompat>
 
 
                 <androidx.appcompat.widget.LinearLayoutCompat
@@ -438,11 +401,11 @@
 
                     <!-- Label Text -->
                     <TextView
+                        android:text="نمایش اعتبار مشتری"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center_vertical|start"
-                        android:text="نمایش اعتبار مشتری"
                         android:textColor="@color/black"
                         android:textSize="16sp"
                         android:paddingStart="8dp" />
@@ -455,7 +418,7 @@
                         android:checked="true"
                         android:enabled="true"
                         android:layout_gravity="center"
-                                                   />
+                        />
 
 
                 </androidx.appcompat.widget.LinearLayoutCompat>

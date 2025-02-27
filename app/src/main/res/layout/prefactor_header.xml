@@ -125,7 +125,7 @@
 
                 <TextView
                     android:id="@+id/pf_header_date"
-                    android:background="@drawable/bg_round_selected"
+                    android:background="@drawable/bg_round"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
@@ -163,7 +163,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="0.25"
                     android:gravity="center"
-                    android:background="@drawable/bg_round_selected"
+                    android:background="@drawable/bg_round"
                     android:text="کد فاکتور"
 
                     android:textSize="16sp"
@@ -207,7 +207,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="0.25"
                     android:gravity="center"
-                    android:background="@drawable/bg_round_selected"
+                    android:background="@drawable/bg_round"
                     android:text="@string/prefactor_kowsarcode"
 
                     android:textSize="16sp"
@@ -242,7 +242,7 @@
                     android:gravity="center"
                     android:text="@string/prefactor_time"
 
-                    android:background="@drawable/bg_round_selected"
+                    android:background="@drawable/bg_round"
                     android:textSize="16sp"
                     android:textStyle="bold" />
 
@@ -284,7 +284,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="0.25"
                     android:gravity="center"
-                    android:background="@drawable/bg_round_selected"
+                    android:background="@drawable/bg_round"
                     android:text="@string/buy_rows"
 
                     android:textSize="16sp"
@@ -316,7 +316,7 @@
                     android:layout_gravity="center"
                     android:layout_weight="0.25"
                     android:gravity="center"
-                    android:background="@drawable/bg_round_selected"
+                    android:background="@drawable/bg_round"
                     android:text="@string/prefactor_kowsardate"
 
                     android:textSize="16sp"
@@ -356,7 +356,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:background="@drawable/bg_round_selected"
+                    android:background="@drawable/bg_round"
                     android:layout_weight="0.25"
                     android:gravity="center"
                     android:text="@string/buy_totalamount"
@@ -388,7 +388,7 @@
                     android:id="@+id/pf_header_price"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/bg_round_selected"
+                    android:background="@drawable/bg_round"
                     android:layout_gravity="center"
                     android:layout_weight="0.25"
                     android:gravity="center"

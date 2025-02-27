@@ -160,7 +160,7 @@ public class AboutUsActivity extends AppCompatActivity {
     public void Config() {
         callMethod = new CallMethod(this);
         dbh = new DatabaseHelper(this, callMethod.ReadString("DatabaseName"));
-        setSupportActionBar(binding.AboutusActivityToolbar);
+        setSupportActionBar(binding.AboutUsActivityToolbar);
 
     }
 

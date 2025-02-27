@@ -118,31 +118,41 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
 
 
         binding.activitionBtn.setOnClickListener(v -> {
-            Call<RetrofitResponse> call1 = apiInterface.Activation(binding.activitionEdittext.getText().toString());
-            call1.enqueue(new Callback<RetrofitResponse>() {
-                @Override
-                public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
-                    if (response.isSuccessful()) {
-                        assert response.body() != null;
-                        activation = response.body().getActivations().get(0);
-                        Log.e("kowsar",""+activation.getErrCode());
-                        if (Integer.parseInt(activation.getErrCode())>0){
-                            callMethod.showToast(activation.getErrDesc());
-                        }else{
-                            FirstActivation(activation);
-                            dbhbase.InsertActivation(activation);
-                            finish();
-                            startActivity(getIntent());
+
+            int exist=0;
+
+            for (Activation singleactive : activations) {
+                if (Objects.requireNonNull(binding.activitionEdittext.getText()).toString().equals(singleactive.getActivationCode())){
+                    exist=exist+1;
+                }
+            }
+            if (exist<1) {
+
+                Call<RetrofitResponse> call1 = apiInterface.Activation(binding.activitionEdittext.getText().toString(),"1");
+                call1.enqueue(new Callback<RetrofitResponse>() {
+                    @Override
+                    public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
+                        if (response.isSuccessful()) {
+                            assert response.body() != null;
+                            activation = response.body().getActivations().get(0);
+                            Log.e("kowsar", "" + activation.getErrCode());
+                            if (Integer.parseInt(activation.getErrCode()) > 0) {
+                                callMethod.showToast(activation.getErrDesc());
+                            } else {
+                                FirstActivation(activation);
+                                dbhbase.InsertActivation(activation);
+                                finish();
+                                startActivity(getIntent());
+                            }
                         }
                     }
-                }
 
-                @Override
-                public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                    Log.e("test",t.getMessage());
-                }
-            });
-
+                    @Override
+                    public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
+                        Log.e("test", t.getMessage());
+                    }
+                });
+            }
         });
 
 
@@ -331,7 +341,7 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
 
             Call<RetrofitResponse> call1 = apiInterface.Activation(
 
-                         singleactive.getActivationCode()
+                         singleactive.getActivationCode(),"0"
             );
             call1.enqueue(new Callback<RetrofitResponse>() {
                 @Override
@@ -369,87 +379,6 @@ public class ChoiceDatabaseActivity extends AppCompatActivity {
         binding.activitionLine.addView(ll_main, margin_10);
     }
 
-
-    private TextView createTextView(int textColor, int textSize, String description, String text) {
-        TextView textView = new TextView(this);
-        textView.setTextColor(getResources().getColor(textColor));
-        textView.setTextSize(textSize);
-        textView.setText(text);
-        textView.setContentDescription(description);
-        return textView;
-    }
-
-    private MaterialButton createMaterialButton(String text, int textSize, float weight) {
-        MaterialButton button = new MaterialButton(this);
-        button.setText(text);
-        button.setTextSize(textSize);
-        LinearLayoutCompat.LayoutParams params = new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
-        params.weight = weight;
-        button.setLayoutParams(params);
-        return button;
-    }
-
-    private void setLayoutParams(View view, int width, int height) {
-        view.setLayoutParams(new LinearLayoutCompat.LayoutParams(width, height));
-    }
-
-    private void setLayoutParams(View view, int width, int height, float weight) {
-        LinearLayoutCompat.LayoutParams params = new LinearLayoutCompat.LayoutParams(width, height);
-        params.weight = weight;
-        view.setLayoutParams(params);
-    }
-
-    private void setLayoutMargins(View view, int left, int top, int right, int bottom) {
-        LinearLayoutCompat.LayoutParams params = (LinearLayoutCompat.LayoutParams) view.getLayoutParams();
-        params.setMargins(left, top, right, bottom);
-        view.setLayoutParams(params);
-    }
-
-    private void setupButtonListeners(Activation singleactive, MaterialButton btn_login, MaterialButton btn_update) {
-        btn_login.setOnClickListener(v -> {
-            if (!new File(singleactive.getDatabaseFilePath()).exists()) {
-                DownloadRequest(singleactive);
-            } else {
-                saveDataAndNavigate(singleactive);
-            }
-        });
-
-        btn_update.setOnClickListener(v -> {
-            Call<RetrofitResponse> call1 = apiInterface.Activation(singleactive.getActivationCode());
-            call1.enqueue(new Callback<RetrofitResponse>() {
-                @Override
-                public void onResponse(@NonNull Call<RetrofitResponse> call, @NonNull retrofit2.Response<RetrofitResponse> response) {
-                    if (response.isSuccessful()) {
-                        assert response.body() != null;
-                        activation = response.body().getActivations().get(0);
-                        dbhbase.InsertActivation(activation);
-                        restartActivity();
-                    }
-                }
-
-                @Override
-                public void onFailure(@NonNull Call<RetrofitResponse> call, @NonNull Throwable t) {
-                    callMethod.ErrorLog(t.getMessage());
-                }
-            });
-        });
-    }
-
-    private void saveDataAndNavigate(Activation singleactive) {
-        callMethod.EditString("PersianCompanyNameUse", singleactive.getPersianCompanyName());
-        callMethod.EditString("EnglishCompanyNameUse", singleactive.getEnglishCompanyName());
-        callMethod.EditString("ServerURLUse", singleactive.getServerURL());
-        callMethod.EditString("DatabaseName", singleactive.getDatabaseFilePath());
-        callMethod.EditString("ActivationCode", singleactive.getActivationCode());
-        Intent intent = new Intent(this, SplashActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void restartActivity() {
-        finish();
-        startActivity(getIntent());
-    }
 
 
     @SuppressLint("HardwareIds")

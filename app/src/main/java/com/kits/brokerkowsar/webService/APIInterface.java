@@ -211,12 +211,14 @@ public interface APIInterface {
     @FormUrlEncoded
     Call<RetrofitResponse> UpdateLocation(@Field("tag") String tag, @Field("GpsLocations") String GpsLocations);
 
-@GET(Kits_Url+"Activation")
+
+
+
+    @GET("kits/Activation")
     Call<RetrofitResponse> Activation(
-            @Query("ActivationCode") String ActivationCode
+            @Query("ActivationCode") String ActivationCode,
+            @Query("Flag") String Flag
     );
-
-
 
 
 

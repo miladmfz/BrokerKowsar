@@ -380,8 +380,6 @@ public class Action {
                                     percent.setText(NumberFunctions.PerisanNumber("" + (100 - (100 * Long.parseLong(NewPrice[0]) / Integer.parseInt(good.getGoodFieldValue("MaxSellPrice"))))));
                                 } else
                                     percent.setText("");
-
-
                                 long sumpricevlue = (Long.parseLong(NewPrice[0]) * Long.parseLong(boxAmount[0]) * DefaultUnitValue);
 
                                 sumprice.setText(NumberFunctions.PerisanNumber(decimalFormat.format(sumpricevlue)));

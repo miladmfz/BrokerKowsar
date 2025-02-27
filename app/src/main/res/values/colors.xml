@@ -6,8 +6,55 @@
     <color name="colorAccent">#FF3030</color>
 
 
+    <color name="blue_primary">#2196F3</color> <!-- Vibrant blue for primary elements -->
+    <color name="blue_primary_variant">#1565C0</color> <!-- Slightly darker for status bars -->
+
+    <!-- Secondary colors for Blue Theme -->
+    <color name="blue_secondary">#64B5F6</color> <!-- Softer blue for accents -->
+    <color name="blue_secondary_variant">#1E88E5</color> <!-- Richer accent variant -->
+
+    <!-- Background and Text Colors -->
+    <color name="blue_background">#E3F2FD</color> <!-- Light blue for backgrounds -->
+    <color name="blue_text">#0D47A1</color> <!-- Deep blue for readable text -->
+
+    <!-- Button Colors -->
+    <color name="blue_button_background">#1976D2</color> <!-- Medium blue for button backgrounds -->
+    <color name="blue_button_border">#0D47A1</color> <!-- Dark blue for button borders -->
+
+    <!-- EditText Colors -->
+    <color name="blue_edit_background">#FFFFFF</color> <!-- White for input backgrounds -->
+    <color name="blue_edit_border">#1565C0</color> <!-- Slightly darker blue for borders -->
+    <color name="blue_edit_text">#0D47A1</color> <!-- Dark blue for input text -->
+
+
+
+    <!-- Red Theme Colors -->
+    <!-- Primary colors for Red Theme -->
+    <color name="red_primary">#E53935</color> <!-- A strong red shade -->
+    <color name="red_primary_variant">#B71C1C</color> <!-- A darker variant for status bar -->
+
+    <!-- Secondary colors for Red Theme -->
+    <color name="red_secondary">#FFCDD2</color> <!-- A lighter red shade for accents -->
+    <color name="red_secondary_variant">#FF8A80</color> <!-- A slightly darker accent shade -->
+
+    <!-- Background and Text Colors -->
+    <color name="red_background">#FFEBEE</color> <!-- A very light red for backgrounds -->
+    <color name="red_text">#C62828</color> <!-- A bold red for readable text -->
+
+    <!-- Button Colors -->
+    <color name="red_button_background">#D32F2F</color> <!-- Medium red for button backgrounds -->
+    <color name="red_button_border">#B71C1C</color> <!-- Darker red for button borders -->
+
+    <!-- EditText Colors -->
+    <color name="red_edit_background">#FFFFFF</color> <!-- White for input backgrounds -->
+    <color name="red_edit_border">#D32F2F</color> <!-- Medium red for input borders -->
+    <color name="red_edit_text">#C62828</color> <!-- Bold red for input text -->
+
+
+
+
     <color name="white">#ffffff</color>
-    <color name="black">#FF000000</color>
+    <color name="black">#000000000000</color>
 
     <color name="overlay_dark_10">#1A000000</color>
     <color name="overlay_dark_20">#33000000</color>

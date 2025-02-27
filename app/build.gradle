@@ -10,7 +10,7 @@ android {
         minSdk 29
         targetSdk 33
         versionCode 1
-        versionName "13.08.01"
+        versionName "13.09.01"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -39,6 +39,7 @@ android {
 
 
 dependencies {
+
     // sysdefult
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.5.1'
